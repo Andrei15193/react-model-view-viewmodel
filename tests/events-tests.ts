@@ -1,14 +1,14 @@
 import type { IEventHandler } from '../src/events';
+import { expect } from 'chai';
 import { DispatchEvent } from '../src/events';
-import { expect } from "chai";
 
-describe("events/DispatchEvent", (): void => {
-    it("dispatching event having no subscribers", (): void => {
+describe('events/DispatchEvent', (): void => {
+    it('dispatching event having no subscribers', (): void => {
         const dispatchEvent = new DispatchEvent();
         dispatchEvent.dispatch(null);
     });
 
-    it("dispatching event to subscriber passes subject and args", (): void => {
+    it('dispatching event to subscriber passes subject and args', (): void => {
         let invocationCount = 0;
         const subject = {};
         const args = {};
@@ -26,7 +26,7 @@ describe("events/DispatchEvent", (): void => {
         expect(invocationCount).is.equal(1);
     });
 
-    it("dispatching event to subscriber that unsubscribes next one no longer notifies it", (): void => {
+    it('dispatching event to subscriber that unsubscribes next one no longer notifies it', (): void => {
         const dispatchEvent = new DispatchEvent();
         let secondInvocationCount = 0;
         const secondSubscriber: IEventHandler = {
@@ -50,7 +50,7 @@ describe("events/DispatchEvent", (): void => {
         expect(secondInvocationCount).is.equal(0);
     });
 
-    it("dispatching event to handler subscribed twice notifies it twice", (): void => {
+    it('dispatching event to handler subscribed twice notifies it twice', (): void => {
         let invocationCount = 0;
         const subscriber: IEventHandler = {
             handle() {
@@ -66,7 +66,7 @@ describe("events/DispatchEvent", (): void => {
         expect(invocationCount).is.equal(2);
     });
 
-    it("dispatching event to handler subscribed twice then unsubscribed once notifies it once", (): void => {
+    it('dispatching event to handler subscribed twice then unsubscribed once notifies it once', (): void => {
         let invocationCount = 0;
         const subscriber: IEventHandler = {
             handle() {
