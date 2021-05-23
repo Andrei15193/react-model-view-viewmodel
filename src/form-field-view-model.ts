@@ -1,34 +1,25 @@
 import type { INotifyPropertiesChanged } from './events';
+import type { IReadOnlyValidatable, IValidatable } from './validation';
 import { ViewModel } from './view-model';
 
 /** An interface that can be used by components that require a form field. This interface exposes a mixture of read-only and read-write properties.
  * The purpose is to provide the minimum required set of properties that must be read-write while all other properties can only be read. */
-export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged {
+export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, IReadOnlyValidatable {
     /** The current value of the field. */
     value: TValue;
 
     /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
-    initialValue: TValue;
+    readonly initialValue: TValue;
 
     /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
     isTouched: boolean;
 
     /** A flag indicating whether the field is focused. */
     isFocused: boolean;
-
-    /** A flag indicating whether the field is valid. Generally, when there is no associated error message. */
-    readonly isValid: boolean;
-
-    /** A flag indicating whether the field is invalid. Generally, when there is an associated error message. */
-    readonly isInvalid: boolean;
-
-    /** An error message (or translation key) providing information as to why the field is invalid. */
-    readonly error: string | undefined;
 }
 
 /** A base implementation of a form field, in most scenarios this should be enough to cover all necessary form requirements. */
-export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldViewModel<TValue> {
-    private readonly _initialValue: TValue;
+export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldViewModel<TValue>, IValidatable {
     private _value: TValue;
     private _isTouched: boolean;
     private _isFocused: boolean;
@@ -39,7 +30,7 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
      */
     public constructor(initalValue: TValue) {
         super();
-        this._initialValue = initalValue;
+        this.initialValue = initalValue;
         this._value = initalValue;
         this._isTouched = false;
         this._isFocused = false;
@@ -47,9 +38,7 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
     }
 
     /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
-    public get initialValue(): TValue {
-        return this._initialValue;
-    }
+    public readonly initialValue: TValue;
 
     /** The current value of the field. */
     public get value(): TValue {

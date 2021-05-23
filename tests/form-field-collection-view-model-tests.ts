@@ -2,21 +2,21 @@ import type { FormFieldViewModel } from '../src/form-field-view-model';
 import { expect } from 'chai';
 import { FormFieldCollectionViewModel } from '../src/form-field-collection-view-model';
 
-class MockFormFieldCollectionViewModel extends FormFieldCollectionViewModel {
-    public addField<TValue>(initialValue: TValue): FormFieldViewModel<TValue> {
-        return super.addField(initialValue);
-    }
-
-    public registerField<TValue>(field: FormFieldViewModel<TValue>): FormFieldViewModel<TValue> {
-        return super.registerField(field);
-    }
-
-    public unregisterField<TValue>(field: FormFieldViewModel<TValue>): void {
-        super.unregisterField(field);
-    }
-}
-
 describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): void => {
+    class MockFormFieldCollectionViewModel extends FormFieldCollectionViewModel {
+        public addField<TValue>(initialValue: TValue): FormFieldViewModel<TValue> {
+            return super.addField(initialValue);
+        }
+
+        public registerField<TValue>(field: FormFieldViewModel<TValue>): FormFieldViewModel<TValue> {
+            return super.registerField(field);
+        }
+
+        public unregisterField<TValue>(field: FormFieldViewModel<TValue>): void {
+            super.unregisterField(field);
+        }
+    }
+
     it('setting error notifies subscribers and updates related flags', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
         let invocationCount = 0;

@@ -1,11 +1,12 @@
 import type { IEventHandler } from './events';
 import type { IObservableCollection, IReadOnlyObservableCollection } from './observable-collection';
+import type { IValidatable } from './validation';
 import { ViewModel } from './view-model';
 import { FormFieldViewModel } from './form-field-view-model';
 import { observableCollection } from './observable-collection';
 
 /** Contains a collection of fields. Typically, this is a enough to represent a form, however for a complex user form multiple such collections can be used as sections that make up the entire form. */
-export abstract class FormFieldCollectionViewModel extends ViewModel {
+export abstract class FormFieldCollectionViewModel extends ViewModel implements IValidatable {
     private _error: string | undefined;
     private readonly _fields: IObservableCollection<FormFieldViewModel<any>> = observableCollection<FormFieldViewModel<any>>();
     private readonly _fieldChangedEventHandler: IEventHandler<readonly string[]>;
