@@ -100,6 +100,7 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
         return this._error !== undefined;
     }
 
+    /** An error message (or translation key) providing information as to why the field is invalid. */
     public get error(): string | undefined {
         return this._error;
     }

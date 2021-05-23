@@ -67,3 +67,17 @@ export interface INotifyPropertiesChanged {
     /** An event that is raised when one or more properties may have changed. */
     readonly propertiesChanged: IEvent<readonly string[]>;
 }
+
+/** A core interface for observable collections. Components can react to this and display the new value as a consequence. */
+export interface INotifyCollectionChanged<TItem> {
+    /** An event that is raised when the collection changed. */
+    readonly colllectionChanged: IEvent<ICollectionChange<TItem>>;
+}
+
+/** Contains information about the changes in the collection. */
+export interface ICollectionChange<TItem> {
+    /** An array of added items, if any. */
+    readonly addedItems: readonly TItem[];
+    /** An array of removed items, if any. */
+    readonly removedItems: readonly TItem[];
+}
