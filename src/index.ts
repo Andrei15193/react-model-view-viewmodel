@@ -10,5 +10,5 @@ export type { IFormFieldViewModel } from './form-field-view-model';
 export { FormFieldViewModel } from './form-field-view-model';
 export { FormFieldCollectionViewModel } from './form-field-collection-view-model';
 
-export type { IReadOnlyValidatable, IValidatable, ValidatorCallback, UnsubscribeCallback } from './validation';
-export { registerValidators } from './validation';
+export type { IReadOnlyValidatable, IValidatable, IValidationConfig, ValidatorCallback, CollectionItemValidatorCallback, ValidatableSelectorCallback, ValidationConfigSelectorCallback, UnsubscribeCallback } from './validation';
+export { registerValidators, registerCollectionValidators } from './validation';
