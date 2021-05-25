@@ -1,7 +1,7 @@
 import type { IValidatable } from '../src/validation';
 import { expect } from 'chai';
 import { ViewModel } from '../src/view-model';
-import { registerValidators, registerCollectionValidators } from '../src/validation';
+import { registerValidators, registerCollectionValidators, registerCollectionItemValidators } from '../src/validation';
 import { observableCollection } from '../src/observable-collection';
 
 describe('validation/registerValidators', (): void => {
@@ -188,16 +188,17 @@ describe('validation/registerCollectionValidators', (): void => {
         expect(validatable2.error).is.undefined;
     });
 
-    it('registered validators are triggered when trigger property has changed', (): void => {
+    it('registered validators are re-applied to each item when one trigger changes', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
+        const trigger1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
-        const trigger = new MockValidatableViewModel();
-        const unsubscribeCallback = registerCollectionValidators(collection, item => ({ target: item.validatable, triggers: [trigger] }), [() => isValid ? undefined : 'error']);
+        const trigger2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1, trigger: trigger1 }, { validatable: validatable2, trigger: trigger2 });
+        const unsubscribeCallback = registerCollectionValidators(collection, item => ({ target: item.validatable, triggers: [item.trigger] }), [() => isValid ? undefined : 'error']);
 
         isValid = false;
-        trigger.notifyPropertiesChanged('property');
+        trigger1.notifyPropertiesChanged('property');
 
         expect(validatable1.error).is.equal('error');
         expect(validatable2.error).is.equal('error');
@@ -271,6 +272,7 @@ describe('validation/registerCollectionValidators', (): void => {
         function validate(actualValidatable, actualItem, actualCollection): string | undefined {
             expect(actualValidatable).is.equal(validatables[index]);
             expect(actualItem).is.equal(items[index]);
+            expect(actualItem).is.equal(collection[index]);
             expect(actualCollection).is.equal(collection);
             index++;
             return undefined;
@@ -345,6 +347,245 @@ describe('validation/registerCollectionValidators', (): void => {
         const validatable2 = new MockValidatableViewModel();
         const collection = observableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+        collection.push({ validatable: validatable2 });
+
+        isValid = false;
+        unsubscribeCallback();
+        validatable2.notifyPropertiesChanged('value');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+    });
+});
+
+describe('validation/registerCollectionItemValidators', (): void => {
+    class MockValidatableViewModel extends ViewModel implements IValidatable {
+        readonly isValid: boolean = true;
+        readonly isInvalid: boolean = false;
+        error: string | undefined = undefined;
+
+        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
+            super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
+        }
+    }
+
+    it('registering validators applies them initially', (): void => {
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => 'error']);
+
+        expect(validatable1.error).is.equal('error');
+        expect(validatable2.error).is.equal('error');
+        unsubscribeCallback();
+    });
+
+    it('registering validators applies only functions', (): void => {
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [false, undefined, () => 'error']);
+
+        expect(validatable1.error).is.equal('error');
+        expect(validatable2.error).is.equal('error');
+        unsubscribeCallback();
+    });
+
+    it('registering validators are re-applied only to the item that changes', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+
+        isValid = false;
+        validatable1.notifyPropertiesChanged('value');
+
+        expect(validatable1.error).is.equal('error');
+        expect(validatable2.error).is.undefined;
+        unsubscribeCallback();
+    });
+
+    it('unregistering validators no longer applies them when a validatable changes', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+
+        isValid = false;
+        unsubscribeCallback();
+        validatable2.notifyPropertiesChanged('value');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+    });
+
+    it('registering validators are re-applied only to the item whose related trigger changes', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const trigger1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const trigger2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1, trigger: trigger1 }, { validatable: validatable2, trigger: trigger2 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, triggers: [item.trigger] }), [() => isValid ? undefined : 'error']);
+
+        isValid = false;
+        trigger2.notifyPropertiesChanged('property');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.equal('error');
+        unsubscribeCallback();
+    });
+
+    it('unregistering triggers no longer validate when property changes', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const trigger = new MockValidatableViewModel();
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, triggers: [trigger] }), [() => isValid ? undefined : 'error']);
+
+        unsubscribeCallback();
+        isValid = false;
+        trigger.notifyPropertiesChanged('property');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+    });
+
+    it('registered validators are not triggered when watched property does not change', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, watchedProperties: ['watched-property'] }), [() => isValid ? undefined : 'error']);
+
+        isValid = false;
+        validatable1.notifyPropertiesChanged('not-watched-property');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+        unsubscribeCallback();
+    });
+
+    it('registered validators are not triggered when watched property does not change on trigger', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const trigger = new MockValidatableViewModel();
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, triggers: [trigger], watchedProperties: ['watched-property'] }), [() => isValid ? undefined : 'error']);
+
+        isValid = false;
+        trigger.notifyPropertiesChanged('not-watched-property');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+        unsubscribeCallback();
+    });
+
+    it('registered validator gets called with validatable, item and collection argument', (): void => {
+        const validatable1 = new MockValidatableViewModel();
+        const item1 = { validatable: validatable1 };
+        const validatable2 = new MockValidatableViewModel();
+        const item2 = { validatable: validatable2 };
+        const validatables = [validatable1, validatable2];
+        const items = [item1, item2];
+        const collection = observableCollection(item1, item2);
+
+        let index = 0;
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [validate]);
+        expect(index).is.equal(2);
+        index = 0;
+        validatable1.notifyPropertiesChanged('value');
+        expect(index).is.equal(1);
+        unsubscribeCallback();
+
+        function validate(actualValidatable, actualItem, actualCollection): string | undefined {
+            expect(actualValidatable).is.equal(validatables[index]);
+            expect(actualItem).is.equal(items[index]);
+            expect(actualItem).is.equal(collection[index]);
+            expect(actualCollection).is.equal(collection);
+            index++;
+            return undefined;
+        }
+    });
+
+    it('adding an item validates it', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+
+        isValid = false;
+        collection.push({ validatable: validatable2 });
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.equal('error');
+        unsubscribeCallback();
+    });
+
+    it('changing an added item triggers validation for that item', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+        collection.push({ validatable: validatable2 });
+
+        isValid = false;
+        validatable2.notifyPropertiesChanged('value');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.equal('error');
+        unsubscribeCallback();
+    });
+
+    it('removing an item does not trigger validation', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+
+        isValid = false;
+        collection.splice(0, 1);
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+        unsubscribeCallback();
+    });
+
+    it('changing a removed item does not trigger validation', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
+        collection.splice(1, 1);
+
+        isValid = false;
+        validatable2.notifyPropertiesChanged('value');
+
+        expect(validatable1.error).is.undefined;
+        expect(validatable2.error).is.undefined;
+        unsubscribeCallback();
+    });
+
+    it('changing an added item after unsubscribing validators does not trigger validation', (): void => {
+        let isValid = true;
+        const validatable1 = new MockValidatableViewModel();
+        const validatable2 = new MockValidatableViewModel();
+        const collection = observableCollection({ validatable: validatable1 });
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.push({ validatable: validatable2 });
 
         isValid = false;

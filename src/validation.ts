@@ -211,6 +211,111 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
     }
 }
 
+/** Registers and applies the provided validators to each item and returns a cleanup callback.
+ * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
+ * @param collection - The collection to watch, validators are registed for each item. When the collection changes all subscription and unsubscriptions are done accordingly.
+ * @param selector - A callback that selects a validatable for each item. The returned value must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators - The callback validators that handle validation for each item.
+*/
+export function registerCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable>, validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | any)[]): UnsubscribeCallback;
+
+/** Registers and applies the provided validators to each item and returns a cleanup callback.
+ * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
+ * @param collection - The collection to watch, validators are registed for each item. When the collection changes all subscription and unsubscriptions are done accordingly.
+ * @param selector - A callback that selects a validation config for each item. The returned target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators - The callback validators that handle validation for each item.
+*/
+export function registerCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | any)[]): UnsubscribeCallback;
+
+/** Registers and applies the provided validators to each item and returns a cleanup callback.
+ * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
+ * @param collection - The collection to watch, validators are registed for each item. When the collection changes all subscription and unsubscriptions are done accordingly.
+ * @param selector - A callback that selects a validatable or validation config for each item. The returned validatable or target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators - The callback validators that handle validation for each item.
+*/
+export function registerCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable> | ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | any)[]): UnsubscribeCallback {
+    const validatableChangedEventHandler: IEventHandler<readonly string[]> = {
+        handle(validatable: TValidatable, changedProperties): void {
+            if (!containsAny(changedProperties, ['error', 'isValid', 'isInvalid'])) {
+                collection.forEach(item => {
+                    if (item !== undefined && item !== null) {
+                        const currentValidatableOrConfig = selector(item);
+                        if (isValidationConfig(currentValidatableOrConfig)) {
+                            const { target, watchedProperties } = currentValidatableOrConfig;
+                            if (target === validatable && (!watchedProperties || containsAny(changedProperties, watchedProperties)))
+                                applyCollectionItemValidators(target, item, collection, validators);
+                        }
+                        else {
+                            const currentValidatable: TValidatable = currentValidatableOrConfig;
+                            if (currentValidatable === validatable)
+                                applyCollectionItemValidators(currentValidatable, item, collection, validators);
+                        }
+                    }
+                });
+            }
+        }
+    };
+    const triggerChangedEventHandler: IEventHandler<readonly string[]> = {
+        handle(trigger: INotifyPropertiesChanged, changedProperties): void {
+            collection.forEach(item => {
+                if (item !== undefined && item !== null) {
+                    const { target, triggers, watchedProperties } = selector(item) as IValidationConfig<TValidatable>;
+                    if (triggers && triggers.indexOf(trigger) >= 0 && (!watchedProperties || containsAny(watchedProperties, changedProperties)))
+                        applyCollectionItemValidators(target, item, collection, validators);
+                }
+            });
+        }
+    };
+    const collectionChangedEventHandler: IEventHandler<ICollectionChange<TItem>> = {
+        handle(_: IReadOnlyObservableCollection<TItem>, collectionChange): void {
+            collectionChange.removedItems && collectionChange.removedItems.forEach(unwatchItem);
+            collectionChange.addedItems && collectionChange.addedItems.forEach(watchItem);
+        }
+    };
+
+    collection.forEach(watchItem);
+    collection.colllectionChanged.subscribe(collectionChangedEventHandler);
+
+    return () => {
+        collection.colllectionChanged.unsubscribe(collectionChangedEventHandler);
+        collection.forEach(unwatchItem);
+    };
+
+    function watchItem(item: TItem): void {
+        if (item !== undefined && item !== null) {
+            const validatableOrConfig = selector(item);
+            if (isValidationConfig(validatableOrConfig)) {
+                const { target, triggers } = validatableOrConfig;
+                target.propertiesChanged.subscribe(validatableChangedEventHandler);
+                triggers && triggers.forEach(trigger => trigger.propertiesChanged.subscribe(triggerChangedEventHandler));
+
+                applyCollectionItemValidators(target, item, collection, validators);
+            }
+            else {
+                const validatable: TValidatable = validatableOrConfig;
+                validatable.propertiesChanged.subscribe(validatableChangedEventHandler);
+                applyCollectionItemValidators(validatable, item, collection, validators);
+            }
+        }
+    }
+
+    function unwatchItem(item: TItem): void {
+        if (item !== undefined && item !== null) {
+            const validatableOrConfig = selector(item);
+            if (isValidationConfig(validatableOrConfig)) {
+                const { target, triggers } = validatableOrConfig;
+
+                triggers && triggers.forEach(trigger => trigger.propertiesChanged.unsubscribe(triggerChangedEventHandler));
+                target.propertiesChanged.unsubscribe(validatableChangedEventHandler);
+            }
+            else {
+                const validatable: TValidatable = validatableOrConfig;
+                validatable.propertiesChanged.unsubscribe(validatableChangedEventHandler);
+            }
+        }
+    }
+}
+
 function containsAny<T>(items: readonly T[], values: readonly T[]): boolean {
     let index = 0;
     while (index < items.length && values.every(value => value !== items[index]))
