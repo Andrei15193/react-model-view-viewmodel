@@ -27,15 +27,23 @@ describe('watch-view-model/watchViewModel', (): void => {
             this._value2++;
             this.notifyPropertiesChanged('value2');
         }
+
+        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
+            super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
+        }
     }
 
     interface ITestComponentProps {
         readonly viewModel: TestViewModel;
         readonly watchedProperties?: readonly (keyof TestViewModel)[];
+
+        renderCallback?(): void;
     }
 
-    function TestComponent({ viewModel, watchedProperties }: ITestComponentProps): JSX.Element {
+    function TestComponent({ viewModel, watchedProperties, renderCallback }: ITestComponentProps): JSX.Element {
         watchViewModel(viewModel, watchedProperties);
+
+        renderCallback && renderCallback();
 
         return (
             <>
@@ -79,5 +87,18 @@ describe('watch-view-model/watchViewModel', (): void => {
 
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
+    });
+
+    it('subsequent property changed notifications do not render the component if it has no change', (): void => {
+        const viewModel = new TestViewModel();
+        let renderCount = 0;
+        render(<TestComponent viewModel={viewModel} renderCallback={() => renderCount++} />);
+        expect(renderCount).is.equal(1);
+
+        viewModel.notifyPropertiesChanged('value1');
+        expect(renderCount).is.equal(2);
+
+        viewModel.notifyPropertiesChanged('value1');
+        expect(renderCount).is.equal(2);
     });
 });

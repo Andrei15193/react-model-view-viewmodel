@@ -15,6 +15,7 @@ export { FormFieldCollectionViewModel } from './form-field-collection-view-model
 
 export type { EventHandler } from './hooks/watch-event';
 export { watchEvent } from './hooks/watch-event';
+export { watchCollection } from './hooks/watch-collection';
 export { watchViewModel } from './hooks/watch-view-model';
 export type { ViewModelType } from './hooks/use-view-model-type';
 export { useViewModelType } from './hooks/use-view-model-type';
