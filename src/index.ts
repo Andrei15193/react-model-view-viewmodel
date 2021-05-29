@@ -12,3 +12,5 @@ export { registerValidators, registerCollectionValidators, registerCollectionIte
 export type { IFormFieldViewModel } from './form-field-view-model';
 export { FormFieldViewModel } from './form-field-view-model';
 export { FormFieldCollectionViewModel } from './form-field-collection-view-model';
+
+export { watchViewModel } from './hooks/watch-view-model';
