@@ -16,3 +16,5 @@ export { FormFieldCollectionViewModel } from './form-field-collection-view-model
 export { watchViewModel } from './hooks/watch-view-model';
 export type { ViewModelType } from './hooks/use-view-model-type';
 export { useViewModelType } from './hooks/use-view-model-type';
+export type { ViewModelFactory } from './hooks/use-view-model-factory';
+export { useViewModelFactory } from './hooks/use-view-model-factory';
