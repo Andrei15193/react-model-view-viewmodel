@@ -7,7 +7,7 @@ export type ViewModelType<TViewModel extends INotifyPropertiesChanged> = {
     new(): TViewModel;
 };
 
-/** Ensures a unique instance per component of the given type is created and watches the view model for changes.
+/** Ensures a unique instance per component of the given type is created and watches the view model for changes. Returns the view model instance.
  * @param viewModelType - The view model type to initialize.
  * @param watchedProperties - Optional, when provided, will request a render when only one of these properties has changed.
  */
