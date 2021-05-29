@@ -1,11 +1,12 @@
+import type { ViewModelType } from '../../src/hooks/use-view-model-type';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import './setup';
-import { watchViewModel } from '../../src/hooks/watch-view-model';
+import { useViewModelType } from '../../src/hooks/use-view-model-type';
 import { ViewModel } from '../../src/view-model';
 
-describe('watch-view-model/watchViewModel', (): void => {
+describe('use-view-model-type/useViewModelType', (): void => {
     class TestViewModel extends ViewModel {
         private _value1: number = 0;
         private _value2: number = 0;
@@ -30,12 +31,12 @@ describe('watch-view-model/watchViewModel', (): void => {
     }
 
     interface ITestComponentProps {
-        readonly viewModel: TestViewModel;
+        readonly viewModelType: ViewModelType<TestViewModel>;
         readonly watchedProperties?: readonly (keyof TestViewModel)[];
     }
 
-    function TestComponent({ viewModel, watchedProperties }: ITestComponentProps): JSX.Element {
-        watchViewModel(viewModel, watchedProperties);
+    function TestComponent({ viewModelType, watchedProperties }: ITestComponentProps): JSX.Element {
+        const viewModel = useViewModelType(viewModelType, watchedProperties);
 
         return (
             <>
@@ -45,9 +46,34 @@ describe('watch-view-model/watchViewModel', (): void => {
         );
     }
 
+    it('changing the view model does not create a new instace', (): void => {
+        const viewModels: TestViewModel[] = [];
+        class TestCaseViewModel extends TestViewModel {
+            public constructor() {
+                super();
+                viewModels.push(this);
+            }
+        }
+
+        const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} />);
+        expect(getByText('Value1: 0')).not.to.be.undefined;
+
+        viewModels.forEach(viewModel => viewModel.increment1());
+
+        expect(getByText('Value1: 1')).not.to.be.undefined;
+        expect(viewModels.length).is.equal(1);
+    });
+
     it('changing the view model updates the component', (): void => {
-        const viewModel = new TestViewModel();
-        const { getByText } = render(<TestComponent viewModel={viewModel} />);
+        let viewModel: TestViewModel = undefined;
+        class TestCaseViewModel extends TestViewModel {
+            public constructor() {
+                super();
+                viewModel = this;
+            }
+        }
+
+        const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} />);
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
@@ -58,8 +84,14 @@ describe('watch-view-model/watchViewModel', (): void => {
     });
 
     it('changing the view model watched property updates the component', (): void => {
-        const viewModel = new TestViewModel();
-        const { getByText } = render(<TestComponent viewModel={viewModel} watchedProperties={['value1']} />);
+        let viewModel: TestViewModel = undefined;
+        class TestCaseViewModel extends TestViewModel {
+            public constructor() {
+                super();
+                viewModel = this;
+            }
+        }
+        const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} watchedProperties={['value1']} />);
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
@@ -70,8 +102,14 @@ describe('watch-view-model/watchViewModel', (): void => {
     });
 
     it('changing the view model unwatched property does not update the component', (): void => {
-        const viewModel = new TestViewModel();
-        const { getByText } = render(<TestComponent viewModel={viewModel} watchedProperties={['value1']} />);
+        let viewModel: TestViewModel = undefined;
+        class TestCaseViewModel extends TestViewModel {
+            public constructor() {
+                super();
+                viewModel = this;
+            }
+        }
+        const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} watchedProperties={['value1']} />);
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
