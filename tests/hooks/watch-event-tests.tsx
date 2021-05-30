@@ -1,8 +1,8 @@
+import '../react-test-setup';
 import type { EventHandler } from '../../src/hooks/watch-event';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import './setup';
 import { DispatchEvent } from '../../src/events';
 import { watchEvent } from '../../src/hooks/watch-event';
 import { ViewModel } from '../../src/view-model';

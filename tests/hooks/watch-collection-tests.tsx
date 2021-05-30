@@ -1,9 +1,9 @@
+import '../react-test-setup';
 import type { ICollectionChange } from '../../src/events';
 import type { IReadOnlyObservableCollection } from '../../src/observable-collection';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import './setup';
 import { watchCollection } from '../../src/hooks/watch-collection';
 import { DispatchEvent } from '../../src/events';
 import { observableCollection } from '../../src/observable-collection';

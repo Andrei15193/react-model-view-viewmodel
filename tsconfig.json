@@ -6,6 +6,8 @@
             "ES6"
         ],
         "module": "commonjs",
+        "jsx": "react",
+        "esModuleInterop": true,
         "declaration": true,
         "outDir": "./lib",
         "allowJs": false,

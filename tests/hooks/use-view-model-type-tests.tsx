@@ -1,8 +1,8 @@
+import '../react-test-setup';
 import type { ViewModelType } from '../../src/hooks/use-view-model-type';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import './setup';
 import { useViewModelType } from '../../src/hooks/use-view-model-type';
 import { ViewModel } from '../../src/view-model';
 

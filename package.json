@@ -6,7 +6,7 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "ts-mocha --project ./tests/tsconfig.json ./tests/**/*-tests.ts ./tests/**/*-tests.tsx"
+    "test": "ts-mocha ./tests/**/*-tests.ts ./tests/**/*-tests.tsx"
   },
   "repository": {
     "type": "git",

@@ -1,7 +1,7 @@
+import '../react-test-setup';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import './setup';
 import { watchViewModel } from '../../src/hooks/watch-view-model';
 import { ViewModel } from '../../src/view-model';
 
