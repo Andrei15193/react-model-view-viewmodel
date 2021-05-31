@@ -14,7 +14,7 @@ type EffectResult = void | Destructor;
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function useCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable>, validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | undefined)[]): void;
+export function useCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel>, validators: readonly (CollectionItemValidatorCallback<TValidatableViewModel, TItem> | undefined)[]): void;
 
 /** Registers and applies the provided validators to each item. The collection and validators are part of the dependencies.
  * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
@@ -23,7 +23,7 @@ export function useCollectionItemValidators<TItem, TValidatable extends IValidat
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function useCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | undefined)[]): void;
+export function useCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly (CollectionItemValidatorCallback<TValidatableViewModel, TItem> | undefined)[]): void;
 
 /** Registers and applies the provided validators to each item. The collection and validators are part of the dependencies.
  * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
@@ -32,7 +32,7 @@ export function useCollectionItemValidators<TItem, TValidatable extends IValidat
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function useCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable> | ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): void {
+export function useCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): void {
     useEffect(
         (): EffectResult => registerCollectionItemValidators(collection, selector as any, validators),
         [collection, ...validators]

@@ -20,9 +20,9 @@ export interface IValidatable extends IReadOnlyValidatable {
 }
 
 /** A validation config covering scenarios where one object may depend on other objects to determine their valid state. */
-export interface IValidationConfig<TValidatable extends IValidatable & INotifyPropertiesChanged> {
+export interface IValidationConfig<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged> {
     /** The object that is being validated. */
-    readonly target: TValidatable;
+    readonly target: TValidatableViewModel;
     /** Additional validation triggers, if the target or any of the triggers notify of properties changing then a validation is done on the target. */
     readonly triggers?: readonly INotifyPropertiesChanged[];
     /** A collection of property names to watch for. The validation is carried out only if the specified properties have changed.
@@ -34,12 +34,12 @@ export interface IValidationConfig<TValidatable extends IValidatable & INotifyPr
 /** A validatable selector callback.
  * @param source - The item from which a validatable is selected.
 */
-export type ValidatableSelectorCallback<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged> = (source: TItem) => TValidatable;
+export type ValidatableSelectorCallback<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged> = (source: TItem) => TValidatableViewModel;
 
 /** A validation config selector callback.
  * @param source - The item from which a validation config is selected.
 */
-export type ValidationConfigSelectorCallback<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged> = (source: TItem) => IValidationConfig<TValidatable>;
+export type ValidationConfigSelectorCallback<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged> = (source: TItem) => IValidationConfig<TValidatableViewModel>;
 
 /** A validation callback signature.
  * @param validatable - The object being validated.
@@ -63,7 +63,7 @@ export type CollectionItemValidatorCallback<TValidatable extends IValidatable, T
  * @param validators - The callback validators that handle validation.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerValidators<TValidatable extends IValidatable & INotifyPropertiesChanged>(validatable: TValidatable, validators: readonly ValidatorCallback<TValidatable>[]): UnsubscribeCallback;
+export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validatable: TValidatableViewModel, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback;
 
 /** Registers and applies the provided validators returning a cleanup callback.
 * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
@@ -72,7 +72,7 @@ export function registerValidators<TValidatable extends IValidatable & INotifyPr
 * @param validators - The callback validators that handle validation.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerValidators<TValidatable extends IValidatable & INotifyPropertiesChanged>(validatableConfig: IValidationConfig<TValidatable>, validators: readonly ValidatorCallback<TValidatable>[]): UnsubscribeCallback;
+export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validatableConfig: IValidationConfig<TValidatableViewModel>, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback;
 
 /** Registers and applies the provided validators returning a cleanup callback.
  * The validators are applies one after the other until the first one returns an error message (a value different from undefined).
@@ -81,8 +81,8 @@ export function registerValidators<TValidatable extends IValidatable & INotifyPr
  * @param validators - The callback validators that handle validation.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerValidators<TValidatable extends IValidatable & INotifyPropertiesChanged>(validatableOrConfig: TValidatable | IValidationConfig<TValidatable>, validators: readonly ValidatorCallback<TValidatable>[]): UnsubscribeCallback {
-    let target: TValidatable;
+export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validatableOrConfig: TValidatableViewModel | IValidationConfig<TValidatableViewModel>, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback {
+    let target: TValidatableViewModel;
     let triggers: readonly INotifyPropertiesChanged[] | undefined = undefined;
     let watchedProperties: readonly string[] | undefined = undefined;
     if (isValidationConfig(validatableOrConfig)) {
@@ -123,7 +123,7 @@ export function registerValidators<TValidatable extends IValidatable & INotifyPr
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerCollectionValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): UnsubscribeCallback;
+export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
 
 /** Registers and applies the provided validators to each item and returns a cleanup callback.
  * When one item changes the entire collection is revalidated, this is useful when items must have a unique value.
@@ -132,7 +132,7 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerCollectionValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): UnsubscribeCallback;
+export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
 
 /** Registers and applies the provided validators to each item and returns a cleanup callback.
  * When one item changes the entire collection is revalidated, this is useful when items must have a unique value.
@@ -141,7 +141,7 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerCollectionValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable> | ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): UnsubscribeCallback {
+export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback {
     const validatableChangedEventHandler: IEventHandler<readonly string[]> = {
         handle(_, changedProperties): void {
             if (!containsAny(changedProperties, ['error', 'isValid', 'isInvalid']))
@@ -179,7 +179,7 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
                 triggers && triggers.forEach(trigger => trigger.propertiesChanged.subscribe(triggerChangedEventHandler));
             }
             else {
-                const validatable: TValidatable = validatableOrConfig;
+                const validatable: TValidatableViewModel = validatableOrConfig;
                 validatable.propertiesChanged.subscribe(validatableChangedEventHandler);
             }
         }
@@ -194,7 +194,7 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
                 target.propertiesChanged.unsubscribe(validatableChangedEventHandler);
             }
             else {
-                const validatable: TValidatable = validatableOrConfig;
+                const validatable: TValidatableViewModel = validatableOrConfig;
                 validatable.propertiesChanged.unsubscribe(validatableChangedEventHandler);
             }
         }
@@ -209,7 +209,7 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
                     applyCollectionItemValidators(target, item, collection, validators);
             }
             else {
-                const validatable: TValidatable = validatableOrConfig;
+                const validatable: TValidatableViewModel = validatableOrConfig;
                 applyCollectionItemValidators(validatable, item, collection, validators);
             }
         });
@@ -223,7 +223,7 @@ export function registerCollectionValidators<TItem, TValidatable extends IValida
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): UnsubscribeCallback;
+export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
 
 /** Registers and applies the provided validators to each item and returns a cleanup callback.
  * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
@@ -232,7 +232,7 @@ export function registerCollectionItemValidators<TItem, TValidatable extends IVa
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): UnsubscribeCallback;
+export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
 
 /** Registers and applies the provided validators to each item and returns a cleanup callback.
  * When one item changes only that item is revalidated, this is useful when items have individual validation rules (e.g.: required value).
@@ -241,9 +241,9 @@ export function registerCollectionItemValidators<TItem, TValidatable extends IVa
  * @param validators - The callback validators that handle validation for each item.
  * @returns Returns a callback that unsubscribes all event handlers, a cleanup callback.
 */
-export function registerCollectionItemValidators<TItem, TValidatable extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatable> | ValidationConfigSelectorCallback<TItem, TValidatable>, validators: readonly CollectionItemValidatorCallback<TValidatable, TItem>[]): UnsubscribeCallback {
+export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback {
     const validatableChangedEventHandler: IEventHandler<readonly string[]> = {
-        handle(validatable: TValidatable, changedProperties): void {
+        handle(validatable: TValidatableViewModel, changedProperties): void {
             if (!containsAny(changedProperties, ['error', 'isValid', 'isInvalid'])) {
                 collection.forEach(item => {
                     if (item !== undefined && item !== null) {
@@ -254,7 +254,7 @@ export function registerCollectionItemValidators<TItem, TValidatable extends IVa
                                 applyCollectionItemValidators(target, item, collection, validators);
                         }
                         else {
-                            const currentValidatable: TValidatable = currentValidatableOrConfig;
+                            const currentValidatable: TValidatableViewModel = currentValidatableOrConfig;
                             if (currentValidatable === validatable)
                                 applyCollectionItemValidators(currentValidatable, item, collection, validators);
                         }
@@ -267,7 +267,7 @@ export function registerCollectionItemValidators<TItem, TValidatable extends IVa
         handle(trigger: INotifyPropertiesChanged, changedProperties): void {
             collection.forEach(item => {
                 if (item !== undefined && item !== null) {
-                    const { target, triggers, watchedProperties } = selector(item) as IValidationConfig<TValidatable>;
+                    const { target, triggers, watchedProperties } = selector(item) as IValidationConfig<TValidatableViewModel>;
                     if (triggers && triggers.indexOf(trigger) >= 0 && (!watchedProperties || containsAny(watchedProperties, changedProperties)))
                         applyCollectionItemValidators(target, item, collection, validators);
                 }
@@ -300,7 +300,7 @@ export function registerCollectionItemValidators<TItem, TValidatable extends IVa
                 applyCollectionItemValidators(target, item, collection, validators);
             }
             else {
-                const validatable: TValidatable = validatableOrConfig;
+                const validatable: TValidatableViewModel = validatableOrConfig;
                 validatable.propertiesChanged.subscribe(validatableChangedEventHandler);
                 applyCollectionItemValidators(validatable, item, collection, validators);
             }
@@ -317,7 +317,7 @@ export function registerCollectionItemValidators<TItem, TValidatable extends IVa
                 target.propertiesChanged.unsubscribe(validatableChangedEventHandler);
             }
             else {
-                const validatable: TValidatable = validatableOrConfig;
+                const validatable: TValidatableViewModel = validatableOrConfig;
                 validatable.propertiesChanged.unsubscribe(validatableChangedEventHandler);
             }
         }
@@ -363,7 +363,7 @@ function isBoolean(potentialBoolean: any): potentialBoolean is boolean {
     return potentialBoolean === true || potentialBoolean === false;
 }
 
-function isValidationConfig<TValidatable extends IValidatable & INotifyPropertiesChanged>(potentialConfig: TValidatable | IValidationConfig<TValidatable>): potentialConfig is IValidationConfig<TValidatable> {
+function isValidationConfig<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(potentialConfig: TValidatableViewModel | IValidationConfig<TValidatableViewModel>): potentialConfig is IValidationConfig<TValidatableViewModel> {
     return potentialConfig && !isValidatable(potentialConfig) && isValidatable(potentialConfig.target) && isPropertiesChangedNotifier(potentialConfig.target);
 }
 
