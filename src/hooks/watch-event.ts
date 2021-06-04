@@ -5,10 +5,15 @@ import { useEffect } from 'react';
 type Destructor = () => void;
 type EffectResult = void | Destructor;
 
-/** Defines the signature of an event handler callback. */
-export type EventHandler<TEventArgs> = (subject: object, args: TEventArgs) => void;
+/** Represents an event handler callback.
+ * @template TEventArgs - Optional, can be used to provide context when notifying subscribers.
+ * @param subject - The object that raised the event.
+ * @param args - A set of arguments that provide context for the event.
+ */
+export type EventHandler<TEventArgs = void> = (subject: object, args: TEventArgs) => void;
 
-/** Watches the event for changes, whenever the evet is fired the callback is being invoked. The callback is not part of the hook dependencies, only the event is.
+/** Watches the event for changes, whenever the event is raised the callback will be invoked. The callback is not part of the hook dependencies, only the event is.
+ * @template TEventArgs - Optional, can be used to provide context when notifying subscribers.
  * @param event - The event to watch.
  * @param handler - The callback that handles the event.
  * @param deps - Optional, additional dependencies along side the event.

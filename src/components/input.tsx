@@ -9,13 +9,15 @@ interface IHtmlElementProps extends HTMLInputElement {
     blur(): void;
 }
 
-/** Input component props, extends the HTML input props. */
+/** Represents the Input component props, extends the HTML input props. */
 export interface IInputProps<TValue> extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     /** The field to bind the focus events to. */
     readonly field: IFormFieldViewModel<TValue>;
 }
 
-/** A helper component for binding the focus events to the field. */
+/** A helper component for binding the focus events to the field.
+ * @template TValue - The type of values the field contains.
+ */
 export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<TValue>): JSX.Element {
     const input = useRef<IHtmlElementProps>();
     const isHandlingFocusEvent = useRef(false);

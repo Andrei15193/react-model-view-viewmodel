@@ -1,5 +1,5 @@
 import '../react-test-setup';
-import type { ICollectionChange } from '../../src/events';
+import type { IEvent, ICollectionChange } from '../../src/events';
 import type { IReadOnlyObservableCollection } from '../../src/observable-collection';
 import React from 'react';
 import { render } from '@testing-library/react';
@@ -25,6 +25,18 @@ describe('watch-collection/watchCollection', (): void => {
         );
     }
 
+    class MockObseravableCollection<TItem> extends Array<TItem> implements IReadOnlyObservableCollection<TItem> {
+        constructor(...items: readonly TItem[]) {
+            super();
+            this.push(...items);
+            this.collectionChanged = new DispatchEvent<ICollectionChange<TItem>>();
+        }
+
+        public collectionChanged: DispatchEvent<ICollectionChange<TItem>>;
+
+        public propertiesChanged: IEvent<readonly string[]>
+    }
+
     it('changing the collection updates the component', (): void => {
         const collection = observableCollection<number>();
         const { getByText } = render(<TestComponent collection={collection} />);
@@ -36,17 +48,15 @@ describe('watch-collection/watchCollection', (): void => {
     });
 
     it('subsequent property changed notifications do not render the component if it has no change', (): void => {
-        const collection = observableCollection<number>(1);
-        const event = new DispatchEvent<ICollectionChange<number>>();
-        (collection as any).colllectionChanged = event;
+        const collection = new MockObseravableCollection<number>(1);
         let renderCount = 0;
         render(<TestComponent collection={collection} renderCallback={() => renderCount++} />);
         expect(renderCount).is.equal(1);
 
-        event.dispatch(undefined, undefined);
+        collection.collectionChanged.dispatch(undefined, undefined);
         expect(renderCount).is.equal(1);
 
-        event.dispatch(undefined, undefined);
+        collection.collectionChanged.dispatch(undefined, undefined);
         expect(renderCount).is.equal(1);
     });
 });

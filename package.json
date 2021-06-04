@@ -30,7 +30,7 @@
   "bugs": {
     "url": "https://github.com/Andrei15193/react-model-view-viewmodel/issues"
   },
-  "homepage": "https://github.com/Andrei15193/react-model-view-viewmodel#readme",
+  "homepage": "https://github.com/Andrei15193/react-model-view-viewmodel/wiki",
   "devDependencies": {
     "@testing-library/react": "^11.2.7",
     "@types/chai": "^4.2.18",

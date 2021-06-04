@@ -2,8 +2,9 @@ import type { INotifyPropertiesChanged } from './events';
 import type { IReadOnlyValidatable, IValidatable } from './validation';
 import { ViewModel } from './view-model';
 
-/** An interface that can be used by components that require a form field. This interface exposes a mixture of read-only and read-write properties.
- * The purpose is to provide the minimum required set of properties that must be read-write while all other properties can only be read. */
+/** Represents a form field interface exposing mixture of read-only and read-write properties in order to provide the minimum required set of properties that must be read-write while all other properties can only be read.
+ * @template TValue - The type of values the field contains.
+ */
 export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, IReadOnlyValidatable {
     /** The current value of the field. */
     value: TValue;
@@ -18,7 +19,9 @@ export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, I
     isFocused: boolean;
 }
 
-/** A base implementation of a form field, in most scenarios this should be enough to cover all necessary form requirements. */
+/** Represents a base form field, in most scenarios this should be enough to cover all necessary form requirements.
+ * @template TValue - The type of values the field contains.
+ */
 export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldViewModel<TValue>, IValidatable {
     private _value: TValue;
     private _isTouched: boolean;
@@ -37,9 +40,6 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
         this._error = undefined;
     }
 
-    /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
-    public readonly initialValue: TValue;
-
     /** The current value of the field. */
     public get value(): TValue {
         return this._value;
@@ -52,6 +52,9 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
             this.notifyPropertiesChanged('value');
         }
     }
+
+    /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
+    public readonly initialValue: TValue;
 
     /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
     public get isTouched(): boolean {

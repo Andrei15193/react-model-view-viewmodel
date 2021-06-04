@@ -5,8 +5,9 @@ type Destructor = () => void;
 type EffectResult = void | Destructor;
 
 /** Watches the view model for changes, requesting a render when it does. The view model and watched properties are part of the hook dependencies.
+ * @template TViewModel - The type of view model to watch.
  * @param viewModel - The view model to change, a view model is any object that implements INotifyPropertiesChanged.
- * @param watchedProperties - Optional, when provided, will request a render when only one of these properties has changed.
+ * @param watchedProperties - Optional, when provided, a render will be requested when only one of these properties has changed.
  */
 export function watchViewModel<TViewModel extends INotifyPropertiesChanged>(viewModel: TViewModel, watchedProperties?: readonly (keyof TViewModel)[]) {
     const [_, setState] = useState<{} | undefined>(undefined);
