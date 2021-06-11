@@ -30,7 +30,7 @@
             "command": "powershell",
             "args": [
                 "-Command",
-                "Get-ChildItem -File -Recurse -Path \"./lib\" -Filter \"*.js\" | ForEach-Object { (Get-Content $_.FullName) -replace ' = require\\(\"\\.(.*)\"\\);',' = require(\".$1.js\");' | Out-File $_.FullName }"
+                "Get-ChildItem -File -Recurse -Path \"./lib\" -Filter \"*.js\" | ForEach-Object { (Get-Content $_.FullName) -replace ' = require\\(\"\\.(.*)\"\\);',' = require(\".$1.js\");' | Out-File $_.FullName -Encoding UTF8 }"
             ],
             "problemMatcher": [],
             "label": "prepare: publish"
