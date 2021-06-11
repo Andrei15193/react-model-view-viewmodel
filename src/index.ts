@@ -25,3 +25,6 @@ export { useViewModelFactory } from './hooks/use-view-model-factory';
 export { useValidators } from './hooks/use-validators';
 export { useCollectionValidators } from './hooks/use-collection-validators';
 export { useCollectionItemValidators } from './hooks/use-collection-item-validators';
+
+export type { IInputProps } from './components/input';
+export { Input } from './components/input';

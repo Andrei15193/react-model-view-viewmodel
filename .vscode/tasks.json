@@ -23,6 +23,17 @@
             },
             "problemMatcher": [],
             "label": "npm: test"
+        },
+        {
+            "dependsOn": "npm: build",
+            "type": "process",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Get-ChildItem -File -Recurse -Path \"./lib\" -Filter \"*.js\" | ForEach-Object { (Get-Content $_.FullName) -replace ' = require\\(\"\\.(.*)\"\\);',' = require(\".$1.js\");' | Out-File $_.FullName }"
+            ],
+            "problemMatcher": [],
+            "label": "prepare: publish"
         }
     ]
 }
