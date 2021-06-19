@@ -51,10 +51,11 @@ export abstract class FormFieldCollectionViewModel extends ViewModel implements 
     }
 
     /** Registers a new FormFieldViewModel having the provided initial value and returns it.
+     * @param name - The name of the field.
      * @param initialValue - The initial value of the field.
      */
-    protected addField<TValue>(initialValue: TValue): FormFieldViewModel<TValue> {
-        return this.registerField(new FormFieldViewModel<TValue>(initialValue));
+    protected addField<TValue>(name: string, initialValue: TValue): FormFieldViewModel<TValue> {
+        return this.registerField(new FormFieldViewModel<TValue>(name, initialValue));
     }
 
     /** Registers the provided FormFieldViewModel and returns it.

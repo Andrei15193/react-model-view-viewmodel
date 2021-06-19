@@ -4,8 +4,8 @@ import { FormFieldCollectionViewModel } from '../src/form-field-collection-view-
 
 describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): void => {
     class MockFormFieldCollectionViewModel extends FormFieldCollectionViewModel {
-        public addField<TValue>(initialValue: TValue): FormFieldViewModel<TValue> {
-            return super.addField(initialValue);
+        public addField<TValue>(name: string, initialValue: TValue): FormFieldViewModel<TValue> {
+            return super.addField(name, initialValue);
         }
 
         public registerField<TValue>(field: FormFieldViewModel<TValue>): FormFieldViewModel<TValue> {
@@ -85,14 +85,14 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
             }
         });
 
-        formFieldCollection.addField('');
+        formFieldCollection.addField('', '');
 
         expect(invocationCount).is.equal(1);
     });
 
     it('registering and invalidating a field updates related flags', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
-        const field = formFieldCollection.addField('');
+        const field = formFieldCollection.addField('', '');
         let invocationCount = 0;
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
@@ -112,7 +112,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
     it('registering and validating a field updates related flags', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
-        const field = formFieldCollection.addField('');
+        const field = formFieldCollection.addField('', '');
         field.error = '';
         let invocationCount = 0;
         formFieldCollection.propertiesChanged.subscribe({
@@ -133,7 +133,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
     it('unregistering a field updates related flags', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
-        const field = formFieldCollection.addField('');
+        const field = formFieldCollection.addField('', '');
         let invocationCount = 0;
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
@@ -153,7 +153,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
     it('unregistering an invalid field updates related flags', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
-        const field = formFieldCollection.addField('');
+        const field = formFieldCollection.addField('', '');
         field.error = '';
         let invocationCount = 0;
         formFieldCollection.propertiesChanged.subscribe({
@@ -175,18 +175,18 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
     it('registering a field makes it available through the fields property', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
 
-        const field1 = formFieldCollection.addField('');
-        const field2 = formFieldCollection.addField('');
-        const field3 = formFieldCollection.addField('');
+        const field1 = formFieldCollection.addField('', '');
+        const field2 = formFieldCollection.addField('', '');
+        const field3 = formFieldCollection.addField('', '');
 
         expect(formFieldCollection.fields).is.deep.equal([field1, field2, field3]);
     });
 
     it('unregistering a field no longer makes it available through the fields property', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
-        const field1 = formFieldCollection.addField('');
-        const field2 = formFieldCollection.addField('');
-        const field3 = formFieldCollection.addField('');
+        const field1 = formFieldCollection.addField('', '');
+        const field2 = formFieldCollection.addField('', '');
+        const field3 = formFieldCollection.addField('', '');
 
         formFieldCollection.unregisterField(field2);
 
@@ -195,7 +195,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
     it('registering a field twice and unregistering it once makes it available through the fields property once', (): void => {
         const formFieldCollection = new MockFormFieldCollectionViewModel();
-        const field = formFieldCollection.addField('');
+        const field = formFieldCollection.addField('', '');
         formFieldCollection.registerField(field);
 
         formFieldCollection.unregisterField(field);

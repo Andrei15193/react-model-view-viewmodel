@@ -4,8 +4,9 @@ import { FormFieldViewModel } from '../src/form-field-view-model';
 describe('form-field-view-model/FormFieldViewModel', (): void => {
     it('creating form field initializes value with initial value and other fields with default values', (): void => {
         const initilValue = {};
-        const formField = new FormFieldViewModel(initilValue);
+        const formField = new FormFieldViewModel('name', initilValue);
 
+        expect(formField.name).is.equal('name');
         expect(formField.initialValue).is.equal(initilValue);
         expect(formField.value).is.equal(initilValue);
         expect(formField.isTouched).is.equal(false);
@@ -15,8 +16,68 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         expect(formField.error).is.equal(undefined);
     });
 
+    it('setting name notifies subscribers', (): void => {
+        const formField = new FormFieldViewModel('name', 'initial-value');
+        let invocationCount = 0;
+        formField.propertiesChanged.subscribe({
+            handle(subject, changedProperties) {
+                invocationCount++;
+                expect(subject).is.equal(formField);
+                expect(changedProperties).is.deep.equal(['name']);
+            }
+        });
+
+        formField.name = 'new-name';
+
+        expect(invocationCount).is.equal(1);
+    });
+
+    it('setting same name does not notify subscribers', (): void => {
+        const formField = new FormFieldViewModel('name', 'value');
+        let invocationCount = 0;
+        formField.propertiesChanged.subscribe({
+            handle() {
+                invocationCount++;
+            }
+        });
+
+        formField.name = 'name';
+
+        expect(invocationCount).is.equal(0);
+    });
+
+    it('setting initial value notifies subscribers', (): void => {
+        const formField = new FormFieldViewModel('name', 'initial-value');
+        let invocationCount = 0;
+        formField.propertiesChanged.subscribe({
+            handle(subject, changedProperties) {
+                invocationCount++;
+                expect(subject).is.equal(formField);
+                expect(changedProperties).is.deep.equal(['initialValue']);
+            }
+        });
+
+        formField.initialValue = 'new-value';
+
+        expect(invocationCount).is.equal(1);
+    });
+
+    it('setting same initial value does not notify subscribers', (): void => {
+        const formField = new FormFieldViewModel('name', 'value');
+        let invocationCount = 0;
+        formField.propertiesChanged.subscribe({
+            handle() {
+                invocationCount++;
+            }
+        });
+
+        formField.initialValue = 'value';
+
+        expect(invocationCount).is.equal(0);
+    });
+
     it('setting value notifies subscribers', (): void => {
-        const formField = new FormFieldViewModel('initial-value');
+        const formField = new FormFieldViewModel('name', 'initial-value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
@@ -32,7 +93,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting same value does not notify subscribers', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle() {
@@ -46,7 +107,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting isTouched notifies subscribers', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
@@ -62,7 +123,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting same isTouched does not notify subscribers', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle() {
@@ -76,7 +137,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting isFocused notifies subscribers', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
@@ -92,7 +153,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting same isFocused does not notify subscribers', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle() {
@@ -106,7 +167,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting error notifies subscribers and updates related flags', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
@@ -125,7 +186,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting same error does not notify subscribers', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         formField.error = '';
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({
@@ -140,7 +201,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
     });
 
     it('setting error back to undefined notifies subscribers and updates related flags', (): void => {
-        const formField = new FormFieldViewModel('value');
+        const formField = new FormFieldViewModel('name', 'value');
         formField.error = '';
         let invocationCount = 0;
         formField.propertiesChanged.subscribe({

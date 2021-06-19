@@ -6,11 +6,14 @@ import { ViewModel } from './view-model';
  * @template TValue - The type of values the field contains.
  */
 export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, IReadOnlyValidatable {
-    /** The current value of the field. */
-    value: TValue;
+    /** The name of the field. */
+    readonly name: string;
 
     /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
     readonly initialValue: TValue;
+
+    /** The current value of the field. */
+    value: TValue;
 
     /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
     isTouched: boolean;
@@ -23,21 +26,51 @@ export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, I
  * @template TValue - The type of values the field contains.
  */
 export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldViewModel<TValue>, IValidatable {
+    private _name: string;
     private _value: TValue;
+    private _initialValue: TValue;
     private _isTouched: boolean;
     private _isFocused: boolean;
     private _error: string | undefined;
 
     /** Initializes a new instance of the FormFieldViewModel class.
+     * @param name - The name of the field.
      * @param initalValue - The initial value of the field.
      */
-    public constructor(initalValue: TValue) {
+    public constructor(name: string, initalValue: TValue) {
         super();
-        this.initialValue = initalValue;
+        this._name = name;
         this._value = initalValue;
+        this._initialValue = initalValue;
         this._isTouched = false;
         this._isFocused = false;
         this._error = undefined;
+    }
+
+    /** The name of the field. */
+    public get name(): string {
+        return this._name;
+    }
+
+    /** The name of the field. */
+    public set name(value: string) {
+        if (this._name !== value) {
+            this._name = value;
+            this.notifyPropertiesChanged('name');
+        }
+    }
+
+    /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
+    public get initialValue(): TValue {
+        return this._initialValue;
+    }
+
+    /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
+    public set initialValue(value: TValue) {
+        if (this._initialValue !== value) {
+            this._initialValue = value;
+            this.notifyPropertiesChanged('initialValue');
+        }
     }
 
     /** The current value of the field. */
@@ -52,9 +85,6 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
             this.notifyPropertiesChanged('value');
         }
     }
-
-    /** The initial value of the field. Useful in scenarios where the input should be highlighted if the field has changed. */
-    public readonly initialValue: TValue;
 
     /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
     public get isTouched(): boolean {
