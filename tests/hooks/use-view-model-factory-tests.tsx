@@ -1,6 +1,6 @@
-import '../react-test-setup';
 import type { ViewModelFactory } from '../../src/hooks/use-view-model-factory';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { useViewModelFactory } from '../../src/hooks/use-view-model-factory';
@@ -52,7 +52,9 @@ describe('use-view-model-factory/useViewModelFactory', (): void => {
         const { getByText } = render(<TestComponent viewModelFactory={() => { const viewModel = new TestViewModel(); viewModels.push(viewModel); return viewModel; }} />);
         expect(getByText('Value1: 0')).not.to.be.undefined;
 
-        viewModels.forEach(viewModel => viewModel.increment1());
+        act(() => {
+            viewModels.forEach(viewModel => viewModel.increment1());
+        });
 
         expect(getByText('Value1: 1')).not.to.be.undefined;
         expect(viewModels.length).is.equal(1);
@@ -64,7 +66,9 @@ describe('use-view-model-factory/useViewModelFactory', (): void => {
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
-        viewModel.increment1();
+        act(() => {
+            viewModel.increment1();
+        });
 
         expect(getByText('Value1: 1')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
@@ -76,7 +80,9 @@ describe('use-view-model-factory/useViewModelFactory', (): void => {
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
-        viewModel.increment1();
+        act(() => {
+            viewModel.increment1();
+        });
 
         expect(getByText('Value1: 1')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
@@ -88,7 +94,9 @@ describe('use-view-model-factory/useViewModelFactory', (): void => {
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
-        viewModel.increment2();
+        act(() => {
+            viewModel.increment2();
+        });
 
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;

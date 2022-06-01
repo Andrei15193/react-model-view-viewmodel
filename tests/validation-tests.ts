@@ -2,7 +2,7 @@ import type { IValidatable } from '../src/validation';
 import { expect } from 'chai';
 import { ViewModel } from '../src/view-model';
 import { registerValidators, registerCollectionValidators, registerCollectionItemValidators } from '../src/validation';
-import { observableCollection } from '../src/observable-collection';
+import { ObservableCollection } from '../src/observable-collection';
 
 describe('validation/registerValidators', (): void => {
     class MockValidatableViewModel extends ViewModel implements IValidatable {
@@ -27,7 +27,7 @@ describe('validation/registerValidators', (): void => {
     it('registering validators applies only functions', (): void => {
         const validatable = new MockValidatableViewModel();
 
-        const unsubscribeCallback = registerValidators(validatable, [false, undefined, () => 'error']);
+        const unsubscribeCallback = registerValidators(validatable, [false as any, undefined, () => 'error']);
 
         expect(validatable.error).is.equal('error');
         unsubscribeCallback();
@@ -113,7 +113,7 @@ describe('validation/registerValidators', (): void => {
     it('registered validator gets called with validatable argument', (): void => {
         const validatable = new MockValidatableViewModel();
 
-        const unsubscribeCallback = registerValidators(validatable, [(actualValidatable) => expect(actualValidatable).is.equal(actualValidatable)]);
+        const unsubscribeCallback = registerValidators(validatable, [(actualValidatable) => { expect(actualValidatable).is.equal(actualValidatable); return undefined; }]);
         validatable.notifyPropertiesChanged('value');
         unsubscribeCallback();
     });
@@ -133,7 +133,7 @@ describe('validation/registerCollectionValidators', (): void => {
     it('registering validators applies them initially', (): void => {
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
 
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => 'error']);
 
@@ -145,9 +145,9 @@ describe('validation/registerCollectionValidators', (): void => {
     it('registering validators applies only functions', (): void => {
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
 
-        const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [false, undefined, () => 'error']);
+        const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [false as any, undefined, () => 'error']);
 
         expect(validatable1.error).is.equal('error');
         expect(validatable2.error).is.equal('error');
@@ -158,7 +158,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         expect(validatable1.error).is.undefined;
         expect(validatable2.error).is.undefined;
@@ -175,7 +175,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         expect(validatable1.error).is.undefined;
         expect(validatable2.error).is.undefined;
@@ -194,7 +194,7 @@ describe('validation/registerCollectionValidators', (): void => {
         const trigger1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
         const trigger2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1, trigger: trigger1 }, { validatable: validatable2, trigger: trigger2 });
+        const collection = new ObservableCollection({ validatable: validatable1, trigger: trigger1 }, { validatable: validatable2, trigger: trigger2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => ({ target: item.validatable, triggers: [item.trigger] }), [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -209,7 +209,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const trigger = new MockValidatableViewModel();
         const unsubscribeCallback = registerCollectionValidators(collection, item => ({ target: item.validatable, triggers: [trigger] }), [() => isValid ? undefined : 'error']);
 
@@ -225,7 +225,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => ({ target: item.validatable, watchedProperties: ['watched-property'] }), [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -240,7 +240,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const trigger = new MockValidatableViewModel();
         const unsubscribeCallback = registerCollectionValidators(collection, item => ({ target: item.validatable, triggers: [trigger], watchedProperties: ['watched-property'] }), [() => isValid ? undefined : 'error']);
 
@@ -259,7 +259,7 @@ describe('validation/registerCollectionValidators', (): void => {
         const item2 = { validatable: validatable2 };
         const validatables = [validatable1, validatable2];
         const items = [item1, item2];
-        const collection = observableCollection(item1, item2);
+        const collection = new ObservableCollection(item1, item2);
 
         let index = 0;
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [validate]);
@@ -269,7 +269,7 @@ describe('validation/registerCollectionValidators', (): void => {
         expect(index).is.equal(2);
         unsubscribeCallback();
 
-        function validate(actualValidatable, actualItem, actualCollection): string | undefined {
+        function validate(actualValidatable: any, actualItem: any, actualCollection: any): string | undefined {
             expect(actualValidatable).is.equal(validatables[index]);
             expect(actualItem).is.equal(items[index]);
             expect(actualItem).is.equal(collection[index]);
@@ -283,7 +283,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 });
+        const collection = new ObservableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -298,7 +298,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 });
+        const collection = new ObservableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.push({ validatable: validatable2 });
 
@@ -314,7 +314,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -329,7 +329,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.splice(1, 1);
 
@@ -345,7 +345,7 @@ describe('validation/registerCollectionValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 });
+        const collection = new ObservableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.push({ validatable: validatable2 });
 
@@ -372,7 +372,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
     it('registering validators applies them initially', (): void => {
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
 
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => 'error']);
 
@@ -384,9 +384,9 @@ describe('validation/registerCollectionItemValidators', (): void => {
     it('registering validators applies only functions', (): void => {
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
 
-        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [false, undefined, () => 'error']);
+        const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [false as any, undefined, () => 'error']);
 
         expect(validatable1.error).is.equal('error');
         expect(validatable2.error).is.equal('error');
@@ -397,7 +397,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         expect(validatable1.error).is.undefined;
         expect(validatable2.error).is.undefined;
@@ -414,7 +414,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         expect(validatable1.error).is.undefined;
         expect(validatable2.error).is.undefined;
@@ -433,7 +433,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         const trigger1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
         const trigger2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1, trigger: trigger1 }, { validatable: validatable2, trigger: trigger2 });
+        const collection = new ObservableCollection({ validatable: validatable1, trigger: trigger1 }, { validatable: validatable2, trigger: trigger2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, triggers: [item.trigger] }), [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -448,7 +448,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const trigger = new MockValidatableViewModel();
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, triggers: [trigger] }), [() => isValid ? undefined : 'error']);
 
@@ -464,7 +464,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, watchedProperties: ['watched-property'] }), [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -479,7 +479,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const trigger = new MockValidatableViewModel();
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => ({ target: item.validatable, triggers: [trigger], watchedProperties: ['watched-property'] }), [() => isValid ? undefined : 'error']);
 
@@ -498,7 +498,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         const item2 = { validatable: validatable2 };
         const validatables = [validatable1, validatable2];
         const items = [item1, item2];
-        const collection = observableCollection(item1, item2);
+        const collection = new ObservableCollection(item1, item2);
 
         let index = 0;
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [validate]);
@@ -508,7 +508,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         expect(index).is.equal(1);
         unsubscribeCallback();
 
-        function validate(actualValidatable, actualItem, actualCollection): string | undefined {
+        function validate(actualValidatable: any, actualItem: any, actualCollection: any): string | undefined {
             expect(actualValidatable).is.equal(validatables[index]);
             expect(actualItem).is.equal(items[index]);
             expect(actualItem).is.equal(collection[index]);
@@ -522,7 +522,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 });
+        const collection = new ObservableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -537,7 +537,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 });
+        const collection = new ObservableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.push({ validatable: validatable2 });
 
@@ -553,7 +553,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
 
         isValid = false;
@@ -568,7 +568,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 }, { validatable: validatable2 });
+        const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.splice(1, 1);
 
@@ -584,7 +584,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         let isValid = true;
         const validatable1 = new MockValidatableViewModel();
         const validatable2 = new MockValidatableViewModel();
-        const collection = observableCollection({ validatable: validatable1 });
+        const collection = new ObservableCollection({ validatable: validatable1 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
         collection.push({ validatable: validatable2 });
 

@@ -1,6 +1,6 @@
-import '../react-test-setup';
 import type { EventHandler } from '../../src/hooks/watch-event';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { DispatchEvent } from '../../src/events';
@@ -31,7 +31,9 @@ describe('watch-event/useViewModelType', (): void => {
         render(<TestComponent viewModel={viewModel} eventHandler={() => { invocationCount++; }} />);
         expect(invocationCount).is.equal(0);
 
-        viewModel.event.dispatch(undefined, undefined);
+        act(() => {
+            viewModel.event.dispatch(undefined, undefined);
+        });
 
         expect(invocationCount).is.equal(1);
     });
@@ -48,7 +50,9 @@ describe('watch-event/useViewModelType', (): void => {
         }} />);
         expect(invocationCount).is.equal(0);
 
-        viewModel.event.dispatch(subject, eventArgs);
+        act(() => {
+            viewModel.event.dispatch(subject, eventArgs);
+        });
 
         expect(invocationCount).is.equal(1);
     });

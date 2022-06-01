@@ -20,7 +20,7 @@ export interface IValidatable extends IReadOnlyValidatable {
 }
 
 /** Represents a validation config covering scenarios where one object may depend on other objects to determine their valid state.
- * @template TValidatableViewModel - The type of validatable objects that is being configured.
+ * @template TValidatableViewModel The type of validatable objects that is being configured.
  */
 export interface IValidationConfig<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged> {
     /** The object that is being validated. */
@@ -34,31 +34,31 @@ export interface IValidationConfig<TValidatableViewModel extends IValidatable & 
 }
 
 /** Represents a validator callback.
- * @template TValidatable - The type of validatable objects to validate.
- * @param validatable - The object being validated.
+ * @template TValidatable The type of validatable objects to validate.
+ * @param validatable The object being validated.
  */
 export type ValidatorCallback<TValidatable extends IValidatable> = (validatable: TValidatable) => string | undefined;
 
 /** Represents a collection bound validator callback.
- * @template TValidatable - The type of validatable objects to validate.
- * @template TItem - The type of items the collection contains.
- * @param validatable - The object being validated.
- * @param item - The item from which the validatable has been selected.
- * @param collection - The collection to which the item belongs.
+ * @template TValidatable The type of validatable objects to validate.
+ * @template TItem The type of items the collection contains.
+ * @param validatable The object being validated.
+ * @param item The item from which the validatable has been selected.
+ * @param collection The collection to which the item belongs.
  */
 export type CollectionItemValidatorCallback<TValidatable extends IValidatable, TItem> = (validatable: TValidatable, item: TItem, collection: readonly TItem[]) => string | undefined;
 
 /** Represents a validatable selector callback.
- * @template TItem - The type of items from which to select validatable objects.
- * @template TValidatableViewModel - The type of validatable objects that are selected from an item.
- * @param source - The item from which a validatable is selected.
+ * @template TItem The type of items from which to select validatable objects.
+ * @template TValidatableViewModel The type of validatable objects that are selected from an item.
+ * @param source The item from which a validatable is selected.
  */
 export type ValidatableSelectorCallback<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged> = (source: TItem) => TValidatableViewModel;
 
 /** Represents a validation config selector callback.
- * @template TItem - The type of items from which to select validatable objects.
- * @template TValidatableViewModel - The type of validatable objects that are selected from an item as part of the validation config.
- * @param source - The item from which a validation config is selected.
+ * @template TItem The type of items from which to select validatable objects.
+ * @template TValidatableViewModel The type of validatable objects that are selected from an item as part of the validation config.
+ * @param source The item from which a validation config is selected.
  */
 export type ValidationConfigSelectorCallback<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged> = (source: TItem) => IValidationConfig<TValidatableViewModel>;
 
@@ -70,9 +70,9 @@ export type UnsubscribeCallback = () => void;
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param validatable - The object that will be validated by the provided validators.
- * @param validators - The callback validators that handle validation.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param validatable The object that will be validated by the provided validators.
+ * @param validators The callback validators that handle validation.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validatable: TValidatableViewModel, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback;
@@ -82,9 +82,9 @@ export function registerValidators<TValidatableViewModel extends IValidatable & 
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param validationConfig - The config for setting up validation.
- * @param validators - The callback validators that handle validation.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param validationConfig The config for setting up validation.
+ * @param validators The callback validators that handle validation.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validationConfig: IValidationConfig<TValidatableViewModel>, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback;
@@ -94,9 +94,9 @@ export function registerValidators<TValidatableViewModel extends IValidatable & 
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param validatableOrConfig - The object that will be validated by the provided validators or the config for setting up validation.
- * @param validators - The callback validators that handle validation.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param validatableOrConfig The object that will be validated by the provided validators or the config for setting up validation.
+ * @param validators The callback validators that handle validation.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validatableOrConfig: TValidatableViewModel | IValidationConfig<TValidatableViewModel>, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback {
@@ -139,11 +139,11 @@ export function registerValidators<TValidatableViewModel extends IValidatable & 
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed on the entire collection. Each item is revalidated, this is useful when items must have a unique value.
- * @template TItem - The type of object the collection contains.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param collection - The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
- * @param selector - A callback that selects a validatable from each item. The returned value must be the same for each item in particular in order to properly unsubscribe the event handlers.
- * @param validators - The callback validators that handle validation for each item.
+ * @template TItem The type of object the collection contains.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param collection The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
+ * @param selector A callback that selects a validatable from each item. The returned value must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators The callback validators that handle validation for each item.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
@@ -153,11 +153,11 @@ export function registerCollectionValidators<TItem, TValidatableViewModel extend
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed on the entire collection. Each item is revalidated, this is useful when items must have a unique value.
- * @template TItem - The type of object the collection contains.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param collection - The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
- * @param selector - A callback that selects a validation config from each item. The returned target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
- * @param validators - The callback validators that handle validation for each item.
+ * @template TItem The type of object the collection contains.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param collection The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
+ * @param selector A callback that selects a validation config from each item. The returned target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators The callback validators that handle validation for each item.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
 */
 export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
@@ -167,11 +167,11 @@ export function registerCollectionValidators<TItem, TValidatableViewModel extend
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed on the entire collection. Each item is revalidated, this is useful when items must have a unique value.
- * @template TItem - The type of object the collection contains.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param collection - The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
- * @param selector - A callback that selects a validatable or validation config from each item. The returned validatable or target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
- * @param validators - The callback validators that handle validation for each item.
+ * @template TItem The type of object the collection contains.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param collection The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
+ * @param selector A callback that selects a validatable or validation config from each item. The returned validatable or target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators The callback validators that handle validation for each item.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback {
@@ -234,7 +234,7 @@ export function registerCollectionValidators<TItem, TValidatableViewModel extend
     }
 
     function validateItems(changedProperties?: readonly string[]): void {
-        collection.forEach((item, _, collection) => {
+        collection.forEach((item, _) => {
             const validatableOrConfig = selector(item);
             if (isValidationConfig(validatableOrConfig)) {
                 const { target, watchedProperties } = validatableOrConfig;
@@ -254,11 +254,11 @@ export function registerCollectionValidators<TItem, TValidatableViewModel extend
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed just on that item and not the entire collection. This is useful when items have individual validation rules (e.g.: required value).
- * @template TItem - The type of object the collection contains.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param collection - The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
- * @param selector - A callback that selects a validatable from each item. The returned value must be the same for each item in particular in order to properly unsubscribe the event handlers.
- * @param validators - The callback validators that handle validation for each item.
+ * @template TItem The type of object the collection contains.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param collection The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
+ * @param selector A callback that selects a validatable from each item. The returned value must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators The callback validators that handle validation for each item.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
@@ -268,11 +268,11 @@ export function registerCollectionItemValidators<TItem, TValidatableViewModel ex
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed just on that item and not the entire collection. This is useful when items have individual validation rules (e.g.: required value).
- * @template TItem - The type of object the collection contains.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param collection - The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
- * @param selector - A callback that selects a validation config from each item. The returned target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
- * @param validators - The callback validators that handle validation for each item.
+ * @template TItem The type of object the collection contains.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param collection The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
+ * @param selector A callback that selects a validation config from each item. The returned target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators The callback validators that handle validation for each item.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback;
@@ -282,11 +282,11 @@ export function registerCollectionItemValidators<TItem, TValidatableViewModel ex
  * The validators are applied one after the other until the first one returns an error message (a value different from undefined).
  * 
  * Whenever a property has changed (except for error, isValid and isInvalid) on the validatable, a new validation is performed just on that item and not the entire collection. This is useful when items have individual validation rules (e.g.: required value).
- * @template TItem - The type of object the collection contains.
- * @template TValidatableViewModel - The type of validatable objects that are registered for validation.
- * @param collection - The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
- * @param selector - A callback that selects a validatable or validation config from each item. The returned validatable or target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
- * @param validators - The callback validators that handle validation for each item.
+ * @template TItem The type of object the collection contains.
+ * @template TValidatableViewModel The type of validatable objects that are registered for validation.
+ * @param collection The collection to watch, validators are registered for each item. When the collection changes all subscriptions and unsubscriptions are done accordingly.
+ * @param selector A callback that selects a validatable or validation config from each item. The returned validatable or target and triggers must be the same for each item in particular in order to properly unsubscribe the event handlers.
+ * @param validators The callback validators that handle validation for each item.
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback {

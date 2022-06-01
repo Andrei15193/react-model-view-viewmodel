@@ -179,7 +179,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         const field2 = formFieldCollection.addField('', '');
         const field3 = formFieldCollection.addField('', '');
 
-        expect(formFieldCollection.fields).is.deep.equal([field1, field2, field3]);
+        expect(formFieldCollection.fields.toArray()).is.deep.equal([field1, field2, field3]);
     });
 
     it('unregistering a field no longer makes it available through the fields property', (): void => {
@@ -190,7 +190,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
         formFieldCollection.unregisterField(field2);
 
-        expect(formFieldCollection.fields).is.deep.equal([field1, field3]);
+        expect(formFieldCollection.fields.toArray()).is.deep.equal([field1, field3]);
     });
 
     it('registering a field twice and unregistering it once makes it available through the fields property once', (): void => {
@@ -200,6 +200,6 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
         formFieldCollection.unregisterField(field);
 
-        expect(formFieldCollection.fields).is.deep.equal([field]);
+        expect(formFieldCollection.fields.toArray()).is.deep.equal([field]);
     });
 });

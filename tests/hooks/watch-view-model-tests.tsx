@@ -1,5 +1,5 @@
-import '../react-test-setup';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { watchViewModel } from '../../src/hooks/watch-view-model';
@@ -59,7 +59,9 @@ describe('watch-view-model/watchViewModel', (): void => {
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
-        viewModel.increment1();
+        act(() => {
+            viewModel.increment1();
+        });
 
         expect(getByText('Value1: 1')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
@@ -71,7 +73,9 @@ describe('watch-view-model/watchViewModel', (): void => {
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
-        viewModel.increment1();
+        act(() => {
+            viewModel.increment1();
+        });
 
         expect(getByText('Value1: 1')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
@@ -83,7 +87,9 @@ describe('watch-view-model/watchViewModel', (): void => {
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
 
-        viewModel.increment2();
+        act(() => {
+            viewModel.increment2();
+        });
 
         expect(getByText('Value1: 0')).not.to.be.undefined;
         expect(getByText('Value2: 0')).not.to.be.undefined;
@@ -95,10 +101,14 @@ describe('watch-view-model/watchViewModel', (): void => {
         render(<TestComponent viewModel={viewModel} renderCallback={() => renderCount++} />);
         expect(renderCount).is.equal(1);
 
-        viewModel.notifyPropertiesChanged('value1');
+        act(() => {
+            viewModel.notifyPropertiesChanged('value1');
+        });
         expect(renderCount).is.equal(2);
 
-        viewModel.notifyPropertiesChanged('value1');
+        act(() => {
+            viewModel.notifyPropertiesChanged('value1');
+        });
         expect(renderCount).is.equal(2);
     });
 });

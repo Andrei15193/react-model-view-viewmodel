@@ -3,7 +3,7 @@ import type { IReadOnlyValidatable, IValidatable } from './validation';
 import { ViewModel } from './view-model';
 
 /** Represents a form field interface exposing mixture of read-only and read-write properties in order to provide the minimum required set of properties that must be read-write while all other properties can only be read.
- * @template TValue - The type of values the field contains.
+ * @template TValue The type of values the field contains.
  */
 export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, IReadOnlyValidatable {
     /** The name of the field. */
@@ -23,7 +23,7 @@ export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, I
 }
 
 /** Represents a base form field, in most scenarios this should be enough to cover all necessary form requirements.
- * @template TValue - The type of values the field contains.
+ * @template TValue The type of values the field contains.
  */
 export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldViewModel<TValue>, IValidatable {
     private _name: string;
@@ -34,8 +34,8 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
     private _error: string | undefined;
 
     /** Initializes a new instance of the FormFieldViewModel class.
-     * @param name - The name of the field.
-     * @param initalValue - The initial value of the field.
+     * @param name The name of the field.
+     * @param initalValue The initial value of the field.
      */
     public constructor(name: string, initalValue: TValue) {
         super();

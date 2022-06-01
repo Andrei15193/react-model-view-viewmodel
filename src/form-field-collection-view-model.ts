@@ -3,12 +3,12 @@ import type { IObservableCollection, IReadOnlyObservableCollection } from './obs
 import type { IValidatable } from './validation';
 import { ViewModel } from './view-model';
 import { FormFieldViewModel } from './form-field-view-model';
-import { observableCollection } from './observable-collection';
+import { ObservableCollection } from './observable-collection';
 
 /** Represents a collection of fields. Typically, this is a enough to represent a form, however for a complex user form multiple such collections can be used as sections that make up the entire form. */
 export abstract class FormFieldCollectionViewModel extends ViewModel implements IValidatable {
     private _error: string | undefined;
-    private readonly _fields: IObservableCollection<FormFieldViewModel<any>> = observableCollection<FormFieldViewModel<any>>();
+    private readonly _fields: IObservableCollection<FormFieldViewModel<any>> = new ObservableCollection<FormFieldViewModel<any>>();
     private readonly _fieldChangedEventHandler: IEventHandler<readonly string[]>;
 
     /** Initializes a new instance of the FormFieldCollectionViewModel class. */
@@ -51,15 +51,15 @@ export abstract class FormFieldCollectionViewModel extends ViewModel implements 
     }
 
     /** Registers a new FormFieldViewModel having the provided initial value and returns it.
-     * @param name - The name of the field.
-     * @param initialValue - The initial value of the field.
+     * @param name The name of the field.
+     * @param initialValue The initial value of the field.
      */
     protected addField<TValue>(name: string, initialValue: TValue): FormFieldViewModel<TValue> {
         return this.registerField(new FormFieldViewModel<TValue>(name, initialValue));
     }
 
     /** Registers the provided FormFieldViewModel and returns it.
-     * @param field - The field to register.
+     * @param field The field to register.
      */
     protected registerField<TValue>(field: FormFieldViewModel<TValue>): FormFieldViewModel<TValue> {
         field.propertiesChanged.subscribe(this._fieldChangedEventHandler);
@@ -70,7 +70,7 @@ export abstract class FormFieldCollectionViewModel extends ViewModel implements 
     }
 
     /** Unregisters the provided FormFieldViewModel.
-     * @param field - The previously registered field.
+     * @param field The previously registered field.
      */
     protected unregisterField<TValue>(field: FormFieldViewModel<TValue>): void {
         const indexToRemove = this._fields.indexOf(field);

@@ -6,8 +6,8 @@ type Destructor = () => void;
 type EffectResult = void | Destructor;
 
 /** Watches the collection for changes, requesting a render when it does. The collection is the only hook dependency.
- * @template TItem - The type of items the collection contains.
- * @param observableCollection - The collection to watch.
+ * @template TItem The type of items the collection contains.
+ * @param observableCollection The collection to watch.
  */
 export function watchCollection<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>): void {
     const [_, setState] = useState<readonly TItem[] | undefined>(undefined);

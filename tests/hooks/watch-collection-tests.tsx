@@ -1,12 +1,12 @@
-import '../react-test-setup';
-import type { IEvent, ICollectionChange } from '../../src/events';
+import type { ICollectionChange } from '../../src/events';
 import type { IReadOnlyObservableCollection } from '../../src/observable-collection';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
 import { watchCollection } from '../../src/hooks/watch-collection';
 import { DispatchEvent } from '../../src/events';
-import { observableCollection } from '../../src/observable-collection';
+import { ObservableCollection } from '../../src/observable-collection';
 
 describe('watch-collection/watchCollection', (): void => {
     interface ITestComponentProps {
@@ -25,7 +25,7 @@ describe('watch-collection/watchCollection', (): void => {
         );
     }
 
-    class MockObseravableCollection<TItem> extends Array<TItem> implements IReadOnlyObservableCollection<TItem> {
+    class MockObseravableCollection<TItem> extends ObservableCollection<TItem> {
         constructor(...items: readonly TItem[]) {
             super();
             this.push(...items);
@@ -33,16 +33,16 @@ describe('watch-collection/watchCollection', (): void => {
         }
 
         public collectionChanged: DispatchEvent<ICollectionChange<TItem>>;
-
-        public propertiesChanged: IEvent<readonly string[]>
     }
 
     it('changing the collection updates the component', (): void => {
-        const collection = observableCollection<number>();
+        const collection = new ObservableCollection<number>();
         const { getByText } = render(<TestComponent collection={collection} />);
         expect(getByText('Length: 0')).not.to.be.undefined;
 
-        collection.push(1);
+        act(() => {
+            collection.push(1);
+        });
 
         expect(getByText('Length: 1')).not.to.be.undefined;
     });
@@ -53,10 +53,14 @@ describe('watch-collection/watchCollection', (): void => {
         render(<TestComponent collection={collection} renderCallback={() => renderCount++} />);
         expect(renderCount).is.equal(1);
 
-        collection.collectionChanged.dispatch(undefined, undefined);
+        act(() => {
+            collection.collectionChanged.dispatch(undefined, undefined);
+        });
         expect(renderCount).is.equal(1);
 
-        collection.collectionChanged.dispatch(undefined, undefined);
+        act(() => {
+            collection.collectionChanged.dispatch(undefined, undefined);
+        });
         expect(renderCount).is.equal(1);
     });
 });

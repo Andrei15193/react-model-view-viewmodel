@@ -1,27 +1,40 @@
 import { expect } from 'chai';
-import { observableCollection } from '../src/observable-collection';
+import { ObservableCollection } from '../src/observable-collection';
 
 describe('observable-collection/observableCollection', (): void => {
     it('creating an observable collection with no initial items is empty', (): void => {
-        const collection = observableCollection();
+        const collection = new ObservableCollection();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
     });
 
     it('creating an observable collection with initial items initializes it with them', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
 
-        expect(collection).is.deep.equal([1, 2, 3]);
+        expect(collection.toArray()).is.deep.equal([1, 2, 3]);
     });
 
     it('pusing an item notifies observers', (): void => {
-        const collection = observableCollection<number>();
+        const collection = new ObservableCollection<number>();
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(1);
+                expect(index).is.equal(0);
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
             }
         });
         collection.collectionChanged.subscribe({
@@ -35,13 +48,26 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.push(1);
 
-        expect(collection).is.deep.equal([1]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(collection.toArray()).is.deep.equal([1]);
+        expect(raisedEvents).is.deep.equal(['itemAdded', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('pushing an item offsets the addedItems to added index', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(4);
+                expect(index).is.equal(3);
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
+            }
+        });
         collection.collectionChanged.subscribe({
             handle(subject, collectionChange) {
                 raisedEvents.push('collectionChanged');
@@ -60,16 +86,26 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.push(4);
 
-        expect(collection).is.deep.equal([1, 2, 3, 4]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged']);
+        expect(collection.toArray()).is.deep.equal([1, 2, 3, 4]);
+        expect(raisedEvents).is.deep.equal(['itemAdded', 'collectionChanged']);
     });
 
     it('popping an item from empty collection does not notify observers', (): void => {
-        const collection = observableCollection<number>();
+        const collection = new ObservableCollection<number>();
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle() {
                 raisedEvents.push('propertiesChanged');
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
             }
         });
         collection.collectionChanged.subscribe({
@@ -80,19 +116,32 @@ describe('observable-collection/observableCollection', (): void => {
 
         const poppedValue = collection.pop();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(poppedValue).is.undefined;
         expect(raisedEvents).is.deep.equal([]);
     });
 
     it('popping an item from non-empty collection notifies observers', (): void => {
-        const collection = observableCollection(1);
+        const collection = new ObservableCollection(1);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(1);
+                expect(index).is.equal(0);
             }
         });
         collection.collectionChanged.subscribe({
@@ -106,14 +155,34 @@ describe('observable-collection/observableCollection', (): void => {
 
         const poppedValue = collection.pop();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(poppedValue).is.equal(1);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('popping an item offsets the removedItems to removed index', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
+        collection.propertiesChanged.subscribe({
+            handle(subject, changedProperties) {
+                raisedEvents.push('propertiesChanged');
+                expect(subject).is.equal(collection);
+                expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(3);
+                expect(index).is.equal(2);
+            }
+        });
         collection.collectionChanged.subscribe({
             handle(subject, collectionChange) {
                 raisedEvents.push('collectionChanged');
@@ -132,18 +201,31 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.pop();
 
-        expect(collection).is.deep.equal([1, 2]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged']);
+        expect(collection.toArray()).is.deep.equal([1, 2]);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('unshifting an item notifies observers', (): void => {
-        const collection = observableCollection<number>();
+        const collection = new ObservableCollection<number>();
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(1);
+                expect(index).is.equal(0);
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
             }
         });
         collection.collectionChanged.subscribe({
@@ -157,13 +239,33 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.unshift(1);
 
-        expect(collection).is.deep.equal([1]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(collection.toArray()).is.deep.equal([1]);
+        expect(raisedEvents).is.deep.equal(['itemAdded', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('unshifting an item offsets the addedItems to added index', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
+        collection.propertiesChanged.subscribe({
+            handle(subject, changedProperties) {
+                raisedEvents.push('propertiesChanged');
+                expect(subject).is.equal(collection);
+                expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(4);
+                expect(index).is.equal(0);
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
+            }
+        });
         collection.collectionChanged.subscribe({
             handle(subject, collectionChange) {
                 raisedEvents.push('collectionChanged');
@@ -182,16 +284,26 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.unshift(4);
 
-        expect(collection).is.deep.equal([4, 1, 2, 3]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged']);
+        expect(collection.toArray()).is.deep.equal([4, 1, 2, 3]);
+        expect(raisedEvents).is.deep.equal(['itemAdded', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('shifting an item from empty collection does not notify observers', (): void => {
-        const collection = observableCollection<number>();
+        const collection = new ObservableCollection<number>();
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle() {
                 raisedEvents.push('propertiesChanged');
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
             }
         });
         collection.collectionChanged.subscribe({
@@ -202,19 +314,32 @@ describe('observable-collection/observableCollection', (): void => {
 
         const shiftedValue = collection.shift();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(shiftedValue).is.undefined;
         expect(raisedEvents).is.deep.equal([]);
     });
 
     it('shifting an item from non-empty collection notifies observers', (): void => {
-        const collection = observableCollection(1);
+        const collection = new ObservableCollection(1);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(1);
+                expect(index).is.equal(0);
             }
         });
         collection.collectionChanged.subscribe({
@@ -228,14 +353,34 @@ describe('observable-collection/observableCollection', (): void => {
 
         const shiftedValue = collection.shift();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(shiftedValue).is.equal(1);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('shifting an item offsets the removedItems to removed index', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
+        collection.propertiesChanged.subscribe({
+            handle(subject, changedProperties) {
+                raisedEvents.push('propertiesChanged');
+                expect(subject).is.equal(collection);
+                expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(1);
+                expect(index).is.equal(0);
+            }
+        });
         collection.collectionChanged.subscribe({
             handle(subject, collectionChange) {
                 raisedEvents.push('collectionChanged');
@@ -254,12 +399,12 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.shift();
 
-        expect(collection).is.deep.equal([2, 3]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged']);
+        expect(collection.toArray()).is.deep.equal([2, 3]);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('getting an item works the same way as an indexer', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
 
         for (let index = 0; index < 3; index++)
             expect(collection.get(index)).is.equal(collection[index]);
@@ -267,7 +412,7 @@ describe('observable-collection/observableCollection', (): void => {
 
     it('getting an item at a negative index throws error', (): void => {
         let error: Error;
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
 
         try {
             collection.get(-1);
@@ -280,7 +425,7 @@ describe('observable-collection/observableCollection', (): void => {
 
     it('getting an item beyond the length of the collection throws error', (): void => {
         let error: Error;
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
 
         try {
             collection.get(collection.length);
@@ -292,7 +437,7 @@ describe('observable-collection/observableCollection', (): void => {
     });
 
     it('setting an item works the same was as an indexer', (): void => {
-        const collection = observableCollection(10, 20, 30);
+        const collection = new ObservableCollection(10, 20, 30);
 
         for (let index = 0; index < 3; index++) {
             collection.set(index, index);
@@ -303,7 +448,7 @@ describe('observable-collection/observableCollection', (): void => {
 
     it('setting an item at a negative index throws error', (): void => {
         let error: Error;
-        const collection = observableCollection();
+        const collection = new ObservableCollection();
 
         try {
             collection.set(-1, 0);
@@ -316,7 +461,7 @@ describe('observable-collection/observableCollection', (): void => {
 
     it('setting an item beyond the length of the collection throws error', (): void => {
         let error: Error;
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
 
         try {
             collection.set(3, 0);
@@ -328,11 +473,27 @@ describe('observable-collection/observableCollection', (): void => {
     });
 
     it('setting an item notifies observers', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle() {
                 raisedEvents.push('propertiesChanged');
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(4);
+                expect(index).is.equal(1);
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(item).is.equal(2);
+                expect(index).is.equal(1);
             }
         });
         collection.collectionChanged.subscribe({
@@ -354,16 +515,26 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.set(1, 4);
 
-        expect(collection).is.deep.equal([1, 4, 3]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged']);
+        expect(collection.toArray()).is.deep.equal([1, 4, 3]);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'itemAdded', 'collectionChanged']);
     });
 
     it('splicing an empty observable collection does not notify observers', (): void => {
-        const collection = observableCollection();
+        const collection = new ObservableCollection();
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle() {
                 raisedEvents.push('propertiesChanged');
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
             }
         });
         collection.collectionChanged.subscribe({
@@ -374,19 +545,35 @@ describe('observable-collection/observableCollection', (): void => {
 
         const removedItems = collection.splice(0);
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(removedItems).is.deep.equal([]);
         expect(raisedEvents).is.deep.equal([]);
     });
 
     it('splicing a non-empty collection notifies observers', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        let eventHandlerInvokationCount = 0;
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(0);
+                expect(item).is.equal(eventHandlerInvokationCount + 1);
+                expect(index).is.equal(eventHandlerInvokationCount);
+                eventHandlerInvokationCount++;
             }
         });
         collection.collectionChanged.subscribe({
@@ -400,19 +587,35 @@ describe('observable-collection/observableCollection', (): void => {
 
         const removedItems = collection.splice(0, 10);
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(removedItems).is.deep.equal([1, 2, 3]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'itemRemoved', 'itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('splicing a non-empty collection offsets the removedItems to removed index', (): void => {
-        const collection = observableCollection(1, 2, 3, 4);
+        const collection = new ObservableCollection(1, 2, 3, 4);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        let eventHandlerInvokationCount = 1;
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(2);
+                expect(item).is.equal(eventHandlerInvokationCount + 1);
+                expect(index).is.equal(eventHandlerInvokationCount);
+                eventHandlerInvokationCount++;
             }
         });
         collection.collectionChanged.subscribe({
@@ -439,17 +642,27 @@ describe('observable-collection/observableCollection', (): void => {
 
         const removedItems = collection.splice(1, 2);
 
-        expect(collection).is.deep.equal([1, 4]);
+        expect(collection.toArray()).is.deep.equal([1, 4]);
         expect(removedItems).is.deep.equal([2, 3]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('clearing an empty observable collection does not notify observers', (): void => {
-        const collection = observableCollection();
+        const collection = new ObservableCollection();
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle() {
                 raisedEvents.push('propertiesChanged');
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        collection.itemRemoved.subscribe({
+            handle() {
+                raisedEvents.push('itemRemoved');
             }
         });
         collection.collectionChanged.subscribe({
@@ -460,19 +673,35 @@ describe('observable-collection/observableCollection', (): void => {
 
         const removedItems = collection.clear();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(removedItems).is.deep.equal([]);
         expect(raisedEvents).is.deep.equal([]);
     });
 
     it('clearing a non-empty observable collection notifies observers', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        collection.itemAdded.subscribe({
+            handle() {
+                raisedEvents.push('itemAdded');
+            }
+        });
+        let eventHandlerInvokationCount = 0;
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(0);
+                expect(item).is.equal(eventHandlerInvokationCount + 1);
+                expect(index).is.equal(eventHandlerInvokationCount);
+                eventHandlerInvokationCount++;
             }
         });
         collection.collectionChanged.subscribe({
@@ -486,19 +715,41 @@ describe('observable-collection/observableCollection', (): void => {
 
         const removedItems = collection.clear();
 
-        expect(collection).is.deep.equal([]);
+        expect(collection.toArray()).is.deep.equal([]);
         expect(removedItems).is.deep.equal([1, 2, 3]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'itemRemoved', 'itemRemoved', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('resetting an observable collection notifies observers', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 raisedEvents.push('propertiesChanged');
                 expect(subject).is.equal(collection);
                 expect(changedProperties).is.deep.equal(['length']);
+            }
+        });
+        let itemAddedEventHandlerInvokationCount = 0;
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(4);
+                expect(item).is.equal(itemAddedEventHandlerInvokationCount + 4);
+                expect(index).is.equal(itemAddedEventHandlerInvokationCount);
+                itemAddedEventHandlerInvokationCount++;
+            }
+        });
+        let itemRemovedEventHandlerInvokationCount = 0;
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(4);
+                expect(item).is.equal(itemRemovedEventHandlerInvokationCount + 1);
+                expect(index).is.equal(itemRemovedEventHandlerInvokationCount);
+                itemRemovedEventHandlerInvokationCount++;
             }
         });
         collection.collectionChanged.subscribe({
@@ -512,28 +763,82 @@ describe('observable-collection/observableCollection', (): void => {
 
         collection.reset(4, 5, 6, 7);
 
-        expect(collection).is.deep.equal([4, 5, 6, 7]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged', 'propertiesChanged']);
+        expect(collection.toArray()).is.deep.equal([4, 5, 6, 7]);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'itemRemoved', 'itemRemoved', 'itemAdded', 'itemAdded', 'itemAdded', 'itemAdded', 'collectionChanged', 'propertiesChanged']);
     });
 
     it('resetting an observable collection with same number of items does not notify length changed', (): void => {
-        const collection = observableCollection(1, 2, 3);
+        const collection = new ObservableCollection(1, 2, 3);
         const raisedEvents: string[] = [];
         collection.propertiesChanged.subscribe({
             handle(_, changedProperties) {
                 if (changedProperties.includes('length'))
-                    raisedEvents.push('length-changed');
+                    raisedEvents.push('propertiesChanged');
+            }
+        });
+        let itemAddedEventHandlerInvokationCount = 0;
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(3);
+                expect(item).is.equal(itemAddedEventHandlerInvokationCount + 4);
+                expect(index).is.equal(itemAddedEventHandlerInvokationCount);
+                itemAddedEventHandlerInvokationCount++;
+            }
+        });
+        let itemRemovedEventHandlerInvokationCount = 0;
+        collection.itemRemoved.subscribe({
+            handle(subject, { item, index }) {
+                raisedEvents.push('itemRemoved');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(3);
+                expect(item).is.equal(itemRemovedEventHandlerInvokationCount + 1);
+                expect(index).is.equal(itemRemovedEventHandlerInvokationCount);
+                itemRemovedEventHandlerInvokationCount++;
             }
         });
         collection.collectionChanged.subscribe({
-            handle() {
+            handle(subject, collectionChange) {
                 raisedEvents.push('collectionChanged');
+                expect(subject).is.equal(collection);
+                expect(collectionChange.addedItems).is.deep.equal([4, 5, 6]);
+                expect(collectionChange.removedItems).is.deep.equal([1, 2, 3]);
             }
         });
 
         collection.reset(4, 5, 6);
 
-        expect(collection).is.deep.equal([4, 5, 6]);
-        expect(raisedEvents).is.deep.equal(['collectionChanged']);
+        expect(collection.toArray()).is.deep.equal([4, 5, 6]);
+        expect(raisedEvents).is.deep.equal(['itemRemoved', 'itemRemoved', 'itemRemoved', 'itemAdded', 'itemAdded', 'itemAdded', 'collectionChanged']);
+    });
+
+    it('removing an item that was previously added has the removal callback called', (): void => {
+        const collection = new ObservableCollection(1, 2, 3, 4, 5);
+        const raisedEvents: string[] = [];
+        collection.itemAdded.subscribe({
+            handle(subject, { item, index, addItemRemovalCallback }) {
+                raisedEvents.push('itemAdded');
+                expect(subject).is.equal(collection);
+                expect(collection.length).is.equal(6);
+                expect(item).is.equal(7);
+                expect(index).is.equal(2);
+                addItemRemovalCallback((item, index) => {
+                    raisedEvents.push('itemAdded.removalCallback');
+                    expect(item).is.equal(7);
+                    expect(index).is.equal(0);
+                    expect(collection.length).is.equal(3);
+                });
+            }
+        });
+
+        collection.splice(2, 0, 7);
+        collection.splice(0, 2);
+        expect(collection.toArray()).is.deep.equal([7, 3, 4, 5]);
+        expect(raisedEvents).is.deep.equal(['itemAdded']);
+
+        collection.shift();
+        expect(collection.toArray()).is.deep.equal([3, 4, 5]);
+        expect(raisedEvents).is.deep.equal(['itemAdded', 'itemAdded.removalCallback']);
     });
 });

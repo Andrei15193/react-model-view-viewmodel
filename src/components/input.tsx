@@ -16,7 +16,7 @@ export interface IInputProps<TValue> extends DetailedHTMLProps<InputHTMLAttribut
 }
 
 /** A helper component for binding the focus events to the field.
- * @template TValue - The type of values the field contains.
+ * @template TValue The type of values the field contains.
  */
 export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<TValue>): JSX.Element {
     const input = useRef<IHtmlElementProps>();
