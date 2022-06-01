@@ -57,7 +57,7 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      */
     set(index: number, item: TItem): void;
 
-    /** Removes elements from the collection and returns the deleted elements.
+    /** Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
@@ -323,7 +323,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Checkes whether the provided item is contained by the collection.
+     * Checks whether the provided item is contained by the collection.
      * @param searchElement The item to search for.
      * @param fromIndex The index from which to start searching.
      * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
@@ -345,14 +345,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Returns a new JavaScript {@link Array} containing the flattened sub-arrays by recursivelly concatenating them.
+     * Returns a new JavaScript {@link Array} containing the flattened sub-arrays by recursively concatenating them.
      * @param depth The number of levels to flatten.
      * @returns Returns a flattened {@link Array}.
      * @see [Array.flat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)
      */
     public flat<A, D extends number = 1>(this: A, depth?: D): FlatArray<A, D>[];
     /**
-     * Returns a new JavaScript {@link Array} containing the flattened sub-arrays by recursivelly concatenating them.
+     * Returns a new JavaScript {@link Array} containing the flattened sub-arrays by recursively concatenating them.
      * @param depth The number of levels to flatten.
      * @returns Returns a flattened {@link Array}.
      * @see [Array.flat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)
@@ -440,7 +440,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         this._splice(index, 1, [item]);
     }
 
-    /** Removes elements from the collection and returns the deleted elements.
+    /** Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
@@ -595,7 +595,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
         super.set(index, item);
     }
 
-    /** Removes elements from the collection and returns the deleted elements.
+    /** Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
