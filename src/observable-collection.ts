@@ -121,9 +121,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     /** An event that is raised when the collection changed. */
     public readonly collectionChanged: IEvent<ICollectionChange<TItem>>;
 
-    /** Gets the number of items in the collection.
-     * @returns The number of items the collection contains.
-    */
+    /** Gets the number of items in the collection. */
     public get length(): number {
         return this._items.length;
     }
@@ -499,7 +497,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns Returns a flattened {@link Array}.
      * @see [Array.flat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)
      */
-    public flat<TDepth extends number = 1>(depth: number = 1): FlatArray<readonly TItem[], TDepth>[] {
+    public flat<TDepth extends number = 1>(depth?: TDepth): FlatArray<readonly TItem[], TDepth>[] {
         return this._items.flat.call(this._items, depth);
     }
 

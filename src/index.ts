@@ -4,7 +4,7 @@ export { DispatchEvent } from './events';
 export { ViewModel } from './view-model';
 
 export type { IReadOnlyObservableCollection, IObservableCollection } from './observable-collection';
-export { ReadOnlyObservableCollection, ObservableCollection, observableCollection } from './observable-collection';
+export { ReadOnlyObservableCollection, ObservableCollection } from './observable-collection';
 
 export type { IReadOnlyValidatable, IValidatable, IValidationConfig, ValidatorCallback, CollectionItemValidatorCallback, ValidatableSelectorCallback, ValidationConfigSelectorCallback, UnsubscribeCallback } from './validation';
 export { registerValidators, registerCollectionValidators, registerCollectionItemValidators } from './validation';
