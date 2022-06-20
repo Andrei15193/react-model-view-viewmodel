@@ -327,7 +327,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public reduce<TResult>(callbackfn: (previousValue: TResult, currentItem: TItem, currentIndex: number, collection: IReadOnlyObservableCollection<TItem>) => TResult, initialValue: TResult): TResult;
     public reduce(callbackfn: any, initialValue?: any): any {
         const collection = this;
-        return this._items.reduce(function (previousValue, currentItem, currentIndex) { return callbackfn.call(previousValue, currentItem, currentIndex, collection); }, initialValue);
+        return this._items.reduce(function (this: any, previousValue, currentItem, currentIndex) { return callbackfn.call(this, previousValue, currentItem, currentIndex, collection); }, initialValue);
     }
 
     /**
@@ -348,7 +348,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public reduceRight<TResult>(callbackfn: (previousValue: TResult, currentItem: TItem, currentIndex: number, collection: IReadOnlyObservableCollection<TItem>) => TResult, initialValue: TResult): TResult;
     public reduceRight(callbackfn: any, initialValue?: any): any {
         const collection = this;
-        return this._items.reduceRight(function (previousValue, currentItem, currentIndex) { return callbackfn.call(collection, previousValue, currentItem, currentIndex, collection); }, initialValue);
+        return this._items.reduceRight(function (this: any, previousValue, currentItem, currentIndex) { return callbackfn.call(this, collection, previousValue, currentItem, currentIndex, collection); }, initialValue);
     }
 
     /**
@@ -480,7 +480,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public flatMap<TResult>(callback: (item: TItem, index: number, collection: any) => TResult | readonly TResult[], thisArg?: any): TResult[];
     public flatMap<TResult>(callback: (item: TItem, index: number, collection: any) => TResult | readonly TResult[], thisArg?: any): TResult[] {
         const collection = this;
-        return this._items.flatMap(function (item, index) { return callback.call(this, item, index, collection); }, thisArg);
+        return this._items.flatMap(function (this: any, item, index) { return callback.call(this, item, index, collection); }, thisArg);
     }
 
     /**
