@@ -411,7 +411,7 @@ describe('observable-collection/observableCollection', (): void => {
     });
 
     it('getting an item at a negative index throws error', (): void => {
-        let error: Error;
+        let error: Error | undefined = undefined;
         const collection = new ObservableCollection(1, 2, 3);
 
         try {
@@ -424,7 +424,7 @@ describe('observable-collection/observableCollection', (): void => {
     });
 
     it('getting an item beyond the length of the collection throws error', (): void => {
-        let error: Error;
+        let error: Error | undefined = undefined;
         const collection = new ObservableCollection(1, 2, 3);
 
         try {
@@ -447,7 +447,7 @@ describe('observable-collection/observableCollection', (): void => {
     });
 
     it('setting an item at a negative index throws error', (): void => {
-        let error: Error;
+        let error: Error | undefined = undefined;
         const collection = new ObservableCollection();
 
         try {
@@ -460,7 +460,7 @@ describe('observable-collection/observableCollection', (): void => {
     });
 
     it('setting an item beyond the length of the collection throws error', (): void => {
-        let error: Error;
+        let error: Error | undefined = undefined;
         const collection = new ObservableCollection(1, 2, 3);
 
         try {

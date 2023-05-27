@@ -126,6 +126,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         return this._items.length;
     }
 
+    /** Gets the item at the provided index.
+     * @param index The index from which to retrieve an item.
+     * @returns The item at the provided index.
+     * @throws {@link RangeError} when the index is outside the bounds of the collection.
+     */
+    public at(index: number): TItem {
+        return this._items[index];
+    }
+
     /**
      * Merges the current collection with the given {@link Array} and returns a new JavaScript {@link Array}.
      * @param items The items to concatenate.
@@ -393,6 +402,47 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
+     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * @template TResult The type of item to return.
+     * @param predicate The callback performing the item check.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    public findLast(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean): TItem | undefined;
+    /**
+     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * @template TResult The type of item to return.
+    * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the item check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    public findLast<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean, thisArg: TContext): TItem | undefined;
+    /**
+     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * @template TResult The type of item to return.
+     * @param predicate The callback performing the item check.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    public findLast<TResult extends TItem>(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => item is TResult): TResult | undefined;
+    /**
+     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * @template TResult The type of item to return.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the item check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    public findLast<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => item is TResult, thisArg: TContext): TResult | undefined;
+    public findLast(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean, thisArg?: any): TItem | undefined {
+        const collection = this;
+        return this._items.findLast(function (this: any, item, index): item is any { return predicate.call(this, item, index, collection); }, thisArg);
+    }
+
+    /**
      * Returns the index of the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
      * @param predicate The callback performing the item check.
      * @returns Returns the index of the first item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
@@ -411,6 +461,27 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public findIndex(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean, thisArg?: any): number {
         const collection = this;
         return this._items.findIndex(function (this: any, item, index) { return predicate.call(this, item, index, collection); }, thisArg);
+    }
+
+    /**
+     * Returns the index of the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
+     * @param predicate The callback performing the item check.
+     * @returns Returns the index of the last item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
+     * @see [Array.findLastIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
+     */
+    public findLastIndex(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean): number;
+    /**
+     * Returns the index of the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the item check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the index of the last item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
+     * @see [Array.findLastIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
+     */
+    public findLastIndex<TContext>(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean, thisArg: TContext): number;
+    public findLastIndex(predicate: (item: TItem, index: number, collection: IReadOnlyObservableCollection<TItem>) => boolean, thisArg?: any): number {
+        const collection = this;
+        return this._items.findLastIndex(function (this: any, item, index) { return predicate.call(this, item, index, collection); }, thisArg);
     }
 
     /**
@@ -509,6 +580,30 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public [Symbol.iterator](): IterableIterator<TItem> {
         return this._items[Symbol.iterator]();
     }
+
+    /**
+     * Returns an object specifying how properties are handled inside a `with` statement.
+     * @returns Returns an object specifying how properties are handled inside a `with` statement.
+     * @see [Array@unscopables](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/@@unscopables)
+     */
+    public readonly [Symbol.unscopables]: any = {
+        _items: true,
+        _itemCleanupCallbacks: true,
+        _itemAdded: true,
+        _itemRemoved: true,
+        _collectionChanged: true,
+        at: true,
+        entries: true,
+        find: true,
+        findIndex: true,
+        findLast: true,
+        findLastIndex: true,
+        flat: true,
+        flatMap: true,
+        includes: true,
+        keys: true,
+        values: true
+    };
 
     /** Converts the observable collection to a native JavaScript {@link Array}.
      * @returns An {@link Array} containing all the items in the collection.
@@ -764,4 +859,33 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
     public reset(...items: readonly TItem[]): number {
         return super.reset(...items);
     }
+
+    /**
+     * Returns an object specifying how properties are handled inside a `with` statement.
+     * @returns Returns an object specifying how properties are handled inside a `with` statement.
+     * @see [Array@unscopables](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/@@unscopables)
+     */
+    public readonly [Symbol.unscopables]: any = {
+        _items: true,
+        _itemCleanupCallbacks: true,
+        _itemAdded: true,
+        _itemRemoved: true,
+        _collectionChanged: true,
+        at: true,
+        copyWithin: true,
+        entries: true,
+        fill: true,
+        find: true,
+        findIndex: true,
+        findLast: true,
+        findLastIndex: true,
+        flat: true,
+        flatMap: true,
+        includes: true,
+        keys: true,
+        toReversed: true,
+        toSorted: true,
+        toSpliced: true,
+        values: true
+    };
 }
