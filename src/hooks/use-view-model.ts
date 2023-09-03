@@ -3,7 +3,7 @@ import { type DependencyList, useMemo, useState, useEffect } from 'react';
 
 /** Represents a view model type.
  * @template TViewModel The type of view model.
- * @template TConstructorArgs The constructor parameter types.
+ * @template TConstructorArgs The constructor parameter types, defaults to empty tuple.
  */
 export type ViewModelType<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[] = []> = {
     new(...constructorArgs: TConstructorArgs): TViewModel;
@@ -27,10 +27,11 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewMo
  * @template TViewModel The type of view model to initialize.
  * @template TConstructorArgs The constructor parameter types.
  * @param viewModelType The type object (class declaration or expression) of the view model.
- * @param constructorArg The constructor arguments used for initialization, whenever these change a new instance is created.
+ * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
  * @param watchedProperties Optional, when provided, a render will be requested when only one of these properties has changed.
+ * @returns Returns the initialized view model instance.
  */
-export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelType: ViewModelType<TViewModel, TConstructorArgs>, constructorArg?: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>>, watchedProperties?: readonly (keyof TViewModel)[]): TViewModel;
+export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelType: ViewModelType<TViewModel, TConstructorArgs>, constructorArgs?: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>>, watchedProperties?: readonly (keyof TViewModel)[]): TViewModel;
 
 /**
  * Creates a new instance of a view model using the provided callback and watches for property changes.
@@ -38,6 +39,7 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConst
  * @param viewModelFactory A callback that provides the view model instance.
  * @param deps Dependencies of the callback, whenever these change the callback is called again, similar to {@link useMemo}.
  * @param watchedProperties Optional, when provided, a render will be requested when only one of these properties has changed.
+ * @returns Returns the initialized view model instance.
  */
 export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewModelFactory: ViewModelFactory<TViewModel>, deps: DependencyList, watchedProperties?: readonly (keyof TViewModel)[]): TViewModel;
 

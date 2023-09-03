@@ -6,7 +6,7 @@ import { type IFormFieldViewModel, FormFieldViewModel } from './form-field-view-
 import { ObservableCollection } from './observable-collection';
 
 /** A set of form fields that can be used in generic parameter constraints.
- * @template TFormFieldViewModel the type of fileds the form contains.
+ * @template TFormFieldViewModel the type of fields the form contains.
  */
 export type FormFieldSet<TFormFieldViewModel extends IFormFieldViewModel<any>> = { readonly [key: string]: TFormFieldViewModel; };
 
@@ -16,7 +16,7 @@ export type FormFieldSet<TFormFieldViewModel extends IFormFieldViewModel<any>> =
 export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends IFormFieldViewModel<any> = FormFieldViewModel<any>> extends ViewModel implements IValidatable {
     /**
      * Initializes a new form with the given fields.
-     * @template TFormFieldViewModel The field type the form contains, defaults to {@link FormFieldViewModel}.
+     * @template TFormFieldViewModel The type of field the form contains, defaults to {@link FormFieldViewModel}.
      * @template TFormFields The set of fields present on the form.
      * @param fields The form fields.
      * @returns Returns a new instance of the {@link FormFieldCollectionViewModel<TFormFieldViewModel>} class having the provided fields.
@@ -29,7 +29,7 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
     private readonly _fields: IObservableCollection<TFormFieldViewModel> = new ObservableCollection<TFormFieldViewModel>();
     private readonly _fieldChangedEventHandler: IEventHandler<readonly string[]>;
 
-    /** Initializes a new instance of the FormFieldCollectionViewModel class. */
+    /** Initializes a new instance of the {@link FormFieldCollectionViewModel} class. */
     public constructor() {
         super();
         this._fieldChangedEventHandler = {
@@ -77,8 +77,9 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
         return this.registerField(new FormFieldViewModel<TValue>(name, initialValue) as any as TFormFieldViewModel);
     }
 
-    /** Registers the provided FormFieldViewModel and returns it.
+    /** Registers the provided field and returns it.
      * @param field The field to register.
+     * @returns Returns the provided field that has been registered.
      */
     protected registerField(field: TFormFieldViewModel): TFormFieldViewModel {
         field.propertiesChanged.subscribe(this._fieldChangedEventHandler);
@@ -88,7 +89,7 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
         return field;
     }
 
-    /** Unregisters the provided FormFieldViewModel.
+    /** Unregisters the provided field.
      * @param field The previously registered field.
      */
     protected unregisterField(field: TFormFieldViewModel): void {
@@ -107,6 +108,9 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
  * @template TFormFields the set of fields to register on the form.
  */
 export class DynamicFormFieldCollectionViewModel<TFormFieldViewModel extends IFormFieldViewModel<any>, TFormFields extends FormFieldSet<TFormFieldViewModel>> extends FormFieldCollectionViewModel<TFormFieldViewModel> {
+    /** Initializes a new instance of the {@link DynamicFormFieldCollectionViewModel} class.
+     * @param fields The form fields.
+     */
     public constructor(fields: TFormFields) {
         super();
 

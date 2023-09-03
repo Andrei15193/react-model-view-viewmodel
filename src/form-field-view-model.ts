@@ -51,19 +51,18 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
     private _isFocused: boolean;
     private _error: string | undefined;
 
-
-    /** Initializes a new instance of the FormFieldViewModel class.
+    /** Initializes a new instance of the {@link FormFieldViewModel} class.
+     * @param config The form field configuration.
+     */
+   public constructor(config: IFormFieldViewModelConfig<TValue>);
+    /** Initializes a new instance of the {@link FormFieldViewModel} class.
      * @deprecated In future versions this constructor will be removed, switch to config approach.
      * @param name The name of the field.
      * @param initalValue The initial value of the field.
      */
     public constructor(name: string, initalValue: TValue);
-    /** Initializes a new instance of the FormFieldViewModel class.
-     * @param config The form field configuration.
-     */
-    public constructor(config: IFormFieldViewModelConfig<TValue>);
 
-    public constructor(nameOrConfig: string | IFormFieldViewModelConfig<TValue>, initalValue?: TValue) {
+    public constructor(nameOrConfig: IFormFieldViewModelConfig<TValue> | string, initalValue?: TValue) {
         super();
 
         if (typeof nameOrConfig === 'string') {
