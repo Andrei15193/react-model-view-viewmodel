@@ -1,19 +1,76 @@
+import { EventDispatcher, type INotifyPropertiesChanged } from '../src/events';
 import { expect } from 'chai';
 import { FormFieldViewModel } from '../src/form-field-view-model';
 
 describe('form-field-view-model/FormFieldViewModel', (): void => {
-    it('creating form field initializes value with initial value and other fields with default values', (): void => {
-        const initilValue = {};
-        const formField = new FormFieldViewModel('name', initilValue);
+    it('creating form field with name and initial value initializes value with initial value and other fields with default values', (): void => {
+        const initialValue = {};
+        const formField = new FormFieldViewModel('name', initialValue);
 
         expect(formField.name).is.equal('name');
-        expect(formField.initialValue).is.equal(initilValue);
-        expect(formField.value).is.equal(initilValue);
+        expect(formField.initialValue).is.equal(initialValue);
+        expect(formField.value).is.equal(initialValue);
         expect(formField.isTouched).is.equal(false);
         expect(formField.isFocused).is.equal(false);
         expect(formField.isValid).is.equal(true);
         expect(formField.isInvalid).is.equal(false);
         expect(formField.error).is.equal(undefined);
+    });
+
+    it('creating form field from config initializes value with initial value and other fields with default values', (): void => {
+        const initialValue = {};
+        const formField = new FormFieldViewModel({
+            name: 'name',
+            initialValue
+        });
+
+        expect(formField.name).is.equal('name');
+        expect(formField.initialValue).is.equal(initialValue);
+        expect(formField.value).is.equal(initialValue);
+        expect(formField.isTouched).is.equal(false);
+        expect(formField.isFocused).is.equal(false);
+        expect(formField.isValid).is.equal(true);
+        expect(formField.isInvalid).is.equal(false);
+        expect(formField.error).is.equal(undefined);
+    });
+
+    it('creating form field from config with validators registers and applies them', (): void => {
+        const initialValue = {};
+        const formField = new FormFieldViewModel({
+            name: 'name',
+            initialValue,
+            validators: [() => 'test-error']
+        });
+
+        expect(formField.name).is.equal('name');
+        expect(formField.initialValue).is.equal(initialValue);
+        expect(formField.value).is.equal(initialValue);
+        expect(formField.isTouched).is.equal(false);
+        expect(formField.isFocused).is.equal(false);
+        expect(formField.isValid).is.equal(false);
+        expect(formField.isInvalid).is.equal(true);
+        expect(formField.error).is.equal('test-error');
+    });
+
+    it('creating form field from config with validators and validation config registers and applies them', (): void => {
+        let error: string | undefined = undefined;
+        const validationTrigger = new EventDispatcher<readonly string[]>();
+
+        const initialValue = {};
+        const formField = new FormFieldViewModel({
+            name: 'name',
+            initialValue,
+            validationConfig: {
+                triggers: [{ propertiesChanged: validationTrigger }]
+            },
+            validators: [() => error]
+        });
+        expect(formField.error).is.equal(undefined);
+
+        error = 'test-error';
+        validationTrigger.dispatch({}, []);
+
+        expect(formField.error).is.equal('test-error');
     });
 
     it('setting name notifies subscribers', (): void => {

@@ -1,5 +1,5 @@
 import type { INotifyPropertiesChanged } from './events';
-import type { IReadOnlyValidatable, IValidatable } from './validation';
+import { type IReadOnlyValidatable, type IValidatable, type ValidatorCallback, type IValidationConfig, registerValidators } from './validation';
 import { ViewModel } from './view-model';
 
 /** Represents a form field interface exposing mixture of read-only and read-write properties in order to provide the minimum required set of properties that must be read-write while all other properties can only be read.
@@ -15,11 +15,29 @@ export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, I
     /** The current value of the field. */
     value: TValue;
 
-    /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
+    /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched.
+      * @deprecated In future versions this flag will be removed. While useful, not all forms require this. Fields can be extended with all the required custom flags as need for each application.
+      */
     isTouched: boolean;
 
-    /** A flag indicating whether the field is focused. */
+    /** A flag indicating whether the field is focused.
+      * @deprecated In future versions this flag will be removed. The focus state of an input element should not be handled by a view model as this is a presentation concern.
+      */
     isFocused: boolean;
+}
+
+/** Represents the initialization configuration for a {@link FormFieldViewModel}.
+ * @template TValue The type of values the field contains.
+ */
+export interface IFormFieldViewModelConfig<TValue> {
+    /** The name of the field. */
+    readonly name: string;
+    /** The initial value of the field. */
+    readonly initialValue: TValue;
+    /** Optional, a validation config without the target as this is the field that is being initialized. */
+    readonly validationConfig?: Omit<IValidationConfig<FormFieldViewModel<TValue>>, "target">;
+    /** Optional, a set of validators for the field. */
+    readonly validators?: readonly ValidatorCallback<FormFieldViewModel<TValue>>[];
 }
 
 /** Represents a base form field, in most scenarios this should be enough to cover all necessary form requirements.
@@ -33,18 +51,40 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
     private _isFocused: boolean;
     private _error: string | undefined;
 
+
     /** Initializes a new instance of the FormFieldViewModel class.
+     * @deprecated In future versions this constructor will be removed, switch to config approach.
      * @param name The name of the field.
      * @param initalValue The initial value of the field.
      */
-    public constructor(name: string, initalValue: TValue) {
+    public constructor(name: string, initalValue: TValue);
+    /** Initializes a new instance of the FormFieldViewModel class.
+     * @param config The form field configuration.
+     */
+    public constructor(config: IFormFieldViewModelConfig<TValue>);
+
+    public constructor(nameOrConfig: string | IFormFieldViewModelConfig<TValue>, initalValue?: TValue) {
         super();
-        this._name = name;
-        this._value = initalValue;
-        this._initialValue = initalValue;
-        this._isTouched = false;
-        this._isFocused = false;
-        this._error = undefined;
+
+        if (typeof nameOrConfig === 'string') {
+            this._name = nameOrConfig;
+            this._value = initalValue;
+            this._initialValue = initalValue;
+            this._isTouched = false;
+            this._isFocused = false;
+            this._error = undefined;
+        }
+        else {
+            this._name = nameOrConfig.name;
+            this._value = nameOrConfig.initialValue;
+            this._initialValue = nameOrConfig.initialValue;
+            this._isTouched = false;
+            this._isFocused = false;
+            this._error = undefined;
+
+            if (nameOrConfig.validators !== undefined && nameOrConfig.validators !== null)
+                registerValidators({ ...nameOrConfig.validationConfig, target: this }, nameOrConfig.validators);
+        }
     }
 
     /** The name of the field. */
@@ -86,12 +126,16 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
         }
     }
 
-    /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
+    /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched.
+      * @deprecated In future versions this flag will be removed. While useful, not all forms require this. Fields can be extended with all the required custom flags as need for each application.
+      */
     public get isTouched(): boolean {
         return this._isTouched;
     }
 
-    /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched. */
+    /** A flag indicating whether the field has been touched. Useful for cases when the error message should be displayed only if the field has been touched.
+      * @deprecated In future versions this flag will be removed. While useful, not all forms require this. Fields can be extended with all the required custom flags as need for each application.
+      */
     public set isTouched(value: boolean) {
         if (this._isTouched !== value) {
             this._isTouched = value;
@@ -99,12 +143,16 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
         }
     }
 
-    /** A flag indicating whether the field is focused. */
+    /** A flag indicating whether the field is focused.
+      * @deprecated In future versions this flag will be removed. The focus state of an input element should not be handled by a view model as this is a presentation concern.
+      */
     public get isFocused(): boolean {
         return this._isFocused;
     }
 
-    /** A flag indicating whether the field is focused. */
+    /** A flag indicating whether the field is focused.
+      * @deprecated In future versions this flag will be removed. The focus state of an input element should not be handled by a view model as this is a presentation concern.
+      */
     public set isFocused(value: boolean) {
         if (this._isFocused !== value) {
             this._isFocused = value;

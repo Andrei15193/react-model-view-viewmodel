@@ -1,30 +1,22 @@
-export type { IEvent, IEventHandler, INotifyPropertiesChanged, INotifyCollectionChanged, ICollectionChange } from './events';
-export { DispatchEvent } from './events';
+export { type IEvent, type IEventHandler, type INotifyPropertiesChanged, type INotifyCollectionChanged, type ICollectionChange, EventDispatcher, DispatchEvent } from './events';
 
 export { ViewModel } from './view-model';
 
-export type { IReadOnlyObservableCollection, IObservableCollection } from './observable-collection';
-export { ReadOnlyObservableCollection, ObservableCollection } from './observable-collection';
+export { type IReadOnlyObservableCollection, type IObservableCollection, ReadOnlyObservableCollection, ObservableCollection } from './observable-collection';
 
-export type { IReadOnlyValidatable, IValidatable, IValidationConfig, ValidatorCallback, CollectionItemValidatorCallback, ValidatableSelectorCallback, ValidationConfigSelectorCallback, UnsubscribeCallback } from './validation';
-export { registerValidators, registerCollectionValidators, registerCollectionItemValidators } from './validation';
+export { type IReadOnlyValidatable, type IValidatable, type IValidationConfig, type ValidatorCallback, type CollectionItemValidatorCallback, type ValidatableSelectorCallback, type ValidationConfigSelectorCallback, type UnsubscribeCallback, registerValidators, registerCollectionValidators, registerCollectionItemValidators } from './validation';
 
-export type { IFormFieldViewModel } from './form-field-view-model';
-export { FormFieldViewModel } from './form-field-view-model';
-export { FormFieldCollectionViewModel } from './form-field-collection-view-model';
+export { type IFormFieldViewModel, FormFieldViewModel } from './form-field-view-model';
+export { type FormFieldSet, FormFieldCollectionViewModel, DynamicFormFieldCollectionViewModel } from './form-field-collection-view-model';
 
-export type { EventHandler } from './hooks/watch-event';
-export { watchEvent } from './hooks/watch-event';
-export { watchCollection } from './hooks/watch-collection';
-export { watchViewModel } from './hooks/watch-view-model';
-export type { ViewModelType } from './hooks/use-view-model-type';
+export { type EventHandler, useEvent, watchEvent } from './hooks/use-event';
+export { type ViewModelType, type ViewModelFactory, useViewModel, isViewModel, watchViewModel } from './hooks/use-view-model';
+export { useObservableCollection, watchCollection } from './hooks/use-observable-collection';
 export { useViewModelType } from './hooks/use-view-model-type';
-export type { ViewModelFactory } from './hooks/use-view-model-factory';
 export { useViewModelFactory } from './hooks/use-view-model-factory';
 
 export { useValidators } from './hooks/use-validators';
 export { useCollectionValidators } from './hooks/use-collection-validators';
 export { useCollectionItemValidators } from './hooks/use-collection-item-validators';
 
-export type { IInputProps } from './components/input';
-export { Input } from './components/input';
+export { type IInputProps, Input } from './components/input';

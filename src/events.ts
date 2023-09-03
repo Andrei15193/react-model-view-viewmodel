@@ -25,10 +25,10 @@ export interface IEventHandler<TEventArgs = void> {
 }
 
 /** 
- * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an IEvent.
+ * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an {@link IEvent}.
  * @template TEventArgs Optional, can be used to provide context when notifying subscribers.
  */
-export class DispatchEvent<TEventArgs = void> implements IEvent<TEventArgs> {
+export class EventDispatcher<TEventArgs = void> implements IEvent<TEventArgs> {
     private _eventHandlers: readonly IEventHandler<TEventArgs>[] = [];
 
     /** Subscribes the given eventHandler to the event.
@@ -58,6 +58,14 @@ export class DispatchEvent<TEventArgs = void> implements IEvent<TEventArgs> {
                 eventHandler.handle(subject, args);
         });
     }
+}
+
+/** 
+ * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an IEvent.
+ * @deprecated In future versions this class will be removed, switch to {@link EventDispatcher}, this is only a rename.
+ * @template TEventArgs Optional, can be used to provide context when notifying subscribers.
+ */
+export class DispatchEvent<TEventArgs = void> extends EventDispatcher<TEventArgs> {
 }
 
 /** A core interface for objects that notify subscribers when their properties have changed. Components can react to this and display the new value as a consequence. */

@@ -1,11 +1,11 @@
 import type { IEventHandler } from '../src/events';
 import { expect } from 'chai';
-import { DispatchEvent } from '../src/events';
+import { EventDispatcher } from '../src/events';
 
-describe('events/DispatchEvent', (): void => {
+describe('events/EventDispatcher', (): void => {
     it('dispatching event having no subscribers', (): void => {
-        const dispatchEvent = new DispatchEvent();
-        dispatchEvent.dispatch(null);
+        const eventDispatcher = new EventDispatcher();
+        eventDispatcher.dispatch(null);
     });
 
     it('dispatching event to subscriber passes subject and args', (): void => {
@@ -13,21 +13,21 @@ describe('events/DispatchEvent', (): void => {
         const subject = {};
         const args = {};
 
-        const dispatchEvent = new DispatchEvent<{}>();
-        dispatchEvent.subscribe({
+        const eventDispatcher = new EventDispatcher<{}>();
+        eventDispatcher.subscribe({
             handle(actualSubject, actualArgs) {
                 invocationCount++;
                 expect(actualSubject).is.equal(subject);
                 expect(actualArgs).is.equal(args);
             }
         })
-        dispatchEvent.dispatch(subject, args);
+        eventDispatcher.dispatch(subject, args);
 
         expect(invocationCount).is.equal(1);
     });
 
     it('dispatching event to subscriber that unsubscribes next one no longer notifies it', (): void => {
-        const dispatchEvent = new DispatchEvent();
+        const eventDispatcher = new EventDispatcher();
         let secondInvocationCount = 0;
         const secondSubscriber: IEventHandler = {
             handle() {
@@ -38,13 +38,13 @@ describe('events/DispatchEvent', (): void => {
         const firstSubscriber: IEventHandler = {
             handle() {
                 firstInvocationCount++;
-                dispatchEvent.unsubscribe(secondSubscriber);
+                eventDispatcher.unsubscribe(secondSubscriber);
             }
         };
-        dispatchEvent.subscribe(firstSubscriber);
-        dispatchEvent.subscribe(secondSubscriber);
+        eventDispatcher.subscribe(firstSubscriber);
+        eventDispatcher.subscribe(secondSubscriber);
 
-        dispatchEvent.dispatch(null);
+        eventDispatcher.dispatch(null);
 
         expect(firstInvocationCount).is.equal(1);
         expect(secondInvocationCount).is.equal(0);
@@ -57,11 +57,11 @@ describe('events/DispatchEvent', (): void => {
                 invocationCount++;
             }
         };
-        const dispatchEvent = new DispatchEvent();
-        dispatchEvent.subscribe(subscriber);
-        dispatchEvent.subscribe(subscriber);
+        const eventDispatcher = new EventDispatcher();
+        eventDispatcher.subscribe(subscriber);
+        eventDispatcher.subscribe(subscriber);
 
-        dispatchEvent.dispatch(null);
+        eventDispatcher.dispatch(null);
 
         expect(invocationCount).is.equal(2);
     });
@@ -73,12 +73,12 @@ describe('events/DispatchEvent', (): void => {
                 invocationCount++;
             }
         };
-        const dispatchEvent = new DispatchEvent();
-        dispatchEvent.subscribe(subscriber);
-        dispatchEvent.subscribe(subscriber);
-        dispatchEvent.unsubscribe(subscriber);
+        const eventDispatcher = new EventDispatcher();
+        eventDispatcher.subscribe(subscriber);
+        eventDispatcher.subscribe(subscriber);
+        eventDispatcher.unsubscribe(subscriber);
 
-        dispatchEvent.dispatch(null);
+        eventDispatcher.dispatch(null);
 
         expect(invocationCount).is.equal(1);
     });

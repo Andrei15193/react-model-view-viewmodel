@@ -1,5 +1,5 @@
 import type { ICollectionChange, IEvent, IItemAddedEventArgs, IItemRemovedEventArgs, INotifyCollectionChanged, INotifyPropertiesChanged, ItemRemovedCallback } from './events';
-import { DispatchEvent } from './events';
+import { EventDispatcher } from './events';
 import { ViewModel } from './view-model';
 
 /** Represents a read-only observable collection based on the read-only array interface.
@@ -89,9 +89,9 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
 export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IReadOnlyObservableCollection<TItem> {
     private readonly _items: TItem[] = [];
     private readonly _itemCleanupCallbacks: ItemRemovedCallback<TItem>[][];
-    private readonly _itemAdded: DispatchEvent<IItemAddedEventArgs<TItem>>;
-    private readonly _itemRemoved: DispatchEvent<IItemRemovedEventArgs<TItem>>;
-    private readonly _collectionChanged: DispatchEvent<ICollectionChange<TItem>>;
+    private readonly _itemAdded: EventDispatcher<IItemAddedEventArgs<TItem>>;
+    private readonly _itemRemoved: EventDispatcher<IItemRemovedEventArgs<TItem>>;
+    private readonly _collectionChanged: EventDispatcher<ICollectionChange<TItem>>;
 
     /** Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
      * @param items The items to initialize the collection with.
@@ -101,9 +101,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         this._items = [...items];
         this._items.forEach((item, index) => (this as any)[index] = item);
         this._itemCleanupCallbacks = items.map(() => []);
-        this.itemAdded = this._itemAdded = new DispatchEvent<IItemAddedEventArgs<TItem>>();
-        this.itemRemoved = this._itemRemoved = new DispatchEvent<IItemRemovedEventArgs<TItem>>();
-        this.collectionChanged = this._collectionChanged = new DispatchEvent<ICollectionChange<TItem>>();
+        this.itemAdded = this._itemAdded = new EventDispatcher<IItemAddedEventArgs<TItem>>();
+        this.itemRemoved = this._itemRemoved = new EventDispatcher<IItemRemovedEventArgs<TItem>>();
+        this.collectionChanged = this._collectionChanged = new EventDispatcher<ICollectionChange<TItem>>();
     }
 
     /** Gets the item at the provided {@link n} index

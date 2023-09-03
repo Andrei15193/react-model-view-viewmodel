@@ -1,9 +1,9 @@
 import type { IEvent, INotifyPropertiesChanged } from './events';
-import { DispatchEvent } from './events';
+import { EventDispatcher } from './events';
 
 /** Represents a base view model class providing core features. */
 export abstract class ViewModel implements INotifyPropertiesChanged {
-    private readonly _propertiesChangedEvent: DispatchEvent<readonly string[]> = new DispatchEvent<readonly string[]>();
+    private readonly _propertiesChangedEvent: EventDispatcher<readonly string[]> = new EventDispatcher<readonly string[]>();
 
     /** Initializes a new instance of the ViewModel class. */
     public constructor() {
