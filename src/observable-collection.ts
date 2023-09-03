@@ -572,6 +572,51 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         return this._items.flat.call(this._items, depth);
     }
 
+    /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in reverse order.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements in reversed order.
+     * @see [Array.toReversed](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed)
+     */
+    public toReversed(): TItem[] {
+        return [...this._items].reverse();
+    }
+
+    /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in ascending order.
+     * @param compareFn Optional, a callback used to determine the sort order between two items.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) with the elements sorted in ascending order.
+     * @see [Array.toSorted](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted)
+     */
+    public toSorted(compareFn?: (a: TItem, b: TItem) => number): TItem[] {
+        const result = [...this._items];
+        result.sort(compareFn);
+        return result;
+    }
+
+    /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param deleteCount The number of elements to remove.
+     * @param items The items to insert at the given start location.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
+     * @see {@link ObservableCollection.splice}
+     * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
+     */
+    public toSpliced(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
+        const result = [...this._items];
+        result.splice(start, deleteCount, ...items);
+        return result;
+    }
+
+    /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
+     * @param index The zero-based location in the collection where to set the item in the result array.
+     * @param value The item to set in the result array.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements of the collection having the provided value set at the provided index.
+     * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
+     */
+    public with(index: number, value: TItem): TItem[] {
+        const result = [...this._items];
+        result[index] = value;
+        return result;
+    }
+
     /**
      * Returns an {@link Array} iterator containing all the items in the collection.
      * @returns Returns a new {@link Array} iterator for iterating over all items in the collection.
