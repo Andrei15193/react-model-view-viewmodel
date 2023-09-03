@@ -1,4 +1,4 @@
-import type { ViewModelType } from '../../src/hooks/use-view-model-type';
+import type { ViewModelType } from '../../src/hooks/use-view-model';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';

@@ -2,7 +2,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { watchViewModel } from '../../src/hooks/watch-view-model';
+import { watchViewModel } from '../../src/hooks/use-view-model';
 import { ViewModel } from '../../src/view-model';
 
 describe('watch-view-model/watchViewModel', (): void => {

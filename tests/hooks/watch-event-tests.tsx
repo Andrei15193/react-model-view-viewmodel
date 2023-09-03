@@ -1,15 +1,15 @@
-import type { EventHandler } from '../../src/hooks/watch-event';
+import type { EventHandler } from '../../src/hooks/use-event';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { DispatchEvent } from '../../src/events';
-import { watchEvent } from '../../src/hooks/watch-event';
+import { EventDispatcher } from '../../src/events';
+import { watchEvent } from '../../src/hooks/use-event';
 import { ViewModel } from '../../src/view-model';
 
 describe('watch-event/useViewModelType', (): void => {
     class TestViewModel extends ViewModel {
-        public event = new DispatchEvent<any>();
+        public event = new EventDispatcher<any>();
     }
 
     interface ITestComponentProps {

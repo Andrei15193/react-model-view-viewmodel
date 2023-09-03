@@ -4,8 +4,8 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { watchCollection } from '../../src/hooks/watch-collection';
-import { DispatchEvent } from '../../src/events';
+import { watchCollection } from '../../src/hooks/use-observable-collection';
+import { EventDispatcher } from '../../src/events';
 import { ObservableCollection } from '../../src/observable-collection';
 
 describe('watch-collection/watchCollection', (): void => {
@@ -29,10 +29,10 @@ describe('watch-collection/watchCollection', (): void => {
         constructor(...items: readonly TItem[]) {
             super();
             this.push(...items);
-            this.collectionChanged = new DispatchEvent<ICollectionChange<TItem>>();
+            this.collectionChanged = new EventDispatcher<ICollectionChange<TItem>>();
         }
 
-        public collectionChanged: DispatchEvent<ICollectionChange<TItem>>;
+        public collectionChanged: EventDispatcher<ICollectionChange<TItem>>;
     }
 
     it('changing the collection updates the component', (): void => {

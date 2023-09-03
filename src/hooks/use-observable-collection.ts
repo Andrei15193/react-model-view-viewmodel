@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 type Destructor = () => void;
 type EffectResult = void | Destructor;
 
-/** Watches the collection for changes, requesting a render when it does. The collection is the only hook dependency.
+/** Watches an obserable collection for changes, requesting a render when it does. The collection is the only hook dependency.
  * @template TItem The type of items the collection contains.
  * @param observableCollection The collection to watch.
  */
-export function watchCollection<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>): void {
+export function useObservableCollection<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>): void {
     const [_, setState] = useState<readonly TItem[] | undefined>(undefined);
 
     useEffect(
@@ -39,4 +39,13 @@ export function watchCollection<TItem>(observableCollection: IReadOnlyObservable
 
 function hasChanges<TItem>(previous: readonly TItem[], next: readonly TItem[]): boolean {
     return previous.length !== next.length || previous.some((item, index) => item !== next[index]);
+}
+
+/** Watches the collection for changes, requesting a render when it does. The collection is the only hook dependency.
+ * @deprecated In future versions this hook will be removed, switch to {@link useObservableCollection}.
+ * @template TItem The type of items the collection contains.
+ * @param observableCollection The collection to watch.
+ */
+export function watchCollection<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>): void {
+    useObservableCollection(observableCollection);
 }

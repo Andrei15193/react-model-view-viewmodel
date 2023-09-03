@@ -1,7 +1,7 @@
 import type { DetailedHTMLProps, InputHTMLAttributes, FocusEvent, FocusEventHandler } from 'react';
 import type { IFormFieldViewModel } from '../form-field-view-model';
 import React, { useEffect, useRef, useCallback } from 'react';
-import { watchEvent } from '../hooks/watch-event';
+import { useEvent } from '../hooks/use-event';
 
 interface IHtmlElementProps extends HTMLInputElement {
     focus(): void;
@@ -9,13 +9,16 @@ interface IHtmlElementProps extends HTMLInputElement {
     blur(): void;
 }
 
-/** Represents the Input component props, extends the HTML input props. */
+/** Represents the Input component props, extends the HTML input props.
+ * @deprecated In future versions this component will be removed. This was only added to handle the {@link IFormFieldViewModel.isFocused}, however this is not something view models should handle.
+ */
 export interface IInputProps<TValue> extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     /** The field to bind the focus events to. */
     readonly field: IFormFieldViewModel<TValue>;
 }
 
 /** A helper component for binding the focus events to the field.
+ * @deprecated In future versions this component will be removed. This was only added to handle the {@link IFormFieldViewModel.isFocused}, however this is not something view models should handle.
  * @template TValue The type of values the field contains.
  */
 export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<TValue>): JSX.Element {
@@ -54,13 +57,17 @@ export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<
         [input, onBlur]
     );
 
-    watchEvent(field && field.propertiesChanged, (_, changedProperties) => {
-        if (!isHandlingFocusEvent.current && changedProperties.indexOf('isFocused') >= 0)
-            if (field.isFocused)
-                input.current.focus();
-            else
-                input.current.blur();
-    });
+    useEvent(
+        field && field.propertiesChanged,
+        (_, changedProperties) => {
+            if (!isHandlingFocusEvent.current && changedProperties.indexOf('isFocused') >= 0)
+                if (field.isFocused)
+                    input.current.focus();
+                else
+                    input.current.blur();
+        },
+        []
+    );
 
     useEffect(
         () => {
