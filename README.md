@@ -21,7 +21,7 @@ A library for developing React applications using Model-View-ViewModel inspired 
   * [IItemRemovedEventArgs\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IItemRemovedEventArgs)
   * [ICollectionChange\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ICollectionChange)
   * [ItemRemovedCallback\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ItemRemovedCallback)
-  * [DispatchEvent\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/DispatchEvent)
+  * [EventDispatcher](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/EventDispatcher)
 * **Observable Collection**
   * [IReadOnlyObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IReadOnlyObservableCollection)
   * [IObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IObservableCollection)
@@ -31,8 +31,11 @@ A library for developing React applications using Model-View-ViewModel inspired 
   * [ViewModel](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModel)
 * **Forms**
   * [IFormFieldViewModel\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModel)
+  * [IFormFieldViewModelConfig\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModelConfig)
   * [FormFieldViewModel\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldViewModel)
   * [FormFieldCollectionViewModel](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldCollectionViewModel)
+  * [FormFieldSet](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldSet)
+  * [DynamicFormFieldCollectionViewModel](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/DynamicFormFieldCollectionViewModel)
 * **Validation**
   * [IReadOnlyValidatable](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IReadOnlyValidatable)
   * [IValidatable](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IValidatable)
@@ -47,17 +50,13 @@ A library for developing React applications using Model-View-ViewModel inspired 
   * [registerCollectionItemValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/registerCollectionItemValidators)
 * **React Hooks**
   * [EventHandler\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/EventHandler)
-  * [watchEvent\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/watchEvent)
-  * [watchCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/watchCollection)
-  * [watchViewModel\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/watchViewModel)
+  * [useEvent\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useEvent)
   * [ViewModelType\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModelType)
-  * [useViewModelType\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModelType)
   * [ViewModelFactory\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModelFactory)
-  * [useViewModelFactory\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModelFactory)
+  * [useViewModel\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModel)
+  * [useObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useObservableCollection)
   * [useValidators\<TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useValidators)
   * [useCollectionValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useCollectionValidators)
   * [useCollectionItemValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useCollectionItemValidators)
-* **React Components**
-  * [Input](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/Input)
 
-For more information and documentation please refer to the [project wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki).
+For more information and documentation please refer to the [project discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) and [project wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki).
