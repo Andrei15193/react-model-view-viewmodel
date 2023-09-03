@@ -1,6 +1,6 @@
 {
   "name": "react-model-view-viewmodel",
-  "version": "2.2.0",
+  "version": "2.2.0-rc.1",
   "description": "A library for developing React applications using Model-View-ViewModel inspired by .NET",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
