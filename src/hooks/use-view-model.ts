@@ -89,61 +89,40 @@ type Destructor = () => void;
 type EffectResult = void | Destructor;
 
 function useViewModelProperties<TViewModel extends INotifyPropertiesChanged>(viewModel: TViewModel, watchedProperties?: readonly (keyof TViewModel)[]): void {
-    const [_, setState] = useState<{} | undefined>(undefined);
-
+    const [, setState] = useState<{} | undefined>(undefined);
     useEffect(
         (): EffectResult => {
-            if (!watchedProperties) {
-                let previousProps = {};
-                const propertyChangedEventHandler: IEventHandler<readonly string[]> = {
-                    handle(subject, changedProperties) {
-                        const actualChangedProperties = getChangedProperties(previousProps, subject, changedProperties);
-
-                        if (actualChangedProperties === undefined)
-                            setState(undefined);
-                        else if (actualChangedProperties.length > 0) {
-                            previousProps = Object.assign({}, previousProps, selectProps(subject, actualChangedProperties));
-                            setState(previousProps);
-                        }
+            let previousProps: Readonly<Record<string, any>> = {};
+            const propertyChangedEventHandler: IEventHandler<readonly string[]> = {
+                handle(subject, changedProperties) {
+                    const actualChangedProperties = getChangedProperties(previousProps, subject, changedProperties);
+                    const actualChangedWatchedProperties = actualChangedProperties === null || actualChangedProperties === undefined || watchedProperties === null || watchedProperties === undefined
+                        ? actualChangedProperties
+                        : actualChangedProperties.filter(actualChangedProperty => watchedProperties.includes(actualChangedProperty as keyof TViewModel));
+                    if (actualChangedWatchedProperties === null || actualChangedWatchedProperties === undefined) {
+                        previousProps = {};
+                        setState(previousProps);
                     }
-                };
-                viewModel.propertiesChanged.subscribe(propertyChangedEventHandler);
-                return () => {
-                    viewModel.propertiesChanged.unsubscribe(propertyChangedEventHandler);
-                    setState(undefined);
-                }
-            }
-            else if (watchedProperties.length > 0) {
-                let props = {};
-                const propertyChangedEventHandler: IEventHandler<readonly string[]> = {
-                    handle(subject: any, changedProperties: readonly string[]): void {
-                        const watchedChangedProperties = changedProperties.filter(changedProperty => watchedProperties.includes(changedProperty as keyof TViewModel));
-                        const actualChangedProperties = getChangedProperties(props, subject, watchedChangedProperties);
-
-                        if (actualChangedProperties === undefined)
-                            setState(undefined);
-                        else if (actualChangedProperties.length > 0) {
-                            props = Object.assign({}, props, selectProps(subject, actualChangedProperties));
-                            setState(props);
-                        }
+                    else if (actualChangedWatchedProperties.length > 0) {
+                        previousProps = Object.assign({}, previousProps, selectProps(subject, actualChangedWatchedProperties));
+                        setState(previousProps);
                     }
                 }
-                viewModel.propertiesChanged.subscribe(propertyChangedEventHandler);
-                return () => {
-                    viewModel.propertiesChanged.unsubscribe(propertyChangedEventHandler);
-                    setState(undefined);
-                }
-            }
+            };
+            viewModel.propertiesChanged.subscribe(propertyChangedEventHandler);
+            return () => {
+                viewModel.propertiesChanged.unsubscribe(propertyChangedEventHandler);
+                previousProps = {};
+                setState({});
+            };
         },
-        watchedProperties ? [viewModel, ...watchedProperties] : [viewModel]
+        (watchedProperties === null || watchedProperties === undefined) ? [viewModel] : [viewModel, ...watchedProperties]
     );
 }
 
-function getChangedProperties(previous: any, next: any, properties: readonly string[]): readonly string[] {
-    if (next === undefined)
+function getChangedProperties(previous: any, next: any, properties: readonly string[]): readonly string[] | undefined {
+    if (next === null || next === undefined || previous === null || previous === undefined)
         return undefined;
-    else if (previous === undefined)
-        return properties;
     else
         return properties.filter(property => previous[property] !== next[property]);
 }
