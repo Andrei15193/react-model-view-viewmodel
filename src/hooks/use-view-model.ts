@@ -46,7 +46,7 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewMo
 export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(typeViewModelOrFactory: TViewModel | ViewModelType<TViewModel, TConstructorArgs> | ViewModelFactory<TViewModel>, constructorArgsOrDepsOrWatchedProperties?: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>> | DependencyList | readonly (keyof TViewModel)[], watchedProperties?: readonly (keyof TViewModel)[]): void | TViewModel {
     const isViewModelCase = isViewModel<TViewModel>(typeViewModelOrFactory);
     const constructorArgsOrDeps: TConstructorArgs | DependencyList = isViewModelCase
-        ? []
+        ? [typeViewModelOrFactory]
         : (constructorArgsOrDepsOrWatchedProperties || []);
 
     const viewModel = useMemo(
