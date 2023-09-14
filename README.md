@@ -1,14 +1,6 @@
 A library for developing React applications using Model-View-ViewModel inspired by .NET.
 
-**ToDo List App Tutorial**
-* [ToDo List App Tutorial Part 1: Requirements](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-1:-Requirements)
-* [ToDo List App Tutorial Part 2: Setup](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-2:-Setup)
-* [ToDo List App Tutorial Part 3: Adding a List of Items](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-3:-Adding-a-List-of-Items)
-* [ToDo List App Tutorial Part 4: Adding ToDo Items](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-4:-Adding-ToDo-Items)
-* [ToDo List App Tutorial Part 5: Editing a ToDo Item](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-5:-Editing-a-ToDo-Item)
-* [ToDo List App Tutorial Part 6: Deleting ToDo Items](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-6:-Deleting-ToDo-Items)
-* [ToDo List App Tutorial Part 7: Adding Form Validation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-7:-Adding-Form-Validation)
-* [ToDo List App Tutorial Part 8: Adding a Search Bar for ToDo Items](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ToDo-List-App-Tutorial-Part-8:-Adding-a-Search-Bar-for-ToDo-Items)
+**[Guides and Tutorials](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/categories/guides-and-tutorials)**
 
 **API**
 
