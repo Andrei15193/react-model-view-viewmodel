@@ -54,7 +54,7 @@ A library for developing React applications using Model-View-ViewModel inspired 
   * [useEvent\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useEvent)
   * [ViewModelType\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModelType)
   * [ViewModelFactory\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModelFactory)
-  * [useViewModel\<TViewModel, TConstructorArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModel)
+  * [useViewModel\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModel)
   * [useViewModelMemo\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModelMemo)
   * [useObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useObservableCollection)
   * [useValidators\<TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useValidators)
