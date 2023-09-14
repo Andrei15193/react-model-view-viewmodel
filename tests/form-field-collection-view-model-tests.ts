@@ -205,13 +205,13 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
     it('creating a dynamic form registers all fields', (): void => {
         const formFieldCollection = FormFieldCollectionViewModel.create({
-            field1: new FormFieldViewModel("field1", null),
-            field2: new FormFieldViewModel("field2", null)
+            field1: new FormFieldViewModel('field1', null),
+            field2: new FormFieldViewModel('field2', null)
         });
 
         expect(formFieldCollection.fields.toArray())
             .does.include(formFieldCollection.field1)
             .and.does.include(formFieldCollection.field2)
-            .and.property("length").is.equal(2);
+            .and.property('length').is.equal(2);
     });
 });

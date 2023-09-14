@@ -35,7 +35,7 @@ export interface IFormFieldViewModelConfig<TValue> {
     /** The initial value of the field. */
     readonly initialValue: TValue;
     /** Optional, a validation config without the target as this is the field that is being initialized. */
-    readonly validationConfig?: Omit<IValidationConfig<FormFieldViewModel<TValue>>, "target">;
+    readonly validationConfig?: Omit<IValidationConfig<FormFieldViewModel<TValue>>, 'target'>;
     /** Optional, a set of validators for the field. */
     readonly validators?: readonly ValidatorCallback<FormFieldViewModel<TValue>>[];
 }

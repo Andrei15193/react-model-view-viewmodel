@@ -1,5 +1,6 @@
 import type { INotifyPropertiesChanged, IEventHandler } from '../events';
 import { type DependencyList, useMemo, useState, useEffect } from 'react';
+import { isViewModel } from '../view-model';
 
 /** Represents a view model type.
  * @template TViewModel The type of view model.
@@ -8,11 +9,6 @@ import { type DependencyList, useMemo, useState, useEffect } from 'react';
 export type ViewModelType<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[] = []> = {
     new(...constructorArgs: TConstructorArgs): TViewModel;
 };
-
-/** Represents a view model factory callback.
- * @template TViewModel The type of view model to create.
- */
-export type ViewModelFactory<TViewModel extends INotifyPropertiesChanged> = () => TViewModel;
 
 /**
  * Watches a view model for property changes.
@@ -31,58 +27,25 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewMo
  * @param watchedProperties Optional, when provided, a render will be requested when only one of these properties has changed.
  * @returns Returns the initialized view model instance.
  */
-export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelType: ViewModelType<TViewModel, TConstructorArgs>, constructorArgs?: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>>, watchedProperties?: readonly (keyof TViewModel)[]): TViewModel;
+export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelType: ViewModelType<TViewModel, TConstructorArgs>, constructorArgs: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>>, watchedProperties?: readonly (keyof TViewModel)[]): TViewModel;
 
-/**
- * Creates a new instance of a view model using the provided callback and watches for property changes.
- * @template TViewModel The type of view model that is created.
- * @param viewModelFactory A callback that provides the view model instance.
- * @param deps Dependencies of the callback, whenever these change the callback is called again, similar to {@link useMemo}.
- * @param watchedProperties Optional, when provided, a render will be requested when only one of these properties has changed.
- * @returns Returns the initialized view model instance.
- */
-export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewModelFactory: ViewModelFactory<TViewModel>, deps: DependencyList, watchedProperties?: readonly (keyof TViewModel)[]): TViewModel;
-
-export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(typeViewModelOrFactory: TViewModel | ViewModelType<TViewModel, TConstructorArgs> | ViewModelFactory<TViewModel>, constructorArgsOrDepsOrWatchedProperties?: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>> | DependencyList | readonly (keyof TViewModel)[], watchedProperties?: readonly (keyof TViewModel)[]): void | TViewModel {
-    const isViewModelCase = isViewModel<TViewModel>(typeViewModelOrFactory);
-    const constructorArgsOrDeps: TConstructorArgs | DependencyList = isViewModelCase
-        ? [typeViewModelOrFactory]
-        : (constructorArgsOrDepsOrWatchedProperties || []);
+export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelOrViewModelType: TViewModel | ViewModelType<TViewModel, TConstructorArgs>, constructorArgsOrWatchedProperties?: ConstructorParameters<ViewModelType<TViewModel, TConstructorArgs>> | readonly (keyof TViewModel)[], watchedProperties?: readonly (keyof TViewModel)[]): void | TViewModel {
+    const isViewModelCase = isViewModel<TViewModel>(viewModelOrViewModelType);
+    const dependencies: DependencyList = isViewModelCase
+        ? [isViewModelCase, viewModelOrViewModelType]
+        : [isViewModelCase, ...(constructorArgsOrWatchedProperties || [])];
 
     const viewModel = useMemo(
-        () => {
-            if (isViewModelCase)
-                return typeViewModelOrFactory;
-
-            try {
-                const viewModelType = typeViewModelOrFactory as ViewModelType<TViewModel, TConstructorArgs>;
-                const constructorArgsAndDeps = constructorArgsOrDeps as TConstructorArgs;
-                return new viewModelType(...constructorArgsAndDeps);
-            }
-            catch {
-                const viewModelFactory = typeViewModelOrFactory as ViewModelFactory<TViewModel>;
-                return viewModelFactory();
-            }
-        },
-        constructorArgsOrDeps
+        () => isViewModelCase ? viewModelOrViewModelType : new viewModelOrViewModelType(...(constructorArgsOrWatchedProperties || []) as TConstructorArgs),
+        dependencies
     );
 
     const actualWatchedProperties = isViewModelCase
-        ? (constructorArgsOrDepsOrWatchedProperties as readonly (keyof TViewModel)[])
+        ? (constructorArgsOrWatchedProperties as readonly (keyof TViewModel)[])
         : watchedProperties;
     useViewModelProperties(viewModel, actualWatchedProperties);
 
     return viewModel;
-}
-
-/**
- * Checkes whether the provided instance is a view model (implements {@link INotifyPropertiesChanged}).
- * @template TViewModel The type of view model to check, defaults to {@link INotifyPropertiesChanged}.
- * @param maybeViewModel The value to check if is a view model.
- * @returns Returns `true` if the provided instance implements {@link INotifyPropertiesChanged}; otherwise `false`.
- */
-export function isViewModel<TViewModel extends INotifyPropertiesChanged = INotifyPropertiesChanged>(maybeViewModel: any): maybeViewModel is TViewModel {
-    return maybeViewModel !== undefined && maybeViewModel !== null && !(maybeViewModel instanceof Function) && 'propertiesChanged' in maybeViewModel;
 }
 
 type Destructor = () => void;

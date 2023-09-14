@@ -1,9 +1,8 @@
-import type { ViewModelFactory } from '../../src/hooks/use-view-model';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
 import { expect } from 'chai';
-import { useViewModelFactory } from '../../src/hooks/use-view-model-factory';
+import { type ViewModelFactory, useViewModelFactory } from '../../src/hooks/use-view-model-memo';
 import { ViewModel } from '../../src/view-model';
 
 describe('use-view-model-factory/useViewModelFactory', (): void => {
