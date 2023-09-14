@@ -1,6 +1,6 @@
 A library for developing React applications using Model-View-ViewModel inspired by .NET.
 
-**[Guides and Tutorials](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/categories/guides-and-tutorials)**
+[Guides and Tutorials](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/categories/guides-and-tutorials) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)
 
 **API**
 
@@ -52,5 +52,3 @@ A library for developing React applications using Model-View-ViewModel inspired 
   * [useValidators\<TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useValidators)
   * [useCollectionValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useCollectionValidators)
   * [useCollectionItemValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useCollectionItemValidators)
-
-For more information and documentation please refer to the [project discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) and [project wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki).
