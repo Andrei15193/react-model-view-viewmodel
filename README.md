@@ -1,6 +1,6 @@
 A library for developing React applications using Model-View-ViewModel inspired by .NET.
 
-[Guides and Tutorials](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/categories/guides-and-tutorials) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)
+[Guides and Tutorials](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/categories/guides-and-tutorials?discussions_q=is%3Aopen+category%3A"Guides+and+Tutorials"+sort%3Adate_created) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)
 
 **API**
 
