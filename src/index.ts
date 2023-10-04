@@ -6,7 +6,7 @@ export { type IReadOnlyObservableCollection, type IObservableCollection, ReadOnl
 
 export { type IReadOnlyValidatable, type IValidatable, type IValidationConfig, type ValidatorCallback, type CollectionItemValidatorCallback, type ValidatableSelectorCallback, type ValidationConfigSelectorCallback, type UnsubscribeCallback, registerValidators, registerCollectionValidators, registerCollectionItemValidators } from './validation';
 
-export { type IFormFieldViewModel, FormFieldViewModel } from './form-field-view-model';
+export { type IFormFieldViewModel, type IFormFieldViewModelConfig, FormFieldViewModel } from './form-field-view-model';
 export { type FormFieldSet, FormFieldCollectionViewModel, DynamicFormFieldCollectionViewModel } from './form-field-collection-view-model';
 
 export { type EventHandler, useEvent, watchEvent } from './hooks/use-event';
