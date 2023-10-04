@@ -28,16 +28,17 @@ export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, I
 
 /** Represents the initialization configuration for a {@link FormFieldViewModel}.
  * @template TValue The type of values the field contains.
+ * @template TFormField The type of field validators require.
  */
-export interface IFormFieldViewModelConfig<TValue> {
+export interface IFormFieldViewModelConfig<TValue, TFormField extends IFormFieldViewModel<TValue> = FormFieldViewModel<TValue>> {
     /** The name of the field. */
     readonly name: string;
     /** The initial value of the field. */
     readonly initialValue: TValue;
     /** Optional, a validation config without the target as this is the field that is being initialized. */
-    readonly validationConfig?: Omit<IValidationConfig<FormFieldViewModel<TValue>>, 'target'>;
+    readonly validationConfig?: Omit<IValidationConfig<TFormField>, 'target'>;
     /** Optional, a set of validators for the field. */
-    readonly validators?: readonly ValidatorCallback<FormFieldViewModel<TValue>>[];
+    readonly validators?: readonly ValidatorCallback<TFormField>[];
 }
 
 /** Represents a base form field, in most scenarios this should be enough to cover all necessary form requirements.

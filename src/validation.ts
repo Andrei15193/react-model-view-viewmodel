@@ -37,7 +37,7 @@ export interface IValidationConfig<TValidatableViewModel extends IValidatable & 
  * @template TValidatable The type of validatable objects to validate.
  * @param validatable The object being validated.
  */
-export type ValidatorCallback<TValidatable extends IValidatable> = (validatable: TValidatable) => string | undefined;
+export type ValidatorCallback<TValidatable extends IReadOnlyValidatable> = (validatable: TValidatable) => string | undefined;
 
 /** Represents a collection bound validator callback.
  * @template TValidatable The type of validatable objects to validate.
@@ -46,7 +46,7 @@ export type ValidatorCallback<TValidatable extends IValidatable> = (validatable:
  * @param item The item from which the validatable has been selected.
  * @param collection The collection to which the item belongs.
  */
-export type CollectionItemValidatorCallback<TValidatable extends IValidatable, TItem> = (validatable: TValidatable, item: TItem, collection: readonly TItem[]) => string | undefined;
+export type CollectionItemValidatorCallback<TValidatable extends IReadOnlyValidatable, TItem> = (validatable: TValidatable, item: TItem, collection: readonly TItem[]) => string | undefined;
 
 /** Represents a validatable selector callback.
  * @template TItem The type of items from which to select validatable objects.
