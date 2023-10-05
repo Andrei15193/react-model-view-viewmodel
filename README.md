@@ -1,6 +1,6 @@
 A library for developing React applications using Model-View-ViewModel inspired by .NET.
 
-[Guides and Tutorials](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/categories/guides-and-tutorials?discussions_q=is%3Aopen+category%3A"Guides+and+Tutorials"+sort%3Adate_created) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)
+[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)
 
 **API**
 
@@ -24,7 +24,7 @@ A library for developing React applications using Model-View-ViewModel inspired 
   * [isViewModel\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/isViewModel)
 * **Forms**
   * [IFormFieldViewModel\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModel)
-  * [IFormFieldViewModelConfig\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModelConfig)
+  * [IFormFieldViewModelConfig\<TValue, TFormField\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModelConfig)
   * [FormFieldViewModel\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldViewModel)
   * [FormFieldCollectionViewModel\<TFormFieldViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldCollectionViewModel)
   * [FormFieldSet\<TFormFieldViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldSet)
