@@ -33,6 +33,8 @@ export interface IFormFieldViewModel<TValue> extends INotifyPropertiesChanged, I
 export interface IFormFieldViewModelConfig<TValue, TFormField extends IFormFieldViewModel<TValue> = FormFieldViewModel<TValue>> {
     /** The name of the field. */
     readonly name: string;
+    /** The value of the field, defaults to {@link initialValue}. */
+    readonly value?: TValue;
     /** The initial value of the field. */
     readonly initialValue: TValue;
     /** Optional, a validation config without the target as this is the field that is being initialized. */
@@ -55,28 +57,28 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
     /** Initializes a new instance of the {@link FormFieldViewModel} class.
      * @param config The form field configuration.
      */
-   public constructor(config: IFormFieldViewModelConfig<TValue>);
+    public constructor(config: IFormFieldViewModelConfig<TValue>);
     /** Initializes a new instance of the {@link FormFieldViewModel} class.
      * @deprecated In future versions this constructor will be removed, switch to config approach.
      * @param name The name of the field.
-     * @param initalValue The initial value of the field.
+     * @param initialValue The initial value of the field.
      */
-    public constructor(name: string, initalValue: TValue);
+    public constructor(name: string, initialValue: TValue);
 
-    public constructor(nameOrConfig: IFormFieldViewModelConfig<TValue> | string, initalValue?: TValue) {
+    public constructor(nameOrConfig: IFormFieldViewModelConfig<TValue> | string, initialValue?: TValue) {
         super();
 
         if (typeof nameOrConfig === 'string') {
             this._name = nameOrConfig;
-            this._value = initalValue;
-            this._initialValue = initalValue;
+            this._value = initialValue;
+            this._initialValue = initialValue;
             this._isTouched = false;
             this._isFocused = false;
             this._error = undefined;
         }
         else {
             this._name = nameOrConfig.name;
-            this._value = nameOrConfig.initialValue;
+            this._value = "value" in nameOrConfig ? nameOrConfig.value : nameOrConfig.initialValue;
             this._initialValue = nameOrConfig.initialValue;
             this._isTouched = false;
             this._isFocused = false;
