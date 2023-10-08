@@ -82,24 +82,48 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
      * @returns Returns the provided field that has been registered.
      */
     protected registerField(field: TFormFieldViewModel): TFormFieldViewModel {
-        field.propertiesChanged.subscribe(this._fieldChangedEventHandler);
-        this._fields.push(field);
-        this.notifyPropertiesChanged('isValid', 'isInvalid');
-
+        this.registerFields(field);
         return field;
+    }
+
+    /** Registers the provided fields.
+     * @param fields The fields to register.
+     */
+    protected registerFields(...fields: readonly TFormFieldViewModel[]): void {
+        fields.forEach(field => {
+            field.propertiesChanged.subscribe(this._fieldChangedEventHandler);
+            this._fields.push(field);
+        });
+
+        if (fields.length > 0)
+            this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
 
     /** Unregisters the provided field.
      * @param field The previously registered field.
      */
     protected unregisterField(field: TFormFieldViewModel): void {
-        const indexToRemove = this._fields.indexOf(field);
-        if (indexToRemove >= 0) {
-            const removedField = this._fields[indexToRemove];
-            removedField.propertiesChanged.unsubscribe(this._fieldChangedEventHandler);
-            this._fields.splice(indexToRemove, 1);
+        this.unregisterFields(field);
+    }
+
+    /** Unregisters the provided fields.
+     * @param fields The previously registered fields.
+     */
+    protected unregisterFields(...fields: readonly TFormFieldViewModel[]): void {
+        let hasUnregisteredFields = false;
+        fields.forEach(field => {
+            const indexToRemove = this._fields.indexOf(field);
+            if (indexToRemove >= 0) {
+                const removedField = this._fields[indexToRemove];
+                removedField.propertiesChanged.unsubscribe(this._fieldChangedEventHandler);
+                this._fields.splice(indexToRemove, 1);
+
+                hasUnregisteredFields = true;
+            }
+        });
+
+        if (hasUnregisteredFields)
             this.notifyPropertiesChanged('isValid', 'isInvalid');
-        }
     }
 }
 
