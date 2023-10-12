@@ -1,4 +1,4 @@
-export { type IEvent, type IEventHandler, type INotifyPropertiesChanged, type INotifyCollectionChanged, type ICollectionChange, EventDispatcher, DispatchEvent } from './events';
+export { type IEvent, type IEventHandler, type INotifyPropertiesChanged, type INotifyCollectionChanged, type IItemAddedEventArgs, type IItemRemovedEventArgs, type ItemRemovedCallback, type ICollectionChange, EventDispatcher, DispatchEvent } from './events';
 
 export { ViewModel, isViewModel } from './view-model';
 
