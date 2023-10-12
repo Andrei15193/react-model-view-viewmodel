@@ -11,7 +11,7 @@ export { type FormFieldSet, FormFieldCollectionViewModel, DynamicFormFieldCollec
 
 export { type EventHandler, useEvent, watchEvent } from './hooks/use-event';
 export { type ViewModelType, useViewModel, watchViewModel } from './hooks/use-view-model';
-export { type ViewModelFactory, useViewModelFactory } from './hooks/use-view-model-memo';
+export { type ViewModelFactory, useViewModelMemo, useViewModelFactory } from './hooks/use-view-model-memo';
 export { useObservableCollection, watchCollection } from './hooks/use-observable-collection';
 export { useViewModelType } from './hooks/use-view-model-type';
 
