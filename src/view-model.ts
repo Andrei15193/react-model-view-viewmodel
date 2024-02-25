@@ -1,4 +1,4 @@
-import type { IEvent, INotifyPropertiesChanged } from './events';
+import type { INotifyPropertiesChanged, IPropertiesChangedEvent } from './events';
 import { EventDispatcher } from './events';
 
 /**
@@ -13,14 +13,14 @@ export function isViewModel<TViewModel extends INotifyPropertiesChanged = INotif
 
 /** Represents a base view model class providing core features. */
 export abstract class ViewModel implements INotifyPropertiesChanged {
-    private readonly _propertiesChangedEvent: EventDispatcher<readonly string[]> = new EventDispatcher<readonly string[]>();
+    private readonly _propertiesChangedEvent: EventDispatcher<this, readonly (keyof this)[]> = new EventDispatcher<this, readonly (keyof this)[]>();
 
     /** Initializes a new instance of the ViewModel class. */
     public constructor() {
     }
 
     /** An event that is raised when one or more properties may have changed. */
-    public get propertiesChanged(): IEvent<readonly string[]> {
+    public get propertiesChanged(): IPropertiesChangedEvent<this> {
         return this._propertiesChangedEvent;
     }
 
@@ -28,7 +28,7 @@ export abstract class ViewModel implements INotifyPropertiesChanged {
      * @param changedProperty The name of the property that may have changed.
      * @param otherChangedProperties The name of other properties that may have changed.
      */
-    protected notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
+    protected notifyPropertiesChanged(changedProperty: keyof this, ...otherChangedProperties: readonly (keyof this)[]): void {
         this._propertiesChangedEvent.dispatch(this, [changedProperty, ...otherChangedProperties]);
     }
 }

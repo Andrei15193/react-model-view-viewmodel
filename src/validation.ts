@@ -1,4 +1,4 @@
-import type { IEventHandler, INotifyPropertiesChanged, ICollectionChange } from './events';
+import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler, ICollectionChangedEventHandler } from './events';
 import type { IReadOnlyObservableCollection } from './observable-collection';
 
 /** Represents a read-only interface for objects that can be validated. */
@@ -30,14 +30,14 @@ export interface IValidationConfig<TValidatableViewModel extends IValidatable & 
     /** A collection of property names to watch for. The validation is carried out only if the specified properties have changed.
      * These come in addition to the filters that is placed on the target. The target is not validated when its error, isValid and isInvalid properties change.
      */
-    readonly watchedProperties?: readonly string[];
+    readonly watchedProperties?: readonly PropertyKey[];
 }
 
 /** Represents a validator callback.
- * @template TValidatable The type of validatable objects to validate.
+ * @template T The type of validatable objects to validate.
  * @param validatable The object being validated.
  */
-export type ValidatorCallback<TValidatable extends IReadOnlyValidatable> = (validatable: TValidatable) => string | undefined;
+export type ValidatorCallback<T> = (validatable: T) => string | undefined;
 
 /** Represents a collection bound validator callback.
  * @template TValidatable The type of validatable objects to validate.
@@ -102,7 +102,7 @@ export function registerValidators<TValidatableViewModel extends IValidatable & 
 export function registerValidators<TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(validatableOrConfig: TValidatableViewModel | IValidationConfig<TValidatableViewModel>, validators: readonly ValidatorCallback<TValidatableViewModel>[]): UnsubscribeCallback {
     let target: TValidatableViewModel;
     let triggers: readonly INotifyPropertiesChanged[] | undefined = undefined;
-    let watchedProperties: readonly string[] | undefined = undefined;
+    let watchedProperties: readonly PropertyKey[] | undefined = undefined;
     if (isValidationConfig(validatableOrConfig)) {
         target = validatableOrConfig.target;
         triggers = validatableOrConfig.triggers;
@@ -111,14 +111,14 @@ export function registerValidators<TValidatableViewModel extends IValidatable & 
     else
         target = validatableOrConfig;
 
-    const validatableChangedEventHandler: IEventHandler<readonly string[]> = {
+    const validatableChangedEventHandler: IPropertiesChangedEventHandler<IValidatable & INotifyPropertiesChanged> = {
         handle(_, changedProperties): void {
-            if (!containsAny<keyof IValidatable>(changedProperties as readonly (keyof IValidatable)[], ['error', 'isValid', 'isInvalid'])
+            if (changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid')
                 && (watchedProperties === undefined || containsAny(changedProperties, watchedProperties)))
                 applyValidators(target, validators);
         }
     };
-    const triggerChangedEventHandler: IEventHandler<readonly string[]> = {
+    const triggerChangedEventHandler: IPropertiesChangedEventHandler<INotifyPropertiesChanged> = {
         handle(_, changedProperties): void {
             if (watchedProperties === undefined || containsAny(changedProperties, watchedProperties))
                 applyValidators(target, validators);
@@ -175,19 +175,19 @@ export function registerCollectionValidators<TItem, TValidatableViewModel extend
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback {
-    const validatableChangedEventHandler: IEventHandler<readonly string[]> = {
+    const validatableChangedEventHandler: IPropertiesChangedEventHandler<IValidatable> = {
         handle(_, changedProperties): void {
-            if (!containsAny(changedProperties, ['error', 'isValid', 'isInvalid']))
+            if (changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid'))
                 validateItems(changedProperties);
         }
     };
-    const triggerChangedEventHandler: IEventHandler<readonly string[]> = {
+    const triggerChangedEventHandler: IPropertiesChangedEventHandler<TValidatableViewModel> = {
         handle(_, changedProperties): void {
             validateItems(changedProperties);
         }
     };
-    const collectionChangedEventHandler: IEventHandler<ICollectionChange<TItem>> = {
-        handle(_: IReadOnlyObservableCollection<TItem>, collectionChange): void {
+    const collectionChangedEventHandler: ICollectionChangedEventHandler<IReadOnlyObservableCollection<TItem>, TItem> = {
+        handle(_, collectionChange): void {
             collectionChange.removedItems && collectionChange.removedItems.forEach(unwatchItem);
             collectionChange.addedItems && collectionChange.addedItems.forEach(watchItem);
             validateItems();
@@ -233,7 +233,7 @@ export function registerCollectionValidators<TItem, TValidatableViewModel extend
         }
     }
 
-    function validateItems(changedProperties?: readonly string[]): void {
+    function validateItems(changedProperties?: readonly (keyof TValidatableViewModel)[]): void {
         collection.forEach((item, _) => {
             const validatableOrConfig = selector(item);
             if (isValidationConfig(validatableOrConfig)) {
@@ -290,9 +290,9 @@ export function registerCollectionItemValidators<TItem, TValidatableViewModel ex
  * @returns Returns a clean-up callback that unsubscribes all event registrations.
  */
 export function registerCollectionItemValidators<TItem, TValidatableViewModel extends IValidatable & INotifyPropertiesChanged>(collection: IReadOnlyObservableCollection<TItem>, selector: ValidatableSelectorCallback<TItem, TValidatableViewModel> | ValidationConfigSelectorCallback<TItem, TValidatableViewModel>, validators: readonly CollectionItemValidatorCallback<TValidatableViewModel, TItem>[]): UnsubscribeCallback {
-    const validatableChangedEventHandler: IEventHandler<readonly string[]> = {
+    const validatableChangedEventHandler: IPropertiesChangedEventHandler<IValidatable & INotifyPropertiesChanged> = {
         handle(validatable: TValidatableViewModel, changedProperties): void {
-            if (!containsAny(changedProperties, ['error', 'isValid', 'isInvalid'])) {
+            if (changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid')) {
                 collection.forEach(item => {
                     if (item !== undefined && item !== null) {
                         const currentValidatableOrConfig = selector(item);
@@ -311,8 +311,8 @@ export function registerCollectionItemValidators<TItem, TValidatableViewModel ex
             }
         }
     };
-    const triggerChangedEventHandler: IEventHandler<readonly string[]> = {
-        handle(trigger: INotifyPropertiesChanged, changedProperties): void {
+    const triggerChangedEventHandler: IPropertiesChangedEventHandler<INotifyPropertiesChanged> = {
+        handle(trigger, changedProperties): void {
             collection.forEach(item => {
                 if (item !== undefined && item !== null) {
                     const { target, triggers, watchedProperties } = selector(item) as IValidationConfig<TValidatableViewModel>;
@@ -322,8 +322,8 @@ export function registerCollectionItemValidators<TItem, TValidatableViewModel ex
             });
         }
     };
-    const collectionChangedEventHandler: IEventHandler<ICollectionChange<TItem>> = {
-        handle(_: IReadOnlyObservableCollection<TItem>, collectionChange): void {
+    const collectionChangedEventHandler: ICollectionChangedEventHandler<IReadOnlyObservableCollection<TItem>, TItem> = {
+        handle(_, collectionChange): void {
             collectionChange.removedItems && collectionChange.removedItems.forEach(unwatchItem);
             collectionChange.addedItems && collectionChange.addedItems.forEach(watchItem);
         }

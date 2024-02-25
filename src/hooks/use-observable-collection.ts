@@ -1,4 +1,4 @@
-import type { ICollectionChange, IEventHandler } from '../events';
+import type { ICollectionChangedEventHandler } from '../events';
 import type { IReadOnlyObservableCollection } from '../observable-collection';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +17,7 @@ export function useObservableCollection<TItem>(observableCollection: IReadOnlyOb
             if (observableCollection) {
                 let previousItems: readonly TItem[] = [...observableCollection];
 
-                const collectionChangedEventHandler: IEventHandler<ICollectionChange<TItem>> = {
+                const collectionChangedEventHandler: ICollectionChangedEventHandler<IReadOnlyObservableCollection<TItem>, TItem> = {
                     handle(): void {
                         if (hasChanges(previousItems, observableCollection)) {
                             previousItems = [...observableCollection];

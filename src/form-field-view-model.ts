@@ -78,7 +78,7 @@ export class FormFieldViewModel<TValue> extends ViewModel implements IFormFieldV
         }
         else {
             this._name = nameOrConfig.name;
-            this._value = "value" in nameOrConfig ? nameOrConfig.value : nameOrConfig.initialValue;
+            this._value = 'value' in nameOrConfig ? nameOrConfig.value : nameOrConfig.initialValue;
             this._initialValue = nameOrConfig.initialValue;
             this._isTouched = false;
             this._isFocused = false;

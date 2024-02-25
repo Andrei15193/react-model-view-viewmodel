@@ -9,12 +9,12 @@ import { ViewModel } from '../../src/view-model';
 
 describe('watch-event/useViewModelType', (): void => {
     class TestViewModel extends ViewModel {
-        public event = new EventDispatcher<any>();
+        public event = new EventDispatcher<unknown, unknown>();
     }
 
     interface ITestComponentProps {
         readonly viewModel: TestViewModel;
-        readonly eventHandler: EventHandler<any>;
+        readonly eventHandler: EventHandler<unknown>;
     }
 
     function TestComponent({ viewModel, eventHandler }: ITestComponentProps): JSX.Element {

@@ -1,4 +1,4 @@
-import type { INotifyPropertiesChanged, IEventHandler } from '../events';
+import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler } from '../events';
 import { type DependencyList, useMemo, useState, useEffect } from 'react';
 import { isViewModel } from '../view-model';
 
@@ -56,7 +56,7 @@ function useViewModelProperties<TViewModel extends INotifyPropertiesChanged>(vie
     useEffect(
         (): EffectResult => {
             let previousProps: Readonly<Record<string, any>> = {};
-            const propertyChangedEventHandler: IEventHandler<readonly string[]> = {
+            const propertyChangedEventHandler: IPropertiesChangedEventHandler<TViewModel> = {
                 handle(subject, changedProperties) {
                     const actualChangedProperties = getChangedProperties(previousProps, subject, changedProperties);
                     const actualChangedWatchedProperties = actualChangedProperties === null || actualChangedProperties === undefined || watchedProperties === null || watchedProperties === undefined
@@ -83,14 +83,14 @@ function useViewModelProperties<TViewModel extends INotifyPropertiesChanged>(vie
     );
 }
 
-function getChangedProperties(previous: any, next: any, properties: readonly string[]): readonly string[] | undefined {
+function getChangedProperties(previous: any, next: any, properties: readonly PropertyKey[]): readonly PropertyKey[] | undefined {
     if (next === null || next === undefined || previous === null || previous === undefined)
         return undefined;
     else
         return properties.filter(property => previous[property] !== next[property]);
 }
 
-function selectProps(object: any, properties: readonly string[]): void {
+function selectProps(object: any, properties: readonly PropertyKey[]): void {
     return properties.reduce<any>(
         (result, property) => {
             result[property] = object[property];

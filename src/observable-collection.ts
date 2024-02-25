@@ -1,4 +1,4 @@
-import type { ICollectionChange, IEvent, IItemAddedEventArgs, IItemRemovedEventArgs, INotifyCollectionChanged, INotifyPropertiesChanged, ItemRemovedCallback } from './events';
+import type { ICollectionChange, ICollectionChangedEvent, IEvent, IItemAddedEventArgs, IItemRemovedEventArgs, INotifyCollectionChanged, INotifyPropertiesChanged, ItemRemovedCallback } from './events';
 import { EventDispatcher } from './events';
 import { ViewModel } from './view-model';
 
@@ -89,9 +89,9 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
 export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IReadOnlyObservableCollection<TItem> {
     private readonly _items: TItem[] = [];
     private readonly _itemCleanupCallbacks: ItemRemovedCallback<TItem>[][];
-    private readonly _itemAdded: EventDispatcher<IItemAddedEventArgs<TItem>>;
-    private readonly _itemRemoved: EventDispatcher<IItemRemovedEventArgs<TItem>>;
-    private readonly _collectionChanged: EventDispatcher<ICollectionChange<TItem>>;
+    private readonly _itemAdded: EventDispatcher<this, IItemAddedEventArgs<TItem>>;
+    private readonly _itemRemoved: EventDispatcher<this, IItemRemovedEventArgs<TItem>>;
+    private readonly _collectionChanged: EventDispatcher<this, ICollectionChange<TItem>>;
 
     /** Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
      * @param items The items to initialize the collection with.
@@ -101,9 +101,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         this._items = [...items];
         this._items.forEach((item, index) => (this as any)[index] = item);
         this._itemCleanupCallbacks = items.map(() => []);
-        this.itemAdded = this._itemAdded = new EventDispatcher<IItemAddedEventArgs<TItem>>();
-        this.itemRemoved = this._itemRemoved = new EventDispatcher<IItemRemovedEventArgs<TItem>>();
-        this.collectionChanged = this._collectionChanged = new EventDispatcher<ICollectionChange<TItem>>();
+        this.itemAdded = this._itemAdded = new EventDispatcher<this, IItemAddedEventArgs<TItem>>();
+        this.itemRemoved = this._itemRemoved = new EventDispatcher<this, IItemRemovedEventArgs<TItem>>();
+        this.collectionChanged = this._collectionChanged = new EventDispatcher<this, ICollectionChange<TItem>>();
     }
 
     /** Gets the item at the provided {@link n} index
@@ -113,13 +113,13 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     readonly [n: number]: TItem;
 
     /** An event that is raised when an item is added to the collection. */
-    public readonly itemAdded: IEvent<IItemAddedEventArgs<TItem>>;
+    public readonly itemAdded: IEvent<this, IItemAddedEventArgs<TItem>>;
 
     /** An event that is raised when an item is removed from the collection. */
-    public readonly itemRemoved: IEvent<IItemRemovedEventArgs<TItem>>;
+    public readonly itemRemoved: IEvent<this, IItemRemovedEventArgs<TItem>>;
 
     /** An event that is raised when the collection changed. */
-    public readonly collectionChanged: IEvent<ICollectionChange<TItem>>;
+    public readonly collectionChanged: ICollectionChangedEvent<this, TItem>;
 
     /** Gets the number of items in the collection. */
     public get length(): number {

@@ -28,7 +28,7 @@ describe('watch-view-model/watchViewModel', (): void => {
             this.notifyPropertiesChanged('value2');
         }
 
-        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
+        public notifyPropertiesChanged(changedProperty: keyof this, ...otherChangedProperties: readonly (keyof this)[]): void {
             super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
         }
     }

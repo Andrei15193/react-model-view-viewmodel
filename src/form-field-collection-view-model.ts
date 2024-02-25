@@ -1,4 +1,4 @@
-import type { IEventHandler } from './events';
+import type { IPropertiesChangedEventHandler } from './events';
 import type { IObservableCollection, IReadOnlyObservableCollection } from './observable-collection';
 import type { IValidatable } from './validation';
 import { ViewModel } from './view-model';
@@ -27,7 +27,7 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
 
     private _error: string | undefined;
     private readonly _fields: IObservableCollection<TFormFieldViewModel> = new ObservableCollection<TFormFieldViewModel>();
-    private readonly _fieldChangedEventHandler: IEventHandler<readonly string[]>;
+    private readonly _fieldChangedEventHandler: IPropertiesChangedEventHandler<TFormFieldViewModel>;
 
     /** Initializes a new instance of the {@link FormFieldCollectionViewModel} class. */
     public constructor() {

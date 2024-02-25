@@ -13,7 +13,7 @@ describe('events/EventDispatcher', (): void => {
         const subject = {};
         const args = {};
 
-        const eventDispatcher = new EventDispatcher<{}>();
+        const eventDispatcher = new EventDispatcher<unknown, {}>();
         eventDispatcher.subscribe({
             handle(actualSubject, actualArgs) {
                 invocationCount++;
@@ -29,13 +29,13 @@ describe('events/EventDispatcher', (): void => {
     it('dispatching event to subscriber that unsubscribes next one no longer notifies it', (): void => {
         const eventDispatcher = new EventDispatcher();
         let secondInvocationCount = 0;
-        const secondSubscriber: IEventHandler = {
+        const secondSubscriber: IEventHandler<unknown> = {
             handle() {
                 secondInvocationCount++;
             }
         };
         let firstInvocationCount = 0;
-        const firstSubscriber: IEventHandler = {
+        const firstSubscriber: IEventHandler<unknown> = {
             handle() {
                 firstInvocationCount++;
                 eventDispatcher.unsubscribe(secondSubscriber);
@@ -52,7 +52,7 @@ describe('events/EventDispatcher', (): void => {
 
     it('dispatching event to handler subscribed twice notifies it twice', (): void => {
         let invocationCount = 0;
-        const subscriber: IEventHandler = {
+        const subscriber: IEventHandler<unknown> = {
             handle() {
                 invocationCount++;
             }
@@ -68,7 +68,7 @@ describe('events/EventDispatcher', (): void => {
 
     it('dispatching event to handler subscribed twice then unsubscribed once notifies it once', (): void => {
         let invocationCount = 0;
-        const subscriber: IEventHandler = {
+        const subscriber: IEventHandler<unknown> = {
             handle() {
                 invocationCount++;
             }

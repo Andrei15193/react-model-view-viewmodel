@@ -10,8 +10,8 @@ describe('validation/registerValidators', (): void => {
         readonly isInvalid: boolean = false;
         error: string | undefined = undefined;
 
-        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
-            super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
+        public notifyPropertiesChanged(changedProperty: PropertyKey, ...otherChangedProperties: readonly PropertyKey[]): void {
+            super.notifyPropertiesChanged(changedProperty as keyof this, ...otherChangedProperties as readonly (keyof this)[]);
         }
     }
 
@@ -125,8 +125,8 @@ describe('validation/registerCollectionValidators', (): void => {
         readonly isInvalid: boolean = false;
         error: string | undefined = undefined;
 
-        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
-            super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
+        public notifyPropertiesChanged(changedProperty: PropertyKey, ...otherChangedProperties: readonly PropertyKey[]): void {
+            super.notifyPropertiesChanged(changedProperty as keyof this, ...otherChangedProperties as readonly (keyof this)[]);
         }
     }
 
@@ -364,8 +364,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         readonly isInvalid: boolean = false;
         error: string | undefined = undefined;
 
-        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
-            super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
+        public notifyPropertiesChanged(changedProperty: PropertyKey, ...otherChangedProperties: readonly PropertyKey[]): void {
+            super.notifyPropertiesChanged(changedProperty as keyof this, ...otherChangedProperties as readonly (keyof this)[]);
         }
     }
 

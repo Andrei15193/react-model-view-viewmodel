@@ -6,7 +6,7 @@ describe('view-model/ViewModel', (): void => {
         readonly one: string;
         readonly two: string;
 
-        public notifyPropertiesChanged(changedProperty: string, ...otherChangedProperties: readonly string[]): void {
+        public notifyPropertiesChanged(changedProperty: keyof this, ...otherChangedProperties: readonly (keyof this)[]): void {
             super.notifyPropertiesChanged(changedProperty, ...otherChangedProperties);
         }
     }

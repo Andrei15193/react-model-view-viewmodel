@@ -57,7 +57,7 @@ export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<
         [input, onBlur]
     );
 
-    useEvent(
+    useEvent<IFormFieldViewModel<TValue>, readonly (keyof IFormFieldViewModel<TValue>)[]>(
         field && field.propertiesChanged,
         (_, changedProperties) => {
             if (!isHandlingFocusEvent.current && changedProperties.indexOf('isFocused') >= 0)

@@ -1,4 +1,4 @@
-import { EventDispatcher, type INotifyPropertiesChanged } from '../src/events';
+import { EventDispatcher } from '../src/events';
 import { expect } from 'chai';
 import { FormFieldViewModel } from '../src/form-field-view-model';
 
@@ -54,7 +54,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
     it('creating form field from config with validators and validation config registers and applies them', (): void => {
         let error: string | undefined = undefined;
-        const validationTrigger = new EventDispatcher<readonly string[]>();
+        const validationTrigger = new EventDispatcher<unknown, readonly PropertyKey[]>();
 
         const initialValue = {};
         const formField = new FormFieldViewModel({

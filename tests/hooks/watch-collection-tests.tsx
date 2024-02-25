@@ -1,4 +1,3 @@
-import type { ICollectionChange } from '../../src/events';
 import type { IReadOnlyObservableCollection } from '../../src/observable-collection';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
@@ -29,10 +28,10 @@ describe('watch-collection/watchCollection', (): void => {
         constructor(...items: readonly TItem[]) {
             super();
             this.push(...items);
-            this.collectionChanged = new EventDispatcher<ICollectionChange<TItem>>();
+            this.collectionChanged = new EventDispatcher<unknown, unknown>();
         }
 
-        public collectionChanged: EventDispatcher<ICollectionChange<TItem>>;
+        public collectionChanged: EventDispatcher<unknown, unknown>;
     }
 
     it('changing the collection updates the component', (): void => {
