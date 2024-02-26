@@ -32,7 +32,7 @@
     "url": "https://github.com/Andrei15193/react-model-view-viewmodel/issues"
   },
   "homepage": "https://github.com/Andrei15193/react-model-view-viewmodel/wiki",
-  "dependencies": {
+  "peerDependencies": {
     "react": ">=16.8"
   },
   "devDependencies": {
