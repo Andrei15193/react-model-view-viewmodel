@@ -1,5 +1,4 @@
 import { FormFieldViewModel } from '../src/form-field-view-model';
-import { expect } from 'chai';
 import { FormFieldCollectionViewModel } from '../src/form-field-collection-view-model';
 
 describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): void => {
@@ -23,17 +22,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['error', 'isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal('');
-                expect(formFieldCollection.isValid).is.equal(false);
-                expect(formFieldCollection.isInvalid).is.equal(true);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['error', 'isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe('');
+                expect(formFieldCollection.isValid).toBe(false);
+                expect(formFieldCollection.isInvalid).toBe(true);
             }
         });
 
         formFieldCollection.error = '';
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same error does not notify subscribers', (): void => {
@@ -48,7 +47,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
         formFieldCollection.error = '';
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting error back to undefined notifies subscribers and updates related flags', (): void => {
@@ -58,17 +57,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['error', 'isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal(undefined);
-                expect(formFieldCollection.isValid).is.equal(true);
-                expect(formFieldCollection.isInvalid).is.equal(false);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['error', 'isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe(undefined);
+                expect(formFieldCollection.isValid).toBe(true);
+                expect(formFieldCollection.isInvalid).toBe(false);
             }
         });
 
         formFieldCollection.error = undefined;
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('registering a field updates related flags', (): void => {
@@ -77,17 +76,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal(undefined);
-                expect(formFieldCollection.isValid).is.equal(true);
-                expect(formFieldCollection.isInvalid).is.equal(false);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe(undefined);
+                expect(formFieldCollection.isValid).toBe(true);
+                expect(formFieldCollection.isInvalid).toBe(false);
             }
         });
 
         formFieldCollection.addField('', '');
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('registering and invalidating a field updates related flags', (): void => {
@@ -97,17 +96,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal(undefined);
-                expect(formFieldCollection.isValid).is.equal(false);
-                expect(formFieldCollection.isInvalid).is.equal(true);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe(undefined);
+                expect(formFieldCollection.isValid).toBe(false);
+                expect(formFieldCollection.isInvalid).toBe(true);
             }
         });
 
         field.error = '';
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('registering and validating a field updates related flags', (): void => {
@@ -118,17 +117,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal(undefined);
-                expect(formFieldCollection.isValid).is.equal(true);
-                expect(formFieldCollection.isInvalid).is.equal(false);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe(undefined);
+                expect(formFieldCollection.isValid).toBe(true);
+                expect(formFieldCollection.isInvalid).toBe(false);
             }
         });
 
         field.error = undefined;
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('unregistering a field updates related flags', (): void => {
@@ -138,17 +137,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal(undefined);
-                expect(formFieldCollection.isValid).is.equal(true);
-                expect(formFieldCollection.isInvalid).is.equal(false);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe(undefined);
+                expect(formFieldCollection.isValid).toBe(true);
+                expect(formFieldCollection.isInvalid).toBe(false);
             }
         });
 
         formFieldCollection.unregisterField(field);
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('unregistering an invalid field updates related flags', (): void => {
@@ -159,17 +158,17 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         formFieldCollection.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formFieldCollection);
-                expect(changedProperties).is.deep.equal(['isValid', 'isInvalid']);
-                expect(formFieldCollection.error).is.equal(undefined);
-                expect(formFieldCollection.isValid).is.equal(true);
-                expect(formFieldCollection.isInvalid).is.equal(false);
+                expect(subject).toStrictEqual(formFieldCollection);
+                expect(changedProperties).toEqual(['isValid', 'isInvalid']);
+                expect(formFieldCollection.error).toBe(undefined);
+                expect(formFieldCollection.isValid).toBe(true);
+                expect(formFieldCollection.isInvalid).toBe(false);
             }
         });
 
         formFieldCollection.unregisterField(field);
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('registering a field makes it available through the fields property', (): void => {
@@ -179,7 +178,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
         const field2 = formFieldCollection.addField('', '');
         const field3 = formFieldCollection.addField('', '');
 
-        expect(formFieldCollection.fields.toArray()).is.deep.equal([field1, field2, field3]);
+        expect(formFieldCollection.fields.toArray()).toEqual([field1, field2, field3]);
     });
 
     it('unregistering a field no longer makes it available through the fields property', (): void => {
@@ -190,7 +189,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
         formFieldCollection.unregisterField(field2);
 
-        expect(formFieldCollection.fields.toArray()).is.deep.equal([field1, field3]);
+        expect(formFieldCollection.fields.toArray()).toEqual([field1, field3]);
     });
 
     it('registering a field twice and unregistering it once makes it available through the fields property once', (): void => {
@@ -200,7 +199,7 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
 
         formFieldCollection.unregisterField(field);
 
-        expect(formFieldCollection.fields.toArray()).is.deep.equal([field]);
+        expect(formFieldCollection.fields.toArray()).toEqual([field]);
     });
 
     it('creating a dynamic form registers all fields', (): void => {
@@ -209,9 +208,8 @@ describe('form-field-collection-view-model/FormFieldCollectionViewModel', (): vo
             field2: new FormFieldViewModel('field2', null)
         });
 
-        expect(formFieldCollection.fields.toArray())
-            .does.include(formFieldCollection.field1)
-            .and.does.include(formFieldCollection.field2)
-            .and.property('length').is.equal(2);
+        expect(formFieldCollection.fields.toArray()).toContain(formFieldCollection.field1);
+        expect(formFieldCollection.fields.toArray()).toContain(formFieldCollection.field2);
+        expect(formFieldCollection.fields.toArray().length).toBe(2);
     });
 });

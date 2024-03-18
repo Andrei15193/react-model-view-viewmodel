@@ -1,5 +1,4 @@
-import type { IEventHandler } from '../src/events';
-import { expect } from 'chai';
+import { IEventHandler } from '../src/events';
 import { EventDispatcher } from '../src/events';
 
 describe('events/EventDispatcher', (): void => {
@@ -17,13 +16,13 @@ describe('events/EventDispatcher', (): void => {
         eventDispatcher.subscribe({
             handle(actualSubject, actualArgs) {
                 invocationCount++;
-                expect(actualSubject).is.equal(subject);
-                expect(actualArgs).is.equal(args);
+                expect(actualSubject).toStrictEqual(subject);
+                expect(actualArgs).toStrictEqual(args);
             }
         })
         eventDispatcher.dispatch(subject, args);
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toStrictEqual(1);
     });
 
     it('dispatching event to subscriber that unsubscribes next one no longer notifies it', (): void => {
@@ -46,8 +45,8 @@ describe('events/EventDispatcher', (): void => {
 
         eventDispatcher.dispatch(null);
 
-        expect(firstInvocationCount).is.equal(1);
-        expect(secondInvocationCount).is.equal(0);
+        expect(firstInvocationCount).toBe(1);
+        expect(secondInvocationCount).toBe(0);
     });
 
     it('dispatching event to handler subscribed twice notifies it twice', (): void => {
@@ -63,7 +62,7 @@ describe('events/EventDispatcher', (): void => {
 
         eventDispatcher.dispatch(null);
 
-        expect(invocationCount).is.equal(2);
+        expect(invocationCount).toBe(2);
     });
 
     it('dispatching event to handler subscribed twice then unsubscribed once notifies it once', (): void => {
@@ -80,6 +79,6 @@ describe('events/EventDispatcher', (): void => {
 
         eventDispatcher.dispatch(null);
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 });

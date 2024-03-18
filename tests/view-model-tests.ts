@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ViewModel } from '../src/view-model';
 
 describe('view-model/ViewModel', (): void => {
@@ -17,13 +16,13 @@ describe('view-model/ViewModel', (): void => {
         viewModel.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(viewModel);
-                expect(changedProperties).is.deep.equal(['one', 'two']);
+                expect(subject).toBe(viewModel);
+                expect(changedProperties).toEqual(['one', 'two']);
             }
         })
 
         viewModel.notifyPropertiesChanged('one', 'two');
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 });

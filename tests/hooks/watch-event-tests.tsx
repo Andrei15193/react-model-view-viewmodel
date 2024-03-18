@@ -1,8 +1,7 @@
-import type { EventHandler } from '../../src/hooks/use-event';
+import { EventHandler } from '../../src/hooks/use-event';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
-import { expect } from 'chai';
 import { EventDispatcher } from '../../src/events';
 import { watchEvent } from '../../src/hooks/use-event';
 import { ViewModel } from '../../src/view-model';
@@ -29,13 +28,13 @@ describe('watch-event/useViewModelType', (): void => {
         const viewModel = new TestViewModel();
         let invocationCount = 0;
         render(<TestComponent viewModel={viewModel} eventHandler={() => { invocationCount++; }} />);
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
 
         act(() => {
             viewModel.event.dispatch(undefined, undefined);
         });
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('raising the event passes subject and event args', (): void => {
@@ -45,15 +44,15 @@ describe('watch-event/useViewModelType', (): void => {
         let invocationCount = 0;
         render(<TestComponent viewModel={viewModel} eventHandler={(actualSubject, actualEventArgs) => {
             invocationCount++;
-            expect(actualSubject).is.equal(subject);
-            expect(actualEventArgs).is.equal(eventArgs);
+            expect(actualSubject).toBe(subject);
+            expect(actualEventArgs).toBe(eventArgs);
         }} />);
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
 
         act(() => {
             viewModel.event.dispatch(subject, eventArgs);
         });
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 });

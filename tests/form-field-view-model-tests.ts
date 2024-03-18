@@ -1,5 +1,4 @@
 import { EventDispatcher } from '../src/events';
-import { expect } from 'chai';
 import { FormFieldViewModel } from '../src/form-field-view-model';
 
 describe('form-field-view-model/FormFieldViewModel', (): void => {
@@ -7,14 +6,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         const initialValue = {};
         const formField = new FormFieldViewModel('name', initialValue);
 
-        expect(formField.name).is.equal('name');
-        expect(formField.initialValue).is.equal(initialValue);
-        expect(formField.value).is.equal(initialValue);
-        expect(formField.isTouched).is.equal(false);
-        expect(formField.isFocused).is.equal(false);
-        expect(formField.isValid).is.equal(true);
-        expect(formField.isInvalid).is.equal(false);
-        expect(formField.error).is.equal(undefined);
+        expect(formField.name).toBe('name');
+        expect(formField.initialValue).toBe(initialValue);
+        expect(formField.value).toBe(initialValue);
+        expect(formField.isTouched).toBe(false);
+        expect(formField.isFocused).toBe(false);
+        expect(formField.isValid).toBe(true);
+        expect(formField.isInvalid).toBe(false);
+        expect(formField.error).toBe(undefined);
     });
 
     it('creating form field from config initializes value with initial value and other fields with default values', (): void => {
@@ -24,14 +23,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
             initialValue
         });
 
-        expect(formField.name).is.equal('name');
-        expect(formField.initialValue).is.equal(initialValue);
-        expect(formField.value).is.equal(initialValue);
-        expect(formField.isTouched).is.equal(false);
-        expect(formField.isFocused).is.equal(false);
-        expect(formField.isValid).is.equal(true);
-        expect(formField.isInvalid).is.equal(false);
-        expect(formField.error).is.equal(undefined);
+        expect(formField.name).toBe('name');
+        expect(formField.initialValue).toBe(initialValue);
+        expect(formField.value).toBe(initialValue);
+        expect(formField.isTouched).toBe(false);
+        expect(formField.isFocused).toBe(false);
+        expect(formField.isValid).toBe(true);
+        expect(formField.isInvalid).toBe(false);
+        expect(formField.error).toBe(undefined);
     });
 
     it('creating form field from config with validators registers and applies them', (): void => {
@@ -42,14 +41,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
             validators: [() => 'test-error']
         });
 
-        expect(formField.name).is.equal('name');
-        expect(formField.initialValue).is.equal(initialValue);
-        expect(formField.value).is.equal(initialValue);
-        expect(formField.isTouched).is.equal(false);
-        expect(formField.isFocused).is.equal(false);
-        expect(formField.isValid).is.equal(false);
-        expect(formField.isInvalid).is.equal(true);
-        expect(formField.error).is.equal('test-error');
+        expect(formField.name).toBe('name');
+        expect(formField.initialValue).toBe(initialValue);
+        expect(formField.value).toBe(initialValue);
+        expect(formField.isTouched).toBe(false);
+        expect(formField.isFocused).toBe(false);
+        expect(formField.isValid).toBe(false);
+        expect(formField.isInvalid).toBe(true);
+        expect(formField.error).toBe('test-error');
     });
 
     it('creating form field from config with validators and validation config registers and applies them', (): void => {
@@ -65,12 +64,12 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
             },
             validators: [() => error]
         });
-        expect(formField.error).is.equal(undefined);
+        expect(formField.error).toBe(undefined);
 
         error = 'test-error';
         validationTrigger.dispatch({}, []);
 
-        expect(formField.error).is.equal('test-error');
+        expect(formField.error).toBe('test-error');
     });
 
     it('setting name notifies subscribers', (): void => {
@@ -79,14 +78,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['name']);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['name']);
             }
         });
 
         formField.name = 'new-name';
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same name does not notify subscribers', (): void => {
@@ -100,7 +99,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
         formField.name = 'name';
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting initial value notifies subscribers', (): void => {
@@ -109,14 +108,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['initialValue']);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['initialValue']);
             }
         });
 
         formField.initialValue = 'new-value';
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same initial value does not notify subscribers', (): void => {
@@ -130,7 +129,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
         formField.initialValue = 'value';
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting value notifies subscribers', (): void => {
@@ -139,14 +138,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['value']);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['value']);
             }
         });
 
         formField.value = 'new-value';
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same value does not notify subscribers', (): void => {
@@ -160,7 +159,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
         formField.value = 'value';
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting isTouched notifies subscribers', (): void => {
@@ -169,14 +168,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['isTouched']);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['isTouched']);
             }
         });
 
         formField.isTouched = true;
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same isTouched does not notify subscribers', (): void => {
@@ -190,7 +189,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
         formField.isTouched = false;
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting isFocused notifies subscribers', (): void => {
@@ -199,14 +198,14 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['isFocused']);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['isFocused']);
             }
         });
 
         formField.isFocused = true;
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same isFocused does not notify subscribers', (): void => {
@@ -220,7 +219,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
         formField.isFocused = false;
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting error notifies subscribers and updates related flags', (): void => {
@@ -229,17 +228,17 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['error', 'isValid', 'isInvalid']);
-                expect(formField.error).is.equal('');
-                expect(formField.isValid).is.equal(false);
-                expect(formField.isInvalid).is.equal(true);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['error', 'isValid', 'isInvalid']);
+                expect(formField.error).toBe('');
+                expect(formField.isValid).toBe(false);
+                expect(formField.isInvalid).toBe(true);
             }
         });
 
         formField.error = '';
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 
     it('setting same error does not notify subscribers', (): void => {
@@ -254,7 +253,7 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
 
         formField.error = '';
 
-        expect(invocationCount).is.equal(0);
+        expect(invocationCount).toBe(0);
     });
 
     it('setting error back to undefined notifies subscribers and updates related flags', (): void => {
@@ -264,16 +263,16 @@ describe('form-field-view-model/FormFieldViewModel', (): void => {
         formField.propertiesChanged.subscribe({
             handle(subject, changedProperties) {
                 invocationCount++;
-                expect(subject).is.equal(formField);
-                expect(changedProperties).is.deep.equal(['error', 'isValid', 'isInvalid']);
-                expect(formField.error).is.equal(undefined);
-                expect(formField.isValid).is.equal(true);
-                expect(formField.isInvalid).is.equal(false);
+                expect(subject).toBe(formField);
+                expect(changedProperties).toEqual(['error', 'isValid', 'isInvalid']);
+                expect(formField.error).toBe(undefined);
+                expect(formField.isValid).toBe(true);
+                expect(formField.isInvalid).toBe(false);
             }
         });
 
         formField.error = undefined;
 
-        expect(invocationCount).is.equal(1);
+        expect(invocationCount).toBe(1);
     });
 });

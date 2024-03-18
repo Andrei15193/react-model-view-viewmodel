@@ -1,5 +1,4 @@
-import type { IValidatable } from '../src/validation';
-import { expect } from 'chai';
+import { IValidatable } from '../src/validation';
 import { ViewModel } from '../src/view-model';
 import { registerValidators, registerCollectionValidators, registerCollectionItemValidators } from '../src/validation';
 import { ObservableCollection } from '../src/observable-collection';
@@ -20,7 +19,7 @@ describe('validation/registerValidators', (): void => {
 
         const unsubscribeCallback = registerValidators(validatable, [() => 'error']);
 
-        expect(validatable.error).is.equal('error');
+        expect(validatable.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -29,7 +28,7 @@ describe('validation/registerValidators', (): void => {
 
         const unsubscribeCallback = registerValidators(validatable, [false as any, undefined, () => 'error']);
 
-        expect(validatable.error).is.equal('error');
+        expect(validatable.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -37,12 +36,12 @@ describe('validation/registerValidators', (): void => {
         let isValid = true;
         const validatable = new MockValidatableViewModel();
         const unsubscribeCallback = registerValidators(validatable, [() => isValid ? undefined : 'error']);
-        expect(validatable.error).is.undefined;
+        expect(validatable.error).toBe(undefined);
 
         isValid = false;
         validatable.notifyPropertiesChanged('value');
 
-        expect(validatable.error).is.equal('error');
+        expect(validatable.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -50,13 +49,13 @@ describe('validation/registerValidators', (): void => {
         let isValid = true;
         const validatable = new MockValidatableViewModel();
         const unsubscribeCallback = registerValidators(validatable, [() => isValid ? undefined : 'error']);
-        expect(validatable.error).is.undefined;
+        expect(validatable.error).toBe(undefined);
 
         isValid = false;
         unsubscribeCallback();
         validatable.notifyPropertiesChanged('value');
 
-        expect(validatable.error).is.undefined;
+        expect(validatable.error).toBe(undefined);
     });
 
     it('registered validators are triggered when trigger property has changed', (): void => {
@@ -68,7 +67,7 @@ describe('validation/registerValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('property');
 
-        expect(validatable.error).is.equal('error');
+        expect(validatable.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -82,7 +81,7 @@ describe('validation/registerValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('property');
 
-        expect(validatable.error).is.undefined;
+        expect(validatable.error).toBe(undefined);
     });
 
     it('registered validators are not triggered when watched property does not change', (): void => {
@@ -93,7 +92,7 @@ describe('validation/registerValidators', (): void => {
         isValid = false;
         validatable.notifyPropertiesChanged('not-watched-property');
 
-        expect(validatable.error).is.undefined;
+        expect(validatable.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -106,14 +105,14 @@ describe('validation/registerValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('not-watched-property');
 
-        expect(validatable.error).is.undefined;
+        expect(validatable.error).toBe(undefined);
         unsubscribeCallback();
     });
 
     it('registered validator gets called with validatable argument', (): void => {
         const validatable = new MockValidatableViewModel();
 
-        const unsubscribeCallback = registerValidators(validatable, [(actualValidatable) => { expect(actualValidatable).is.equal(actualValidatable); return undefined; }]);
+        const unsubscribeCallback = registerValidators(validatable, [(actualValidatable) => { expect(actualValidatable).toBe(actualValidatable); return undefined; }]);
         validatable.notifyPropertiesChanged('value');
         unsubscribeCallback();
     });
@@ -137,8 +136,8 @@ describe('validation/registerCollectionValidators', (): void => {
 
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => 'error']);
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -149,8 +148,8 @@ describe('validation/registerCollectionValidators', (): void => {
 
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [false as any, undefined, () => 'error']);
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -160,14 +159,14 @@ describe('validation/registerCollectionValidators', (): void => {
         const validatable2 = new MockValidatableViewModel();
         const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
 
         isValid = false;
         validatable1.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -177,15 +176,15 @@ describe('validation/registerCollectionValidators', (): void => {
         const validatable2 = new MockValidatableViewModel();
         const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
 
         isValid = false;
         unsubscribeCallback();
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
     });
 
     it('registered validators are re-applied to each item when one trigger changes', (): void => {
@@ -200,8 +199,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         trigger1.notifyPropertiesChanged('property');
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -217,8 +216,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
     });
 
     it('registered validators are not triggered when watched property does not change', (): void => {
@@ -231,8 +230,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         validatable1.notifyPropertiesChanged('not-watched-property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -247,8 +246,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('not-watched-property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -263,17 +262,17 @@ describe('validation/registerCollectionValidators', (): void => {
 
         let index = 0;
         const unsubscribeCallback = registerCollectionValidators(collection, item => item.validatable, [validate]);
-        expect(index).is.equal(2);
+        expect(index).toBe(2);
         index = 0;
         validatable1.notifyPropertiesChanged('value');
-        expect(index).is.equal(2);
+        expect(index).toBe(2);
         unsubscribeCallback();
 
         function validate(actualValidatable: any, actualItem: any, actualCollection: any): string | undefined {
-            expect(actualValidatable).is.equal(validatables[index]);
-            expect(actualItem).is.equal(items[index]);
-            expect(actualItem).is.equal(collection[index]);
-            expect(actualCollection).is.equal(collection);
+            expect(actualValidatable).toBe(validatables[index]);
+            expect(actualItem).toBe(items[index]);
+            expect(actualItem).toBe(collection[index]);
+            expect(actualCollection).toBe(collection);
             index++;
             return undefined;
         }
@@ -289,8 +288,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         collection.push({ validatable: validatable2 });
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -305,8 +304,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -320,8 +319,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         collection.splice(0, 1);
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -336,8 +335,8 @@ describe('validation/registerCollectionValidators', (): void => {
         isValid = false;
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -353,8 +352,8 @@ describe('validation/registerCollectionValidators', (): void => {
         unsubscribeCallback();
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
     });
 });
 
@@ -376,8 +375,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
 
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => 'error']);
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -388,8 +387,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
 
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [false as any, undefined, () => 'error']);
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -399,14 +398,14 @@ describe('validation/registerCollectionItemValidators', (): void => {
         const validatable2 = new MockValidatableViewModel();
         const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
 
         isValid = false;
         validatable1.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.equal('error');
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe('error');
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -416,15 +415,15 @@ describe('validation/registerCollectionItemValidators', (): void => {
         const validatable2 = new MockValidatableViewModel();
         const collection = new ObservableCollection({ validatable: validatable1 }, { validatable: validatable2 });
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [() => isValid ? undefined : 'error']);
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
 
         isValid = false;
         unsubscribeCallback();
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
     });
 
     it('registering validators are re-applied only to the item whose related trigger changes', (): void => {
@@ -439,8 +438,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         trigger2.notifyPropertiesChanged('property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -456,8 +455,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
     });
 
     it('registered validators are not triggered when watched property does not change', (): void => {
@@ -470,8 +469,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         validatable1.notifyPropertiesChanged('not-watched-property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -486,8 +485,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         trigger.notifyPropertiesChanged('not-watched-property');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -502,17 +501,17 @@ describe('validation/registerCollectionItemValidators', (): void => {
 
         let index = 0;
         const unsubscribeCallback = registerCollectionItemValidators(collection, item => item.validatable, [validate]);
-        expect(index).is.equal(2);
+        expect(index).toBe(2);
         index = 0;
         validatable1.notifyPropertiesChanged('value');
-        expect(index).is.equal(1);
+        expect(index).toBe(1);
         unsubscribeCallback();
 
         function validate(actualValidatable: any, actualItem: any, actualCollection: any): string | undefined {
-            expect(actualValidatable).is.equal(validatables[index]);
-            expect(actualItem).is.equal(items[index]);
-            expect(actualItem).is.equal(collection[index]);
-            expect(actualCollection).is.equal(collection);
+            expect(actualValidatable).toBe(validatables[index]);
+            expect(actualItem).toBe(items[index]);
+            expect(actualItem).toBe(collection[index]);
+            expect(actualCollection).toBe(collection);
             index++;
             return undefined;
         }
@@ -528,8 +527,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         collection.push({ validatable: validatable2 });
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -544,8 +543,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.equal('error');
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe('error');
         unsubscribeCallback();
     });
 
@@ -559,8 +558,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         collection.splice(0, 1);
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -575,8 +574,8 @@ describe('validation/registerCollectionItemValidators', (): void => {
         isValid = false;
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
         unsubscribeCallback();
     });
 
@@ -592,7 +591,7 @@ describe('validation/registerCollectionItemValidators', (): void => {
         unsubscribeCallback();
         validatable2.notifyPropertiesChanged('value');
 
-        expect(validatable1.error).is.undefined;
-        expect(validatable2.error).is.undefined;
+        expect(validatable1.error).toBe(undefined);
+        expect(validatable2.error).toBe(undefined);
     });
 });

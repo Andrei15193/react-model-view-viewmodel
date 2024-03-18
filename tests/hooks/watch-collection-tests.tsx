@@ -1,8 +1,7 @@
-import type { IReadOnlyObservableCollection } from '../../src/observable-collection';
+import { IReadOnlyObservableCollection } from '../../src/observable-collection';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
-import { expect } from 'chai';
 import { watchCollection } from '../../src/hooks/use-observable-collection';
 import { EventDispatcher } from '../../src/events';
 import { ObservableCollection } from '../../src/observable-collection';
@@ -37,29 +36,29 @@ describe('watch-collection/watchCollection', (): void => {
     it('changing the collection updates the component', (): void => {
         const collection = new ObservableCollection<number>();
         const { getByText } = render(<TestComponent collection={collection} />);
-        expect(getByText('Length: 0')).not.to.be.undefined;
+        expect(getByText('Length: 0')).not.toBe(undefined);
 
         act(() => {
             collection.push(1);
         });
 
-        expect(getByText('Length: 1')).not.to.be.undefined;
+        expect(getByText('Length: 1')).not.toBe(undefined);
     });
 
     it('subsequent property changed notifications do not render the component if it has no change', (): void => {
         const collection = new MockObseravableCollection<number>(1);
         let renderCount = 0;
         render(<TestComponent collection={collection} renderCallback={() => renderCount++} />);
-        expect(renderCount).is.equal(1);
+        expect(renderCount).toBe(1);
 
         act(() => {
             collection.collectionChanged.dispatch(undefined, undefined);
         });
-        expect(renderCount).is.equal(1);
+        expect(renderCount).toBe(1);
 
         act(() => {
             collection.collectionChanged.dispatch(undefined, undefined);
         });
-        expect(renderCount).is.equal(1);
+        expect(renderCount).toBe(1);
     });
 });

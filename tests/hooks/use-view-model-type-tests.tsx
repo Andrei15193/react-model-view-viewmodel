@@ -1,8 +1,7 @@
-import type { ViewModelType } from '../../src/hooks/use-view-model';
+import { ViewModelType } from '../../src/hooks/use-view-model';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { render } from '@testing-library/react';
-import { expect } from 'chai';
 import { useViewModelType } from '../../src/hooks/use-view-model-type';
 import { ViewModel } from '../../src/view-model';
 
@@ -56,14 +55,14 @@ describe('use-view-model-type/useViewModelType', (): void => {
         }
 
         const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} />);
-        expect(getByText('Value1: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 0')).not.toBe(undefined);
 
         act(() => {
             viewModels.forEach(viewModel => viewModel.increment1());
         });
 
-        expect(getByText('Value1: 1')).not.to.be.undefined;
-        expect(viewModels.length).is.equal(1);
+        expect(getByText('Value1: 1')).not.toBe(undefined);
+        expect(viewModels.length).toBe(1);
     });
 
     it('changing the view model updates the component', (): void => {
@@ -76,15 +75,15 @@ describe('use-view-model-type/useViewModelType', (): void => {
         }
 
         const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} />);
-        expect(getByText('Value1: 0')).not.to.be.undefined;
-        expect(getByText('Value2: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 0')).not.toBe(undefined);
+        expect(getByText('Value2: 0')).not.toBe(undefined);
 
         act(() => {
             viewModel!.increment1();
         });
 
-        expect(getByText('Value1: 1')).not.to.be.undefined;
-        expect(getByText('Value2: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 1')).not.toBe(undefined);
+        expect(getByText('Value2: 0')).not.toBe(undefined);
     });
 
     it('changing the view model watched property updates the component', (): void => {
@@ -96,15 +95,15 @@ describe('use-view-model-type/useViewModelType', (): void => {
             }
         }
         const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} watchedProperties={['value1']} />);
-        expect(getByText('Value1: 0')).not.to.be.undefined;
-        expect(getByText('Value2: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 0')).not.toBe(undefined);
+        expect(getByText('Value2: 0')).not.toBe(undefined);
 
         act(() => {
             viewModel!.increment1();
         });
 
-        expect(getByText('Value1: 1')).not.to.be.undefined;
-        expect(getByText('Value2: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 1')).not.toBe(undefined);
+        expect(getByText('Value2: 0')).not.toBe(undefined);
     });
 
     it('changing the view model unwatched property does not update the component', (): void => {
@@ -116,14 +115,14 @@ describe('use-view-model-type/useViewModelType', (): void => {
             }
         }
         const { getByText } = render(<TestComponent viewModelType={TestCaseViewModel} watchedProperties={['value1']} />);
-        expect(getByText('Value1: 0')).not.to.be.undefined;
-        expect(getByText('Value2: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 0')).not.toBe(undefined);
+        expect(getByText('Value2: 0')).not.toBe(undefined);
 
         act(() => {
             viewModel!.increment2();
         });
 
-        expect(getByText('Value1: 0')).not.to.be.undefined;
-        expect(getByText('Value2: 0')).not.to.be.undefined;
+        expect(getByText('Value1: 0')).not.toBe(undefined);
+        expect(getByText('Value2: 0')).not.toBe(undefined);
     });
 });
