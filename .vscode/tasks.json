@@ -23,18 +23,6 @@
             },
             "problemMatcher": [],
             "label": "npm: test"
-        },
-        {
-            "dependsOn": "npm: build",
-            "type": "process",
-            "command": "pwsh",
-            "args": [
-                "-NoProfile",
-                "-Command",
-                "Get-ChildItem -File -Recurse -Path \"./lib\" -Filter \"*.js\" | ForEach-Object { (Get-Content $_.FullName) -replace ' = require\\(\"\\.(.*)\"\\);',' = require(\".$1.js\");' | Out-File $_.FullName -Encoding UTF8NoBom }"
-            ],
-            "problemMatcher": [],
-            "label": "prepare: publish"
         }
     ]
 }
