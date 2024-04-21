@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES5",
+        "target": "ES2015",
         "lib": [
             "ES2023"
         ],
@@ -19,7 +19,7 @@
         "src/**/*"
     ],
     "exclude": [
-        "tests",
+        "tests-old",
         "lib",
         "node_modules"
     ]

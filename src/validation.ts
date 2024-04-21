@@ -46,7 +46,7 @@ export type ValidatorCallback<T> = (validatable: T) => string | undefined;
  * @param item The item from which the validatable has been selected.
  * @param collection The collection to which the item belongs.
  */
-export type CollectionItemValidatorCallback<TValidatable extends IReadOnlyValidatable, TItem> = (validatable: TValidatable, item: TItem, collection: readonly TItem[]) => string | undefined;
+export type CollectionItemValidatorCallback<TValidatable extends IReadOnlyValidatable, TItem> = (validatable: TValidatable, item: TItem, collection: Iterable<TItem>) => string | undefined;
 
 /** Represents a validatable selector callback.
  * @template TItem The type of items from which to select validatable objects.
@@ -391,7 +391,7 @@ function applyValidators<TValidatable extends IValidatable>(validatable: TValida
     validatable.error = error;
 }
 
-function applyCollectionItemValidators<TValidatable extends IValidatable, TItem>(validatable: TValidatable, item: TItem, collection: readonly TItem[], validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | undefined)[]): void {
+function applyCollectionItemValidators<TValidatable extends IValidatable, TItem>(validatable: TValidatable, item: TItem, collection: Iterable<TItem>, validators: readonly (CollectionItemValidatorCallback<TValidatable, TItem> | undefined)[]): void {
     let index = 0;
     let error = undefined;
     while (index < validators.length && error === undefined) {

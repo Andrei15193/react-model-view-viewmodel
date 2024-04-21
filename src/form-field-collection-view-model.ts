@@ -26,21 +26,25 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
     }
 
     private _error: string | undefined;
-    private readonly _fields: IObservableCollection<TFormFieldViewModel> = new ObservableCollection<TFormFieldViewModel>();
-    private readonly _fieldChangedEventHandler: IPropertiesChangedEventHandler<TFormFieldViewModel>;
+    private readonly _fields: IObservableCollection<TFormFieldViewModel>;
 
     /** Initializes a new instance of the {@link FormFieldCollectionViewModel} class. */
     public constructor() {
         super();
-        this._fieldChangedEventHandler = {
-            handle: (_, changedProperties) => {
-                if (changedProperties.indexOf('isValid') >= 0 || changedProperties.indexOf('isInvalid') >= 0)
-                    this.notifyPropertiesChanged('isValid', 'isInvalid');
-            }
+
+        const fieldChangedEventHandler: IPropertiesChangedEventHandler<TFormFieldViewModel> = {
+            handle: this.onFieldChanged.bind(this)
         }
+        this._fields = new ObservableCollection<TFormFieldViewModel>();
+        this._fields.collectionChanged.subscribe({
+            handle(_, { addedItems: addedFields, removedItems: removedFields }) {
+                addedFields.forEach(addedField => addedField.propertiesChanged.subscribe(fieldChangedEventHandler));
+                removedFields.forEach(removedField => removedField.propertiesChanged.unsubscribe(fieldChangedEventHandler));
+            }
+        })
     }
 
-    /** A collection of registered fields. */
+    /** A collection containing the registered fields. */
     public get fields(): IReadOnlyObservableCollection<TFormFieldViewModel> {
         return this._fields;
     }
@@ -56,7 +60,7 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
     }
 
     /** An error message (or translation key) providing information as to why the field is invalid. */
-    public get error(): string | undefined {
+    public get error(): string | null | undefined {
         return this._error;
     }
 
@@ -68,78 +72,84 @@ export abstract class FormFieldCollectionViewModel<TFormFieldViewModel extends I
         }
     }
 
-    /** Registers a new FormFieldViewModel having the provided initial value and returns it.
-     * @deprecated In future versions this method will be removed. It was introduced mostly for utility purposes, however there are beter ways of adding fields, see {@link create}.
-     * @param name The name of the field.
-     * @param initialValue The initial value of the field.
-     */
-    protected addField<TValue>(name: string, initialValue: TValue): TFormFieldViewModel {
-        return this.registerField(new FormFieldViewModel<TValue>(name, initialValue) as any as TFormFieldViewModel);
-    }
-
-    /** Registers the provided field and returns it.
-     * @param field The field to register.
-     * @returns Returns the provided field that has been registered.
-     */
-    protected registerField(field: TFormFieldViewModel): TFormFieldViewModel {
-        this.registerFields(field);
-        return field;
-    }
-
-    /** Registers the provided fields.
+    /**
+     * Registers the provided fields.
      * @param fields The fields to register.
      */
-    protected registerFields(...fields: readonly TFormFieldViewModel[]): void {
-        fields.forEach(field => {
-            field.propertiesChanged.subscribe(this._fieldChangedEventHandler);
-            this._fields.push(field);
-        });
+    protected registerFields(...fields: readonly (TFormFieldViewModel | readonly TFormFieldViewModel[])[]): void {
+        const previousFieldCount = this._fields.length;
 
-        if (fields.length > 0)
+        const currentFieldCount = this._fields.push(...fields.reduce<TFormFieldViewModel[]>(
+            (reuslt, fieldsOrArrays) => {
+                if (Array.isArray(fieldsOrArrays))
+                    reuslt.push(...fieldsOrArrays)
+                else
+                    reuslt.push(fieldsOrArrays as TFormFieldViewModel);
+                return reuslt
+            },
+            []
+        ));
+
+        if (previousFieldCount !== currentFieldCount)
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
 
-    /** Unregisters the provided field.
-     * @param field The previously registered field.
-     */
-    protected unregisterField(field: TFormFieldViewModel): void {
-        this.unregisterFields(field);
-    }
-
-    /** Unregisters the provided fields.
+    /**
+     * Unregisters the provided fields.
      * @param fields The previously registered fields.
      */
-    protected unregisterFields(...fields: readonly TFormFieldViewModel[]): void {
+    protected unregisterFields(...fields: readonly (TFormFieldViewModel | readonly TFormFieldViewModel[])[]): void {
         let hasUnregisteredFields = false;
-        fields.forEach(field => {
+
+        const removeField = (field: TFormFieldViewModel) => {
             const indexToRemove = this._fields.indexOf(field);
             if (indexToRemove >= 0) {
-                const removedField = this._fields[indexToRemove];
-                removedField.propertiesChanged.unsubscribe(this._fieldChangedEventHandler);
                 this._fields.splice(indexToRemove, 1);
 
                 hasUnregisteredFields = true;
             }
+        }
+
+        fields.forEach(fieldsOrArrays => {
+            if (Array.isArray(fieldsOrArrays))
+                fieldsOrArrays.forEach(removeField)
+            else
+                removeField(fieldsOrArrays as TFormFieldViewModel);
         });
 
         if (hasUnregisteredFields)
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
+
+    /**
+     * Called when one of the registered fields notifies about changed properties.
+     * @param field the field that has changed.
+     * @param changedProperties the properties that have changed.
+     */
+    protected onFieldChanged(field: TFormFieldViewModel, changedProperties: readonly (keyof TFormFieldViewModel)[]): void {
+        if (changedProperties.indexOf('isValid') >= 0 || changedProperties.indexOf('isInvalid') >= 0)
+            this.notifyPropertiesChanged('isValid', 'isInvalid');
+    }
 }
 
-/** A helper class for creating forms, can be extended or reused to implement a similar feature to {@link FormFieldCollectionViewModel.create}.
+/**
+ * A helper class for creating forms, can be extended or reused to implement a similar feature to {@link FormFieldCollectionViewModel.create}.
  * @template TFormFieldViewModel The type of fields the form collection contains, defaults to {@link FormFieldViewModel}.
  * @template TFormFields the set of fields to register on the form.
  */
 export class DynamicFormFieldCollectionViewModel<TFormFieldViewModel extends IFormFieldViewModel<any>, TFormFields extends FormFieldSet<TFormFieldViewModel>> extends FormFieldCollectionViewModel<TFormFieldViewModel> {
-    /** Initializes a new instance of the {@link DynamicFormFieldCollectionViewModel} class.
+    /**
+     * Initializes a new instance of the {@link DynamicFormFieldCollectionViewModel} class.
      * @param fields The form fields.
      */
     public constructor(fields: TFormFields) {
         super();
 
+        const formFields: TFormFieldViewModel[] = [];
         Object.getOwnPropertyNames(fields).forEach(
             fieldPropertyName => {
+                const formField = fields[fieldPropertyName];
+                formFields.push(formField);
                 Object.defineProperty(
                     this,
                     fieldPropertyName,
@@ -147,10 +157,11 @@ export class DynamicFormFieldCollectionViewModel<TFormFieldViewModel extends IFo
                         configurable: false,
                         enumerable: true,
                         writable: false,
-                        value: this.registerField(fields[fieldPropertyName])
+                        value: formField
                     }
                 );
             }
         );
+        this.registerFields(...formFields);
     }
 }

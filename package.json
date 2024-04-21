@@ -1,6 +1,6 @@
 {
   "name": "react-model-view-viewmodel",
-  "version": "3.0.0-events.1",
+  "version": "3.0.0-collections",
   "description": "A library for developing React applications using Model-View-ViewModel inspired by .NET",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -55,8 +55,9 @@
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
     "testMatch": [
-      "**/tests/**/*.ts",
-      "**/tests/**/*.tsx"
+      "**/*.tests.ts",
+      "**/tests/**/*.tests.ts",
+      "**/tests/**/*.tests.tsx"
     ]
   }
 }

@@ -71,14 +71,6 @@ export class EventDispatcher<TSubject, TEventArgs = void> implements IEvent<TSub
     }
 }
 
-/**
- * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an IEvent.
- * @deprecated In future versions this class will be removed, switch to {@link EventDispatcher}, this is only a rename.
- * @template TEventArgs Optional, can be used to provide context when notifying subscribers.
- */
-export class DispatchEvent<TEventArgs = void> extends EventDispatcher<TEventArgs> {
-}
-
 /** A core interface for objects that notify subscribers when their properties have changed. Components can react to this and display the new value as a consequence. */
 export interface INotifyPropertiesChanged {
     /** An event that is raised when one or more properties may have changed. */
@@ -113,53 +105,14 @@ export interface IPropertiesChangedEventHandler<T> extends IEventHandler<T, read
 
 /**
  * A core interface for observable collections. Components can react to this and display the new value as a consequence.
+ *
+ * Any collection change can be reduced to [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice),
+ * thus the colleciton changed notification contains all the necessary information to reproduce the operation on subsequent collections.
  * @template TItem The type of items the collection contains.
  */
 export interface INotifyCollectionChanged<TItem> {
-    /** An event that is raised when an item is added to the collection. */
-    readonly itemAdded: IEvent<this, IItemAddedEventArgs<TItem>>;
-
-    /** An event that is raised when an item is removed from the collection. */
-    readonly itemRemoved: IEvent<this, IItemRemovedEventArgs<TItem>>;
-
     /** An event that is raised when the collection changed. */
     readonly collectionChanged: ICollectionChangedEvent<this, TItem>;
-}
-
-/**
- * Contains information about the item that was added to a collection, including the option to subscribe a clean-up callback.
- * @template TItem The type of items the collection contains.
- */
-export interface IItemAddedEventArgs<TItem> {
-    /** The item that was added. */
-    readonly item: TItem;
-    /** The index where the item was added. */
-    readonly index: number;
-
-    /**
-     * Subscribes the provided `callback` that will be executed when the item is removed.
-     * @param callback A callback that will be invoked when the item is removed.
-     */
-    addItemRemovalCallback(callback: ItemRemovedCallback<TItem>): void;
-}
-
-/**
- * Represents an item removal callback.
- * @template TItem The type of items the collection contains.
- * @param item The item that was removed from the collection.
- * @param index The index from which the item was removed.
-*/
-export type ItemRemovedCallback<TItem> = (item: TItem, index: number) => void;
-
-/**
- * Contains information about the item that was removed from a collection.
- * @template TItem The type of items the collection contains.
- */
-export interface IItemRemovedEventArgs<TItem> {
-    /** The item that was removed. */
-    readonly item: TItem;
-    /** The index from which the item was removed. */
-    readonly index: number;
 }
 
 /**
@@ -167,11 +120,20 @@ export interface IItemRemovedEventArgs<TItem> {
  * @template TItem The type of items the collection contains.
  */
 export interface ICollectionChange<TItem> {
+    /** The start index where the change has happenend. */
+    readonly startIndex: number;
     /** An array of added items, if any. */
     readonly addedItems: readonly TItem[];
     /** An array of removed items, if any. */
     readonly removedItems: readonly TItem[];
+    /** The operation that was performed */
+    readonly operation: CollectionOperation;
 }
+
+/**
+ * Describes all the possible operations that can be performed on a collection.
+ */
+export type CollectionOperation = 'push' | 'pop' | 'unshift' | 'shift' | 'sort' | 'reverse' | 'copyWithin' | 'set' | 'delete' | 'fill' | 'clear' | 'reset';
 
 /**
  * A specialized event for subscribing and unsubscribing from collection changed events.
