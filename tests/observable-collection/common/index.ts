@@ -1,2 +1,2 @@
-export { testMutatingOperation } from "./testMutatingOperation";
-export { testBlankMutatingOperation } from "./testBlankMutatingOperation";
+export { type ITestMutatingOperationOptions, testMutatingOperation } from "./testMutatingOperation";
+export { type ITestBlankMutatingOperationOptions, testBlankMutatingOperation } from "./testBlankMutatingOperation";

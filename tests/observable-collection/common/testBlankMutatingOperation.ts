@@ -2,12 +2,18 @@ import type { ICollectionChangedEventHandler, IPropertiesChangedEventHandler } f
 import { type IObservableCollection, ObservableCollection } from "../../../src/observable-collection";
 import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
 
+export interface ITestBlankMutatingOperationOptions<TItem> {
+    readonly initialState: readonly TItem[];
+
+    applyOperation(collection: TItem[] | IObservableCollection<TItem>): unknown;
+}
+
 /**
  * Applies the callback to both an array and an observable collection constructed form the initial state,
  * checking the two before and after the operation is applied as well as checking that the operation had
  * no effect and no events were raised.
  */
-export function testBlankMutatingOperation<TItem>(applyOperation: (collection: TItem[] | IObservableCollection<TItem>) => unknown, initialState: readonly TItem[]) {
+export function testBlankMutatingOperation<TItem>({ initialState, applyOperation }: ITestBlankMutatingOperationOptions<TItem>) {
     let collectionChangedRaiseCount = 0;
     const collectionChangedEventHandler: ICollectionChangedEventHandler<ObservableCollection<TItem>, TItem> = {
         handle() {

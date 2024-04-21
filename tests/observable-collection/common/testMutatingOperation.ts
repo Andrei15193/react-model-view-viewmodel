@@ -2,6 +2,14 @@ import type { CollectionOperation } from "../../../src/events";
 import { type IObservableCollection, ObservableCollection } from "../../../src/observable-collection";
 import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
 
+export interface ITestMutatingOperationOptions<TItem> {
+    readonly collectionOperation: CollectionOperation;
+    readonly initialState: readonly TItem[];
+    readonly changedProperties: readonly ("length" | number)[];
+
+    applyOperation(collection: TItem[] | IObservableCollection<TItem>): unknown;
+}
+
 /**
  * Applies the callback to both an array and an observable collection constructed form the initial state,
  * checking the two before and after the operation is applied as well as checking the result of the operation.
@@ -12,10 +20,9 @@ import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
  * The approach is that any operation that is applied on an observable collection can be replicated using
  * just the splice method through the collectionChanged event.
  */
-export function testMutatingOperation<TItem>(collectionOperation: CollectionOperation, applyOperation: (collection: TItem[] | IObservableCollection<TItem>) => unknown, initialState: readonly TItem[]) {
+export function testMutatingOperation<TItem>({ collectionOperation, initialState, changedProperties, applyOperation }: ITestMutatingOperationOptions<TItem>) {
     let collectionChangedRaiseCount = 0;
     let propertiesChangedRaiseCount = 0;
-    let expectedChangedProperties: readonly (keyof ObservableCollection<TItem>)[] = [];
     let actualChangedProperties: readonly (keyof ObservableCollection<TItem>)[] = [];
 
     const array = initialState.slice();
@@ -32,11 +39,6 @@ export function testMutatingOperation<TItem>(collectionOperation: CollectionOper
 
             expectCollectionsToBeEqual(observableCollection, spliceArray);
             expect(spliceRemovedItems).toEqual(removedItems);
-
-            const changedProperties: (keyof ObservableCollection<TItem>)[] = ["length"];
-            for (let index = 0; index < Math.max(addedItems.length, removedItems.length); index++)
-                changedProperties.push(index + startIndex);
-            expectedChangedProperties = changedProperties;
         }
     });
     observableCollection.propertiesChanged.subscribe({
@@ -55,7 +57,7 @@ export function testMutatingOperation<TItem>(collectionOperation: CollectionOper
 
     expect(collectionChangedRaiseCount).toBe(1);
     expect(propertiesChangedRaiseCount).toBe(1);
-    expect(actualChangedProperties).toEqual(expectedChangedProperties);
+    expect(actualChangedProperties).toEqual(changedProperties);
 
     expectCollectionsToBeEqual(observableCollection, array);
     expect(observableCollectionResult).toBe(arrayResult);

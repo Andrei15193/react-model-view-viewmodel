@@ -2,11 +2,11 @@ import type { IReadOnlyObservableCollection } from "../../../src/observable-coll
 
 export function expectCollectionsToBeEqual<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>, array: readonly TItem[]): void {
     expect(observableCollection.length).toBe(array.length);
+    expect(observableCollection.toArray()).toEqual(array);
     for (let index = 0; index < observableCollection.length; index++) {
         expect(observableCollection[index]).toBe(array[index]);
         expect(observableCollection.at(index)).toBe(array[index]);
     }
-    expect(observableCollection.toArray()).toEqual(array);
 
     expectIndexesToBeDefined(observableCollection);
     expectIterationsToBeEqual(observableCollection, array);

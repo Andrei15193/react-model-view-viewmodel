@@ -556,20 +556,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     protected push(...items: readonly TItem[]): number {
         if (items.length > 0) {
             this._changeToken = {};
-
             const startIndex = this._length;
-            const addedIndexes: number[] = [];
 
-            for (let index = 0; index < items.length; index++) {
-                const newIndex = startIndex + index;
-                addedIndexes.push(newIndex);
+            for (let index = 0; index < items.length; index++)
                 Object.defineProperty(this, startIndex + index, {
                     configurable: true,
                     enumerable: true,
                     value: items[index],
                     writable: false
                 });
-            }
             this._length += items.length;
 
             this._collectionChangedEvent.dispatch(this, {
@@ -578,7 +573,11 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 addedItems: items,
                 removedItems: []
             });
-            this.notifyPropertiesChanged("length", ...addedIndexes);
+
+            const changedIndexes: number[] = [];
+            for (let index = 0; index < items.length; index++)
+                changedIndexes.push(startIndex + index);
+            this.notifyPropertiesChanged("length", ...changedIndexes);
         }
 
         return this._length;
@@ -618,7 +617,39 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
      */
     protected unshift(...items: readonly TItem[]): number {
-        throw new Error('Method not implemented.');
+        if (items.length > 0) {
+            this._changeToken = {};
+
+            for (let index = this._length - 1; index >= 0; index--)
+                Object.defineProperty(this, index + items.length, {
+                    configurable: true,
+                    enumerable: true,
+                    value: this[index],
+                    writable: false
+                });
+            for (let index = 0; index < items.length; index++)
+                Object.defineProperty(this, index, {
+                    configurable: true,
+                    enumerable: true,
+                    value: items[index],
+                    writable: false
+                });
+            this._length += items.length;
+
+            this._collectionChangedEvent.dispatch(this, {
+                operation: "unshift",
+                startIndex: 0,
+                addedItems: items,
+                removedItems: []
+            });
+
+            const changedIndexes: number[] = [];
+            for (let index = 0; index < this._length; index++)
+                changedIndexes.push(index);
+            this.notifyPropertiesChanged("length", ...changedIndexes);
+        }
+
+        return this._length;
     }
 
     /** Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
