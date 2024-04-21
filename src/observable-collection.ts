@@ -1,4 +1,4 @@
-import type { CollectionOperation, ICollectionChange, ICollectionChangedEvent, INotifyCollectionChanged, INotifyPropertiesChanged } from './events';
+import type { ICollectionChange, ICollectionChangedEvent, INotifyCollectionChanged, INotifyPropertiesChanged } from './events';
 import { EventDispatcher } from './events';
 import { ViewModel } from './view-model';
 
@@ -147,21 +147,6 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
     copyWithin(target: number, start: number): this;
     copyWithin(target: number, start: number, end: number): this;
 
-    /** Clears the contents of the collection and returns the removed items, similar to calling `collection.splice(0)`.
-     * @returns Returns the items that used to be in the collection.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    clear(): TItem[];
-
-    /**
-     * Resets the contents of the collection by clearing it and setting the provided items. Returns the new length of the collection.
-     * Similar to calling `collection.splice(0, collection.length, ...items)`.
-     * @param items The new content of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    reset(...items: readonly TItem[]): number;
-
     fill(item: TItem): this;
     fill(item: TItem, start: number): this;
     fill(item: TItem, start: number, end: number): this;
@@ -228,7 +213,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.concat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)
      */
     public concat(...items: readonly (TItem | readonly TItem[])[]): TItem[] {
-        return this.toArray().concat(...items);
+        throw new Error('Method not implemented.');
     }
 
     /** Aggregates the contained items into a {@link String} placing the provided `separator` between them.
@@ -237,7 +222,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
      */
     public join(separator?: string): string {
-        return this.toArray().join(separator);
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -248,7 +233,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.slice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
      */
     public slice(start?: number, end?: number): TItem[] {
-        return this.toArray().slice(start, end);
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -259,7 +244,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.indexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
      */
     public indexOf(searchElement: TItem, fromIndex?: number): number {
-        return this.toArray().indexOf(searchElement, fromIndex);
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -270,7 +255,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.lastIndexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
      */
     public lastIndexOf(searchElement: TItem, fromIndex?: number): number {
-        return this.toArray().lastIndexOf(searchElement, fromIndex);
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -282,7 +267,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
      */
     public every<TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
-        return this.toArray().every((item, index) => predicate.call(thisArg, item, index, this));
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -294,7 +279,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.some](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
      */
     public some<TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
-        return this.toArray().some((item, index) => predicate.call(thisArg, item, index, this));
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -305,9 +290,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
     public forEach<TContext = undefined>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg?: TContext): void {
-        this.toArray().forEach((item, index) => {
-            callbackfn.call(thisArg, item, index, this);
-        });
+        throw new Error('Method not implemented.');
     }
     /**
      * Creates a new JavaScript {@link Array} constructed by mapping each item in the collection using a callback.
@@ -328,7 +311,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
     public map<TResult, TContext = undefined>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg?: TContext): TResult[] {
-        return this.toArray().map((item, index) => callbackfn.call(thisArg, item, index, this));
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -351,7 +334,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public filter<TResult extends TItem = TItem, TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg?: TContext): TResult[];
     public filter<TResult extends TItem = TItem, TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult[] {
-        return this.toArray().filter((item, index) => predicate.call(thisArg, item, index, this)) as TResult[];
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -371,10 +354,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public reduce<TResult>(callbackfn: (previousValue: TResult, currentItem: TItem, currentIndex: number, collection: this) => TResult, initialValue: TResult): TResult;
     public reduce(callbackfn: any, initialValue?: any): any {
-        return this.toArray().reduce(
-            (previousValue, currentItem, currentIndex) => callbackfn(previousValue, currentItem, currentIndex, this),
-            initialValue
-        );
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -394,10 +374,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public reduceRight<TResult>(callbackfn: (previousValue: TResult, currentItem: TItem, currentIndex: number, collection: this) => TResult, initialValue: TResult): TResult;
     public reduceRight(callbackfn: any, initialValue?: any): any {
-        return this.toArray().reduceRight(
-            (previousValue, currentItem, currentIndex) => callbackfn(previousValue, currentItem, currentIndex, this),
-            initialValue
-        );
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -421,7 +398,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public find<TResult extends TItem = TItem, TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg?: TContext): TResult | undefined;
     public find<TResult extends TItem = TItem, TContext = undefined>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
-        return this.toArray().find((item, index) => predicate.call(thisArg, item, index, this)) as TResult | undefined;
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -445,7 +422,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public findLast<TResult extends TItem = TItem, TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg?: TContext): TResult | undefined;
     public findLast<TResult extends TItem = TItem, TContext = undefined>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
-        return this.toArray().findLast((item, index) => predicate.call(thisArg, item, index, this)) as TResult | undefined;
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -457,7 +434,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.findIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
      */
     public findIndex<TContext = undefined>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): number {
-        return this.toArray().findIndex((item, index) => predicate.call(thisArg, item, index, this));
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -469,7 +446,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.findLastIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
      */
     public findLastIndex<TContext = undefined>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): number {
-        return this.toArray().findLastIndex((item, index) => predicate.call(thisArg, item, index, this));
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -478,7 +455,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/entries)
      */
     public entries(): IterableIterator<[number, TItem]> {
-        return this.toArray().entries();
+        const changeTokenCopy = this._changeToken;
+        return new ObservableCollectionIterator<TItem, [number, TItem]>(this, () => changeTokenCopy !== this._changeToken, index => [index, this[index]]);
     }
 
     /**
@@ -487,7 +465,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
      */
     public keys(): IterableIterator<number> {
-        return this.toArray().keys();
+        const changeTokenCopy = this._changeToken;
+        return new ObservableCollectionIterator<TItem, number>(this, () => changeTokenCopy !== this._changeToken, index => index);
     }
 
     /**
@@ -496,7 +475,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.values](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/values)
      */
     public values(): IterableIterator<TItem> {
-        return this.toArray().values();
+        const changeTokenCopy = this._changeToken;
+        return new ObservableCollectionIterator<TItem>(this, () => changeTokenCopy !== this._changeToken, index => this[index]);
     }
 
     /**
@@ -507,7 +487,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.includes](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
      */
     public includes(searchElement: TItem, fromIndex?: number): boolean {
-        return this.toArray().includes(searchElement, fromIndex);
+        throw new Error('Method not implemented.');
     }
 
     /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in reverse order.
@@ -515,7 +495,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.toReversed](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed)
      */
     public toReversed(): TItem[] {
-        return this.toArray().reverse();
+        throw new Error('Method not implemented.');
     }
 
     /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in ascending order.
@@ -524,7 +504,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.toSorted](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted)
      */
     public toSorted(compareFn?: (a: TItem, b: TItem) => number): TItem[] {
-        return this.toArray().sort(compareFn);
+        throw new Error('Method not implemented.');
     }
 
     /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
@@ -536,7 +516,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
      */
     public toSpliced(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
-        return this.toArray().splice(start, deleteCount, ...items);
+        throw new Error('Method not implemented.');
     }
 
     /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
@@ -546,9 +526,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
      */
     public with(index: number, value: TItem): TItem[] {
-        const result = this.toArray();
-        result[index] = value;
-        return result;
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -558,7 +536,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public [Symbol.iterator](): IterableIterator<TItem> {
         const changeTokenCopy = this._changeToken;
-        return new ObservableCollectionIterator(this, () => changeTokenCopy !== this._changeToken);
+        return new ObservableCollectionIterator<TItem>(this, () => changeTokenCopy !== this._changeToken, index => this[index]);
     }
 
     /**
@@ -640,8 +618,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
      */
     protected unshift(...items: readonly TItem[]): number {
-        this._splice(0, 0, items);
-        return this.length;
+        throw new Error('Method not implemented.');
     }
 
     /** Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
@@ -649,8 +626,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
      */
     protected shift(): TItem | undefined {
-        const removedItems = this._splice(0, 1, []);
-        return removedItems[0];
+        throw new Error('Method not implemented.');
     }
 
     /** Gets the item at the provided index.
@@ -659,10 +635,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @throws {@link RangeError} when the index is outside the bounds of the collection.
      */
     protected get(index: number): TItem {
-        if (index < 0 || index >= this.length)
-            throw new RangeError('The index is outside the bounds of the collection.');
-
-        return this[index];
+        return this.at(index);
     }
 
     /** Sets the provided item at the provided index.
@@ -671,10 +644,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @throws {@link RangeError} when the index is outside the bounds of the collection.
      */
     protected set(index: number, item: TItem): void {
-        if (index < 0 || index >= this.length)
-            throw new RangeError('The index is outside the bounds of the collection.');
-
-        this._splice(index, 1, [item]);
+        throw new Error('Method not implemented.');
     }
 
     /** Removes and/or adds elements to the collection and returns the deleted elements.
@@ -685,7 +655,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
      */
     protected splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
-        return this._splice(start, deleteCount, items);
+        throw new Error('Method not implemented.');
     }
 
     protected sort(): this;
@@ -709,74 +679,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     protected fill(item: TItem, start: number, end: number): this;
     protected fill(item: TItem, start?: number, end?: number): this {
         throw new Error('Method not implemented.');
-    }
-
-    /** Clears the contents of the collection and returns the removed items, similar to calling `collection.splice(0)`.
-     * @returns Returns the items that used to be in the collection.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    protected clear(): TItem[] {
-        return this._splice(0, this.length, []);
-    }
-
-    /**
-     * Resets the contents of the collection by clearing it and setting the provided items. Returns the new length of the collection.
-     * Similar to calling `collection.splice(0, collection.length, ...items)`.
-     * @param items The new content of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    protected reset(...items: readonly TItem[]): number {
-        this._splice(0, this.length, items);
-        return this.length;
-    }
-
-    private _splice(start: number, deleteCount: number, items: readonly TItem[]): TItem[] {
-        if (start < 0)
-            start = Math.max(0, this.length + start);
-        else if (start > this.length)
-            start = this.length;
-
-        if (deleteCount === undefined)
-            deleteCount = this.length - start;
-        else if (deleteCount < 0)
-            deleteCount = 0;
-
-        if (items === undefined)
-            items = [];
-
-        const previousLength = this.length;
-        if (deleteCount < items.length) {
-            const gap = items.length - deleteCount;
-            for (let index = this.length + gap; index > start + items.length; index--)
-                (this as any)[index] = this[index - gap];
-        }
-        else if (deleteCount > items.length) {
-            const gap = deleteCount - items.length;
-            for (let index = start + items.length + gap; index < this.length; index++)
-                (this as any)[index - gap] = this[index];
-            for (let index = this.length - gap; index < this.length; index++)
-                delete (this as any)[index];
-        }
-        for (let index = 0; index < items.length; index++)
-            (this as any)[index + start] = items[index];
-
-        const removedItems = this.splice(start, deleteCount, ...items);
-
-        if (removedItems.length > 0 || items.length > 0)
-            this._collectionChangedEvent.dispatch(this, {
-                startIndex: start,
-                addedItems: items,
-                removedItems: removedItems,
-                get operation(): CollectionOperation {
-                    throw Error("unknown");
-                }
-            });
-
-        if (previousLength !== this.length)
-            this.notifyPropertiesChanged('length');
-
-        return removedItems;
     }
 }
 
@@ -878,74 +780,29 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
     public fill(item: TItem, start?: number, end?: number): this {
         return super.fill(item, start, end);
     }
-
-    /** Clears the contents of the collection and returns the removed items, similar to calling `collection.splice(0)`.
-     * @returns Returns the items that used to be in the collection.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    public clear(): TItem[] {
-        return super.clear();
-    }
-
-    /**
-     * Resets the contents of the collection by clearing it and setting the provided items. Returns the new length of the collection.
-     * Similar to calling `collection.splice(0, collection.length, ...items)`.
-     * @param items The new content of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    public reset(...items: readonly TItem[]): number {
-        return super.reset(...items);
-    }
-
-    /**
-     * Returns an object specifying how properties are handled inside a `with` statement.
-     * @returns Returns an object specifying how properties are handled inside a `with` statement.
-     * @see [Array@unscopables](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/@@unscopables)
-     */
-    public readonly [Symbol.unscopables]: any = {
-        _items: true,
-        _itemCleanupCallbacks: true,
-        _itemAdded: true,
-        _itemRemoved: true,
-        _collectionChanged: true,
-        at: true,
-        copyWithin: true,
-        entries: true,
-        fill: true,
-        find: true,
-        findIndex: true,
-        findLast: true,
-        findLastIndex: true,
-        flat: true,
-        flatMap: true,
-        includes: true,
-        keys: true,
-        toReversed: true,
-        toSorted: true,
-        toSpliced: true,
-        values: true
-    };
 }
 
-class ObservableCollectionIterator<TItem> implements Iterator<TItem> {
+class ObservableCollectionIterator<TItem, TValue = TItem> implements Iterator<TValue, TValue, void> {
     private _completed: boolean;
-    private _index: number;
-    private readonly _observableCollection: ReadOnlyObservableCollection<TItem>;
+    private _index: number = 0;
+    private readonly _observableCollection: IReadOnlyObservableCollection<TItem>;
     private readonly _collectionChanged: () => boolean;
+    private readonly _getCurrentValue: (index: number, observableCollection: IReadOnlyObservableCollection<TItem>) => TValue;
 
-    public constructor(observableCollection: ReadOnlyObservableCollection<TItem>, collectionChanged: () => boolean) {
+    public constructor(observableCollection: IReadOnlyObservableCollection<TItem>, collectionChanged: () => boolean, getCurrentValue: (index: number, observableCollection: IReadOnlyObservableCollection<TItem>) => TValue) {
         this._index = 0;
         this._observableCollection = observableCollection;
         this._completed = this._index >= this._observableCollection.length;
+
         this._collectionChanged = collectionChanged;
+        this._getCurrentValue = getCurrentValue;
     }
 
-    public [Symbol.iterator](): IterableIterator<TItem> {
+    public [Symbol.iterator](): IterableIterator<TValue> & Iterator<TValue, TValue, void> {
         return this;
     }
 
-    public next(): IteratorResult<TItem | undefined, TItem | undefined> {
+    public next(): IteratorResult<TValue, TValue> {
         if (this._completed)
             return {
                 done: true,
@@ -954,7 +811,7 @@ class ObservableCollectionIterator<TItem> implements Iterator<TItem> {
         else if (this._collectionChanged())
             throw new Error("Collection has changed while being iterated.");
         else {
-            const value = this._observableCollection[this._index];
+            const value = this._getCurrentValue(this._index, this._observableCollection);
             this._index++;
 
             this._completed = this._index >= this._observableCollection.length;
@@ -966,7 +823,7 @@ class ObservableCollectionIterator<TItem> implements Iterator<TItem> {
         }
     }
 
-    public return(value?: TItem): IteratorResult<TItem | undefined, TItem | undefined> {
+    public return(value?: TValue): IteratorResult<TValue, TValue> {
         this._completed = true;
 
         return {
@@ -975,7 +832,7 @@ class ObservableCollectionIterator<TItem> implements Iterator<TItem> {
         };
     }
 
-    public throw(): IteratorResult<TItem | undefined, TItem | undefined> {
+    public throw(): IteratorResult<TValue, TValue> {
         this._completed = true;
 
         return {
@@ -983,5 +840,4 @@ class ObservableCollectionIterator<TItem> implements Iterator<TItem> {
             value: undefined
         };
     }
-
 }

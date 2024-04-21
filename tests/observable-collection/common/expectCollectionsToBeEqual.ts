@@ -10,6 +10,7 @@ export function expectCollectionsToBeEqual<TItem>(observableCollection: IReadOnl
 
     expectIndexesToBeDefined(observableCollection);
     expectIterationsToBeEqual(observableCollection, array);
+    expectRelatedIteratorsToBeEqual(observableCollection, array);
 }
 
 function expectIndexesToBeDefined<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>): void {
@@ -33,4 +34,10 @@ function expectIterationsToBeEqual<TItem>(observableCollection: IReadOnlyObserva
         arrayIterationResult.push(item);
 
     expect(observableCollectionIterationResult).toEqual(arrayIterationResult);
+}
+
+function expectRelatedIteratorsToBeEqual<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>, array: readonly TItem[]): void {
+    expect(Array.from(observableCollection.keys())).toEqual(Array.from(array.keys()));
+    expect(Array.from(observableCollection.entries())).toEqual(Array.from(array.entries()));
+    expect(Array.from(observableCollection.values())).toEqual(Array.from(array.values()));
 }
