@@ -568,7 +568,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._length += items.length;
 
             this._collectionChangedEvent.dispatch(this, {
-                operation: "push",
+                operation: 'push',
                 startIndex,
                 addedItems: items,
                 removedItems: []
@@ -577,7 +577,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             const changedIndexes: number[] = [];
             for (let index = 0; index < items.length; index++)
                 changedIndexes.push(startIndex + index);
-            this.notifyPropertiesChanged("length", ...changedIndexes);
+            this.notifyPropertiesChanged('length', ...changedIndexes);
         }
 
         return this._length;
@@ -592,7 +592,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             return undefined;
         else {
             this._changeToken = {};
-
             const removedIndex = this._length - 1;
             const removedItem = this[removedIndex];
 
@@ -600,12 +599,12 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             delete (this as Record<number, TItem>)[removedIndex];
 
             this._collectionChangedEvent.dispatch(this, {
-                operation: "pop",
+                operation: 'pop',
                 startIndex: removedIndex,
                 addedItems: [],
                 removedItems: [removedItem]
             });
-            this.notifyPropertiesChanged("length", removedIndex);
+            this.notifyPropertiesChanged('length', removedIndex);
 
             return removedItem;
         }
@@ -637,7 +636,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._length += items.length;
 
             this._collectionChangedEvent.dispatch(this, {
-                operation: "unshift",
+                operation: 'unshift',
                 startIndex: 0,
                 addedItems: items,
                 removedItems: []
@@ -646,7 +645,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             const changedIndexes: number[] = [];
             for (let index = 0; index < this._length; index++)
                 changedIndexes.push(index);
-            this.notifyPropertiesChanged("length", ...changedIndexes);
+            this.notifyPropertiesChanged('length', ...changedIndexes);
         }
 
         return this._length;
@@ -657,7 +656,38 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
      */
     protected shift(): TItem | undefined {
-        throw new Error('Method not implemented.');
+        if (this._length === 0)
+            return undefined;
+        else {
+            this._changeToken = {};
+            const removedItem = this[0];
+
+            const changedIndexes: number[] = [];
+            for (let index = 0; index < this._length - 1; index++) {
+                changedIndexes.push(index);
+
+                Object.defineProperty(this, index, {
+                    configurable: true,
+                    enumerable: true,
+                    value: this[index + 1],
+                    writable: false
+                });
+            }
+            changedIndexes.push(this._length - 1);
+
+            this._length--;
+            delete (this as Record<number, TItem>)[this._length];
+
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'shift',
+                startIndex: 0,
+                addedItems: [],
+                removedItems: [removedItem]
+            });
+            this.notifyPropertiesChanged('length', ...changedIndexes);
+
+            return removedItem;
+        }
     }
 
     /** Gets the item at the provided index.
@@ -840,7 +870,7 @@ class ObservableCollectionIterator<TItem, TValue = TItem> implements Iterator<TV
                 value: undefined
             };
         else if (this._collectionChanged())
-            throw new Error("Collection has changed while being iterated.");
+            throw new Error('Collection has changed while being iterated.');
         else {
             const value = this._getCurrentValue(this._index, this._observableCollection);
             this._index++;
