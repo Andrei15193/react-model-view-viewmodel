@@ -97,40 +97,45 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      */
     push(...items: readonly TItem[]): number;
 
-    /** Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
+    /**
+     * Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The last element in the collection that was removed.
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
     */
     pop(): TItem | undefined;
 
-    /** Inserts new elements at the start of the collection, and returns the new length of the collection.
+    /**
+     * Inserts new elements at the start of the collection, and returns the new length of the collection.
      * @param items Elements to insert at the start of the collection.
      * @returns The new length of the collection.
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
      */
     unshift(...items: readonly TItem[]): number;
 
-    /** Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
+    /**
+     * Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The first element in the collection that was removed.
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
     */
     shift(): TItem | undefined;
 
-    /** Gets the item at the provided index.
+    /**
+     * Gets the item at the provided index.
      * @param index The index from which to retrieve an item.
      * @returns The item at the provided index.
      * @throws {@link RangeError} when the index is outside the bounds of the collection.
      */
     get(index: number): TItem;
 
-    /** Sets the provided item at the provided index.
+    /**
+     * Sets the provided item at the provided index.
      * @param index The index to which to set the item.
      * @param item The item to set.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
      */
     set(index: number, item: TItem): void;
 
-    /** Removes and/or adds elements to the collection and returns the deleted elements.
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
@@ -180,7 +185,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Gets the item at the provided {@link index} index
+     * Gets the item at the provided index.
      * @param index The index from which to retrieve an item.
     */
     readonly [index: number]: TItem;
@@ -197,13 +202,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * Gets the item at the provided index.
      * @param index The index from which to retrieve an item.
      * @returns The item at the provided index.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
      */
     public at(index: number): TItem {
-        if (index < 0 || index >= this.length)
-            throw new RangeError(`The provided index is outside the bounds of the collection.`);
-
-        return this[index];
+        return this[index < 0 ? index + this._length : index];
     }
 
     /**
@@ -690,7 +691,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         }
     }
 
-    /** Gets the item at the provided index.
+    /**
+     * Gets the item at the provided index.
      * @param index The index from which to retrieve an item.
      * @returns The item at the provided index.
      * @throws {@link RangeError} when the index is outside the bounds of the collection.
@@ -699,13 +701,65 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         return this.at(index);
     }
 
-    /** Sets the provided item at the provided index.
+    /**
+     * Sets the provided item at the provided index.
      * @param index The index to which to set the item.
      * @param item The item to set.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
      */
     protected set(index: number, item: TItem): void {
-        throw new Error('Method not implemented.');
+        const normalizedIndex = normalizeIndex(index, this._length);
+        this._changeToken = {};
+
+        if (normalizedIndex < this._length) {
+            const removedItem = this[normalizedIndex];
+
+            Object.defineProperty(this, normalizedIndex, {
+                configurable: true,
+                enumerable: true,
+                value: item,
+                writable: false
+            });
+
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'splice',
+                startIndex: normalizedIndex,
+                addedItems: [item],
+                removedItems: [removedItem]
+            });
+            this.notifyPropertiesChanged(normalizedIndex);
+        }
+        else {
+            const fillStartIndex = this._length;
+            const addedItems = [];
+            const removedItems = normalizedIndex < this._length ? [this[normalizedIndex]] : [];
+
+            for (let fillIndex = fillStartIndex; fillIndex < normalizedIndex; fillIndex++) {
+                Object.defineProperty(this, fillIndex, {
+                    configurable: true,
+                    enumerable: true,
+                    value: undefined,
+                    writable: false
+                });
+                addedItems.push(undefined);
+            }
+            Object.defineProperty(this, normalizedIndex, {
+                configurable: true,
+                enumerable: true,
+                value: item,
+                writable: false
+            });
+            addedItems.push(item);
+
+            this._length = normalizedIndex + 1;
+
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'splice',
+                startIndex: fillStartIndex,
+                addedItems,
+                removedItems
+            });
+            this.notifyPropertiesChanged("length", normalizedIndex);
+        }
     }
 
     /** Removes and/or adds elements to the collection and returns the deleted elements.
@@ -901,4 +955,8 @@ class ObservableCollectionIterator<TItem, TValue = TItem> implements Iterator<TV
             value: undefined
         };
     }
+}
+
+function normalizeIndex(index: number, length: number): number {
+    return index < 0 ? Math.max(0, index + length) : index;
 }

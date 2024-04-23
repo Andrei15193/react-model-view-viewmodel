@@ -63,7 +63,7 @@ describe('ObserableCollection.unshift', (): void => {
             () => {
                 const observableCollection = new ObservableCollection<number>(1, 2, 3);
 
-                for (let _ of observableCollection)
+                for (const _ of observableCollection)
                     observableCollection.unshift(1);
             })
             .toThrow(new Error('Collection has changed while being iterated.'))
@@ -74,7 +74,7 @@ describe('ObserableCollection.unshift', (): void => {
             () => {
                 const observableCollection = new ObservableCollection<number>(1, 2, 3);
 
-                for (let _ of observableCollection)
+                for (const _ of observableCollection)
                     observableCollection.unshift();
             })
             .not

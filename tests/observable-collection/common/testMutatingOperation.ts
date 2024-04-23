@@ -7,7 +7,10 @@ export interface ITestMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
     readonly changedProperties: readonly ("length" | number)[];
 
-    applyOperation(collection: TItem[] | IObservableCollection<TItem>): unknown;
+    applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+        applyArrayOperation(array: TItem[]): unknown;
+        applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
+    }
 }
 
 /**
@@ -52,8 +55,8 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
 
     expectCollectionsToBeEqual(observableCollection, array);
 
-    const arrayResult = applyOperation(array);
-    const observableCollectionResult = applyOperation(observableCollection);
+    const arrayResult = typeof applyOperation === 'function' ? applyOperation(array) : applyOperation.applyArrayOperation(array);
+    const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollection) : applyOperation.applyCollectionOperation(observableCollection);
 
     expect(collectionChangedRaiseCount).toBe(1);
     expect(propertiesChangedRaiseCount).toBe(1);
