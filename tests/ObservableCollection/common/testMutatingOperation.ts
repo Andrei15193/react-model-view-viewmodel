@@ -64,5 +64,5 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
     expect(actualChangedProperties).toEqual(changedProperties);
 
     expectCollectionsToBeEqual(observableCollection, array);
-    expect(observableCollectionResult).toBe(arrayResult);
+    expect(observableCollectionResult).toEqual(arrayResult);
 }

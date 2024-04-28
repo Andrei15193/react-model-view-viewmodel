@@ -6,7 +6,10 @@ import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
 export interface ITestBlankMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
 
-    applyOperation(collection: TItem[] | IObservableCollection<TItem>): unknown;
+    applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+        applyArrayOperation(array: TItem[]): unknown;
+        applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
+    };
 }
 
 /**
@@ -41,14 +44,14 @@ export function testBlankMutatingOperation<TItem>({ initialState, applyOperation
     expectCollectionsToBeEqual(observableCollectionBeforeOperation, arrayBeforeOperation);
     expectCollectionsToBeEqual(observableCollectionAfterOperation, arrayAfterOperation);
 
-    const arrayResult = applyOperation(arrayAfterOperation);
-    const observableCollectionResult = applyOperation(observableCollectionAfterOperation);
+    const arrayResult = typeof applyOperation === 'function' ? applyOperation(arrayAfterOperation) : applyOperation.applyArrayOperation(arrayAfterOperation);
+    const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollectionAfterOperation) : applyOperation.applyCollectionOperation(observableCollectionAfterOperation);
 
     expect(collectionChangedRaiseCount).toBe(0);
     expect(propertiesChangedRaiseCount).toBe(0);
 
     expectCollectionsToBeEqual(observableCollectionAfterOperation, arrayAfterOperation);
-    expect(observableCollectionResult).toBe(arrayResult);
+    expect(observableCollectionResult).toEqual(arrayResult);
 
     expect(arrayAfterOperation).toEqual(arrayBeforeOperation);
     expect(observableCollectionAfterOperation).toEqual(observableCollectionBeforeOperation);

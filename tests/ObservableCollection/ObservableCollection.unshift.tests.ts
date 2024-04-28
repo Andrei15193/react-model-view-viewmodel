@@ -66,7 +66,7 @@ describe('ObserableCollection.unshift', (): void => {
                 for (const _ of observableCollection)
                     observableCollection.unshift(1);
             })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('not unshifting items while iterating will not break iterators', (): void => {
@@ -78,6 +78,6 @@ describe('ObserableCollection.unshift', (): void => {
                     observableCollection.unshift();
             })
             .not
-            .toThrow()
+            .toThrow();
     });
 });

@@ -114,13 +114,28 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
-     * @param index The zero-based location in the collection where to set the item in the result array.
+     * @param index The zero-based location in the collection where to set the item in the result array, accepts both positive and negative values.
      * @param value The item to set in the result array.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements of the collection having the provided value set at the provided index.
      * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
+     * @throws [RangeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError) Thrown when the normalized index is out of bounds.
      */
     public with(index: number, value: TItem): TItem[] {
-        throw new Error('Method not implemented.');
+        if (index < -this._length || index >= this._length)
+            throw new RangeError('The provided index is outside the bounds of the collection.');
+
+        const result: TItem[] = [];
+        let normalizedIndex = index < 0 ? index + this._length : index;
+
+        for (let itemIndex = 0; itemIndex < normalizedIndex; itemIndex++)
+            result.push(this[itemIndex]);
+
+        result.push(value);
+
+        for (let itemIndex = normalizedIndex + 1; itemIndex < this._length; itemIndex++)
+            result.push(this[itemIndex]);
+
+        return result;
     }
 
     /**
