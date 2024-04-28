@@ -1,4 +1,4 @@
-import { ObservableCollection } from '../../src/observable-collection';
+import { ObservableCollection } from '../../src/ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
 describe('ObserableCollection.shift', (): void => {

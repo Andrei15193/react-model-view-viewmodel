@@ -1,172 +1,20 @@
-import type { ICollectionChange, ICollectionChangedEvent, INotifyCollectionChanged, INotifyPropertiesChanged } from './events';
+import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
+import type { ICollectionChange, ICollectionChangedEvent } from './events';
 import { EventDispatcher } from './events';
 import { ViewModel } from './view-model';
-
-/** Represents a read-only observable collection based on the read-only array interface.
- * @template TItem The type of items the collection contains.
- */
-export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, INotifyPropertiesChanged, INotifyCollectionChanged<TItem> {
-    readonly length: number;
-
-    readonly [index: number]: TItem;
-
-    at(index: number): TItem;
-    with(index: number, item: TItem): TItem[];
-
-    entries(): IterableIterator<[number, TItem]>;
-    keys(): IterableIterator<number>;
-    values(): IterableIterator<TItem>;
-
-    forEach(callback: (item: TItem, index: number, colleciton: this) => void): void;
-    forEach<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => void, thisArg: TContext): void;
-
-    includes(item: TItem): boolean;
-    includes(item: TItem, fromIndex: number): boolean;
-
-    indexOf(item: TItem): number;
-    indexOf(item: TItem, fromIndex: number): number;
-
-    lastIndexOf(item: TItem): number;
-    lastIndexOf(item: TItem, fromIndex: number): number;
-
-    findIndex(callback: (item: TItem, index: number, colleciton: this) => boolean): number;
-    findIndex<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): number;
-
-    findLastIndex(callback: (item: TItem, index: number, colleciton: this) => boolean): number;
-    findLastIndex<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): number;
-
-    find(callback: (item: TItem, index: number, colleciton: this) => boolean): TItem | undefined;
-    find<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): TItem | undefined;
-    find<TResult extends TItem>(callback: (item: TItem, index: number, colleciton: this) => item is TResult): TResult | undefined;
-    find<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => item is TResult, thisArg: TContext): TResult | undefined;
-
-    findLast(callback: (item: TItem, index: number, colleciton: this) => boolean): TItem | undefined;
-    findLast<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): TItem | undefined;
-    findLast<TResult extends TItem>(callback: (item: TItem, index: number, colleciton: this) => item is TResult): TResult | undefined;
-    findLast<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => item is TResult, thisArg: TContext): TResult | undefined;
-
-    concat(...items: readonly (TItem | readonly TItem[])[]): TItem[];
-
-    map<TResult>(callback: (item: TItem, index: number, colleciton: this) => TResult): TResult[];
-    map<TResult, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => TResult, thisArg: TContext): TResult[];
-
-    filter(callback: (item: TItem, index: number, collection: this) => boolean): TItem[];
-    filter<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): TItem[];
-    filter<TResult extends TItem>(callback: (item: TItem, index: number, collection: this) => item is TResult): TResult[];
-    filter<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult[];
-
-    slice(start?: number, end?: number): TItem[];
-
-    join(separator?: string): string;
-
-    some(callback: (item: TItem, index: number, collection: this) => boolean): boolean;
-    some<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
-
-    every(callback: (item: TItem, index: number, collection: this) => boolean): boolean;
-    every<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
-
-    reduce(callback: (accumulator: TItem, item: TItem, index: number, colleciton: this) => TItem): TItem;
-    reduce<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;
-
-    reduceRight(callback: (accumulator: TItem, item: TItem, index: number, colleciton: this) => TItem): TItem;
-    reduceRight<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;
-
-    /**
-     * Converts the observable collection to a native JavaScript {@link Array}.
-     * @returns An {@link Array} containing all the items in the collection.
-     */
-    toArray(): TItem[];
-
-    toSorted(): TItem[];
-    toSorted(compareCallback: (left: TItem, right: TItem) => number): TItem[];
-
-    toSpliced(start: number): TItem[];
-    toSpliced(start: number, deleteCount: number): TItem[];
-    toSpliced(start: number, deleteCount: number, ...newItems: readonly TItem[]): TItem[];
-}
-
-/** Represents an observable collection based on the array interface.
- * @template TItem The type of items the collection contains.
- */
-export interface IObservableCollection<TItem> extends IReadOnlyObservableCollection<TItem> {
-    /**
-     * Appends new elements to the end of the collection, and returns the new length of the collection.
-     * @param items New elements to add at the end of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.push](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
-     */
-    push(...items: readonly TItem[]): number;
-
-    /**
-     * Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
-     * @returns The last element in the collection that was removed.
-     * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
-    */
-    pop(): TItem | undefined;
-
-    /**
-     * Inserts new elements at the start of the collection, and returns the new length of the collection.
-     * @param items Elements to insert at the start of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
-     */
-    unshift(...items: readonly TItem[]): number;
-
-    /**
-     * Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
-     * @returns The first element in the collection that was removed.
-     * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
-    */
-    shift(): TItem | undefined;
-
-    /**
-     * Gets the item at the provided index.
-     * @param index The index from which to retrieve an item.
-     * @returns The item at the provided index.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
-     */
-    get(index: number): TItem;
-
-    /**
-     * Sets the provided item at the provided index.
-     * @param index The index to which to set the item.
-     * @param item The item to set.
-     */
-    set(index: number, item: TItem): void;
-
-    /**
-     * Removes and/or adds elements to the collection and returns the deleted elements.
-     * @param start The zero-based location in the collection from which to start removing elements.
-     * @param deleteCount The number of elements to remove.
-     * @param items The items to insert at the given start location.
-     * @returns An array containing the elements that were deleted.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[];
-
-    sort(): this;
-    sort(compareCallback: (left: TItem, right: TItem) => number): this;
-
-    reverse(): this;
-
-    copyWithin(target: number, start: number): this;
-    copyWithin(target: number, start: number, end: number): this;
-
-    fill(item: TItem): this;
-    fill(item: TItem, start: number): this;
-    fill(item: TItem, start: number, end: number): this;
-}
 
 /** Represents a read-only observable collection which can be used as a base class for custom observable collections as well.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
+
 export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IReadOnlyObservableCollection<TItem> {
     private _length: number;
     private _changeToken: unknown;
     private readonly _collectionChangedEvent: EventDispatcher<this, ICollectionChange<TItem>>;
 
-    /** Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
+    /**
+     * Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
      * @param items The items to initialize the collection with.
      */
     public constructor(...items: readonly TItem[]) {
@@ -187,24 +35,92 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     /**
      * Gets the item at the provided index.
      * @param index The index from which to retrieve an item.
-    */
+     * @see [Indexed Collections](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Indexed_collections)
+     */
     readonly [index: number]: TItem;
 
     /** An event that is raised when the collection changed. */
     public readonly collectionChanged: ICollectionChangedEvent<this, TItem>;
 
-    /** Gets the number of items in the collection. */
+    /**
+     * Gets the number of items in the collection.
+     * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+     */
     public get length(): number {
         return this._length;
     }
 
     /**
+     * Gets or sets the number of items in the collection.
+     * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+     */
+    protected set length(value: number) {
+        if (this._length < value) {
+            this._changeToken = {};
+
+            const startIndex = this._length;
+            const addedItems = [];
+            const addedIndexes = [];
+            for (let index = startIndex; index < value; index++) {
+                addedItems.push(undefined);
+                addedIndexes.push(index);
+                Object.defineProperty(this, index, {
+                    configurable: true,
+                    enumerable: true,
+                    value: undefined,
+                    writable: false
+                });
+            }
+            this._length = value;
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'splice',
+                addedItems,
+                removedItems: [],
+                startIndex
+            });
+            this.notifyPropertiesChanged('length', ...addedIndexes);
+        }
+        else if (this._length > value) {
+            this._changeToken = {};
+
+            const startIndex = value;
+            const removedItems = [];
+            const removedIndexes = [];
+            for (let index = startIndex; index < this._length; index++) {
+                removedItems.push(this[index]);
+                removedIndexes.push(index);
+                delete (this as Record<number, TItem>)[index];
+            }
+            this._length = value;
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'splice',
+                addedItems: [],
+                removedItems,
+                startIndex
+            });
+            this.notifyPropertiesChanged('length', ...removedIndexes);
+        }
+    }
+
+    /**
      * Gets the item at the provided index.
-     * @param index The index from which to retrieve an item.
+     * @param index The index from which to retrieve an item, accepts both positive and negative values.
      * @returns The item at the provided index.
+     * @see [Array.at](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at)
      */
     public at(index: number): TItem {
         return this[index < 0 ? index + this._length : index];
+    }
+
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
+     * @param index The zero-based location in the collection where to set the item in the result array.
+     * @param value The item to set in the result array.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements of the collection having the provided value set at the provided index.
+     * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
+     */
+    public with(index: number, value: TItem): TItem[] {
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -520,16 +436,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         throw new Error('Method not implemented.');
     }
 
-    /** Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
-     * @param index The zero-based location in the collection where to set the item in the result array.
-     * @param value The item to set in the result array.
-     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements of the collection having the provided value set at the provided index.
-     * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
-     */
-    public with(index: number, value: TItem): TItem[] {
-        throw new Error('Method not implemented.');
-    }
-
     /**
      * Returns an {@link Array} iterator containing all the items in the collection.
      * @returns Returns a new {@link Array} iterator for iterating over all items in the collection.
@@ -557,8 +463,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     protected push(...items: readonly TItem[]): number {
         if (items.length > 0) {
             this._changeToken = {};
-            const startIndex = this._length;
 
+            const startIndex = this._length;
             for (let index = 0; index < items.length; index++)
                 Object.defineProperty(this, startIndex + index, {
                     configurable: true,
@@ -593,6 +499,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             return undefined;
         else {
             this._changeToken = {};
+
             const removedIndex = this._length - 1;
             const removedItem = this[removedIndex];
 
@@ -652,7 +559,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         return this._length;
     }
 
-    /** Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
+    /**
+     * Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The first element in the collection that was removed.
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
      */
@@ -661,8 +569,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             return undefined;
         else {
             this._changeToken = {};
-            const removedItem = this[0];
 
+            const removedItem = this[0];
             const changedIndexes: number[] = [];
             for (let index = 0; index < this._length - 1; index++) {
                 changedIndexes.push(index);
@@ -695,7 +603,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * Gets the item at the provided index.
      * @param index The index from which to retrieve an item.
      * @returns The item at the provided index.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
+     * @see [Array.at](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at)
      */
     protected get(index: number): TItem {
         return this.at(index);
@@ -708,9 +616,10 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     protected set(index: number, item: TItem): void {
         const normalizedIndex = normalizeIndex(index, this._length);
-        this._changeToken = {};
 
         if (normalizedIndex < this._length) {
+            this._changeToken = {};
+
             const removedItem = this[normalizedIndex];
 
             Object.defineProperty(this, normalizedIndex, {
@@ -729,6 +638,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this.notifyPropertiesChanged(normalizedIndex);
         }
         else {
+            this._changeToken = {};
+
             const fillStartIndex = this._length;
             const addedItems = [];
             const removedItems = normalizedIndex < this._length ? [this[normalizedIndex]] : [];
@@ -794,106 +705,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     protected fill(item: TItem, start: number, end: number): this;
     protected fill(item: TItem, start?: number, end?: number): this {
         throw new Error('Method not implemented.');
-    }
-}
-
-/** Represents an observable collection.
- * @template TItem The type of items the collection contains.
- * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
- */
-export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TItem> implements IObservableCollection<TItem> {
-    /** Initializes a new instance of the {@link ObservableCollection} class.
-     * @param items The items to initialize the collection with.
-     */
-    public constructor(...items: readonly TItem[]) {
-        super(...items);
-    }
-
-    /**
-     * Appends new elements to the end of the collection, and returns the new length of the collection.
-     * @param items New elements to add at the end of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.push](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
-     */
-    public push(...items: readonly TItem[]): number {
-        return super.push(...items);
-    }
-
-    /** Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
-     * @returns The last element in the collection that was removed.
-     * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
-     */
-    public pop(): TItem | undefined {
-        return super.pop();
-    }
-
-    /** Inserts new elements at the start of the collection, and returns the new length of the collection.
-     * @param items Elements to insert at the start of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
-     */
-    public unshift(...items: readonly TItem[]): number {
-        return super.unshift(...items);
-    }
-
-    /** Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
-     * @returns The first element in the collection that was removed.
-     * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
-     */
-    public shift(): TItem | undefined {
-        return super.shift();
-    }
-
-    /** Gets the item at the provided index.
-     * @param index The index from which to retrieve an item.
-     * @returns The item at the provided index.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
-     */
-    public get(index: number): TItem {
-        return super.get(index);
-    }
-
-    /** Sets the provided item at the provided index.
-     * @param index The index to which to set the item.
-     * @param item The item to set.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
-     */
-    public set(index: number, item: TItem): void {
-        super.set(index, item);
-    }
-
-    /** Removes and/or adds elements to the collection and returns the deleted elements.
-     * @param start The zero-based location in the collection from which to start removing elements.
-     * @param deleteCount The number of elements to remove.
-     * @param items The items to insert at the given start location.
-     * @returns An array containing the elements that were deleted.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    public splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
-        return super.splice(start, deleteCount, ...items);
-    }
-
-    public sort(): this;
-    public sort(compareCallback: (left: TItem, right: TItem) => number): this;
-    public sort(compareCallback?: (left: TItem, right: TItem) => number): this {
-        return super.sort(compareCallback);
-    }
-
-    public reverse(): this {
-        return super.reverse();
-    }
-
-    public copyWithin(target: number, start: number): this;
-    public copyWithin(target: number, start: number, end: number): this;
-    public copyWithin(target: number, start: number, end?: number): this {
-        return this.copyWithin(target, start, end);
-    }
-
-    public fill(item: TItem): this;
-    public fill(item: TItem, start: number): this;
-    public fill(item: TItem, start: number, end: number): this;
-    public fill(item: TItem, start?: number, end?: number): this {
-        return super.fill(item, start, end);
     }
 }
 

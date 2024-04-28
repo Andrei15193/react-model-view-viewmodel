@@ -2,7 +2,10 @@ export { type IEvent, type IEventHandler, type INotifyPropertiesChanged, type IP
 
 export { ViewModel, isViewModel } from './view-model';
 
-export { type IReadOnlyObservableCollection, type IObservableCollection, ReadOnlyObservableCollection, ObservableCollection } from './observable-collection';
+export type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
+export type { IObservableCollection } from './IObservableCollection';
+export { ReadOnlyObservableCollection } from "./ReadOnlyObservableCollection";
+export { ObservableCollection } from './ObservableCollection';
 
 export { type IReadOnlyValidatable, type IValidatable, type IValidationConfig, type ValidatorCallback, type CollectionItemValidatorCallback, type ValidatableSelectorCallback, type ValidationConfigSelectorCallback, type UnsubscribeCallback, registerValidators, registerCollectionValidators, registerCollectionItemValidators } from './validation';
 

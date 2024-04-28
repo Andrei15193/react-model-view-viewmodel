@@ -1,5 +1,6 @@
 import type { CollectionOperation } from "../../../src/events";
-import { type IObservableCollection, ObservableCollection } from "../../../src/observable-collection";
+import type { IObservableCollection } from "../../../src/IObservableCollection";
+import { ObservableCollection } from "../../../src/ObservableCollection";
 import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
 
 export interface ITestMutatingOperationOptions<TItem> {
