@@ -3,7 +3,8 @@ import type { ICollectionChange, ICollectionChangedEvent } from './events';
 import { EventDispatcher } from './events';
 import { ViewModel } from './view-model';
 
-/** Represents a read-only observable collection which can be used as a base class for custom observable collections as well.
+/**
+ * Represents a read-only observable collection, can be used as a base class for custom observable collections to control adding and removing items to the collection.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
@@ -73,7 +74,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             }
             this._length = value;
             this._collectionChangedEvent.dispatch(this, {
-                operation: 'splice',
+                operation: 'expand',
                 addedItems,
                 removedItems: [],
                 startIndex
@@ -93,13 +94,54 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             }
             this._length = value;
             this._collectionChangedEvent.dispatch(this, {
-                operation: 'splice',
+                operation: 'contract',
                 addedItems: [],
                 removedItems,
                 startIndex
             });
             this.notifyPropertiesChanged('length', ...removedIndexes);
         }
+    }
+
+    /**
+     * Gets an iterator that provides each element in the collection.
+     * @returns An iterator going over each element in the collection.
+     * @see [Array[@@iterator]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/@@iterator)
+     */
+    public [Symbol.iterator](): IterableIterator<TItem> {
+        const changeTokenCopy = this._changeToken;
+
+        return new ObservableCollectionIterator<TItem>(this, () => changeTokenCopy !== this._changeToken, index => this[index]);
+    }
+
+    /**
+     * Gets an iterator that provides index-item pairs for each element in the collection.
+     * @returns An iterator going over index-item pairs for each element in the collection.
+     * @see [Array.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/entries)
+     */
+    public entries(): IterableIterator<[number, TItem]> {
+        const changeTokenCopy = this._changeToken;
+        return new ObservableCollectionIterator<TItem, [number, TItem]>(this, () => changeTokenCopy !== this._changeToken, index => [index, this[index]]);
+    }
+
+    /**
+     * Gets an iterator that provides the indexes for each element in the collection.
+     * @returns An iterator going over each index in the collection.
+     * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
+     */
+    public keys(): IterableIterator<number> {
+        const changeTokenCopy = this._changeToken;
+        return new ObservableCollectionIterator<TItem, number>(this, () => changeTokenCopy !== this._changeToken, index => index);
+    }
+
+    /**
+     * Gets an iterator that provides each element in the collection.
+     * @returns An iterator going over each element in the collection.
+     * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
+     */
+    public values(): IterableIterator<TItem> {
+        const changeTokenCopy = this._changeToken;
+        return new ObservableCollectionIterator<TItem>(this, () => changeTokenCopy !== this._changeToken, index => this[index]);
     }
 
     /**
@@ -382,36 +424,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Returns an {@link Array} iterator containing all the index/item pairs in the collection.
-     * @returns Returns an {@link Array} iterator for iterating over all index/item pairs.
-     * @see [Array.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/entries)
-     */
-    public entries(): IterableIterator<[number, TItem]> {
-        const changeTokenCopy = this._changeToken;
-        return new ObservableCollectionIterator<TItem, [number, TItem]>(this, () => changeTokenCopy !== this._changeToken, index => [index, this[index]]);
-    }
-
-    /**
-     * Returns an {@link Array} iterator containing all the indexes in the collection.
-     * @returns Returns an {@link Array} iterator for iterating over all indexes in the collection.
-     * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
-     */
-    public keys(): IterableIterator<number> {
-        const changeTokenCopy = this._changeToken;
-        return new ObservableCollectionIterator<TItem, number>(this, () => changeTokenCopy !== this._changeToken, index => index);
-    }
-
-    /**
-     * Returns an {@link Array} iterator containing all the items in the collection.
-     * @returns Returns an {@link Array} iterator for iterating over all items in the collection.
-     * @see [Array.values](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/values)
-     */
-    public values(): IterableIterator<TItem> {
-        const changeTokenCopy = this._changeToken;
-        return new ObservableCollectionIterator<TItem>(this, () => changeTokenCopy !== this._changeToken, index => this[index]);
-    }
-
-    /**
      * Checks whether the provided item is contained by the collection.
      * @param searchElement The item to search for.
      * @param fromIndex The index from where to start the search.
@@ -449,16 +461,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public toSpliced(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
         throw new Error('Method not implemented.');
-    }
-
-    /**
-     * Returns an {@link Array} iterator containing all the items in the collection.
-     * @returns Returns a new {@link Array} iterator for iterating over all items in the collection.
-     * @see [Array@iterator](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/@@iterator)
-     */
-    public [Symbol.iterator](): IterableIterator<TItem> {
-        const changeTokenCopy = this._changeToken;
-        return new ObservableCollectionIterator<TItem>(this, () => changeTokenCopy !== this._changeToken, index => this[index]);
     }
 
     /**
@@ -645,7 +647,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             });
 
             this._collectionChangedEvent.dispatch(this, {
-                operation: 'splice',
+                operation: 'set',
                 startIndex: normalizedIndex,
                 addedItems: [item],
                 removedItems: [removedItem]
@@ -679,7 +681,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._length = normalizedIndex + 1;
 
             this._collectionChangedEvent.dispatch(this, {
-                operation: 'splice',
+                operation: 'set',
                 startIndex: fillStartIndex,
                 addedItems,
                 removedItems

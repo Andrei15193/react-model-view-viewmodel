@@ -4,7 +4,7 @@ import { testMutatingOperation } from './common';
 describe('ObserableCollection.set', (): void => {
     it('setting an item updates the collection', (): void => {
         testMutatingOperation<number>({
-            collectionOperation: 'splice',
+            collectionOperation: 'set',
             initialState: [1, 2, 3],
             changedProperties: [1],
 
@@ -21,7 +21,7 @@ describe('ObserableCollection.set', (): void => {
 
     it('setting an item using negative index updates the collection from the end', (): void => {
         testMutatingOperation<number>({
-            collectionOperation: 'splice',
+            collectionOperation: 'set',
             initialState: [1, 2, 3],
             changedProperties: [2],
 
@@ -38,7 +38,7 @@ describe('ObserableCollection.set', (): void => {
 
     it('setting an item using negative index that is less than negative length updates the first index', (): void => {
         testMutatingOperation<number>({
-            collectionOperation: 'splice',
+            collectionOperation: 'set',
             initialState: [1, 2, 3],
             changedProperties: [0],
 
@@ -55,7 +55,7 @@ describe('ObserableCollection.set', (): void => {
 
     it('setting an item beyond the collection length expands it', (): void => {
         testMutatingOperation<number | undefined>({
-            collectionOperation: 'splice',
+            collectionOperation: 'set',
             initialState: [1, 2, 3],
             changedProperties: ['length', 10],
 

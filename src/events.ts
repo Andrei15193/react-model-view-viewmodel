@@ -133,7 +133,7 @@ export interface ICollectionChange<TItem> {
 /**
  * Describes all the possible operations that can be performed on a collection.
  */
-export type CollectionOperation = 'push' | 'pop' | 'unshift' | 'shift' | 'splice';
+export type CollectionOperation = 'push' | 'pop' | 'unshift' | 'shift' | 'splice' | 'expand' | 'contract' | 'set';
 
 /**
  * A specialized event for subscribing and unsubscribing from collection changed events.

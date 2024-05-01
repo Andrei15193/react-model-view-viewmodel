@@ -14,7 +14,7 @@ describe('ObserableCollection.length', (): void => {
 
     it('setting the length to less than actual reduces the collection', (): void => {
         testMutatingOperation<number>({
-            collectionOperation: 'splice',
+            collectionOperation: 'contract',
             initialState: [1, 2, 3],
             changedProperties: ['length', 1, 2],
 
@@ -26,7 +26,7 @@ describe('ObserableCollection.length', (): void => {
 
     it('setting the length to greater than actual expands the collection', (): void => {
         testMutatingOperation<number>({
-            collectionOperation: 'splice',
+            collectionOperation: 'expand',
             initialState: [1, 2, 3],
             changedProperties: ['length', 3, 4],
 

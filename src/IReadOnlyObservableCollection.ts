@@ -19,6 +19,34 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     readonly [index: number]: TItem;
 
     /**
+     * Gets an iterator that provides each element in the collection.
+     * @returns An iterator going over each element in the collection.
+     * @see [Array[@@iterator]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/@@iterator)
+     */
+    [Symbol.iterator](): Iterator<TItem>;
+
+    /**
+     * Gets an iterator that provides index-item pairs for each element in the collection.
+     * @returns An iterator going over index-item pairs for each element in the collection.
+     * @see [Array.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/entries)
+     */
+    entries(): IterableIterator<[number, TItem]>;
+
+    /**
+     * Gets an iterator that provides the indexes for each element in the collection.
+     * @returns An iterator going over each index in the collection.
+     * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
+     */
+    keys(): IterableIterator<number>;
+
+    /**
+     * Gets an iterator that provides each element in the collection.
+     * @returns An iterator going over each element in the collection.
+     * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
+     */
+    values(): IterableIterator<TItem>;
+
+    /**
      * Gets the item at the provided index.
      * @param index The index from which to retrieve an item, accepts both positive and negative values.
      * @returns The item at the provided index.
@@ -35,10 +63,6 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      * @throws [RangeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError) Thrown when the normalized index is out of bounds.
      */
     with(index: number, item: TItem): TItem[];
-
-    entries(): IterableIterator<[number, TItem]>;
-    keys(): IterableIterator<number>;
-    values(): IterableIterator<TItem>;
 
     forEach(callback: (item: TItem, index: number, colleciton: this) => void): void;
     forEach<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => void, thisArg: TContext): void;
