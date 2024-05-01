@@ -4,7 +4,7 @@ import { EventDispatcher } from '../events';
 import { ViewModel } from '../view-model';
 
 /**
- * Represents a read-only observable collection based on the JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
+ * Represents a read-only observable collection based on the [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
  * This can be used both as a wrapper and as a base class for custom observable collections.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
@@ -181,16 +181,26 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Merges the current collection with the given {@link Array} and returns a new JavaScript {@link Array}.
+     * Merges the current collection with the given [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) and returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @param items The items to concatenate.
-     * @returns Returns a new {@link Array} containing the items of this collection followed by the items in the provided {@link Array}.
+     * @returns Returns a new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of this collection followed by the items in the provided [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @see [Array.concat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)
      */
     public concat(...items: readonly (TItem | readonly TItem[])[]): TItem[] {
-        throw new Error('Method not implemented.');
-    }
+        const result = Array.from(this);
 
-    /** Aggregates the contained items into a {@link String} placing the provided `separator` between them.
+        items.forEach(item => {
+            if (Array.isArray(item))
+                (item as readonly TItem[]).forEach(nestedItem => result.push(nestedItem));
+            else
+                result.push(item as TItem);
+        });
+
+        return result;
+    };
+
+    /**
+     * Aggregates the contained items into a {@link String} placing the provided `separator` between them.
      * @param separator The separator used to insert between items when aggregating them into a {@link String}.
      * @returns The aggregated items as a {@link String}.
      * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
@@ -200,7 +210,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Returns a new JavaScript {@link Array} containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
+     * Returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
      * @param start The inclusive index at which to start the sub-array.
      * @param end The exclusive index at which the sub-array ends.
      * @returns Returns a new array containing items from the provided `start` index up to the provided `end` index.
@@ -267,20 +277,20 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         throw new Error('Method not implemented.');
     }
     /**
-     * Creates a new JavaScript {@link Array} constructed by mapping each item in the collection using a callback.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
      * @template TResult The type to map each item to.
      * @param callbackfn The callback mapping each item.
-     * @returns A new {@link Array} containing the mapped items.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
      * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
     public map<TResult>(callbackfn: (item: TItem, index: number, collection: this) => TResult): TResult[];
     /**
-     * Creates a new JavaScript {@link Array} constructed by mapping each item in the collection using a callback.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
      * @template TResult The type to map each item to.
      * @template TContext The context type in which the callback is executed.
      * @param callbackfn The callback mapping each item.
      * @param thisArg A value to use as the callback context when mapping items.
-     * @returns A new {@link Array} containing the mapped items.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
      * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
     public map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
@@ -289,21 +299,21 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Creates a new JavaScript {@link Array} containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
      * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback indicating which items to add in the result {@link Array}.
+     * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @param thisArg A value to use as context when evaluating items.
-     * @returns A new {@link Array} containing the items for which the provided `predicate` evaluated to `true`.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items for which the provided `predicate` evaluated to `true`.
      * @see [Array.filter](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
      */
     public filter<TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TItem[];
     /**
-     * Creates a new JavaScript {@link Array} containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
      * @template TResult The type to convert each item to.
      * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback indicating which items to add in the result {@link Array}.
+     * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @param thisArg A value to use as context when evaluating items.
-     * @returns A new {@link Array} containing the items for which the provided `predicate` evaluated to `true`.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items for which the provided `predicate` evaluated to `true`.
      * @see [Array.filter](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
      */
     public filter<TResult extends TItem = TItem, TContext = undefined>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg?: TContext): TResult[];
@@ -464,8 +474,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Converts the observable collection to a native JavaScript {@link Array}.
-     * @returns An {@link Array} containing all the items in the collection.
+     * Converts the observable collection to a native JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
+     * @returns An [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing all the items in the collection.
      */
     public toArray(): TItem[] {
         return Array.from(this);

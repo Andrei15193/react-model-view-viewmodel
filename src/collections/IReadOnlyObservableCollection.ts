@@ -1,7 +1,7 @@
 import type { INotifyCollectionChanged, INotifyPropertiesChanged } from '../events';
 
 /**
- * Represents a read-only observable collection based on the JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
+ * Represents a read-only observable collection based on the [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
@@ -120,8 +120,8 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     reduceRight<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;
 
     /**
-     * Converts the observable collection to a native JavaScript {@link Array}.
-     * @returns An {@link Array} containing all the items in the collection.
+     * Converts the observable collection to a native JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
+     * @returns An [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing all the items in the collection.
      */
     toArray(): TItem[];
 

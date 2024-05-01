@@ -2,7 +2,7 @@ import type { IObservableCollection } from './IObservableCollection';
 import { ReadOnlyObservableCollection } from './ReadOnlyObservableCollection';
 
 /**
- * Represents an observable collection based on the JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
+ * Represents an observable collection based on the [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
