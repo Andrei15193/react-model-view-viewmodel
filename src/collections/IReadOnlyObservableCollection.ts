@@ -93,6 +93,12 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     findLast<TResult extends TItem>(callback: (item: TItem, index: number, colleciton: this) => item is TResult): TResult | undefined;
     findLast<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => item is TResult, thisArg: TContext): TResult | undefined;
 
+    /**
+     * Merges the current collection with the given [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) and returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
+     * @param items The items to concatenate.
+     * @returns Returns a new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of this collection followed by the items in the provided [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
+     * @see [Array.concat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)
+     */
     concat(...items: readonly (TItem | readonly TItem[])[]): TItem[];
 
     map<TResult>(callback: (item: TItem, index: number, colleciton: this) => TResult): TResult[];
@@ -105,6 +111,12 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
 
     slice(start?: number, end?: number): TItem[];
 
+    /**
+     * Aggregates the contained items into a {@link String} placing the provided `separator` between them.
+     * @param separator The separator used to insert between items when aggregating them into a {@link String}.
+     * @returns The aggregated items as a {@link String}.
+     * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
+     */
     join(separator?: string): string;
 
     some(callback: (item: TItem, index: number, collection: this) => boolean): boolean;

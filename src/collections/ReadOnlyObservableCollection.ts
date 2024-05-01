@@ -206,7 +206,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
      */
     public join(separator?: string): string {
-        throw new Error('Method not implemented.');
+        return Array.from(this).join(separator);
     }
 
     /**

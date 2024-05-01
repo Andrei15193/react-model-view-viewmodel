@@ -7,7 +7,8 @@ import { ReadOnlyObservableCollection } from './ReadOnlyObservableCollection';
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
 export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TItem> implements IObservableCollection<TItem> {
-    /** Initializes a new instance of the {@link ObservableCollection} class.
+    /**
+     * Initializes a new instance of the {@link ObservableCollection} class.
      * @param items The items to initialize the collection with.
      */
     public constructor(...items: readonly TItem[]) {
@@ -40,7 +41,8 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
         return super.push(...items);
     }
 
-    /** Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
+    /**
+     * Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The last element in the collection that was removed.
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
      */
@@ -48,7 +50,8 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
         return super.pop();
     }
 
-    /** Inserts new elements at the start of the collection, and returns the new length of the collection.
+    /**
+     * Inserts new elements at the start of the collection, and returns the new length of the collection.
      * @param items Elements to insert at the start of the collection.
      * @returns The new length of the collection.
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
@@ -76,7 +79,8 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
         return super.get(index);
     }
 
-    /** Sets the provided item at the provided index.
+    /**
+     * Sets the provided item at the provided index.
      * @param index The index to which to set the item.
      * @param item The item to set.
      * @throws {@link RangeError} when the index is outside the bounds of the collection.
@@ -85,7 +89,8 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
         super.set(index, item);
     }
 
-    /** Removes and/or adds elements to the collection and returns the deleted elements.
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
