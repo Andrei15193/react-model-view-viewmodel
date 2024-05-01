@@ -1,5 +1,5 @@
-import { ObservableCollection } from '../../src/ObservableCollection';
-import { testBlankMutatingOperation, testMutatingOperation } from './common';
+import { ObservableCollection } from '../../ObservableCollection';
+import { testBlankMutatingOperation } from './common';
 
 describe('ObserableCollection.with', (): void => {
     it('generating a collection using with returns array', (): void => {

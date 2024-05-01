@@ -1,4 +1,4 @@
-import { ObservableCollection } from '../../src/ObservableCollection';
+import { ObservableCollection } from '../../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
 describe('ObserableCollection.push', (): void => {

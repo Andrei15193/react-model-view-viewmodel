@@ -1,9 +1,10 @@
 import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
 
-/** Represents an observable collection based on the array interface.
+/**
+ * Represents an observable collection based on the JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
  * @template TItem The type of items the collection contains.
+ * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
-
 export interface IObservableCollection<TItem> extends IReadOnlyObservableCollection<TItem> {
     /**
      * Gets or sets the number of items in the collection.

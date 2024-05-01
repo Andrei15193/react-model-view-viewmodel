@@ -1,4 +1,4 @@
-import { ObservableCollection } from '../../src/ObservableCollection';
+import { ObservableCollection } from '../../ObservableCollection';
 import { testMutatingOperation } from './common';
 
 describe('ObserableCollection.set', (): void => {

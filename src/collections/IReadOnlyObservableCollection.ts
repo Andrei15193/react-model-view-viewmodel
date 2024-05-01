@@ -1,9 +1,10 @@
-import type { INotifyCollectionChanged, INotifyPropertiesChanged } from './events';
+import type { INotifyCollectionChanged, INotifyPropertiesChanged } from '../events';
 
-/** Represents a read-only observable collection based on the read-only array interface.
+/**
+ * Represents a read-only observable collection based on the JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
  * @template TItem The type of items the collection contains.
+ * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
-
 export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, INotifyPropertiesChanged, INotifyCollectionChanged<TItem> {
     /**
      * Gets the number of items in the collection.

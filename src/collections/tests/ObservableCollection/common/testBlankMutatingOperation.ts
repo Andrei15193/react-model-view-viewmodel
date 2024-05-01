@@ -1,6 +1,6 @@
-import type { ICollectionChangedEventHandler, IPropertiesChangedEventHandler } from "../../../src/events";
-import type { IObservableCollection } from "../../../src/IObservableCollection";
-import { ObservableCollection } from "../../../src/ObservableCollection";
+import type { ICollectionChangedEventHandler, IPropertiesChangedEventHandler } from "../../../../events";
+import type { IObservableCollection } from "../../../IObservableCollection";
+import { ObservableCollection } from "../../../ObservableCollection";
 import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
 
 export interface ITestBlankMutatingOperationOptions<TItem> {

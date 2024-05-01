@@ -1,5 +1,5 @@
 import type { ICollectionChangedEventHandler } from '../events';
-import type { IReadOnlyObservableCollection } from '../IReadOnlyObservableCollection';
+import type { IReadOnlyObservableCollection } from '../collections/IReadOnlyObservableCollection';
 import { useEffect, useState } from 'react';
 
 type Destructor = () => void;

@@ -1,14 +1,14 @@
 import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
-import type { ICollectionChange, ICollectionChangedEvent } from './events';
-import { EventDispatcher } from './events';
-import { ViewModel } from './view-model';
+import type { ICollectionChange, ICollectionChangedEvent } from '../events';
+import { EventDispatcher } from '../events';
+import { ViewModel } from '../view-model';
 
 /**
- * Represents a read-only observable collection, can be used as a base class for custom observable collections to control adding and removing items to the collection.
+ * Represents a read-only observable collection based on the JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
+ * This can be used both as a wrapper and as a base class for custom observable collections.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
-
 export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IReadOnlyObservableCollection<TItem> {
     private _length: number;
     private _changeToken: unknown;

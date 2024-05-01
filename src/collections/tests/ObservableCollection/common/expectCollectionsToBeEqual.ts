@@ -1,4 +1,4 @@
-import type { IReadOnlyObservableCollection } from "../../../src/IReadOnlyObservableCollection";
+import type { IReadOnlyObservableCollection } from "../../../IReadOnlyObservableCollection";
 
 export function expectCollectionsToBeEqual<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>, array: readonly TItem[]): void {
     expect(observableCollection.length).toBe(array.length);
