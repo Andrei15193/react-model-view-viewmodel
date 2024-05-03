@@ -211,13 +211,31 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
-     * @param start The inclusive index at which to start the sub-array.
-     * @param end The exclusive index at which the sub-array ends.
+     * @param start The inclusive index at which to start the sub-array, accepts both positive and negative values.
+     * @param end The exclusive index at which the sub-array ends, accepts both positive and negative values.
      * @returns Returns a new array containing items from the provided `start` index up to the provided `end` index.
      * @see [Array.slice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
      */
     public slice(start?: number, end?: number): TItem[] {
-        throw new Error('Method not implemented.');
+        const normalizedStartIndex = (
+            start === null || start === undefined || start < -this._length
+                ? 0
+                : start < 0
+                    ? start + this._length
+                    : start
+        );
+        const normalizedEndIndex = (
+            end === null || end === undefined || end >= this._length
+                ? this._length
+                : end < 0
+                    ? end + this._length
+                    : end
+        );
+
+        const result: TItem[] = [];
+        for (let index = normalizedStartIndex; index < normalizedEndIndex; index++)
+            result.push(this[index]);
+        return result;
     }
 
     /**

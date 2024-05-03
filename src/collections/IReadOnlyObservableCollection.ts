@@ -109,6 +109,13 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     filter<TResult extends TItem>(callback: (item: TItem, index: number, collection: this) => item is TResult): TResult[];
     filter<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult[];
 
+    /**
+     * Returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
+     * @param start The inclusive index at which to start the sub-array, accepts both positive and negative values.
+     * @param end The exclusive index at which the sub-array ends, accepts both positive and negative values.
+     * @returns Returns a new array containing items from the provided `start` index up to the provided `end` index.
+     * @see [Array.slice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
+     */
     slice(start?: number, end?: number): TItem[];
 
     /**
