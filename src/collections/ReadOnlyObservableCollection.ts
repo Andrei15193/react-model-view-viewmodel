@@ -303,7 +303,21 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.lastIndexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
      */
     public lastIndexOf(searchElement: TItem, fromIndex?: number): number {
-        throw new Error('Method not implemented.');
+        let searchElementIndex = (
+            fromIndex === null || fromIndex === undefined || fromIndex >= this._length
+                ? this._length - 1
+                : fromIndex < 0
+                    ? fromIndex + this._length
+                    : fromIndex
+        );
+
+        while (searchElementIndex >= 0 && this[searchElementIndex] !== searchElement)
+            searchElementIndex--;
+
+        if (searchElementIndex < -1)
+            return -1;
+        else
+            return searchElementIndex;
     }
 
     /**
