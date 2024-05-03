@@ -71,7 +71,20 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     includes(item: TItem): boolean;
     includes(item: TItem, fromIndex: number): boolean;
 
+    /**
+     * Returns the first index of an item, or `-1` if none can be found.
+     * @param item The item to search for.
+     * @returns Returns the index where the provided `searchElement` was first found; otherwise `-1`.
+     * @see [Array.indexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
+     */
     indexOf(item: TItem): number;
+    /**
+     * Returns the first index of an item, or `-1` if none can be found.
+     * @param searchElement The item to search for.
+     * @param fromIndex The index from where to start the search, accepts both positive and negative values.
+     * @returns Returns the index where the provided `searchElement` was first found; otherwise `-1`.
+     * @see [Array.indexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
+     */
     indexOf(item: TItem, fromIndex: number): number;
 
     lastIndexOf(item: TItem): number;
@@ -111,20 +124,39 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
 
     /**
      * Returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
+     * @returns Returns a new array containing items from the provided `start` index up to the provided `end` index.
+     * @see [Array.slice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
+     */
+    slice(): TItem[];
+    /**
+     * Returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
+     * @param start The inclusive index at which to start the sub-array, accepts both positive and negative values.
+     * @returns Returns a new array containing items from the provided `start` index up to the provided `end` index.
+     * @see [Array.slice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
+     */
+    slice(start: number): TItem[];
+    /**
+     * Returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements starting at the provided `start` index up to, but not including, the provided `end` index.
      * @param start The inclusive index at which to start the sub-array, accepts both positive and negative values.
      * @param end The exclusive index at which the sub-array ends, accepts both positive and negative values.
      * @returns Returns a new array containing items from the provided `start` index up to the provided `end` index.
      * @see [Array.slice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice)
      */
-    slice(start?: number, end?: number): TItem[];
+    slice(start: number, end: number): TItem[];
 
+    /**
+     * Aggregates the contained items into a {@link String} separating them with `,` (comma) between them.
+     * @returns The aggregated items as a {@link String}.
+     * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
+     */
+    join(): string;
     /**
      * Aggregates the contained items into a {@link String} placing the provided `separator` between them.
      * @param separator The separator used to insert between items when aggregating them into a {@link String}.
      * @returns The aggregated items as a {@link String}.
      * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
      */
-    join(separator?: string): string;
+    join(separator: string): string;
 
     some(callback: (item: TItem, index: number, collection: this) => boolean): boolean;
     some<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
