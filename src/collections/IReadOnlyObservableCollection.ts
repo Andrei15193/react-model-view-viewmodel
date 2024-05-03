@@ -171,18 +171,32 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     join(separator: string): string;
 
-    some(callback: (item: TItem, index: number, collection: this) => boolean): boolean;
-    some<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
+    /**
+     * Checks whether some elements in the collection satisfy a given condition.
+     * @param predicate The callback performing the check for each item.
+     * @returns Returns `true` if the provided `predicate` is `true` for at least one item; otherwise `false`.
+     * @see [Array.some](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
+     */
+    some(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
+    /**
+     * Checks whether some elements in the collection satisfy a given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check for each item.
+     * @param thisArg A value to use as context when checking items.
+     * @returns Returns `true` if the provided `predicate` is `true` for at least one item; otherwise `false`.
+     * @see [Array.some](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
+     */
+    some<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
 
     /**
-     * Checks whether all elements in the collection fulfil a given condition.
+     * Checks whether all elements in the collection satisfy a given condition.
      * @param predicate The callback performing the check for each item.
      * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
      * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
      */
     every(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
     /**
-     * Checks whether all elements in the collection fulfil a given condition.
+     * Checks whether all elements in the collection satisfy a given condition.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback performing the check for each item.
      * @param thisArg A value to use as context when checking items.

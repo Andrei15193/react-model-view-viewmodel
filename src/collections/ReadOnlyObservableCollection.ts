@@ -330,14 +330,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Checks whether all elements in the collection fulfil a given condition.
+     * Checks whether all elements in the collection satisfy a given condition.
      * @param predicate The callback performing the check for each item.
      * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
      * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
      */
     public every(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
     /**
-     * Checks whether all elements in the collection fulfil a given condition.
+     * Checks whether all elements in the collection satisfy a given condition.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback performing the check for each item.
      * @param thisArg A value to use as context when checking items.
@@ -359,14 +359,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Checks whether some elements in the collection fulfil a given condition.
+     * Checks whether some elements in the collection satisfy a given condition.
      * @param predicate The callback performing the check for each item.
      * @returns Returns `true` if the provided `predicate` is `true` for at least one item; otherwise `false`.
      * @see [Array.some](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
      */
     public some(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
     /**
-     * Checks whether some elements in the collection fulfil a given condition.
+     * Checks whether some elements in the collection satisfy a given condition.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback performing the check for each item.
      * @param thisArg A value to use as context when checking items.
@@ -376,7 +376,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public some<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
 
     public some<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
-        throw new Error('Method not implemented.');
+        let result = false;
+
+        let index = 0;
+        while (!result && index < this._length) {
+            result = predicate.call(thisArg, this[index], index, this);
+            index++;
+        }
+
+        return result;
     }
 
     /**
