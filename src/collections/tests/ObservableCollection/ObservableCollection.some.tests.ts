@@ -72,6 +72,18 @@ describe('ObserableCollection.some', (): void => {
         expect(invocationCount).toBe(1);
     });
 
+    it('modifying the collection while executing some throws exception', (): void => {
+        expect(
+            () => {
+                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                observableCollection.some(_ => {
+                    observableCollection.pop();
+                    return true;
+                });
+            })
+            .toThrow(new Error('Collection has changed while being iterated.'));
+    });
+
     it('calling some while iterating will not break iterators', (): void => {
         expect(
             () => {

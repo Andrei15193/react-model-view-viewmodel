@@ -73,6 +73,18 @@ describe('ObserableCollection.every', (): void => {
         expect(invocationCount).toBe(1);
     });
 
+    it('modifying the collection while executing every throws exception', (): void => {
+        expect(
+            () => {
+                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                observableCollection.every(_ => {
+                    observableCollection.pop();
+                    return false;
+                });
+            })
+            .toThrow(new Error('Collection has changed while being iterated.'));
+    });
+
     it('calling every while iterating will not break iterators', (): void => {
         expect(
             () => {

@@ -72,6 +72,17 @@ describe('ObserableCollection.forEach', (): void => {
         expect(invocationCount).toBe(1);
     });
 
+    it('modifying the collection while executing forEach throws exception', (): void => {
+        expect(
+            () => {
+                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                observableCollection.forEach(_ => {
+                    observableCollection.pop();
+                });
+            })
+            .toThrow(new Error('Collection has changed while being iterated.'));
+    });
+
     it('calling forEach while iterating will not break iterators', (): void => {
         expect(
             () => {

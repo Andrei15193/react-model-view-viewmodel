@@ -366,11 +366,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public every<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
         let result = true;
+        const changeTokenCopy = this._changeToken;
 
         let index = 0;
         while (result && index < this._length) {
             result = predicate.call(thisArg, this[index], index, this);
             index++;
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
         }
 
         return result;
@@ -395,11 +399,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public some<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
         let result = false;
+        const changeTokenCopy = this._changeToken;
 
         let index = 0;
         while (!result && index < this._length) {
             result = predicate.call(thisArg, this[index], index, this);
             index++;
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
         }
 
         return result;
@@ -421,8 +429,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public forEach<TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
 
     public forEach<TContext = void>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg?: TContext): void {
-        for (let index = 0; index < this._length; index++)
+        const changeTokenCopy = this._changeToken;
+
+        for (let index = 0; index < this._length; index++) {
             callbackfn.call(thisArg, this[index], index, this);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
     }
 
     /**
