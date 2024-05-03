@@ -298,10 +298,19 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     /**
      * Returns the last index of an item, or `-1` if none can be found.
      * @param searchElement The item to search for.
+     * @returns Returns the index where the provided `searchElement` was last found; otherwise `-1`.
+     * @see [Array.lastIndexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
+     */
+    public lastIndexOf(searchElement: TItem): number;
+    /**
+     * Returns the last index of an item, or `-1` if none can be found.
+     * @param searchElement The item to search for.
      * @param fromIndex The index from where to start searching backwards.
      * @returns Returns the index where the provided `searchElement` was last found; otherwise `-1`.
      * @see [Array.lastIndexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
      */
+    public lastIndexOf(searchElement: TItem, fromIndex: number): number;
+
     public lastIndexOf(searchElement: TItem, fromIndex?: number): number {
         let searchElementIndex = (
             fromIndex === null || fromIndex === undefined || fromIndex >= this._length
@@ -338,7 +347,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public every<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
 
     public every<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
-        throw new Error('Method not implemented.');
+        let result = true;
+
+        let index = 0;
+        while (result && index < this._length) {
+            result = predicate.call(thisArg, this[index], index, this);
+            index++;
+        }
+
+        return result;
     }
 
     /**

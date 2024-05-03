@@ -87,8 +87,21 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     indexOf(item: TItem, fromIndex: number): number;
 
-    lastIndexOf(item: TItem): number;
-    lastIndexOf(item: TItem, fromIndex: number): number;
+    /**
+     * Returns the last index of an item, or `-1` if none can be found.
+     * @param searchElement The item to search for.
+     * @returns Returns the index where the provided `searchElement` was last found; otherwise `-1`.
+     * @see [Array.lastIndexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
+     */
+    lastIndexOf(searchElement: TItem): number;
+    /**
+     * Returns the last index of an item, or `-1` if none can be found.
+     * @param searchElement The item to search for.
+     * @param fromIndex The index from where to start searching backwards.
+     * @returns Returns the index where the provided `searchElement` was last found; otherwise `-1`.
+     * @see [Array.lastIndexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf)
+     */
+    lastIndexOf(searchElement: TItem, fromIndex: number): number;
 
     findIndex(callback: (item: TItem, index: number, colleciton: this) => boolean): number;
     findIndex<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): number;
@@ -161,8 +174,22 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     some(callback: (item: TItem, index: number, collection: this) => boolean): boolean;
     some<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
 
-    every(callback: (item: TItem, index: number, collection: this) => boolean): boolean;
-    every<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
+    /**
+     * Checks whether all elements in the collection fulfil a given condition.
+     * @param predicate The callback performing the check for each item.
+     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
+     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
+     */
+    every(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
+    /**
+     * Checks whether all elements in the collection fulfil a given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check for each item.
+     * @param thisArg A value to use as context when checking items.
+     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
+     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
+     */
+    every<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
 
     reduce(callback: (accumulator: TItem, item: TItem, index: number, colleciton: this) => TItem): TItem;
     reduce<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;
