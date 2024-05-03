@@ -197,6 +197,14 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     every(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
     /**
      * Checks whether all elements in the collection satisfy a given condition.
+     * @template TSpecific The specific item type the collection actually contains.
+     * @param predicate The callback performing the check for each item.
+     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
+     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
+     */
+    every<TSpecific extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TSpecific): this is IReadOnlyObservableCollection<TSpecific>;
+    /**
+     * Checks whether all elements in the collection satisfy a given condition.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback performing the check for each item.
      * @param thisArg A value to use as context when checking items.
@@ -204,6 +212,16 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
      */
     every<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
+    /**
+     * Checks whether all elements in the collection satisfy a given condition.
+     * @template TSpecific The specific item type the collection actually contains.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check for each item.
+     * @param thisArg A value to use as context when checking items.
+     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
+     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
+     */
+    every<TSpecific extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TSpecific, thisArg: TContext): this is IReadOnlyObservableCollection<TSpecific>;
 
     reduce(callback: (accumulator: TItem, item: TItem, index: number, colleciton: this) => TItem): TItem;
     reduce<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;

@@ -1,45 +1,44 @@
 import { ObservableCollection } from '../../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.every', (): void => {
-    it('checking every element of an empty collection returns true', (): void => {
+describe('ObserableCollection.forEach', (): void => {
+    it('iterating over an empty collection does not invoke the callback', (): void => {
+        let arrayInvocationCount = 0;
+        let collectionInvocationCount = 0;
+
+        testBlankMutatingOperation<number>({
+            initialState: [],
+
+            applyOperation: {
+                applyArrayOperation: array => array.forEach(_ => arrayInvocationCount++),
+                applyCollectionOperation: collection => collection.forEach(_ => collectionInvocationCount++)
+            }
+        });
+
+        expect(arrayInvocationCount).toBe(0);
+        expect(collectionInvocationCount).toBe(0);
+    });
+
+    it('iterating over a collection invokes the callback for each item', (): void => {
+        const arrayItems: number[] = [];
+        const collectionItems: number[] = [];
+
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.every(_ => false),
-                applyCollectionOperation: collection => collection.every(_ => false)
+                applyArrayOperation: array => array.forEach(item => arrayItems.push(item)),
+                applyCollectionOperation: collection => collection.forEach(item => collectionItems.push(item))
             }
         });
+
+        expect(collectionItems).toEqual(arrayItems);
     });
 
-    it('checking every element of an collection returns false when not all items satisfy the condition', (): void => {
-        testBlankMutatingOperation<number>({
-            initialState: [1, 2, 3],
-
-            applyOperation: {
-                applyArrayOperation: array => array.every(item => item === 3),
-                applyCollectionOperation: collection => collection.every(item => item === 3)
-            }
-        });
-    });
-
-    it('checking every element of an collection returns true when all items satisfy the condition', (): void => {
-        testBlankMutatingOperation<number>({
-            initialState: [1, 2, 3],
-
-            applyOperation: {
-                applyArrayOperation: array => array.every(item => item > 0),
-                applyCollectionOperation: collection => collection.every(item => item > 0)
-            }
-        });
-    });
-
-    it('calling every passes arguments to each parameter accordingly', (): void => {
+    it('calling forEach passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
         const observableCollection = new ObservableCollection<number>(1);
-
-        observableCollection.every((item, index, collection) => {
+        observableCollection.forEach((item, index, collection) => {
             invocationCount++;
 
             expect(item).toBe(1);
@@ -52,11 +51,11 @@ describe('ObserableCollection.every', (): void => {
         expect(invocationCount).toBe(1);
     });
 
-    it('calling every with context passes it to the callback', (): void => {
+    it('calling forEach with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
         const observableCollection = new ObservableCollection<number>(1);
-        observableCollection.every(
+        observableCollection.forEach(
             function (item, index, collection) {
                 invocationCount++;
 
@@ -73,13 +72,13 @@ describe('ObserableCollection.every', (): void => {
         expect(invocationCount).toBe(1);
     });
 
-    it('calling every while iterating will not break iterators', (): void => {
+    it('calling forEach while iterating will not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>(1, 2, 3);
 
                 for (const _ of observableCollection)
-                    observableCollection.every(_ => true);
+                    observableCollection.forEach(_ => {});
             })
             .not
             .toThrow();
