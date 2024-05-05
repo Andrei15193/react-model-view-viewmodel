@@ -80,7 +80,20 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     forEach<TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
 
+    /**
+     * Checks whether the provided item is in the collection.
+     * @param searchElement The item to search for.
+     * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
+     * @see [Array.includes](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
+     */
     includes(item: TItem): boolean;
+    /**
+     * Checks whether the provided item is in the collection.
+     * @param item The item to search for.
+     * @param fromIndex The index from where to start the search.
+     * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
+     * @see [Array.includes](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
+     */
     includes(item: TItem, fromIndex: number): boolean;
 
     /**
@@ -115,11 +128,39 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     lastIndexOf(searchElement: TItem, fromIndex: number): number;
 
+    /**
+     * Returns the index of the first item that satisfies the given condition.
+     * @param predicate The callback performing the item check.
+     * @returns Returns the index of the first item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
+     * @see [Array.findIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
+     */
     findIndex<TContext>(predicate: (item: TItem, index: number, collection: this) => boolean): number;
+    /**
+     * Returns the index of the first item that satisfies the given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the item check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the index of the first item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
+     * @see [Array.findIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
+     */
     findIndex<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): number;
 
-    findLastIndex(callback: (item: TItem, index: number, colleciton: this) => boolean): number;
-    findLastIndex<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): number;
+    /**
+     * Returns the index of the last item that satisfies the given condition.
+     * @param predicate The callback performing the item check.
+     * @returns Returns the index of the last item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
+     * @see [Array.findLastIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
+     */
+    findLastIndex(predicate: (item: TItem, index: number, collection: this) => boolean): number;
+    /**
+     * Returns the index of the last item that satisfies the given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the item check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the index of the last item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
+     * @see [Array.findLastIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
+     */
+    findLastIndex<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): number;
 
     /**
      * Returns the first item that satisfies the given condition.

@@ -763,7 +763,21 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public findLastIndex<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): number;
 
     public findLastIndex<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): number {
-        throw new Error('Method not implemented.');
+        const changeTokenCopy = this._changeToken;
+        let foundItem = false;
+        let index = this._length - 1;
+
+        while (!foundItem && index >= 0) {
+            if (predicate.call(thisArg, this[index], index, this))
+                foundItem = true;
+            else
+                index--;
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return index;
     }
 
     /**
@@ -772,15 +786,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
      * @see [Array.includes](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
      */
-    public includes(searchElement: TItem): boolean;
+    public includes(item: TItem): boolean;
     /**
      * Checks whether the provided item is in the collection.
-     * @param searchElement The item to search for.
+     * @param item The item to search for.
      * @param fromIndex The index from where to start the search.
      * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
      * @see [Array.includes](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
      */
-    public includes(searchElement: TItem, fromIndex: number): boolean;
+    public includes(item: TItem, fromIndex: number): boolean;
 
     public includes(searchElement: TItem, fromIndex?: number): boolean {
         throw new Error('Method not implemented.');
