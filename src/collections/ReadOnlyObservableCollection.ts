@@ -414,13 +414,13 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Executes the given callback for each item in the collection.
+     * Iterates over the entire collections executing the `callback` for each.
      * @param callbackfn The callback processing each item.
      * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
     public forEach(callbackfn: (item: TItem, index: number, collection: this) => void): void;
     /**
-     * Executes the given callback for each item in the collection.
+     * Iterates over the entire collections executing the `callback` for each.
      * @template TContext The context type in which the callback is executed.
      * @param callbackfn The callback processing each item.
      * @param thisArg A value to use as context when processing items.
@@ -440,7 +440,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
      * @param callbackfn The callback mapping each item.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
@@ -448,7 +448,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public map<TResult>(callbackfn: (item: TItem, index: number, collection: this) => TResult): TResult[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
      * @template TContext The context type in which the callback is executed.
      * @param callbackfn The callback mapping each item.
@@ -473,14 +473,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items for which the provided `predicate` evaluated to `true`.
      * @see [Array.filter](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
      */
     public filter(predicate: (item: TItem, index: number, collection: this) => boolean): TItem[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @param thisArg A value to use as context when evaluating items.
@@ -489,7 +489,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public filter<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TItem[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @template TResult The type to convert each item to.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items for which the provided `predicate` evaluated to `true`.
@@ -497,7 +497,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public filter<TResult extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TResult): TResult[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @template TContext The context type in which the callback is executed.
      * @template TResult The type to convert each item to.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
@@ -524,14 +524,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Aggregates the collection to a single item.
+     * Reduces the collection to a single item.
      * @param callbackfn The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
     public reduce(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
-     * Aggregates the collection to a single value.
+     * Reduces the collection to a single item.
      * @template TResult The result value type to which items are aggregated.
      * @param callbackfn The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
@@ -559,14 +559,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Aggregates the collection to a single item by iterating the collection from end to start.
+     * Reduces the collection to a single item iterating the collection from end to start.
      * @param callbackfn The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
     public reduceRight(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
-     * Aggregates the collection to a single value by iterating the collection from end to start.
+     * Reduces the collection to a single item iterating the collection from end to start.
      * @template TResult The result value type to which items are aggregated.
      * @param callbackfn The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
@@ -594,34 +594,34 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Returns the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
-     * @param predicate The callback performing the item check.
+     * Returns the first item that satisfies the given condition.
+     * @param predicate The callback performing the check.
      * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
      */
     public find(predicate: (item: TItem, index: number, collection: this) => boolean): TItem | undefined;
     /**
-     * Returns the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * Returns the first item that satisfies the given condition.
      * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback performing the item check.
+     * @param predicate The callback performing the check.
      * @param thisArg A value to use as context when evaluating items.
      * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
      */
     public find<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): TItem | undefined;
     /**
-     * Returns the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * Returns the first item that satisfies the given condition.
      * @template TResult The type of item to return.
-     * @param predicate The callback performing the item check.
+     * @param predicate The callback performing the check.
      * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
      */
     public find<TResult extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TResult): TResult | undefined;
     /**
-     * Returns the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * Returns the first item that satisfies the given condition.
      * @template TResult The type of item to return.
      * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback performing the item check.
+     * @param predicate The callback performing the check.
      * @param thisArg A value to use as context when evaluating items.
      * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
@@ -629,38 +629,56 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public find<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult | undefined;
 
     public find<TResult extends TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
-        throw new Error('Method not implemented.');
+        const changeTokenCopy = this._changeToken;
+        let hasResult = false;
+        let index = 0;
+        let result: TResult | undefined = undefined;
+
+        while (!hasResult && index < this._length) {
+            const item = this[index];
+            if (predicate.call(thisArg, item, index, this)) {
+                hasResult = true;
+                result = item as TResult;
+            }
+            else
+                index++;
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return result;
     }
 
     /**
-     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
-     * @template TResult The type of item to return.
-     * @param predicate The callback performing the item check.
+     * Returns the last item that satisfies the given condition.
+     * @param predicate The callback performing the check.
      * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
      */
     public findLast(predicate: (item: TItem, index: number, collection: this) => boolean): TItem | undefined;
     /**
-     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
-     * @template TResult The type of item to return.
-     * @param predicate The callback performing the item check.
+     * Returns the last item that satisfies the given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check.
+     * @param thisArg A value to use as context when evaluating items.
      * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
      */
     public findLast<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): TItem | undefined;
     /**
-     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * Returns the last item that satisfies the given condition.
      * @template TResult The type of item to return.
-     * @param predicate The callback performing the item check.
+     * @param predicate The callback performing the check.
      * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
      */
     public findLast<TResult extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TResult): TResult | undefined;
     /**
-     * Returns the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `undefined` is returned.
+     * Returns the last item that satisfies the given condition.
      * @template TResult The type of item to return.
      * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback performing the item check.
+     * @param predicate The callback performing the check.
      * @param thisArg A value to use as context when evaluating items.
      * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
      * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
@@ -672,14 +690,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Returns the index of the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
+     * Returns the index of the first item that satisfies the given condition.
      * @param predicate The callback performing the item check.
      * @returns Returns the index of the first item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
      * @see [Array.findIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
      */
-    public findIndex<TContext>(predicate: (item: TItem, index: number, collection: this) => boolean): number
+    public findIndex<TContext>(predicate: (item: TItem, index: number, collection: this) => boolean): number;
     /**
-     * Returns the index of the first item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
+     * Returns the index of the first item that satisfies the given condition.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback performing the item check.
      * @param thisArg A value to use as context when evaluating items.
@@ -693,14 +711,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Returns the index of the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
+     * Returns the index of the last item that satisfies the given condition.
      * @param predicate The callback performing the item check.
      * @returns Returns the index of the last item for which the provided `predicate` evaluates to `true`; otherwise `-1`.
      * @see [Array.findLastIndex](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex)
      */
     public findLastIndex(predicate: (item: TItem, index: number, collection: this) => boolean): number;
     /**
-     * Returns the index of the last item for which the provided `predicate` evaluated to `true`, if no item can be found then `-1` is returned.
+     * Returns the index of the last item that satisfies the given condition.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback performing the item check.
      * @param thisArg A value to use as context when evaluating items.
@@ -714,14 +732,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     }
 
     /**
-     * Checks whether the provided item is contained by the collection.
+     * Checks whether the provided item is in the collection.
      * @param searchElement The item to search for.
      * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
      * @see [Array.includes](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
      */
     public includes(searchElement: TItem): boolean;
     /**
-     * Checks whether the provided item is contained by the collection.
+     * Checks whether the provided item is in the collection.
      * @param searchElement The item to search for.
      * @param fromIndex The index from where to start the search.
      * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
@@ -841,10 +859,11 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         return this._length;
     }
 
-    /** Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
+    /**
+     * Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The last element in the collection that was removed.
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
-    */
+     */
     protected pop(): TItem | undefined {
         if (this._length === 0)
             return undefined;
@@ -869,7 +888,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         }
     }
 
-    /** Inserts new elements at the start of the collection, and returns the new length of the collection.
+    /**
+     * Inserts new elements at the start of the collection, and returns the new length of the collection.
      * @param items Elements to insert at the start of the collection.
      * @returns The new length of the collection.
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
@@ -1024,7 +1044,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         }
     }
 
-    /** Removes and/or adds elements to the collection and returns the deleted elements.
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.

@@ -65,8 +65,20 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     with(index: number, item: TItem): TItem[];
 
-    forEach(callback: (item: TItem, index: number, colleciton: this) => void): void;
-    forEach<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => void, thisArg: TContext): void;
+    /**
+     * Iterates over the entire collections executing the `callback` for each.
+     * @param callbackfn The callback processing each item.
+     * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+     */
+    forEach(callbackfn: (item: TItem, index: number, collection: this) => void): void;
+    /**
+     * Iterates over the entire collections executing the `callback` for each.
+     * @template TContext The context type in which the callback is executed.
+     * @param callbackfn The callback processing each item.
+     * @param thisArg A value to use as context when processing items.
+     * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
+     */
+    forEach<TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
 
     includes(item: TItem): boolean;
     includes(item: TItem, fromIndex: number): boolean;
@@ -103,22 +115,81 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     lastIndexOf(searchElement: TItem, fromIndex: number): number;
 
-    findIndex(callback: (item: TItem, index: number, colleciton: this) => boolean): number;
-    findIndex<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): number;
+    findIndex<TContext>(predicate: (item: TItem, index: number, collection: this) => boolean): number;
+    findIndex<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): number;
 
     findLastIndex(callback: (item: TItem, index: number, colleciton: this) => boolean): number;
     findLastIndex<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): number;
 
-    find(callback: (item: TItem, index: number, colleciton: this) => boolean): TItem | undefined;
-    find<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): TItem | undefined;
-    find<TResult extends TItem>(callback: (item: TItem, index: number, colleciton: this) => item is TResult): TResult | undefined;
-    find<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => item is TResult, thisArg: TContext): TResult | undefined;
+    /**
+     * Returns the first item that satisfies the given condition.
+     * @param predicate The callback performing the check.
+     * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+     */
+    find(predicate: (item: TItem, index: number, collection: this) => boolean): TItem | undefined;
+    /**
+     * Returns the first item that satisfies the given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+     */
+    find<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): TItem | undefined;
+    /**
+     * Returns the first item that satisfies the given condition.
+     * @template TResult The type of item to return.
+     * @param predicate The callback performing the check.
+     * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+     */
+    find<TResult extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TResult): TResult | undefined;
+    /**
+     * Returns the first item that satisfies the given condition.
+     * @template TResult The type of item to return.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the first item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.find](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
+     */
+    find<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult | undefined;
 
-    findLast(callback: (item: TItem, index: number, colleciton: this) => boolean): TItem | undefined;
-    findLast<TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => boolean, thisArg: TContext): TItem | undefined;
-    findLast<TResult extends TItem>(callback: (item: TItem, index: number, colleciton: this) => item is TResult): TResult | undefined;
-    findLast<TResult extends TItem, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => item is TResult, thisArg: TContext): TResult | undefined;
-
+    /**
+     * Returns the last item that satisfies the given condition.
+     * @param predicate The callback performing the check.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    findLast(predicate: (item: TItem, index: number, collection: this) => boolean): TItem | undefined;
+    /**
+     * Returns the last item that satisfies the given condition.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    findLast<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): TItem | undefined;
+    /**
+     * Returns the last item that satisfies the given condition.
+     * @template TResult The type of item to return.
+     * @param predicate The callback performing the check.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    findLast<TResult extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TResult): TResult | undefined;
+    /**
+     * Returns the last item that satisfies the given condition.
+     * @template TResult The type of item to return.
+     * @template TContext The context type in which the callback is executed.
+     * @param predicate The callback performing the check.
+     * @param thisArg A value to use as context when evaluating items.
+     * @returns Returns the last item for which the provided `predicate` evaluates to `true`; otherwise `undefined`.
+     * @see [Array.findLast](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast)
+     */
+    findLast<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult | undefined;
     /**
      * Merges the current collection with the given [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) and returns a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @param items The items to concatenate.
@@ -128,7 +199,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     concat(...items: readonly (TItem | readonly TItem[])[]): TItem[];
 
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
      * @param callbackfn The callback mapping each item.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
@@ -136,7 +207,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     map<TResult>(callbackfn: (item: TItem, index: number, collection: this) => TResult): TResult[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
      * @template TContext The context type in which the callback is executed.
      * @param callbackfn The callback mapping each item.
@@ -147,14 +218,14 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
 
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items for which the provided `predicate` evaluated to `true`.
      * @see [Array.filter](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
      */
     filter(predicate: (item: TItem, index: number, collection: this) => boolean): TItem[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @template TContext The context type in which the callback is executed.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @param thisArg A value to use as context when evaluating items.
@@ -163,7 +234,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     filter<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TItem[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @template TResult The type to convert each item to.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items for which the provided `predicate` evaluated to `true`.
@@ -171,7 +242,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     filter<TResult extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TResult): TResult[];
     /**
-     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items for which the provided `predicate` evaluates to `true`.
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
      * @template TContext The context type in which the callback is executed.
      * @template TResult The type to convert each item to.
      * @param predicate The callback indicating which items to add in the result [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
@@ -270,14 +341,14 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     every<TSpecific extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TSpecific, thisArg: TContext): this is IReadOnlyObservableCollection<TSpecific>;
 
     /**
-     * Aggregates the collection to a single item.
+     * Reduces the collection to a single item.
      * @param callbackfn The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
     reduce(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
-     * Aggregates the collection to a single value.
+     * Reduces the collection to a single item.
      * @template TResult The result value type to which items are aggregated.
      * @param callbackfn The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
@@ -287,14 +358,14 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     reduce<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
     /**
-     * Aggregates the collection to a single item by iterating the collection from end to start.
+     * Reduces the collection to a single item iterating the collection from end to start.
      * @param callbackfn The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
     reduceRight(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
-     * Aggregates the collection to a single value by iterating the collection from end to start.
+     * Reduces the collection to a single item iterating the collection from end to start.
      * @template TResult The result value type to which items are aggregated.
      * @param callbackfn The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
