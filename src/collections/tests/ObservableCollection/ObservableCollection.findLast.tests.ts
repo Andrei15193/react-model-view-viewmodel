@@ -18,8 +18,8 @@ describe('ObserableCollection.findLast', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.findLast(item => item === 4),
-                applyCollectionOperation: collection => collection.findLast(item => item === 4)
+                applyArrayOperation: array => array.findLast(item => item === 10),
+                applyCollectionOperation: collection => collection.findLast(item => item === 10)
             }
         });
     });

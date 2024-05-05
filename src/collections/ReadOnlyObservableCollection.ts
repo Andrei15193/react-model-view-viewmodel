@@ -630,14 +630,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public find<TResult extends TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
         const changeTokenCopy = this._changeToken;
-        let hasResult = false;
+        let foundItem = false;
         let index = 0;
         let result: TResult | undefined = undefined;
 
-        while (!hasResult && index < this._length) {
+        while (!foundItem && index < this._length) {
             const item = this[index];
             if (predicate.call(thisArg, item, index, this)) {
-                hasResult = true;
+                foundItem = true;
                 result = item as TResult;
             }
             else
@@ -687,14 +687,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public findLast<TResult extends TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
         const changeTokenCopy = this._changeToken;
-        let hasResult = false;
+        let foundItem = false;
         let index = this._length - 1;
         let result: TResult | undefined = undefined;
 
-        while (!hasResult && index >= 0) {
+        while (!foundItem && index >= 0) {
             const item = this[index];
             if (predicate.call(thisArg, item, index, this)) {
-                hasResult = true;
+                foundItem = true;
                 result = item as TResult;
             }
             else
@@ -725,7 +725,24 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public findIndex<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): number;
 
     public findIndex<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): number {
-        throw new Error('Method not implemented.');
+        const changeTokenCopy = this._changeToken;
+        let foundItem = false;
+        let index = 0;
+
+        while (!foundItem && index < this._length) {
+            if (predicate.call(thisArg, this[index], index, this))
+                foundItem = true;
+            else
+                index++;
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        if (index >= this._length)
+            return -1;
+        else
+            return index;
     }
 
     /**

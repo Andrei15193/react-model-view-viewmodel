@@ -1,44 +1,44 @@
 import { ObservableCollection } from '../../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.find', (): void => {
-    it('searching in an empty colleciton returns undefined', (): void => {
+describe('ObserableCollection.findIndex', (): void => {
+    it('searching in an empty colleciton returns -1', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.find(item => item === 3),
-                applyCollectionOperation: collection => collection.find(item => item === 3)
+                applyArrayOperation: array => array.findIndex(item => item === 3),
+                applyCollectionOperation: collection => collection.findIndex(item => item === 3)
             }
         });
     });
 
-    it('searching an item that does not exist in the collection returns undefined', (): void => {
+    it('searching an item that does not exist in the collection returns -1', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.find(item => item === 10),
-                applyCollectionOperation: collection => collection.find(item => item === 10)
+                applyArrayOperation: array => array.findIndex(item => item === 10),
+                applyCollectionOperation: collection => collection.findIndex(item => item === 10)
             }
         });
     });
 
-    it('searching an item that exist in the collection returns the first matching item', (): void => {
+    it('searching an item that exist in the collection returns the index of the first matching item', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.find(item => item % 2 === 0),
-                applyCollectionOperation: collection => collection.find(item => item % 2 === 0)
+                applyArrayOperation: array => array.findIndex(item => item % 2 === 0),
+                applyCollectionOperation: collection => collection.findIndex(item => item % 2 === 0)
             }
         });
     });
 
-    it('calling find passes arguments to each parameter accordingly', (): void => {
+    it('calling findIndex passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
         const observableCollection = new ObservableCollection<number>(1);
-        observableCollection.find((item, index, collection) => {
+        observableCollection.findIndex((item, index, collection) => {
             invocationCount++;
 
             expect(item).toBe(1);
@@ -51,11 +51,11 @@ describe('ObserableCollection.find', (): void => {
         expect(invocationCount).toBe(1);
     });
 
-    it('calling find with context passes it to the callback', (): void => {
+    it('calling findIndex with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
         const observableCollection = new ObservableCollection<number>(1);
-        observableCollection.find(
+        observableCollection.findIndex(
             function (item, index, collection) {
                 invocationCount++;
 
@@ -72,11 +72,11 @@ describe('ObserableCollection.find', (): void => {
         expect(invocationCount).toBe(1);
     });
 
-    it('modifying the collection while executing find throws exception', (): void => {
+    it('modifying the collection while executing findIndex throws exception', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>(1, 2, 3);
-                observableCollection.find(_ => {
+                observableCollection.findIndex(_ => {
                     observableCollection.pop();
                     return true;
                 });
@@ -90,7 +90,7 @@ describe('ObserableCollection.find', (): void => {
                 const observableCollection = new ObservableCollection<number>(1, 2, 3);
 
                 for (const _ of observableCollection)
-                    observableCollection.find(item => item % 2 === 0);
+                    observableCollection.findIndex(item => item % 2 === 0);
             })
             .not
             .toThrow();
