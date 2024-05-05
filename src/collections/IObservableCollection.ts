@@ -89,8 +89,9 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      * Sets the provided item at the provided index.
      * @param index The index to which to set the item.
      * @param item The item to set.
+     * @returns The length of the collection.
      */
-    set(index: number, item: TItem): void;
+    set(index: number, item: TItem): number;
 
     /**
      * Removes and/or adds elements to the collection and returns the deleted elements.

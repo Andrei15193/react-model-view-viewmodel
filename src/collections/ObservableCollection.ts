@@ -122,10 +122,10 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * Sets the provided item at the provided index.
      * @param index The index to which to set the item.
      * @param item The item to set.
-     * @throws {@link RangeError} when the index is outside the bounds of the collection.
+     * @returns The length of the collection.
      */
-    public set(index: number, item: TItem): void {
-        super.set(index, item);
+    public set(index: number, item: TItem): number {
+        return super.set(index, item);
     }
 
     /**

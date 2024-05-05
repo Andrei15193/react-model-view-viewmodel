@@ -1056,8 +1056,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * Sets the provided item at the provided index.
      * @param index The index to which to set the item.
      * @param item The item to set.
+     * @returns The length of the collection.
      */
-    protected set(index: number, item: TItem): void {
+    protected set(index: number, item: TItem): number {
         const normalizedIndex = normalizeIndex(index, this._length);
 
         if (normalizedIndex < this._length) {
@@ -1114,6 +1115,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             });
             this.notifyPropertiesChanged("length", normalizedIndex);
         }
+
+        return this._length;
     }
 
     /**
