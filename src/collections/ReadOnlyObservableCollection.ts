@@ -557,7 +557,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         }
 
         return result;
-
     }
 
     /**
@@ -566,7 +565,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns Returns a single aggregated item.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
-    public reduceRight(callbackfn: (previousValue: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    public reduceRight(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
      * Aggregates the collection to a single value by iterating the collection from end to start.
      * @template TResult The result value type to which items are aggregated.
@@ -575,10 +574,24 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns Returns the value containing the aggregated collection.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
-    public reduceRight<TResult>(callbackfn: (previousValue: TResult, currentItem: TItem, currentIndex: number, collection: this) => TResult, initialValue: TResult): TResult;
+    public reduceRight<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
     public reduceRight(callbackfn: any, initialValue?: any): any {
-        throw new Error('Method not implemented.');
+        if (arguments.length === 1 && this._length === 0)
+            throw new Error('Cannot reduce an empty collection without providing an initial value.');
+
+        const changeTokenCopy = this._changeToken;
+
+        let result = arguments.length === 1 ? this[this._length - 1] : initialValue;
+        const startIndex = arguments.length === 1 ? this._length - 2 : this._length - 1;
+        for (let index = startIndex; index >= 0; index--) {
+            result = callbackfn(result, this[index], index, this);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return result;
     }
 
     /**
