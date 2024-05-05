@@ -817,7 +817,12 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.toReversed](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed)
      */
     public toReversed(): TItem[] {
-        throw new Error('Method not implemented.');
+        const result = new Array<TItem>(this._length);
+
+        for (let sourceIndex = 0, destinationIndex = this._length - 1; sourceIndex < this._length; sourceIndex++, destinationIndex--)
+            result[destinationIndex] = this[sourceIndex];
+
+        return result;
     }
 
     /**

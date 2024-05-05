@@ -422,6 +422,13 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     toArray(): TItem[];
 
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in reverse order.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements in reversed order.
+     * @see [Array.toReversed](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed)
+     */
+    toReversed(): TItem[];
+
     toSorted(): TItem[];
     toSorted(compareCallback: (left: TItem, right: TItem) => number): TItem[];
 
