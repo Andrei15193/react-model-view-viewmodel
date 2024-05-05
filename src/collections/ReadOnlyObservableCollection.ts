@@ -166,16 +166,16 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         if (index < -this._length || index >= this._length)
             throw new RangeError(`The provided index '${index}' is outside the bounds of the collection.`);
 
-        const result: TItem[] = [];
+        const result: TItem[] = new Array(this._length);
         let normalizedIndex = index < 0 ? index + this._length : index;
 
         for (let itemIndex = 0; itemIndex < normalizedIndex; itemIndex++)
-            result.push(this[itemIndex]);
+            result[itemIndex] = this[itemIndex];
 
-        result.push(value);
+        result[normalizedIndex] = value;
 
         for (let itemIndex = normalizedIndex + 1; itemIndex < this._length; itemIndex++)
-            result.push(this[itemIndex]);
+            result[itemIndex] = this[itemIndex];
 
         return result;
     }
@@ -187,11 +187,11 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @see [Array.concat](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/concat)
      */
     public concat(...items: readonly (TItem | readonly TItem[])[]): TItem[] {
-        const result = Array.from(this);
+        const result = this.toArray();
 
         items.forEach(item => {
             if (Array.isArray(item))
-                (item as readonly TItem[]).forEach(nestedItem => result.push(nestedItem));
+                result.push(...item);
             else
                 result.push(item as TItem);
         });
@@ -214,7 +214,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public join(separator: string): string;
 
     public join(separator?: string): string {
-        return Array.from(this).join(separator);
+        return this.toArray().join(separator);
     }
 
     /**
@@ -460,11 +460,10 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public map<TResult, TContext = void>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg?: TContext): TResult[] {
         const changeTokenCopy = this._changeToken;
-        const result: TResult[] = [];
+        const result = new Array<TResult>(this._length);
 
         for (let index = 0; index < this._length; index++) {
-            const itemResult = callbackfn.call(thisArg, this[index], index, this);
-            result.push(itemResult);
+            result[index] = callbackfn.call(thisArg, this[index], index, this);
 
             if (changeTokenCopy !== this._changeToken)
                 throw new Error('Collection has changed while being iterated.');
@@ -798,7 +797,12 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns An [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing all the items in the collection.
      */
     public toArray(): TItem[] {
-        return Array.from(this);
+        const result: TItem[] = new Array(this._length);
+
+        for (let index = 0; index < this._length; index++)
+            result[index] = this[index];
+
+        return result;
     }
 
     /**
