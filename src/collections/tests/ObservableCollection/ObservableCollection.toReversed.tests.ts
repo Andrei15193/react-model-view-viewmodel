@@ -6,15 +6,21 @@ describe('ObserableCollection.toReversed', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.toReversed()
+            applyOperation: {
+                applyArrayOperation: array => array.slice().reverse(),
+                applyCollectionOperation: collection => collection.toReversed()
+            }
         });
     });
-    
+
     it('reversing a collection returns an array containing the same items in reverse order', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: collection => collection.toReversed()
+            applyOperation: {
+                applyArrayOperation: array => array.slice().reverse(),
+                applyCollectionOperation: collection => collection.toReversed()
+            }
         });
     });
 
