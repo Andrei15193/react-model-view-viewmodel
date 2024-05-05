@@ -269,8 +269,22 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     every<TSpecific extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TSpecific, thisArg: TContext): this is IReadOnlyObservableCollection<TSpecific>;
 
-    reduce(callback: (accumulator: TItem, item: TItem, index: number, colleciton: this) => TItem): TItem;
-    reduce<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;
+    /**
+     * Aggregates the collection to a single item.
+     * @param callbackfn The callback that aggregates two items at a time.
+     * @returns Returns a single aggregated item.
+     * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+     */
+    reduce(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    /**
+     * Aggregates the collection to a single value.
+     * @template TResult The result value type to which items are aggregated.
+     * @param callbackfn The callback that aggregates one item and the previous value at a time.
+     * @param initialValue The initial value when aggregating the collection.
+     * @returns Returns the value containing the aggregated collection.
+     * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+     */
+    reduce<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
     reduceRight(callback: (accumulator: TItem, item: TItem, index: number, colleciton: this) => TItem): TItem;
     reduceRight<TResult>(callback: (accumulator: TResult, item: TItem, index: number, colleciton: this) => TItem, initialValue: TResult): TItem;

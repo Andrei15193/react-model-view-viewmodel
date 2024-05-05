@@ -530,7 +530,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns Returns a single aggregated item.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    public reduce(callbackfn: (previousValue: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    public reduce(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
      * Aggregates the collection to a single value.
      * @template TResult The result value type to which items are aggregated.
@@ -539,10 +539,25 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @returns Returns the value containing the aggregated collection.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    public reduce<TResult>(callbackfn: (previousValue: TResult, currentItem: TItem, currentIndex: number, collection: this) => TResult, initialValue: TResult): TResult;
+    public reduce<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
     public reduce(callbackfn: any, initialValue?: any): any {
-        throw new Error('Method not implemented.');
+        if (arguments.length === 1 && this._length === 0)
+            throw new Error('Cannot reduce an empty collection without providing an initial value.');
+
+        const changeTokenCopy = this._changeToken;
+
+        let result = arguments.length === 1 ? this[0] : initialValue;
+        const startIndex = arguments.length === 1 ? 1 : 0;
+        for (let index = startIndex; index < this._length; index++) {
+            result = callbackfn(result, this[index], index, this);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return result;
+
     }
 
     /**
