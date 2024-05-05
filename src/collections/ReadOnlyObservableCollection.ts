@@ -686,7 +686,25 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public findLast<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult | undefined;
 
     public findLast<TResult extends TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
-        throw new Error('Method not implemented.');
+        const changeTokenCopy = this._changeToken;
+        let hasResult = false;
+        let index = this._length - 1;
+        let result: TResult | undefined = undefined;
+
+        while (!hasResult && index >= 0) {
+            const item = this[index];
+            if (predicate.call(thisArg, item, index, this)) {
+                hasResult = true;
+                result = item as TResult;
+            }
+            else
+                index--;
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return result;
     }
 
     /**
