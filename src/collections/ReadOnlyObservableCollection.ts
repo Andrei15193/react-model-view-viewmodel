@@ -796,8 +796,19 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public includes(item: TItem, fromIndex: number): boolean;
 
-    public includes(searchElement: TItem, fromIndex?: number): boolean {
-        throw new Error('Method not implemented.');
+    public includes(item: TItem, fromIndex?: number): boolean {
+        let searchElementIndex = (
+            fromIndex === null || fromIndex === undefined || fromIndex < -this._length
+                ? 0
+                : fromIndex < 0
+                    ? fromIndex + this._length
+                    : fromIndex
+        );
+
+        while (searchElementIndex < this._length && this[searchElementIndex] !== item)
+            searchElementIndex++;
+
+        return searchElementIndex < this._length;
     }
 
     /**
