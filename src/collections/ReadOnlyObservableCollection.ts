@@ -415,24 +415,24 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Iterates over the entire collections executing the `callback` for each.
-     * @param callbackfn The callback processing each item.
+     * @param callback The callback processing each item.
      * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
-    public forEach(callbackfn: (item: TItem, index: number, collection: this) => void): void;
+    public forEach(callback: (item: TItem, index: number, collection: this) => void): void;
     /**
      * Iterates over the entire collections executing the `callback` for each.
      * @template TContext The context type in which the callback is executed.
-     * @param callbackfn The callback processing each item.
+     * @param callback The callback processing each item.
      * @param thisArg A value to use as context when processing items.
      * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
-    public forEach<TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
+    public forEach<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
 
-    public forEach<TContext = void>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg?: TContext): void {
+    public forEach<TContext = void>(callback: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg?: TContext): void {
         const changeTokenCopy = this._changeToken;
 
         for (let index = 0; index < this._length; index++) {
-            callbackfn.call(thisArg, this[index], index, this);
+            callback.call(thisArg, this[index], index, this);
 
             if (changeTokenCopy !== this._changeToken)
                 throw new Error('Collection has changed while being iterated.');
@@ -442,28 +442,28 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     /**
      * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
-     * @param callbackfn The callback mapping each item.
+     * @param callback The callback mapping each item.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
      * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
-    public map<TResult>(callbackfn: (item: TItem, index: number, collection: this) => TResult): TResult[];
+    public map<TResult>(callback: (item: TItem, index: number, collection: this) => TResult): TResult[];
     /**
      * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
      * @template TContext The context type in which the callback is executed.
-     * @param callbackfn The callback mapping each item.
+     * @param callback The callback mapping each item.
      * @param thisArg A value to use as the callback context when mapping items.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
      * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
-    public map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
+    public map<TResult, TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
 
-    public map<TResult, TContext = void>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg?: TContext): TResult[] {
+    public map<TResult, TContext = void>(callback: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg?: TContext): TResult[] {
         const changeTokenCopy = this._changeToken;
         const result = new Array<TResult>(this._length);
 
         for (let index = 0; index < this._length; index++) {
-            result[index] = callbackfn.call(thisArg, this[index], index, this);
+            result[index] = callback.call(thisArg, this[index], index, this);
 
             if (changeTokenCopy !== this._changeToken)
                 throw new Error('Collection has changed while being iterated.');
@@ -525,22 +525,22 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Reduces the collection to a single item.
-     * @param callbackfn The callback that aggregates two items at a time.
+     * @param callback The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    public reduce(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    public reduce(callback: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
      * Reduces the collection to a single item.
      * @template TResult The result value type to which items are aggregated.
-     * @param callbackfn The callback that aggregates one item and the previous value at a time.
+     * @param callback The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
      * @returns Returns the value containing the aggregated collection.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    public reduce<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
+    public reduce<TResult>(callback: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
-    public reduce(callbackfn: any, initialValue?: any): any {
+    public reduce(callback: any, initialValue?: any): any {
         if (arguments.length === 1 && this._length === 0)
             throw new Error('Cannot reduce an empty collection without providing an initial value.');
 
@@ -549,7 +549,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         let result = arguments.length === 1 ? this[0] : initialValue;
         const startIndex = arguments.length === 1 ? 1 : 0;
         for (let index = startIndex; index < this._length; index++) {
-            result = callbackfn(result, this[index], index, this);
+            result = callback(result, this[index], index, this);
 
             if (changeTokenCopy !== this._changeToken)
                 throw new Error('Collection has changed while being iterated.');
@@ -560,22 +560,22 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Reduces the collection to a single item iterating the collection from end to start.
-     * @param callbackfn The callback that aggregates two items at a time.
+     * @param callback The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
-    public reduceRight(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    public reduceRight(callback: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
      * Reduces the collection to a single item iterating the collection from end to start.
      * @template TResult The result value type to which items are aggregated.
-     * @param callbackfn The callback that aggregates one item and the previous value at a time.
+     * @param callback The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
      * @returns Returns the value containing the aggregated collection.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
-    public reduceRight<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
+    public reduceRight<TResult>(callback: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
-    public reduceRight(callbackfn: any, initialValue?: any): any {
+    public reduceRight(callback: any, initialValue?: any): any {
         if (arguments.length === 1 && this._length === 0)
             throw new Error('Cannot reduce an empty collection without providing an initial value.');
 
@@ -584,7 +584,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         let result = arguments.length === 1 ? this[this._length - 1] : initialValue;
         const startIndex = arguments.length === 1 ? this._length - 2 : this._length - 1;
         for (let index = startIndex; index >= 0; index--) {
-            result = callbackfn(result, this[index], index, this);
+            result = callback(result, this[index], index, this);
 
             if (changeTokenCopy !== this._changeToken)
                 throw new Error('Collection has changed while being iterated.');
@@ -827,20 +827,27 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in ascending order.
-     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) with the elements sorted in ascending order.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements sorted in ascending order.
      * @see [Array.toSorted](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted)
      */
     public toSorted(): TItem[];
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in ascending order.
-     * @param compareFn Optional, a callback used to determine the sort order between two items.
-     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) with the elements sorted in ascending order.
+     * @param compareCallback Optional, a callback used to determine the sort order between two items.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements sorted in ascending order.
      * @see [Array.toSorted](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted)
      */
-    public toSorted(compareFn: (a: TItem, b: TItem) => number): TItem[];
+    public toSorted(compareCallback: (a: TItem, b: TItem) => number): TItem[];
 
-    public toSorted(compareFn?: (a: TItem, b: TItem) => number): TItem[] {
-        throw new Error('Method not implemented.');
+    public toSorted(compareCallback?: (a: TItem, b: TItem) => number): TItem[] {
+        const sortedIndexes = sortIndexes(this, compareCallback);
+
+        const result = new Array<TItem>(this._length);
+
+        for (let index = 0; index < this._length; index++)
+            result[index] = this[sortedIndexes[index]];
+
+        return result;
     }
 
     /**
@@ -1207,4 +1214,96 @@ class ObservableCollectionIterator<TItem, TValue = TItem> implements Iterator<TV
 
 function normalizeIndex(index: number, length: number): number {
     return index < 0 ? Math.max(0, index + length) : index;
+}
+
+function sortIndexes<TItem>(items: ArrayLike<TItem>, compareCallback: (a: TItem, b: TItem) => number): readonly number[] {
+    if (items.length <= 1)
+        return [0];
+    else if (compareCallback === null || compareCallback === undefined) {
+        const stringifiedItems = new Array<string>(items.length);
+        for (let index = 0; index < items.length; index++) {
+            const item = items[index];
+
+            if (item === null)
+                stringifiedItems[index] = 'null';
+            else if (item === undefined)
+                stringifiedItems[index] = undefined;
+            else if (item.toString)
+                stringifiedItems[index] = item.toString();
+            else
+                stringifiedItems[index] = '' + item;
+        }
+
+        return mergeSortIndexes(stringifiedItems, (left, right) => left.localeCompare(right));
+    }
+    else
+        return mergeSortIndexes(items, compareCallback);
+}
+
+function mergeSortIndexes<TItem>(items: ArrayLike<TItem>, compareCallback: (a: TItem, b: TItem) => number): readonly number[] {
+    let result: number[];
+
+    let sourceIndexes = new Array<number>(items.length);
+    for (let index = 0; index < items.length; index++)
+        sourceIndexes[index] = index;
+    let destinationIndexes = new Array<number>(items.length);
+
+    let rangeLength = 1;
+    do {
+        rangeLength <<= 1;
+
+        for (let rangeStart = 0; rangeStart < items.length; rangeStart += rangeLength)
+            mergeIndexes(items, sourceIndexes, destinationIndexes, rangeStart, rangeLength, compareCallback);
+
+        result = destinationIndexes;
+        destinationIndexes = sourceIndexes;
+        sourceIndexes = result;
+
+    } while (rangeLength < items.length);
+
+    return result;
+}
+
+function mergeIndexes<TItem>(items: ArrayLike<TItem>, sourceIndexes: readonly number[], result: number[], rangeStart: number, rangeLength: number, compareCallback: (a: TItem, b: TItem) => number) {
+    let leftIndex = rangeStart;
+    const leftEnd = Math.min(items.length, rangeStart + Math.floor(rangeLength / 2));
+    let rightIndex = leftEnd;
+    const rightEnd = Math.min(items.length, rangeStart + rangeLength);
+
+    let index = rangeStart;
+    while (leftIndex < leftEnd && rightIndex < rightEnd) {
+        const left = items[sourceIndexes[leftIndex]];
+        const right = items[sourceIndexes[rightIndex]];
+
+        const comparison = (
+            left === undefined
+                ? right === undefined
+                    ? 0
+                    : 1
+                : right === undefined
+                    ? -1
+                    : compareCallback(items[sourceIndexes[leftIndex]], items[sourceIndexes[rightIndex]])
+        );
+        if (comparison <= 0) {
+            result[index] = sourceIndexes[leftIndex];
+            leftIndex++;
+        }
+        else {
+            result[index] = sourceIndexes[rightIndex];
+            rightIndex++;
+        }
+        index++;
+    }
+
+    while (leftIndex < leftEnd) {
+        result[index] = sourceIndexes[leftIndex];
+        leftIndex++;
+        index++;
+    }
+
+    while (rightIndex < rightEnd) {
+        result[index] = sourceIndexes[rightIndex];
+        rightIndex++;
+        index++
+    }
 }

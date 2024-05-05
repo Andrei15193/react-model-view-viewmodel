@@ -5,7 +5,7 @@ import type { INotifyCollectionChanged, INotifyPropertiesChanged } from '../even
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
-export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, INotifyPropertiesChanged, INotifyCollectionChanged<TItem> {
+export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, ArrayLike<TItem>, INotifyPropertiesChanged, INotifyCollectionChanged<TItem> {
     /**
      * Gets the number of items in the collection.
      * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
@@ -67,18 +67,18 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
 
     /**
      * Iterates over the entire collections executing the `callback` for each.
-     * @param callbackfn The callback processing each item.
+     * @param callback The callback processing each item.
      * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
-    forEach(callbackfn: (item: TItem, index: number, collection: this) => void): void;
+    forEach(callback: (item: TItem, index: number, collection: this) => void): void;
     /**
      * Iterates over the entire collections executing the `callback` for each.
      * @template TContext The context type in which the callback is executed.
-     * @param callbackfn The callback processing each item.
+     * @param callback The callback processing each item.
      * @param thisArg A value to use as context when processing items.
      * @see [Array.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
      */
-    forEach<TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
+    forEach<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => void, thisArg: TContext): void;
 
     /**
      * Checks whether the provided item is in the collection.
@@ -243,21 +243,21 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
     /**
      * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
-     * @param callbackfn The callback mapping each item.
+     * @param callback The callback mapping each item.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
      * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
-    map<TResult>(callbackfn: (item: TItem, index: number, collection: this) => TResult): TResult[];
+    map<TResult>(callback: (item: TItem, index: number, collection: this) => TResult): TResult[];
     /**
      * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection.
      * @template TResult The type to map each item to.
      * @template TContext The context type in which the callback is executed.
-     * @param callbackfn The callback mapping each item.
+     * @param callback The callback mapping each item.
      * @param thisArg A value to use as the callback context when mapping items.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
      * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
      */
-    map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
+    map<TResult, TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
 
     /**
      * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing only the items the satisfy the given collection.
@@ -384,37 +384,37 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
 
     /**
      * Reduces the collection to a single item.
-     * @param callbackfn The callback that aggregates two items at a time.
+     * @param callback The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    reduce(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    reduce(callback: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
      * Reduces the collection to a single item.
      * @template TResult The result value type to which items are aggregated.
-     * @param callbackfn The callback that aggregates one item and the previous value at a time.
+     * @param callback The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
      * @returns Returns the value containing the aggregated collection.
      * @see [Array.reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
      */
-    reduce<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
+    reduce<TResult>(callback: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
     /**
      * Reduces the collection to a single item iterating the collection from end to start.
-     * @param callbackfn The callback that aggregates two items at a time.
+     * @param callback The callback that aggregates two items at a time.
      * @returns Returns a single aggregated item.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
-    reduceRight(callbackfn: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
+    reduceRight(callback: (previousItem: TItem, currentItem: TItem, currentIndex: number, collection: this) => TItem): TItem;
     /**
      * Reduces the collection to a single item iterating the collection from end to start.
      * @template TResult The result value type to which items are aggregated.
-     * @param callbackfn The callback that aggregates one item and the previous value at a time.
+     * @param callback The callback that aggregates one item and the previous value at a time.
      * @param initialValue The initial value when aggregating the collection.
      * @returns Returns the value containing the aggregated collection.
      * @see [Array.reduceRight](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight)
      */
-    reduceRight<TResult>(callbackfn: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
+    reduceRight<TResult>(callback: (result: TResult, item: TItem, index: number, collection: this) => TResult, initialValue: TResult): TResult;
 
     /**
      * Converts the observable collection to a native JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array).
@@ -429,8 +429,19 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     toReversed(): TItem[];
 
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in ascending order.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements sorted in ascending order.
+     * @see [Array.toSorted](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted)
+     */
     toSorted(): TItem[];
-    toSorted(compareCallback: (left: TItem, right: TItem) => number): TItem[];
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the items of the collection in ascending order.
+     * @param compareCallback Optional, a callback used to determine the sort order between two items.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements sorted in ascending order.
+     * @see [Array.toSorted](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted)
+     */
+    toSorted(compareCallback: (a: TItem, b: TItem) => number): TItem[];
 
     toSpliced(start: number): TItem[];
     toSpliced(start: number, deleteCount: number): TItem[];
