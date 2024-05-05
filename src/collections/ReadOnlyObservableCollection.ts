@@ -459,7 +459,18 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
 
     public map<TResult, TContext = void>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg?: TContext): TResult[] {
-        throw new Error('Method not implemented.');
+        const changeTokenCopy = this._changeToken;
+        const result: TResult[] = [];
+
+        for (let index = 0; index < this._length; index++) {
+            const itemResult = callbackfn.call(thisArg, this[index], index, this);
+            result.push(itemResult);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return result;
     }
 
     /**

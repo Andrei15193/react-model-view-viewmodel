@@ -127,8 +127,24 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, I
      */
     concat(...items: readonly (TItem | readonly TItem[])[]): TItem[];
 
-    map<TResult>(callback: (item: TItem, index: number, colleciton: this) => TResult): TResult[];
-    map<TResult, TContext>(callback: (this: TContext, item: TItem, index: number, colleciton: this) => TResult, thisArg: TContext): TResult[];
+    /**
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
+     * @template TResult The type to map each item to.
+     * @param callbackfn The callback mapping each item.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
+     * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+     */
+    map<TResult>(callbackfn: (item: TItem, index: number, collection: this) => TResult): TResult[];
+    /**
+     * Creates a new JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) constructed by mapping each item in the collection using a callback.
+     * @template TResult The type to map each item to.
+     * @template TContext The context type in which the callback is executed.
+     * @param callbackfn The callback mapping each item.
+     * @param thisArg A value to use as the callback context when mapping items.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the mapped items.
+     * @see [Array.map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+     */
+    map<TResult, TContext>(callbackfn: (this: TContext, item: TItem, index: number, collection: this) => TResult, thisArg: TContext): TResult[];
 
     filter(callback: (item: TItem, index: number, collection: this) => boolean): TItem[];
     filter<TContext>(callback: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): TItem[];
