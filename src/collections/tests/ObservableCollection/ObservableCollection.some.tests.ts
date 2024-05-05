@@ -9,7 +9,9 @@ describe('ObserableCollection.some', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.some(_ => true),
                 applyCollectionOperation: collection => collection.some(_ => true)
-            }
+            },
+
+            expectedResult: true
         });
     });
 
@@ -20,7 +22,9 @@ describe('ObserableCollection.some', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.some(item => item === 3),
                 applyCollectionOperation: collection => collection.some(item => item === 3)
-            }
+            },
+
+            expectedResult: true
         });
     });
 
@@ -31,7 +35,9 @@ describe('ObserableCollection.some', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.some(item => item < 0),
                 applyCollectionOperation: collection => collection.some(item => item < 0)
-            }
+            },
+
+            expectedResult: false
         });
     });
 

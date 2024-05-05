@@ -6,7 +6,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.includes(1)
+            applyOperation: collection => collection.includes(1),
+
+            expectedResult: false
         });
     });
 
@@ -14,7 +16,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(4)
+            applyOperation: collection => collection.includes(10),
+
+            expectedResult: false
         });
     });
 
@@ -22,7 +26,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(2)
+            applyOperation: collection => collection.includes(2),
+
+            expectedResult: true
         });
     });
 
@@ -30,7 +36,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(2, 3)
+            applyOperation: collection => collection.includes(2, 3),
+
+            expectedResult: false
         });
     });
 
@@ -38,7 +46,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(4, 3)
+            applyOperation: collection => collection.includes(4, 3),
+
+            expectedResult: true
         });
     });
 
@@ -46,7 +56,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(2, -3)
+            applyOperation: collection => collection.includes(2, -3),
+
+            expectedResult: false
         });
     });
 
@@ -54,7 +66,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(5, -3)
+            applyOperation: collection => collection.includes(5, -3),
+
+            expectedResult: true
         });
     });
 
@@ -62,7 +76,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(2, -10)
+            applyOperation: collection => collection.includes(2, -10),
+
+            expectedResult: true
         });
     });
 
@@ -70,7 +86,9 @@ describe('ObserableCollection.includes', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6],
 
-            applyOperation: collection => collection.includes(2, 10)
+            applyOperation: collection => collection.includes(2, 10),
+
+            expectedResult: false
         });
     });
 

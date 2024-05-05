@@ -4,34 +4,40 @@ import { testBlankMutatingOperation } from './common';
 describe('ObserableCollection.every', (): void => {
     it('checking every element of an empty collection returns true', (): void => {
         testBlankMutatingOperation<number>({
-            initialState: [1, 2, 3],
+            initialState: [],
 
             applyOperation: {
                 applyArrayOperation: array => array.every(_ => false),
                 applyCollectionOperation: collection => collection.every(_ => false)
-            }
+            },
+
+            expectedResult: true
         });
     });
 
-    it('checking every element of an collection returns false when not all items satisfy the condition', (): void => {
+    it('checking every element of an collection when not all items satisfy the condition returns false', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
             applyOperation: {
                 applyArrayOperation: array => array.every(item => item === 3),
                 applyCollectionOperation: collection => collection.every(item => item === 3)
-            }
+            },
+
+            expectedResult: false
         });
     });
 
-    it('checking every element of an collection returns true when all items satisfy the condition', (): void => {
+    it('checking every element of an collection when all items satisfy the condition returns true', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
             applyOperation: {
                 applyArrayOperation: array => array.every(item => item > 0),
                 applyCollectionOperation: collection => collection.every(item => item > 0)
-            }
+            },
+
+            expectedResult: true
         });
     });
 

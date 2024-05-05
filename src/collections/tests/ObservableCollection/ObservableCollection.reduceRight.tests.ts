@@ -19,7 +19,9 @@ describe('ObserableCollection.reduceRight', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.reduceRight((previous, current) => previous * 10 + current),
                 applyCollectionOperation: collection => collection.reduceRight((previous, current) => previous * 10 + current)
-            }
+            },
+
+            expectedResult: 321
         });
     });
 
@@ -32,7 +34,9 @@ describe('ObserableCollection.reduceRight', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.reduceRight(result => result, initialValue),
                 applyCollectionOperation: collection => collection.reduceRight(result => result, initialValue)
-            }
+            },
+
+            expectedResult: initialValue
         });
     });
 
@@ -43,7 +47,9 @@ describe('ObserableCollection.reduceRight', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.reduceRight((result, current) => result + '0' + current.toString(), '0'),
                 applyCollectionOperation: collection => collection.reduceRight((result, current) => result + '0' + current.toString(), '0')
-            }
+            },
+
+            expectedResult: '0030201'
         });
     });
 

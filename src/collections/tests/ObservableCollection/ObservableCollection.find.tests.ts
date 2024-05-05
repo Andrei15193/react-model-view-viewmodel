@@ -9,7 +9,9 @@ describe('ObserableCollection.find', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.find(item => item === 3),
                 applyCollectionOperation: collection => collection.find(item => item === 3)
-            }
+            },
+
+            expectedResult: undefined
         });
     });
 
@@ -20,7 +22,9 @@ describe('ObserableCollection.find', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.find(item => item === 10),
                 applyCollectionOperation: collection => collection.find(item => item === 10)
-            }
+            },
+
+            expectedResult: undefined
         });
     });
 
@@ -31,7 +35,9 @@ describe('ObserableCollection.find', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.find(item => item % 2 === 0),
                 applyCollectionOperation: collection => collection.find(item => item % 2 === 0)
-            }
+            },
+
+            expectedResult: 2
         });
     });
 

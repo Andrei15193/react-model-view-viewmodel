@@ -9,7 +9,9 @@ describe('ObserableCollection.findIndex', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.findIndex(item => item === 3),
                 applyCollectionOperation: collection => collection.findIndex(item => item === 3)
-            }
+            },
+
+            expectedResult: -1
         });
     });
 
@@ -20,7 +22,9 @@ describe('ObserableCollection.findIndex', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.findIndex(item => item === 10),
                 applyCollectionOperation: collection => collection.findIndex(item => item === 10)
-            }
+            },
+
+            expectedResult: -1
         });
     });
 
@@ -31,7 +35,9 @@ describe('ObserableCollection.findIndex', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.findIndex(item => item % 2 === 0),
                 applyCollectionOperation: collection => collection.findIndex(item => item % 2 === 0)
-            }
+            },
+
+            expectedResult: 1
         });
     });
 

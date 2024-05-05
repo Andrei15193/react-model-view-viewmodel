@@ -9,7 +9,9 @@ describe('ObserableCollection.map', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.map(item => item),
                 applyCollectionOperation: collection => collection.map(item => item)
-            }
+            },
+
+            expectedResult: []
         });
     });
 
@@ -20,7 +22,9 @@ describe('ObserableCollection.map', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.map(item => item + 10),
                 applyCollectionOperation: collection => collection.map(item => item + 10)
-            }
+            },
+
+            expectedResult: [11, 12, 13]
         });
     });
 

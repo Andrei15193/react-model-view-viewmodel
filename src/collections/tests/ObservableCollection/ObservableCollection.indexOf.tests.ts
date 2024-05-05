@@ -6,7 +6,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.indexOf(1)
+            applyOperation: collection => collection.indexOf(1),
+
+            expectedResult: -1
         });
     });
 
@@ -14,7 +16,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(4)
+            applyOperation: collection => collection.indexOf(4),
+
+            expectedResult: -1
         });
     });
 
@@ -22,7 +26,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(2)
+            applyOperation: collection => collection.indexOf(2),
+
+            expectedResult: 1
         });
     });
 
@@ -30,7 +36,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(2, 3)
+            applyOperation: collection => collection.indexOf(2, 3),
+
+            expectedResult: 4
         });
     });
 
@@ -38,7 +46,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(2, -5)
+            applyOperation: collection => collection.indexOf(2, -5),
+
+            expectedResult: 1
         });
     });
 
@@ -46,7 +56,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(2, -10)
+            applyOperation: collection => collection.indexOf(2, -10),
+
+            expectedResult: 1
         });
     });
 
@@ -54,7 +66,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(2, 6)
+            applyOperation: collection => collection.indexOf(2, 6),
+
+            expectedResult: -1
         });
     });
 
@@ -62,7 +76,9 @@ describe('ObserableCollection.indexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.indexOf(2, 10)
+            applyOperation: collection => collection.indexOf(2, 10),
+
+            expectedResult: -1
         });
     });
 

@@ -8,10 +8,13 @@ export interface ITestMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
     readonly changedProperties: readonly ("length" | number)[];
 
-    applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
         applyArrayOperation(array: TItem[]): unknown;
         applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
     }
+
+    readonly expectedCollection: readonly TItem[];
+    readonly expectedResult: unknown;
 }
 
 /**
@@ -24,7 +27,7 @@ export interface ITestMutatingOperationOptions<TItem> {
  * The approach is that any operation that is applied on an observable collection can be replicated using
  * just the splice method through the collectionChanged event.
  */
-export function testMutatingOperation<TItem>({ collectionOperation, initialState, changedProperties, applyOperation }: ITestMutatingOperationOptions<TItem>) {
+export function testMutatingOperation<TItem>({ collectionOperation, initialState, changedProperties, expectedCollection: expectedState, expectedResult, applyOperation }: ITestMutatingOperationOptions<TItem>) {
     let collectionChangedRaiseCount = 0;
     let propertiesChangedRaiseCount = 0;
     let actualChangedProperties: readonly (keyof ObservableCollection<TItem>)[] = [];
@@ -58,6 +61,9 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
 
     const arrayResult = typeof applyOperation === 'function' ? applyOperation(array) : applyOperation.applyArrayOperation(array);
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollection) : applyOperation.applyCollectionOperation(observableCollection);
+
+    expectCollectionsToBeEqual(observableCollection, expectedState);
+    expect(observableCollectionResult).toEqual(expectedResult);
 
     expect(collectionChangedRaiseCount).toBe(1);
     expect(propertiesChangedRaiseCount).toBe(1);

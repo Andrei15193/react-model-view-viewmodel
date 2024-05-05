@@ -12,7 +12,9 @@ describe('ObserableCollection.forEach', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.forEach(_ => arrayInvocationCount++),
                 applyCollectionOperation: collection => collection.forEach(_ => collectionInvocationCount++)
-            }
+            },
+
+            expectedResult: undefined
         });
 
         expect(arrayInvocationCount).toBe(0);
@@ -29,7 +31,9 @@ describe('ObserableCollection.forEach', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.forEach(item => arrayItems.push(item)),
                 applyCollectionOperation: collection => collection.forEach(item => collectionItems.push(item))
-            }
+            },
+
+            expectedResult: undefined
         });
 
         expect(collectionItems).toEqual(arrayItems);

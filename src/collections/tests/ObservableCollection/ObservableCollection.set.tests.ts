@@ -15,7 +15,10 @@ describe('ObserableCollection.set', (): void => {
                 applyCollectionOperation(collection) {
                     collection.set(1, 10);
                 }
-            }
+            },
+
+            expectedCollection: [1, 10, 3],
+            expectedResult: undefined
         });
     });
 
@@ -32,7 +35,10 @@ describe('ObserableCollection.set', (): void => {
                 applyCollectionOperation(collection) {
                     collection.set(-1, 10);
                 }
-            }
+            },
+
+            expectedCollection: [1, 2, 10],
+            expectedResult: undefined
         });
     });
 
@@ -49,7 +55,10 @@ describe('ObserableCollection.set', (): void => {
                 applyCollectionOperation(collection) {
                     collection.set(-10, 10);
                 }
-            }
+            },
+
+            expectedCollection: [10, 2, 3],
+            expectedResult: undefined
         });
     });
 
@@ -66,7 +75,10 @@ describe('ObserableCollection.set', (): void => {
                 applyCollectionOperation(collection) {
                     collection.set(10, 100);
                 }
-            }
+            },
+
+            expectedCollection: [1, 2, 3, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 100],
+            expectedResult: undefined
         });
     });
 

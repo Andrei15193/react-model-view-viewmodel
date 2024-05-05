@@ -14,7 +14,9 @@ describe('ObserableCollection.with', (): void => {
                     return copy;
                 },
                 applyCollectionOperation: collection => collection.with(2, 10)
-            }
+            },
+
+            expectedResult: [1, 2, 10]
         });
     });
 
@@ -30,7 +32,9 @@ describe('ObserableCollection.with', (): void => {
                     return copy;
                 },
                 applyCollectionOperation: collection => collection.with(-2, 10)
-            }
+            },
+
+            expectedResult: [1, 10, 3]
         });
     });
 

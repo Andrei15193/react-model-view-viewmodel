@@ -9,6 +9,9 @@ describe('ObserableCollection.unshift', (): void => {
             changedProperties: ['length', 0],
 
             applyOperation: collection => collection.unshift(1),
+
+            expectedCollection: [1],
+            expectedResult: 1
         });
     });
 
@@ -18,7 +21,10 @@ describe('ObserableCollection.unshift', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 0, 1, 2, 3],
 
-            applyOperation: collection => collection.unshift(4)
+            applyOperation: collection => collection.unshift(4),
+
+            expectedCollection: [4, 1, 2, 3],
+            expectedResult: 4
         });
     });
 
@@ -28,7 +34,10 @@ describe('ObserableCollection.unshift', (): void => {
             initialState: [],
             changedProperties: ['length', 0, 1, 2],
 
-            applyOperation: collection => collection.unshift(1, 2, 3)
+            applyOperation: collection => collection.unshift(1, 2, 3),
+
+            expectedCollection: [1, 2, 3],
+            expectedResult: 3
         });
     });
 
@@ -38,7 +47,10 @@ describe('ObserableCollection.unshift', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 0, 1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.unshift(4, 5, 6)
+            applyOperation: collection => collection.unshift(4, 5, 6),
+
+            expectedCollection: [4, 5, 6, 1, 2, 3],
+            expectedResult: 6
         });
     });
 
@@ -46,7 +58,9 @@ describe('ObserableCollection.unshift', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: collection => collection.unshift()
+            applyOperation: collection => collection.unshift(),
+
+            expectedResult: 3
         });
     });
 
@@ -54,7 +68,9 @@ describe('ObserableCollection.unshift', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.unshift()
+            applyOperation: collection => collection.unshift(),
+
+            expectedResult: 0
         });
     });
 

@@ -9,7 +9,9 @@ describe('ObserableCollection.filter', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.filter(item => item > 0),
                 applyCollectionOperation: collection => collection.filter(item => item > 0)
-            }
+            },
+
+            expectedResult: []
         });
     });
 
@@ -18,9 +20,11 @@ describe('ObserableCollection.filter', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.map(item => item === 2),
-                applyCollectionOperation: collection => collection.map(item => item === 2)
-            }
+                applyArrayOperation: array => array.filter(item => item === 2),
+                applyCollectionOperation: collection => collection.filter(item => item === 2)
+            },
+
+            expectedResult: [2]
         });
     });
 

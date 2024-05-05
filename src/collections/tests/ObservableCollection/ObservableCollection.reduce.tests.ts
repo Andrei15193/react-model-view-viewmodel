@@ -19,7 +19,9 @@ describe('ObserableCollection.reduce', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.reduce((previous, current) => previous * 10 + current),
                 applyCollectionOperation: collection => collection.reduce((previous, current) => previous * 10 + current)
-            }
+            },
+
+            expectedResult: 123
         });
     });
 
@@ -32,7 +34,9 @@ describe('ObserableCollection.reduce', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.reduce(result => result, initialValue),
                 applyCollectionOperation: collection => collection.reduce(result => result, initialValue)
-            }
+            },
+
+            expectedResult: initialValue
         });
     });
 
@@ -43,7 +47,9 @@ describe('ObserableCollection.reduce', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.reduce((result, current) => result + '0' + current.toString(), '0'),
                 applyCollectionOperation: collection => collection.reduce((result, current) => result + '0' + current.toString(), '0')
-            }
+            },
+
+            expectedResult: '0010203'
         });
     });
 

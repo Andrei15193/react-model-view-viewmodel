@@ -6,7 +6,9 @@ describe('ObserableCollection.shift', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.shift()
+            applyOperation: collection => collection.shift(),
+
+            expectedResult: undefined
         });
     });
 
@@ -16,7 +18,10 @@ describe('ObserableCollection.shift', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 0, 1, 2],
 
-            applyOperation: collection => collection.shift()
+            applyOperation: collection => collection.shift(),
+
+            expectedCollection: [2, 3],
+            expectedResult: 1
         });
     });
 

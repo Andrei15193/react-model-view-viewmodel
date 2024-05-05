@@ -9,7 +9,9 @@ describe('ObserableCollection.findLast', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.findLast(item => item === 3),
                 applyCollectionOperation: collection => collection.findLast(item => item === 3)
-            }
+            },
+
+            expectedResult: undefined
         });
     });
 
@@ -20,7 +22,9 @@ describe('ObserableCollection.findLast', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.findLast(item => item === 10),
                 applyCollectionOperation: collection => collection.findLast(item => item === 10)
-            }
+            },
+
+            expectedResult: undefined
         });
     });
 
@@ -31,7 +35,9 @@ describe('ObserableCollection.findLast', (): void => {
             applyOperation: {
                 applyArrayOperation: array => array.findLast(item => item % 2 === 0),
                 applyCollectionOperation: collection => collection.findLast(item => item % 2 === 0)
-            }
+            },
+
+            expectedResult: 6
         });
     });
 

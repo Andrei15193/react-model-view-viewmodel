@@ -6,10 +6,12 @@ import { expectCollectionsToBeEqual } from "./expectCollectionsToBeEqual";
 export interface ITestBlankMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
 
-    applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
         applyArrayOperation(array: TItem[]): unknown;
         applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
     };
+
+    readonly expectedResult: unknown;
 }
 
 /**
@@ -17,7 +19,7 @@ export interface ITestBlankMutatingOperationOptions<TItem> {
  * checking the two before and after the operation is applied as well as checking that the operation had
  * no effect and no events were raised.
  */
-export function testBlankMutatingOperation<TItem>({ initialState, applyOperation }: ITestBlankMutatingOperationOptions<TItem>) {
+export function testBlankMutatingOperation<TItem>({ initialState, applyOperation, expectedResult }: ITestBlankMutatingOperationOptions<TItem>) {
     let collectionChangedRaiseCount = 0;
     const collectionChangedEventHandler: ICollectionChangedEventHandler<ObservableCollection<TItem>, TItem> = {
         handle() {
@@ -46,6 +48,9 @@ export function testBlankMutatingOperation<TItem>({ initialState, applyOperation
 
     const arrayResult = typeof applyOperation === 'function' ? applyOperation(arrayAfterOperation) : applyOperation.applyArrayOperation(arrayAfterOperation);
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollectionAfterOperation) : applyOperation.applyCollectionOperation(observableCollectionAfterOperation);
+
+    expectCollectionsToBeEqual(observableCollectionAfterOperation, initialState);
+    expect(observableCollectionResult).toEqual(expectedResult);
 
     expect(collectionChangedRaiseCount).toBe(0);
     expect(propertiesChangedRaiseCount).toBe(0);

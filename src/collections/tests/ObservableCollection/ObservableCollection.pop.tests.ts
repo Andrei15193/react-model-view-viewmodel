@@ -6,7 +6,9 @@ describe('ObserableCollection.pop', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.pop()
+            applyOperation: collection => collection.pop(),
+
+            expectedResult: undefined
         });
     });
 
@@ -16,7 +18,10 @@ describe('ObserableCollection.pop', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 2],
 
-            applyOperation: collection => collection.pop()
+            applyOperation: collection => collection.pop(),
+
+            expectedCollection: [1, 2],
+            expectedResult: 3
         });
     });
 

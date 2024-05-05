@@ -8,7 +8,9 @@ describe('ObserableCollection.length', (): void => {
 
             applyOperation: collection => {
                 collection.length = 3;
-            }
+            },
+
+            expectedResult: undefined
         });
     });
 
@@ -20,7 +22,10 @@ describe('ObserableCollection.length', (): void => {
 
             applyOperation: collection => {
                 collection.length = 1;
-            }
+            },
+
+            expectedCollection: [1],
+            expectedResult: undefined
         });
     });
 
@@ -32,7 +37,10 @@ describe('ObserableCollection.length', (): void => {
 
             applyOperation: collection => {
                 collection.length = 5;
-            }
+            },
+
+            expectedCollection: [1, 2, 3, undefined, undefined],
+            expectedResult: undefined
         });
     });
 
