@@ -508,8 +508,20 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public filter<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult[];
 
-    public filter<TResult extends TItem = TItem, TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult[] {
-        throw new Error('Method not implemented.');
+    public filter<TResult extends TItem, TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg?: TContext): TResult[] {
+        const changeTokenCopy = this._changeToken;
+        const result: TResult[] = [];
+
+        for (let index = 0; index < this._length; index++) {
+            const item = this[index];
+            if (predicate.call(thisArg, item, index, this))
+                result.push(item as TResult);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Collection has changed while being iterated.');
+        }
+
+        return result;
     }
 
     /**
@@ -589,7 +601,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public find<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult | undefined;
 
-    public find<TResult extends TItem = TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
+    public find<TResult extends TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
         throw new Error('Method not implemented.');
     }
 
@@ -628,7 +640,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     public findLast<TResult extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TResult, thisArg: TContext): TResult | undefined;
 
-    public findLast<TResult extends TItem = TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
+    public findLast<TResult extends TItem, TContext = void>(predicate: (item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): TResult | undefined {
         throw new Error('Method not implemented.');
     }
 
