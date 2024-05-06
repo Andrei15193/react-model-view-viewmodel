@@ -879,7 +879,33 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public toSpliced(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
 
     public toSpliced(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
-        throw new Error('Method not implemented.');
+        const normalizedStartIndex = (
+            start < -this._length
+                ? 0
+                : start < 0
+                    ? start + this._length
+                    : Math.min(start, this._length)
+        );
+        const normalizedDeleteCount = (
+            arguments.length === 1
+                ? this._length - normalizedStartIndex
+                : deleteCount === null || deleteCount === undefined || deleteCount < 0
+                    ? 0
+                    : Math.min(deleteCount, this._length - normalizedStartIndex)
+        );
+        const remainederStartIndex = normalizedStartIndex + normalizedDeleteCount;
+
+        let resultIndex = 0;
+        const result = new Array<TItem>(normalizedStartIndex + items.length + (this._length - remainederStartIndex));
+
+        for (let index = 0; index < normalizedStartIndex; index++, resultIndex++)
+            result[resultIndex] = this[index];
+        for (let index = 0; index < items.length; index++, resultIndex++)
+            result[resultIndex] = items[index];
+        for (let index = remainederStartIndex; index < this._length; index++, resultIndex++)
+            result[resultIndex] = this[index];
+
+        return result;
     }
 
     /**

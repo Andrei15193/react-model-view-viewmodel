@@ -443,7 +443,31 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
      */
     toSorted(compareCallback: (a: TItem, b: TItem) => number): TItem[];
 
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
+     * @see {@link ObservableCollection.splice}
+     * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
+     */
     toSpliced(start: number): TItem[];
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param deleteCount The number of elements to remove.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
+     * @see {@link ObservableCollection.splice}
+     * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
+     */
     toSpliced(start: number, deleteCount: number): TItem[];
-    toSpliced(start: number, deleteCount: number, ...newItems: readonly TItem[]): TItem[];
+    /**
+     * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param deleteCount The number of elements to remove.
+     * @param items The items to insert at the given start location.
+     * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
+     * @see {@link ObservableCollection.splice}
+     * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
+     */
+    toSpliced(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
 }
