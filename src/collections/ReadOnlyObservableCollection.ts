@@ -893,16 +893,16 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                     ? 0
                     : Math.min(deleteCount, this._length - normalizedStartIndex)
         );
-        const remainederStartIndex = normalizedStartIndex + normalizedDeleteCount;
+        const remainderStartIndex = normalizedStartIndex + normalizedDeleteCount;
 
         let resultIndex = 0;
-        const result = new Array<TItem>(normalizedStartIndex + items.length + (this._length - remainederStartIndex));
+        const result = new Array<TItem>(normalizedStartIndex + items.length + (this._length - remainderStartIndex));
 
         for (let index = 0; index < normalizedStartIndex; index++, resultIndex++)
             result[resultIndex] = this[index];
         for (let index = 0; index < items.length; index++, resultIndex++)
             result[resultIndex] = items[index];
-        for (let index = remainederStartIndex; index < this._length; index++, resultIndex++)
+        for (let index = remainderStartIndex; index < this._length; index++, resultIndex++)
             result[resultIndex] = this[index];
 
         return result;
