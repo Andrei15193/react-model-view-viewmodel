@@ -1,5 +1,5 @@
 import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
-import type { ICollectionChange, ICollectionChangedEvent } from '../events';
+import type { CollectionOperation, ICollectionChange, ICollectionChangedEvent } from '../events';
 import { EventDispatcher } from '../events';
 import { ViewModel } from '../view-model';
 
@@ -60,18 +60,21 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._changeToken = {};
 
             const startIndex = this._length;
-            const addedItems = [];
-            const addedIndexes = [];
-            for (let index = startIndex; index < value; index++) {
-                addedItems.push(undefined);
-                addedIndexes.push(index);
-                Object.defineProperty(this, index, {
+            const addedItems = new Array<TItem>(value - this._length);
+            const addedIndexes = new Array<number>(addedItems.length);
+
+            for (let index = 0; index < addedItems.length; index++) {
+                const collectionIndex = index + startIndex;
+                addedItems[index] = undefined;
+                addedIndexes[index] = collectionIndex;
+                Object.defineProperty(this, collectionIndex, {
                     configurable: true,
                     enumerable: true,
                     value: undefined,
                     writable: false
                 });
             }
+
             this._length = value;
             this._collectionChangedEvent.dispatch(this, {
                 operation: 'expand',
@@ -85,13 +88,16 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._changeToken = {};
 
             const startIndex = value;
-            const removedItems = [];
-            const removedIndexes = [];
-            for (let index = startIndex; index < this._length; index++) {
-                removedItems.push(this[index]);
-                removedIndexes.push(index);
-                delete (this as Record<number, TItem>)[index];
+            const removedItems = new Array<TItem>(this._length - value);
+            const removedIndexes = new Array<number>(removedItems.length);
+
+            for (let index = 0; index < removedItems.length; index++) {
+                const collectionIndex = index + startIndex;
+                removedItems[index] = this[collectionIndex];
+                removedIndexes[index] = collectionIndex;
+                delete (this as Record<number, TItem>)[collectionIndex];
             }
+
             this._length = value;
             this._collectionChangedEvent.dispatch(this, {
                 operation: 'contract',
@@ -255,10 +261,14 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                     : end
         );
 
-        const result: TItem[] = [];
-        for (let index = normalizedStartIndex; index < normalizedEndIndex; index++)
-            result.push(this[index]);
-        return result;
+        if (normalizedEndIndex <= normalizedStartIndex)
+            return [];
+        else {
+            const result = new Array<TItem>(normalizedEndIndex - normalizedStartIndex);
+            for (let index = 0; index < result.length; index++)
+                result[index] = this[index + normalizedStartIndex];
+            return result;
+        }
     }
 
     /**
@@ -948,9 +958,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 removedItems: []
             });
 
-            const changedIndexes: number[] = [];
+            const changedIndexes = new Array<number>(items.length);
             for (let index = 0; index < items.length; index++)
-                changedIndexes.push(startIndex + index);
+                changedIndexes[index] = index + startIndex;
             this.notifyPropertiesChanged('length', ...changedIndexes);
         }
 
@@ -1019,9 +1029,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 removedItems: []
             });
 
-            const changedIndexes: number[] = [];
+            const changedIndexes = new Array<number>(this._length);
             for (let index = 0; index < this._length; index++)
-                changedIndexes.push(index);
+                changedIndexes[index] = index;
             this.notifyPropertiesChanged('length', ...changedIndexes);
         }
 
@@ -1040,9 +1050,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._changeToken = {};
 
             const removedItem = this[0];
-            const changedIndexes: number[] = [];
+            const changedIndexes = new Array<number>(this._length);
             for (let index = 0; index < this._length - 1; index++) {
-                changedIndexes.push(index);
+                changedIndexes[index] = index;
 
                 Object.defineProperty(this, index, {
                     configurable: true,
@@ -1051,7 +1061,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                     writable: false
                 });
             }
-            changedIndexes.push(this._length - 1);
+            changedIndexes[this._length - 1] = this._length - 1;
 
             this._length--;
             delete (this as Record<number, TItem>)[this._length];
@@ -1111,8 +1121,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._changeToken = {};
 
             const fillStartIndex = this._length;
-            const addedItems = [];
-            const removedItems = normalizedIndex < this._length ? [this[normalizedIndex]] : [];
+            const addedItems = new Array<TItem>(normalizedIndex - fillStartIndex);
 
             for (let fillIndex = fillStartIndex; fillIndex < normalizedIndex; fillIndex++) {
                 Object.defineProperty(this, fillIndex, {
@@ -1121,7 +1130,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                     value: undefined,
                     writable: false
                 });
-                addedItems.push(undefined);
+                addedItems[fillIndex - fillStartIndex] = undefined;
             }
             Object.defineProperty(this, normalizedIndex, {
                 configurable: true,
@@ -1129,7 +1138,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 value: item,
                 writable: false
             });
-            addedItems.push(item);
+            addedItems[normalizedIndex - fillStartIndex] = item;
 
             this._length = normalizedIndex + 1;
 
@@ -1137,7 +1146,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 operation: 'set',
                 startIndex: fillStartIndex,
                 addedItems,
-                removedItems
+                removedItems: []
             });
             this.notifyPropertiesChanged("length", normalizedIndex);
         }
@@ -1148,17 +1157,129 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     /**
      * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
+     * @returns An array containing the elements that were deleted.
+     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     */
+    protected splice(start: number): TItem[];
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param deleteCount The number of elements to remove.
+     * @returns An array containing the elements that were deleted.
+     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     */
+    protected splice(start: number, deleteCount: number): TItem[];
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
+     * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
      * @returns An array containing the elements that were deleted.
      * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
      */
+    protected splice(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
+
     protected splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
-        throw new Error('Method not implemented.');
+        const normalizedStartIndex = (
+            start < -this._length
+                ? 0
+                : start < 0
+                    ? start + this._length
+                    : Math.min(start, this._length)
+        );
+        const normalizedDeleteCount = (
+            arguments.length === 1
+                ? this._length - normalizedStartIndex
+                : deleteCount === null || deleteCount === undefined || deleteCount < 0
+                    ? 0
+                    : Math.min(deleteCount, this._length - normalizedStartIndex)
+        );
+
+        if (normalizedDeleteCount === 0 && items.length === 0)
+            return [];
+        else {
+            this._changeToken = {};
+
+            const removedItems = new Array<TItem>(normalizedDeleteCount);
+            for (let index = 0; index < normalizedDeleteCount; index++)
+                removedItems[index] = this[index + normalizedStartIndex];
+
+            let updatedProperties: (keyof this)[];
+            const lengthOffset = items.length - normalizedDeleteCount;
+
+            if (lengthOffset === 0) {
+                updatedProperties = new Array(normalizedDeleteCount);
+
+                for (let index = 0; index < normalizedDeleteCount; index++) {
+                    const collectionIndex = index + normalizedStartIndex;
+                    updatedProperties[index] = collectionIndex;
+
+                    Object.defineProperty(this, collectionIndex, {
+                        configurable: true,
+                        enumerable: true,
+                        value: items[index],
+                        writable: false
+                    });
+                }
+            }
+            else {
+                const affectedRangeLength = this._length - normalizedStartIndex;
+
+                if (lengthOffset < 0) {
+                    updatedProperties = new Array(1 + affectedRangeLength);
+
+                    for (let index = normalizedStartIndex + normalizedDeleteCount; index < this._length; index++)
+                        Object.defineProperty(this, index + lengthOffset, {
+                            configurable: true,
+                            enumerable: true,
+                            value: this[index],
+                            writable: false
+                        });
+
+                    for (let index = this._length + lengthOffset; index < this._length; index++)
+                        delete (this as Record<number, TItem>)[index];
+                }
+                else {
+                    updatedProperties = new Array(1 + affectedRangeLength + lengthOffset);
+
+                    for (let index = normalizedStartIndex + affectedRangeLength - 1; index >= normalizedStartIndex; index--)
+                        Object.defineProperty(this, index + lengthOffset, {
+                            configurable: true,
+                            enumerable: true,
+                            value: this[index],
+                            writable: false
+                        });
+                }
+                this._length += lengthOffset;
+
+                updatedProperties[0] = 'length';
+                for (let index = 1; index < updatedProperties.length; index++)
+                    updatedProperties[index] = normalizedStartIndex + index - 1;
+
+                for (let index = 0; index < items.length; index++)
+                    Object.defineProperty(this, index + normalizedStartIndex, {
+                        configurable: true,
+                        enumerable: true,
+                        value: items[index],
+                        writable: false
+                    });
+            }
+
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'splice',
+                startIndex: normalizedStartIndex,
+                addedItems: items,
+                removedItems: removedItems
+            });
+            this.notifyPropertiesChanged.apply(this, updatedProperties);
+
+            return removedItems;
+        }
     }
 
     protected sort(): this;
     protected sort(compareCallback: (left: TItem, right: TItem) => number): this;
+
     protected sort(compareCallback?: (left: TItem, right: TItem) => number): this {
         throw new Error('Method not implemented.');
     }
@@ -1169,6 +1290,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     protected copyWithin(target: number, start: number): this;
     protected copyWithin(target: number, start: number, end: number): this;
+
     protected copyWithin(target: number, start: number, end?: number): this {
         throw new Error('Method not implemented.');
     }
@@ -1176,6 +1298,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     protected fill(item: TItem): this;
     protected fill(item: TItem, start: number): this;
     protected fill(item: TItem, start: number, end: number): this;
+
     protected fill(item: TItem, start?: number, end?: number): this {
         throw new Error('Method not implemented.');
     }

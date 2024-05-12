@@ -51,7 +51,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
     public every<TSpecific extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TSpecific, thisArg: TContext): this is ObservableCollection<TSpecific>;
 
     public every<TContext = void>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg?: TContext): boolean {
-       return super.every(predicate, thisArg);
+        return super.every.apply(this, arguments);
     }
 
     /**
@@ -77,7 +77,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @see [Array.push](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
      */
     public push(...items: readonly TItem[]): number {
-        return super.push(...items);
+        return super.push.apply(this, arguments);
     }
 
     /**
@@ -86,7 +86,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
      */
     public pop(): TItem | undefined {
-        return super.pop();
+        return super.pop.apply(this, arguments);
     }
 
     /**
@@ -96,7 +96,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
      */
     public unshift(...items: readonly TItem[]): number {
-        return super.unshift(...items);
+        return super.unshift.apply(this, arguments);
     }
 
     /**
@@ -105,7 +105,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
      */
     public shift(): TItem | undefined {
-        return super.shift();
+        return super.shift.apply(this, arguments);
     }
 
     /**
@@ -115,7 +115,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @see [Array.at](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at)
      */
     public get(index: number): TItem {
-        return super.get(index);
+        return super.get.apply(this, arguments);
     }
 
     /**
@@ -125,9 +125,24 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The length of the collection.
      */
     public set(index: number, item: TItem): number {
-        return super.set(index, item);
+        return super.set.apply(this, arguments);
     }
 
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @returns An array containing the elements that were deleted.
+     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     */
+    public splice(start: number): TItem[];
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param deleteCount The number of elements to remove.
+     * @returns An array containing the elements that were deleted.
+     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     */
+    public splice(start: number, deleteCount: number): TItem[];
     /**
      * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
@@ -136,30 +151,34 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns An array containing the elements that were deleted.
      * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
      */
+    public splice(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
+
     public splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
-        return super.splice(start, deleteCount, ...items);
+        return super.splice.apply(this, arguments);
     }
 
     public sort(): this;
     public sort(compareCallback: (left: TItem, right: TItem) => number): this;
     public sort(compareCallback?: (left: TItem, right: TItem) => number): this {
-        return super.sort(compareCallback);
+        return super.sort.apply(this, arguments);
     }
 
     public reverse(): this {
-        return super.reverse();
+        return super.reverse.apply(this, arguments);
     }
 
     public copyWithin(target: number, start: number): this;
     public copyWithin(target: number, start: number, end: number): this;
+
     public copyWithin(target: number, start: number, end?: number): this {
-        return this.copyWithin(target, start, end);
+        return this.copyWithin.apply(this, arguments);
     }
 
     public fill(item: TItem): this;
     public fill(item: TItem, start: number): this;
     public fill(item: TItem, start: number, end: number): this;
+
     public fill(item: TItem, start?: number, end?: number): this {
-        return super.fill(item, start, end);
+        return super.fill.apply(this, arguments);
     }
 }

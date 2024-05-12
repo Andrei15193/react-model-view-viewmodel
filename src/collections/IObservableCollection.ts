@@ -96,12 +96,27 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
     /**
      * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
+     * @returns An array containing the elements that were deleted.
+     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     */
+    splice(start: number): TItem[];
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
+     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param deleteCount The number of elements to remove.
+     * @returns An array containing the elements that were deleted.
+     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     */
+    splice(start: number, deleteCount: number): TItem[];
+    /**
+     * Removes and/or adds elements to the collection and returns the deleted elements.
+     * @param start The zero-based location in the collection from which to start removing elements.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
      * @returns An array containing the elements that were deleted.
      * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
      */
-    splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[];
+    splice(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
 
     sort(): this;
     sort(compareCallback: (left: TItem, right: TItem) => number): this;
