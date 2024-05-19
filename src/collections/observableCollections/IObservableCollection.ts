@@ -118,11 +118,23 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      */
     splice(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
 
+    /**
+     * Reverses the items in the collections and returns the observable collection.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+     */
     sort(): this;
+
+    /**
+     * Reverses the items in the collections and returns the observable collection.
+     * @param compareCallback Optional, a callback used to determine the sort order between two items.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+     */
     sort(compareCallback: (left: TItem, right: TItem) => number): this;
 
     /**
-     * Reverses the items in the collections and returns the observable collection..
+     * Reverses the items in the collections and returns the observable collection.
      * @returns The observable collection on which the operation is performed.
      * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
      */

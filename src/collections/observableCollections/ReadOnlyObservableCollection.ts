@@ -858,7 +858,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public toSorted(compareCallback: (a: TItem, b: TItem) => number): TItem[];
 
     public toSorted(compareCallback?: (a: TItem, b: TItem) => number): TItem[] {
-        const sortedIndexes = sortIndexes(this, compareCallback);
+        const changeTokenCopy = this._changeToken;
+        const sortedIndexes = sortIndexes(this, compareCallback, () => changeTokenCopy !== this._changeToken);
 
         const result = new Array<TItem>(this._length);
 
@@ -1285,15 +1286,67 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         }
     }
 
+    /**
+     * Reverses the items in the collections and returns the observable collection.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+     */
     protected sort(): this;
+
+    /**
+     * Reverses the items in the collections and returns the observable collection.
+     * @param compareCallback Optional, a callback used to determine the sort order between two items.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+     */
     protected sort(compareCallback: (left: TItem, right: TItem) => number): this;
 
     protected sort(compareCallback?: (left: TItem, right: TItem) => number): this {
-        throw new Error('Method not implemented.');
+        if (this.length > 1) {
+            const changeTokenCopy = this._changeToken;
+            const sortedIndexes = sortIndexes(this, compareCallback, () => changeTokenCopy !== this._changeToken);
+
+            if (sortedIndexes.some((sortedIndex, currentIndex) => sortedIndex !== currentIndex)) {
+                this._changeToken = {};
+
+                const movedItems = new Array<ICollectionItemMove<TItem>>(sortedIndexes.filter((sortedIndex, currentIndex) => sortedIndex !== currentIndex).length);
+                const changedIndexes = new Array<number>(movedItems.length);
+
+                let index = 0;
+                sortedIndexes.forEach((sortedIndex, itemIndex) => {
+                    if (sortedIndex !== itemIndex) {
+                        movedItems[index] = {
+                            currentIndex: itemIndex,
+                            currentItem: this[sortedIndex],
+                            previousIndex: sortedIndex,
+                            previousItem: this[itemIndex]
+                        };
+                        changedIndexes[index] = itemIndex;
+                        index++;
+                    }
+                });
+                movedItems.forEach(({ currentItem: item, currentIndex: sortedIndex }) => {
+                    Object.defineProperty(this, sortedIndex, {
+                        configurable: true,
+                        enumerable: true,
+                        value: item,
+                        writable: false
+                    });
+                });
+
+                this._collectionReorderedEvent.dispatch(this, {
+                    operation: 'sort',
+                    movedItems
+                });
+                this.notifyPropertiesChanged.apply(this, changedIndexes);
+            }
+        }
+
+        return this;
     }
 
     /**
-     * Reverses the items in the collections and returns the observable collection..
+     * Reverses the items in the collections and returns the observable collection.
      * @returns The observable collection on which the operation is performed.
      * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
      */
@@ -1302,8 +1355,8 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._changeToken = {};
 
             const evenLength = this.length - this.length % 2;
-            const movedItems: ICollectionItemMove<TItem>[] = new Array(evenLength);
-            const changedIndexes: number[] = new Array(evenLength);
+            const movedItems = new Array<ICollectionItemMove<TItem>>(evenLength);
+            const changedIndexes = new Array<number>(evenLength);
 
             for (let index = 0, lengthHalf = evenLength / 2; index < lengthHalf; index++) {
                 const oppositeIndex = this.length - 1 - index;
@@ -1428,7 +1481,7 @@ function normalizeIndex(index: number, length: number): number {
     return index < 0 ? Math.max(0, index + length) : index;
 }
 
-function sortIndexes<TItem>(items: ArrayLike<TItem>, compareCallback: (a: TItem, b: TItem) => number): readonly number[] {
+function sortIndexes<TItem>(items: ArrayLike<TItem>, compareCallback: (a: TItem, b: TItem) => number, hasCollectionChanged: () => boolean): readonly number[] {
     if (items.length <= 1)
         return [0];
     else if (compareCallback === null || compareCallback === undefined) {
@@ -1449,7 +1502,13 @@ function sortIndexes<TItem>(items: ArrayLike<TItem>, compareCallback: (a: TItem,
         return mergeSortIndexes(stringifiedItems, (left, right) => left.localeCompare(right));
     }
     else
-        return mergeSortIndexes(items, compareCallback);
+        return mergeSortIndexes(items, (left, right) => {
+            const result = compareCallback(left, right);
+            if (hasCollectionChanged && hasCollectionChanged())
+                throw new Error('Collection has changed while being iterated.');
+
+            return result;
+        });
 }
 
 function mergeSortIndexes<TItem>(items: ArrayLike<TItem>, compareCallback: (a: TItem, b: TItem) => number): readonly number[] {

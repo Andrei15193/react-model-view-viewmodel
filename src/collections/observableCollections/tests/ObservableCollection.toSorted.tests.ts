@@ -32,6 +32,15 @@ describe('ObserableCollection.toSorted', (): void => {
         });
     });
 
+    it('mutating the collection while sorting items will break the operation', (): void => {
+        expect(
+            () => {
+                const observableCollection = new ObservableCollection<number>(1, 2);
+                observableCollection.toSorted(() => observableCollection.pop());
+            })
+            .toThrow(new Error('Collection has changed while being iterated.'))
+    });
+
     it('calling toSorted while iterating will not break iterators', (): void => {
         expect(
             () => {
