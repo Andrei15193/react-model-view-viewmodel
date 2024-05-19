@@ -1,5 +1,6 @@
-import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler, ICollectionChangedEventHandler } from './events';
-import type { IReadOnlyObservableCollection } from './collections/IReadOnlyObservableCollection';
+import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler } from './viewModels';
+import type { ICollectionChangedEventHandler } from './collections/observableCollections/ICollectionChangedEventHandler';
+import type { IReadOnlyObservableCollection } from './collections/observableCollections/IReadOnlyObservableCollection';
 
 /** Represents a read-only interface for objects that can be validated. */
 export interface IReadOnlyValidatable {

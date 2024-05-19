@@ -1,6 +1,6 @@
-import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler } from '../events';
+import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler } from '../viewModels';
 import { type DependencyList, useMemo, useState, useEffect } from 'react';
-import { isViewModel } from '../view-model';
+import { isViewModel } from '../viewModels';
 
 /** Represents a view model type.
  * @template TViewModel The type of view model.

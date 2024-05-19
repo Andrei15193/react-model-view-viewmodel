@@ -1,4 +1,4 @@
-import type { INotifyPropertiesChanged } from '../events';
+import type { INotifyPropertiesChanged } from '../viewModels';
 import { type DependencyList, useMemo } from 'react';
 import { useViewModel } from './use-view-model';
 

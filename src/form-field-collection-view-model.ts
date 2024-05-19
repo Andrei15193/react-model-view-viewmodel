@@ -1,10 +1,10 @@
-import type { IPropertiesChangedEventHandler } from './events';
-import type { IObservableCollection } from './collections/IObservableCollection';
-import type { IReadOnlyObservableCollection } from './collections/IReadOnlyObservableCollection';
+import type { IPropertiesChangedEventHandler } from './viewModels';
+import type { IObservableCollection } from './collections/observableCollections/IObservableCollection';
+import type { IReadOnlyObservableCollection } from './collections/observableCollections/IReadOnlyObservableCollection';
 import type { IValidatable } from './validation';
-import { ViewModel } from './view-model';
+import { ViewModel } from './viewModels';
 import { type IFormFieldViewModel, FormFieldViewModel } from './form-field-view-model';
-import { ObservableCollection } from './collections/ObservableCollection';
+import { ObservableCollection } from './collections/observableCollections/ObservableCollection';
 
 /** A set of form fields that can be used in generic parameter constraints.
  * @template TFormFieldViewModel the type of fields the form contains.

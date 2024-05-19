@@ -1,5 +1,18 @@
-export type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
-export type { IObservableCollection } from './IObservableCollection';
+export {
+    type INotifyCollectionChanged,
+    type ICollectionChangedEvent,
+    type ICollectionChangedEventHandler,
+    type ICollectionChange,
+    type CollectionChangeOperation,
 
-export { ReadOnlyObservableCollection } from './ReadOnlyObservableCollection';
-export { ObservableCollection } from './ObservableCollection';
+    type INotifyCollectionReordered,
+    type ICollectionReorderedEvent,
+    type ICollectionReorderedEventHandler,
+    type ICollectionItemMove,
+
+    type IObservableCollection,
+    type IReadOnlyObservableCollection,
+
+    ObservableCollection,
+    ReadOnlyObservableCollection
+} from './observableCollections'

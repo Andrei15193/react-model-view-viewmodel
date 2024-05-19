@@ -1,6 +1,6 @@
-import type { INotifyPropertiesChanged } from './events';
+import type { INotifyPropertiesChanged } from './viewModels';
 import { type IReadOnlyValidatable, type IValidatable, type ValidatorCallback, type IValidationConfig, registerValidators } from './validation';
-import { ViewModel } from './view-model';
+import { ViewModel } from './viewModels';
 
 /** Represents a form field interface exposing mixture of read-only and read-write properties in order to provide the minimum required set of properties that must be read-write while all other properties can only be read.
  * @template TValue The type of values the field contains.

@@ -1,4 +1,4 @@
-import type { INotifyPropertiesChanged } from '../events';
+import type { INotifyPropertiesChanged } from '../viewModels';
 import type { IValidatable, IValidationConfig, ValidatorCallback } from '../validation';
 import { registerValidators } from '../validation';
 import { useEffect } from 'react';

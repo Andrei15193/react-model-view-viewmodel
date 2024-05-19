@@ -1,5 +1,5 @@
-import type { INotifyPropertiesChanged } from '../events';
-import type { IReadOnlyObservableCollection } from '../collections/IReadOnlyObservableCollection';
+import type { INotifyPropertiesChanged } from '../viewModels';
+import type { IReadOnlyObservableCollection } from '../collections/observableCollections/IReadOnlyObservableCollection';
 import type { IValidatable, ValidatableSelectorCallback, ValidationConfigSelectorCallback, CollectionItemValidatorCallback } from '../validation';
 import { registerCollectionValidators } from '../validation';
 import { useEffect } from 'react';

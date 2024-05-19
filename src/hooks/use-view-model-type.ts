@@ -1,4 +1,4 @@
-import type { INotifyPropertiesChanged } from '../events';
+import type { INotifyPropertiesChanged } from '../viewModels';
 import { type ViewModelType, useViewModel } from './use-view-model';
 
 /** Ensures a unique instance per component of the given type is created and watches the view model for changes. Returns the view model instance.
