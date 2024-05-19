@@ -1,6 +1,8 @@
-import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
-import type { ICollectionChange } from './ICollectionChange';
 import type { ICollectionChangedEvent } from './ICollectionChangedEvent';
+import type { ICollectionChange } from './ICollectionChange';
+import type { ICollectionReorderedEvent } from './ICollectionReorderedEvent';
+import type { ICollectionReorder, ICollectionItemMove } from './ICollectionReorder';
+import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
 import { EventDispatcher } from '../../events';
 import { ViewModel } from '../../viewModels';
 
@@ -14,6 +16,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     private _length: number;
     private _changeToken: unknown;
     private readonly _collectionChangedEvent: EventDispatcher<this, ICollectionChange<TItem>>;
+    private readonly _collectionReorderedEvent: EventDispatcher<this, ICollectionReorder<TItem>>;
 
     /**
      * Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
@@ -32,6 +35,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         this._changeToken = {};
 
         this.collectionChanged = this._collectionChangedEvent = new EventDispatcher<this, ICollectionChange<TItem>>();
+        this.collectionReordered = this._collectionReorderedEvent = new EventDispatcher<this, ICollectionReorder<TItem>>();
     }
 
     /**
@@ -41,8 +45,11 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     readonly [index: number]: TItem;
 
-    /** An event that is raised when the collection changed. */
+    /** An event that is raised when the collection changed by adding or removing items. */
     public readonly collectionChanged: ICollectionChangedEvent<this, TItem>;
+
+    /** An event that is raised when the collection is reordered. */
+    public readonly collectionReordered: ICollectionReorderedEvent<this, TItem>;
 
     /**
      * Gets the number of items in the collection.
@@ -1285,8 +1292,60 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         throw new Error('Method not implemented.');
     }
 
+    /**
+     * Reverses the items in the collections and returns the observable collection..
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
+     */
     protected reverse(): this {
-        throw new Error('Method not implemented.');
+        if (this.length > 1) {
+            this._changeToken = {};
+
+            const evenLength = this.length - this.length % 2;
+            const movedItems: ICollectionItemMove<TItem>[] = new Array(evenLength);
+            const changedIndexes: number[] = new Array(evenLength);
+
+            for (let index = 0, lengthHalf = evenLength / 2; index < lengthHalf; index++) {
+                const oppositeIndex = this.length - 1 - index;
+
+                movedItems[index] = {
+                    currentIndex: index,
+                    currentItem: this[oppositeIndex],
+                    previousIndex: oppositeIndex,
+                    previousItem: this[index]
+                };
+                movedItems[movedItems.length - 1 - index] = {
+                    currentIndex: oppositeIndex,
+                    currentItem: this[index],
+                    previousIndex: index,
+                    previousItem: this[oppositeIndex]
+                };
+                changedIndexes[index] = index;
+                changedIndexes[changedIndexes.length - 1 - index] = oppositeIndex;
+
+                const copy = this[index];
+                Object.defineProperty(this, index, {
+                    configurable: true,
+                    enumerable: true,
+                    value: this[oppositeIndex],
+                    writable: false
+                });
+                Object.defineProperty(this, oppositeIndex, {
+                    configurable: true,
+                    enumerable: true,
+                    value: copy,
+                    writable: false
+                });
+            }
+
+            this._collectionReorderedEvent.dispatch(this, {
+                operation: 'reverse',
+                movedItems
+            });
+            this.notifyPropertiesChanged.apply(this, changedIndexes);
+        }
+
+        return this;
     }
 
     protected copyWithin(target: number, start: number): this;

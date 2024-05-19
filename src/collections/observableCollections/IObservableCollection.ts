@@ -121,6 +121,11 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
     sort(): this;
     sort(compareCallback: (left: TItem, right: TItem) => number): this;
 
+    /**
+     * Reverses the items in the collections and returns the observable collection..
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
+     */
     reverse(): this;
 
     copyWithin(target: number, start: number): this;

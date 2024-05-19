@@ -1,5 +1,5 @@
 /**
- * Contains information about the changes in the collection.
+ * Contains information about reordering items in a collection.
  * @template TItem The type of items the collection contains.
  */
 export interface ICollectionChange<TItem> {
@@ -14,6 +14,6 @@ export interface ICollectionChange<TItem> {
 }
 
 /**
- * Describes all the possible operations that can be performed on a collection.
+ * Describes all the possible operations that can add or remove items from a collection.
  */
 export type CollectionChangeOperation = 'push' | 'pop' | 'unshift' | 'shift' | 'splice' | 'expand' | 'contract' | 'set';

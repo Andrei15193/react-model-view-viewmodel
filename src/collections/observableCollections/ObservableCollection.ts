@@ -163,6 +163,11 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
         return super.sort.apply(this, arguments);
     }
 
+    /**
+     * Reverses the items in the collections and returns the observable collection..
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
+     */
     public reverse(): this {
         return super.reverse.apply(this, arguments);
     }

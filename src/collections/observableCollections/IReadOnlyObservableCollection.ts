@@ -1,12 +1,13 @@
 import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifyCollectionChanged } from './INotifyCollectionChanged';
+import type { INotifyCollectionReordered } from './INotifyCollectionReordered';
 
 /**
  * Represents a read-only observable collection based on the [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
  * @template TItem The type of items the collection contains.
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
-export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, ArrayLike<TItem>, INotifyPropertiesChanged, INotifyCollectionChanged<TItem> {
+export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, ArrayLike<TItem>, INotifyPropertiesChanged, INotifyCollectionChanged<TItem>, INotifyCollectionReordered<TItem> {
     /**
      * Gets the number of items in the collection.
      * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)

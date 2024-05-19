@@ -6,7 +6,7 @@ export type { ICollectionChange, CollectionChangeOperation } from './ICollection
 export type { INotifyCollectionReordered } from './INotifyCollectionReordered';
 export type { ICollectionReorderedEvent } from './ICollectionReorderedEvent';
 export type { ICollectionReorderedEventHandler } from './ICollectionReorderedEventHandler';
-export type { ICollectionItemMove } from './ICollectionItemMove';
+export type { ICollectionReorder, CollectionReorderOperation, ICollectionItemMove } from './ICollectionReorder';
 
 export type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
 export type { IObservableCollection } from './IObservableCollection';
