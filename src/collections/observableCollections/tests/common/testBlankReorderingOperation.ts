@@ -4,6 +4,7 @@ import type { ICollectionReorderedEventHandler } from '../../ICollectionReordere
 import type { IObservableCollection } from '../../IObservableCollection';
 import { ObservableCollection } from '../../ObservableCollection';
 import { expectCollectionsToBeEqual } from './expectCollectionsToBeEqual';
+import { selfResult } from './selfResult';
 
 export interface ITestBlankReorderingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
@@ -13,7 +14,7 @@ export interface ITestBlankReorderingOperationOptions<TItem> {
         applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
     };
 
-    readonly expectedResult?: unknown;
+    readonly expectedResult: unknown;
 }
 
 /**
@@ -21,7 +22,7 @@ export interface ITestBlankReorderingOperationOptions<TItem> {
  * checking the two before and after the operation is applied as well as checking that the operation had
  * no effect and no events were raised.
  */
-export function testBlankReorderingOperation<TItem>({ initialState, applyOperation, ...otherOptions }: ITestBlankReorderingOperationOptions<TItem>) {
+export function testBlankReorderingOperation<TItem>({ initialState, applyOperation, expectedResult }: ITestBlankReorderingOperationOptions<TItem>) {
     let propertiesChangedRaiseCount = 0;
     const propertiesChangedEventHandler: IPropertiesChangedEventHandler<ObservableCollection<TItem>> = {
         handle() {
@@ -59,16 +60,14 @@ export function testBlankReorderingOperation<TItem>({ initialState, applyOperati
     const arrayResult = typeof applyOperation === 'function' ? applyOperation(arrayAfterOperation) : applyOperation.applyArrayOperation(arrayAfterOperation);
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollectionAfterOperation) : applyOperation.applyCollectionOperation(observableCollectionAfterOperation);
 
-    const { expectedResult: expectedObservableCollectionResult = observableCollectionAfterOperation } = otherOptions;
     expectCollectionsToBeEqual(observableCollectionAfterOperation, initialState);
-    expect(observableCollectionResult).toEqual(expectedObservableCollectionResult);
+    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : expectedResult);
 
     expect(collectionChangedRaiseCount).toBe(0);
     expect(propertiesChangedRaiseCount).toBe(0);
 
-    const { expectedResult: expectedArrayResult = arrayAfterOperation } = otherOptions;
     expectCollectionsToBeEqual(observableCollectionAfterOperation, arrayAfterOperation);
-    expect(arrayResult).toEqual(expectedArrayResult);
+    expect(arrayResult).toEqual(expectedResult === selfResult ? arrayAfterOperation : expectedResult);
 
     expect(arrayAfterOperation).toEqual(arrayBeforeOperation);
     expect(observableCollectionAfterOperation).toEqual(observableCollectionBeforeOperation);

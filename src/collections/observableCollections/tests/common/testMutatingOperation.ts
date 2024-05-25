@@ -2,6 +2,7 @@ import type { CollectionChangeOperation } from '../../ICollectionChange';
 import type { IObservableCollection } from '../../IObservableCollection';
 import { ObservableCollection } from '../../ObservableCollection';
 import { expectCollectionsToBeEqual } from './expectCollectionsToBeEqual';
+import { selfResult } from './selfResult';
 
 export interface ITestMutatingOperationOptions<TItem> {
     readonly collectionOperation: CollectionChangeOperation;
@@ -69,7 +70,7 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollection) : applyOperation.applyCollectionOperation(observableCollection);
 
     expectCollectionsToBeEqual(observableCollection, expectedState);
-    expect(observableCollectionResult).toEqual(expectedResult);
+    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollection : expectedResult);
 
     expect(propertiesChangedRaiseCount).toBe(1);
     expect(collectionChangedRaiseCount).toBe(1);
@@ -77,5 +78,5 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
     expect(actualChangedProperties).toEqual(changedProperties);
 
     expectCollectionsToBeEqual(observableCollection, array);
-    expect(observableCollectionResult).toEqual(arrayResult);
+    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollection : arrayResult);
 }

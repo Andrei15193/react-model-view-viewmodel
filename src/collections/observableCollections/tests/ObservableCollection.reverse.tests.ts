@@ -1,12 +1,14 @@
 import { ObservableCollection } from '../ObservableCollection';
-import { testBlankReorderingOperation, testReorderingOperation } from './common';
+import { selfResult, testBlankReorderingOperation, testReorderingOperation } from './common';
 
 describe('ObserableCollection.reverse', (): void => {
     it('reversing an empty collection has no effect', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.reverse()
+            applyOperation: collection => collection.reverse(),
+
+            expectedResult: selfResult
         });
     });
 
@@ -14,7 +16,9 @@ describe('ObserableCollection.reverse', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [1],
 
-            applyOperation: collection => collection.reverse()
+            applyOperation: collection => collection.reverse(),
+
+            expectedResult: selfResult
         });
     });
 
@@ -26,6 +30,7 @@ describe('ObserableCollection.reverse', (): void => {
 
             applyOperation: collection => collection.reverse(),
 
+            expectedResult: selfResult,
             expectedCollection: [8, 7, 6, 5, 4, 3, 2, 1]
         });
     });
@@ -38,6 +43,7 @@ describe('ObserableCollection.reverse', (): void => {
 
             applyOperation: collection => collection.reverse(),
 
+            expectedResult: selfResult,
             expectedCollection: [5, 4, 3, 2, 1]
         });
     });

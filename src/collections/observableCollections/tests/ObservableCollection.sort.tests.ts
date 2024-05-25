@@ -1,12 +1,14 @@
 import { ObservableCollection } from '../ObservableCollection';
-import { testBlankReorderingOperation, testReorderingOperation } from './common';
+import { selfResult, testBlankReorderingOperation, testReorderingOperation } from './common';
 
 describe('ObserableCollection.sort', (): void => {
     it('sorting an empty collection has no effect', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.sort()
+            applyOperation: collection => collection.sort(),
+
+            expectedResult: selfResult
         });
     });
 
@@ -14,7 +16,9 @@ describe('ObserableCollection.sort', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [1],
 
-            applyOperation: collection => collection.sort()
+            applyOperation: collection => collection.sort(),
+
+            expectedResult: selfResult
         });
     });
 
@@ -26,6 +30,7 @@ describe('ObserableCollection.sort', (): void => {
 
             applyOperation: collection => collection.sort(),
 
+            expectedResult: selfResult,
             expectedCollection: [-1, -100, 1, 100, 11, 2, 200, 22, 3, 3, null, undefined, undefined]
         });
     });
@@ -38,6 +43,7 @@ describe('ObserableCollection.sort', (): void => {
 
             applyOperation: collection => collection.sort((left, right) => left - right),
 
+            expectedResult: selfResult,
             expectedCollection: [1, 2, 3, undefined]
         });
     });
@@ -50,6 +56,7 @@ describe('ObserableCollection.sort', (): void => {
 
             applyOperation: collection => collection.sort(),
 
+            expectedResult: selfResult,
             expectedCollection: [1, 2, 3, 4, 5]
         });
     });

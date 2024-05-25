@@ -4,6 +4,7 @@ import type { ICollectionReorderedEventHandler } from '../../ICollectionReordere
 import type { IObservableCollection } from '../../IObservableCollection';
 import { ObservableCollection } from '../../ObservableCollection';
 import { expectCollectionsToBeEqual } from './expectCollectionsToBeEqual';
+import { selfResult } from './selfResult';
 
 export interface ITestBlankMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
@@ -60,13 +61,13 @@ export function testBlankMutatingOperation<TItem>({ initialState, applyOperation
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollectionAfterOperation) : applyOperation.applyCollectionOperation(observableCollectionAfterOperation);
 
     expectCollectionsToBeEqual(observableCollectionAfterOperation, initialState);
-    expect(observableCollectionResult).toEqual(expectedResult);
+    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : expectedResult);
 
     expect(collectionChangedRaiseCount).toBe(0);
     expect(propertiesChangedRaiseCount).toBe(0);
 
     expectCollectionsToBeEqual(observableCollectionAfterOperation, arrayAfterOperation);
-    expect(observableCollectionResult).toEqual(arrayResult);
+    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : arrayResult);
 
     expect(arrayAfterOperation).toEqual(arrayBeforeOperation);
     expect(observableCollectionAfterOperation).toEqual(observableCollectionBeforeOperation);

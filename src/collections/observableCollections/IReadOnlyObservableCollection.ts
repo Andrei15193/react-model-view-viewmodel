@@ -447,7 +447,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
 
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
-     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param start The index from which to start removing items, accepts both positive and negative values.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
      * @see {@link ObservableCollection.splice}
      * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
@@ -455,7 +455,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
     toSpliced(start: number): TItem[];
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
-     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param start The index from which to start removing items, accepts both positive and negative values.
      * @param deleteCount The number of elements to remove.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
      * @see {@link ObservableCollection.splice}
@@ -464,7 +464,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
     toSpliced(start: number, deleteCount: number): TItem[];
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
-     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param start The index from which to start removing items, accepts both positive and negative values.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.

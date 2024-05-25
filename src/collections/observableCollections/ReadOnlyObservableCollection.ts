@@ -869,9 +869,10 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         return result;
     }
 
+
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
-     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param start The index from which to start removing items, accepts both positive and negative values.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
      * @see {@link ObservableCollection.splice}
      * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
@@ -879,7 +880,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public toSpliced(start: number): TItem[];
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
-     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param start The index from which to start removing items, accepts both positive and negative values.
      * @param deleteCount The number of elements to remove.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
      * @see {@link ObservableCollection.splice}
@@ -888,7 +889,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     public toSpliced(start: number, deleteCount: number): TItem[];
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the spliced items of the collection.
-     * @param start The zero-based location in the collection from which to start removing elements.
+     * @param start The index from which to start removing items, accepts both positive and negative values.
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
@@ -1408,12 +1409,81 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         throw new Error('Method not implemented.');
     }
 
+    /**
+     * Fills the collection with the provided `item`.
+     * @param item The item to fill the collection with.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+     */
     protected fill(item: TItem): this;
+
+    /**
+     * Fills the collection with the provided `item`.
+     * @param item The item to fill the collection with.
+     * @param start The index from which to start filling the collection, accepts both positive and negative values.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+     */
     protected fill(item: TItem, start: number): this;
+
+    /**
+     * Fills the collection with the provided `item`.
+     * @param item The item to fill the collection with.
+     * @param start The index from which to start filling the collection, accepts both positive and negative values.
+     * @param end The index until which to fill the collection, accepts both positive and negative values.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+     */
     protected fill(item: TItem, start: number, end: number): this;
 
     protected fill(item: TItem, start?: number, end?: number): this {
-        throw new Error('Method not implemented.');
+        const normalizedStartIndex = (
+            start === null || start === undefined || start < -this.length
+                ? 0
+                : start < 0
+                    ? start + this.length
+                    : start
+        );
+        const normalizedEndIndex = (
+            end === null || end === undefined || end >= this._length
+                ? this._length
+                : end < 0
+                    ? end + this._length
+                    : end
+        );
+
+        if (normalizedEndIndex > normalizedStartIndex) {
+            this._changeToken = {};
+
+            const length = normalizedEndIndex - normalizedStartIndex;
+            const changedIndexes = new Array<number>(length);
+            const addedItems = new Array<TItem>(length);
+            const removedItems = new Array<TItem>(length);
+
+            for (let index = 0; index < length; index++) {
+                const collecitonIndex = index + normalizedStartIndex;
+                changedIndexes[index] = collecitonIndex;
+                addedItems[index] = item;
+                removedItems[index] = this[collecitonIndex];
+
+                Object.defineProperty(this, collecitonIndex, {
+                    configurable: true,
+                    enumerable: true,
+                    value: item,
+                    writable: false
+                });
+            }
+
+            this._collectionChangedEvent.dispatch(this, {
+                operation: 'fill',
+                startIndex: normalizedStartIndex,
+                addedItems,
+                removedItems
+            });
+            this.notifyPropertiesChanged.apply(this, changedIndexes);
+        }
+
+        return this;
     }
 }
 
