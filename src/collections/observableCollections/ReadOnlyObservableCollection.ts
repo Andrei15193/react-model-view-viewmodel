@@ -74,7 +74,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             }
 
             this._length = value;
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'expand',
                 addedItems,
                 removedItems: [],
@@ -97,7 +97,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             }
 
             this._length = value;
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'contract',
                 addedItems: [],
                 removedItems,
@@ -914,7 +914,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 defineIndexProperty(this, startIndex + index, items[index]);
             this._length += items.length;
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'push',
                 startIndex,
                 addedItems: items,
@@ -947,7 +947,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._length--;
             delete (this as Record<number, TItem>)[removedIndex];
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'pop',
                 startIndex: removedIndex,
                 addedItems: [],
@@ -975,7 +975,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 defineIndexProperty(this, index, items[index]);
             this._length += items.length;
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'unshift',
                 startIndex: 0,
                 addedItems: items,
@@ -1014,7 +1014,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this._length--;
             delete (this as Record<number, TItem>)[this._length];
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'shift',
                 startIndex: 0,
                 addedItems: [],
@@ -1052,7 +1052,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
             defineIndexProperty(this, normalizedIndex, item);
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'set',
                 startIndex: normalizedIndex,
                 addedItems: [item],
@@ -1075,7 +1075,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
             this._length = normalizedIndex + 1;
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'set',
                 startIndex: fillStartIndex,
                 addedItems,
@@ -1170,7 +1170,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                     defineIndexProperty(this, index + normalizedStartIndex, items[index]);
             }
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'splice',
                 startIndex: normalizedStartIndex,
                 addedItems: items,
@@ -1335,7 +1335,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                     defineIndexProperty(this, targetIndex, this[sourceIndex]);
                 }
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'copyWithin',
                 addedItems,
                 removedItems,
@@ -1395,7 +1395,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
                 defineIndexProperty(this, collecitonIndex, item);
             }
 
-            this.notifyCollectionChanged({
+            this._collectionChangedEvent.dispatch(this, {
                 operation: 'fill',
                 startIndex: normalizedStartIndex,
                 addedItems,
@@ -1405,22 +1405,6 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         }
 
         return this;
-    }
-
-    /**
-     * Notifies all {@linkcode collectionChanged} subscribers about how the collection has changed.
-     * @param collectionChange The change information for replicating the operation by calling the splice method.
-     */
-    protected notifyCollectionChanged(collectionChange: ICollectionChange<TItem>): void {
-        this._collectionChangedEvent.dispatch(this, collectionChange);
-    }
-
-    /**
-     * Notifies all {@linkcode collectionReordered} subscribers about how the collection was reoredered.
-     * @param collectionReorder The reorder information for replicating the operation by just iterating over it.
-     */
-    protected notifyCollectionReordered(collectionReorder: ICollectionReorder<TItem>): void {
-        this._collectionReorderedEvent.dispatch(this, collectionReorder);
     }
 }
 
