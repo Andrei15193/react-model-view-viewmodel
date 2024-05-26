@@ -16,4 +16,4 @@ export interface ICollectionChange<TItem> {
 /**
  * Describes all the possible operations that can add or remove items from a collection.
  */
-export type CollectionChangeOperation = 'push' | 'pop' | 'unshift' | 'shift' | 'splice' | 'expand' | 'contract' | 'set' | 'fill';
+export type CollectionChangeOperation = 'push' | 'pop' | 'unshift' | 'shift' | 'splice' | 'expand' | 'contract' | 'set' | 'fill' | 'copyWithin';

@@ -15,7 +15,8 @@ export abstract class ViewModel implements INotifyPropertiesChanged {
         return this._propertiesChangedEvent;
     }
 
-    /** Notifies all propertiesChanged subscribers that the provided property names may have changed. 
+    /**
+     * Notifies all {@linkcode propertiesChanged} subscribers that the provided property names may have changed.
      * @param changedProperty The name of the property that may have changed.
      * @param otherChangedProperties The name of other properties that may have changed.
      */

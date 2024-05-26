@@ -140,10 +140,45 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      */
     reverse(): this;
 
+    /**
+     * Copies items inside the collection overwriting existing ones.
+     * @param target The index at which to start copying items, accepts both positive and negative values.
+     * @param start The index from which to start copying items, accepts both positive and negative values.
+     * @see [Array.copyWithin](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
+     */
     copyWithin(target: number, start: number): this;
+
+    /**
+     * Copies items inside the collection overwriting existing ones.
+     * @param target The index at which to start copying items, accepts both positive and negative values.
+     * @param start The index from which to start copying items, accepts both positive and negative values.
+     * @param end The index until where to copy items, accepts both positive and negative values.
+     * @see [Array.copyWithin](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
+     */
     copyWithin(target: number, start: number, end: number): this;
 
+    /**
+     * Fills the collection with the provided `item`.
+     * @param item The item to fill the collection with.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+     */
     fill(item: TItem): this;
+    /**
+     * Fills the collection with the provided `item`.
+     * @param item The item to fill the collection with.
+     * @param start The index from which to start filling the collection, accepts both positive and negative values.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+     */
     fill(item: TItem, start: number): this;
+    /**
+     * Fills the collection with the provided `item`.
+     * @param item The item to fill the collection with.
+     * @param start The index from which to start filling the collection, accepts both positive and negative values.
+     * @param end The index until which to fill the collection, accepts both positive and negative values.
+     * @returns The observable collection on which the operation is performed.
+     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
+     */
     fill(item: TItem, start: number, end: number): this;
 }
