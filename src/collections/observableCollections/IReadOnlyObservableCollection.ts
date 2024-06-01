@@ -45,7 +45,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
     /**
      * Gets an iterator that provides each element in the collection.
      * @returns An iterator going over each element in the collection.
-     * @see [Array.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
+     * @see [Array.values](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/values)
      */
     values(): IterableIterator<TItem>;
 

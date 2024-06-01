@@ -31,7 +31,17 @@ export {
     type IObservableCollection,
 
     ReadOnlyObservableCollection,
-    ObservableCollection
+    ObservableCollection,
+
+    type INotifySetChanged,
+    type ISetChangedEvent,
+    type ISetChangedEventHandler,
+    type ISetChange,
+    type SetChangeOperation,
+
+    type ISetLike,
+    type IReadOnlyObservableSet,
+    type IObservableSet
 } from './collections';
 
 export {

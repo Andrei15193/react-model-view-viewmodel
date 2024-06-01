@@ -1,5 +1,5 @@
 /**
- * Contains information about items that are added or removed from a collection.
+ * Contains information about reordering items in a collection.
  * @template TItem The type of items the collection contains.
  */
 export interface ICollectionReorder<TItem> {
