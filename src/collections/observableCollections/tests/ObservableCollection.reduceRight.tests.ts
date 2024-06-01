@@ -55,7 +55,7 @@ describe('ObserableCollection.reduceRight', (): void => {
 
     it('calling reduceRight passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         const initialValue = {};
         observableCollection.reduceRight(
             (result, item, index, collection) => {
@@ -77,7 +77,7 @@ describe('ObserableCollection.reduceRight', (): void => {
     it('modifying the collection while executing reduceRight throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.reduceRight((previous, current) => {
                     observableCollection.pop();
                     return previous + current;
@@ -89,7 +89,7 @@ describe('ObserableCollection.reduceRight', (): void => {
     it('calling reduceRight while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                    const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.reduceRight((previous, current) => previous + current);

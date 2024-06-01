@@ -123,7 +123,7 @@ describe('ObserableCollection.fill', (): void => {
     it('filling items while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.fill(1);
@@ -148,7 +148,7 @@ describe('ObserableCollection.fill', (): void => {
     it('filling items when end index the same as start index while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3, 4, 5);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
                 const iterator = observableCollection[Symbol.iterator]();
 
                 observableCollection.fill(10, 3, 3);
@@ -162,7 +162,7 @@ describe('ObserableCollection.fill', (): void => {
     it('filling items when end index is less than start index while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3, 4, 5);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
                 const iterator = observableCollection[Symbol.iterator]();
 
                 observableCollection.fill(10, 3, 2);

@@ -43,7 +43,7 @@ describe('ObserableCollection.findLast', (): void => {
 
     it('calling findLast passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.findLast((item, index, collection) => {
             invocationCount++;
 
@@ -60,7 +60,7 @@ describe('ObserableCollection.findLast', (): void => {
     it('calling findLast with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.findLast(
             function (item, index, collection) {
                 invocationCount++;
@@ -81,7 +81,7 @@ describe('ObserableCollection.findLast', (): void => {
     it('modifying the collection while executing findLast throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.findLast(_ => {
                     observableCollection.pop();
                     return true;
@@ -93,7 +93,7 @@ describe('ObserableCollection.findLast', (): void => {
     it('searching while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.findLast(item => item % 2 === 0);

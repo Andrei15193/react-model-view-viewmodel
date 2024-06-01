@@ -77,7 +77,7 @@ describe('ObserableCollection.unshift', (): void => {
     it('unshifting items while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.unshift(1);
@@ -88,7 +88,7 @@ describe('ObserableCollection.unshift', (): void => {
     it('not unshifting items while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.unshift();

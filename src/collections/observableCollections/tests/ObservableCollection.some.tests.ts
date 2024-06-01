@@ -43,7 +43,7 @@ describe('ObserableCollection.some', (): void => {
 
     it('calling some passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.some((item, index, collection) => {
             invocationCount++;
 
@@ -60,7 +60,7 @@ describe('ObserableCollection.some', (): void => {
     it('calling some with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.some(
             function (item, index, collection) {
                 invocationCount++;
@@ -81,7 +81,7 @@ describe('ObserableCollection.some', (): void => {
     it('modifying the collection while executing some throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.some(_ => {
                     observableCollection.pop();
                     return true;
@@ -93,7 +93,7 @@ describe('ObserableCollection.some', (): void => {
     it('calling some while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.some(_ => true);

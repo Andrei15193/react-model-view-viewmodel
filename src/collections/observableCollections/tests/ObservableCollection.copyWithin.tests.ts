@@ -94,7 +94,7 @@ describe('ObserableCollection.copyWithin', (): void => {
     it('copying within while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.copyWithin(1, 2);
@@ -119,7 +119,7 @@ describe('ObserableCollection.copyWithin', (): void => {
     it('copying within when target index the same as start index while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3, 4, 5);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
                 const iterator = observableCollection[Symbol.iterator]();
 
                 observableCollection.copyWithin(2, 2);
@@ -133,7 +133,7 @@ describe('ObserableCollection.copyWithin', (): void => {
     it('copying within when end index is less than start index while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3, 4, 5);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
                 const iterator = observableCollection[Symbol.iterator]();
 
                 observableCollection.copyWithin(1, 3, 2);

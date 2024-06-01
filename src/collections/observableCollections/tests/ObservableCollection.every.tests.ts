@@ -43,7 +43,7 @@ describe('ObserableCollection.every', (): void => {
 
     it('calling every passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
 
         observableCollection.every((item, index, collection) => {
             invocationCount++;
@@ -61,7 +61,7 @@ describe('ObserableCollection.every', (): void => {
     it('calling every with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.every(
             function (item, index, collection) {
                 invocationCount++;
@@ -82,7 +82,7 @@ describe('ObserableCollection.every', (): void => {
     it('modifying the collection while executing every throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.every(_ => {
                     observableCollection.pop();
                     return false;
@@ -94,7 +94,7 @@ describe('ObserableCollection.every', (): void => {
     it('calling every while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.every(_ => true);

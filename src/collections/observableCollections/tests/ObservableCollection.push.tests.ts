@@ -77,7 +77,7 @@ describe('ObserableCollection.push', (): void => {
     it('pushing items while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.push(1);
@@ -88,7 +88,7 @@ describe('ObserableCollection.push', (): void => {
     it('not pushing items while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.push();

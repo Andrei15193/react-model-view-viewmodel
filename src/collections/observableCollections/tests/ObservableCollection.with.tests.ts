@@ -41,7 +41,7 @@ describe('ObserableCollection.with', (): void => {
     it('trying to generate a collection using with and index is out of bounds throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.with(3, 10);
             })
             .toThrow(new RangeError('The provided index \'3\' is outside the bounds of the collection.'));
@@ -50,7 +50,7 @@ describe('ObserableCollection.with', (): void => {
     it('trying to generate a collection using with and negative index is out of bounds throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.with(-4, 10);
             })
             .toThrow(new RangeError('The provided index \'-4\' is outside the bounds of the collection.'));
@@ -60,7 +60,7 @@ describe('ObserableCollection.with', (): void => {
         expect(
             () => {
                 let index = 0;
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection) {
                     observableCollection.with(index, 10);

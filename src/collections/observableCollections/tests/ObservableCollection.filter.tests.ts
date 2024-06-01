@@ -30,7 +30,7 @@ describe('ObserableCollection.filter', (): void => {
 
     it('calling filter passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.filter((item, index, collection) => {
             invocationCount++;
 
@@ -47,7 +47,7 @@ describe('ObserableCollection.filter', (): void => {
     it('calling filter with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.filter(
             function (item, index, collection) {
                 invocationCount++;
@@ -68,7 +68,7 @@ describe('ObserableCollection.filter', (): void => {
     it('modifying the collection while executing filter throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.filter(_ => {
                     observableCollection.pop();
                     return true;
@@ -80,7 +80,7 @@ describe('ObserableCollection.filter', (): void => {
     it('calling filter while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.filter(item => item > 1);

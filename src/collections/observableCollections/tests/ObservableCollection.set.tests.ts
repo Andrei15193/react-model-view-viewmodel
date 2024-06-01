@@ -81,7 +81,7 @@ describe('ObserableCollection.set', (): void => {
     it('setting items while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.set(1, 10);

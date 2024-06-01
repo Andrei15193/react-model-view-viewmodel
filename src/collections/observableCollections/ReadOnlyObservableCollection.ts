@@ -20,13 +20,23 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
+     */
+    public constructor();
+    /**
+     * Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
      * @param items The items to initialize the collection with.
      */
-    public constructor(...items: readonly TItem[]) {
+    public constructor(items: Iterable<TItem>);
+
+    public constructor(items?: Iterable<TItem>) {
         super();
-        for (let index = 0; index < items.length; index++)
-            defineIndexProperty(this, index, items[index]);
-        this._length = items.length;
+        let index = 0;
+        if (items !== null && items !== undefined)
+            for (const item of items) {
+                defineIndexProperty(this, index, item);
+                index++;
+            }
+        this._length = index;
         this._changeToken = {};
 
         this.collectionChanged = this._collectionChangedEvent = new EventDispatcher<this, ICollectionChange<TItem>>();

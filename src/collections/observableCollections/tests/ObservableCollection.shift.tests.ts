@@ -28,7 +28,7 @@ describe('ObserableCollection.shift', (): void => {
     it('shifting items while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.shift();

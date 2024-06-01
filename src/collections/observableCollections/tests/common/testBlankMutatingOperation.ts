@@ -43,13 +43,13 @@ export function testBlankMutatingOperation<TItem>({ initialState, applyOperation
     };
 
     const arrayBeforeOperation = initialState.slice();
-    const observableCollectionBeforeOperation = new ObservableCollection<TItem>(...initialState);
+    const observableCollectionBeforeOperation = new ObservableCollection<TItem>(initialState);
     observableCollectionBeforeOperation.propertiesChanged.subscribe(propertiesChangedEventHandler);
     observableCollectionBeforeOperation.collectionChanged.subscribe(collectionChangedEventHandler);
     observableCollectionBeforeOperation.collectionReordered.subscribe(collectionReorderedEventHandler);
 
     const arrayAfterOperation = initialState.slice();
-    const observableCollectionAfterOperation = new ObservableCollection<TItem>(...initialState);
+    const observableCollectionAfterOperation = new ObservableCollection<TItem>(initialState);
     observableCollectionAfterOperation.propertiesChanged.subscribe(propertiesChangedEventHandler);
     observableCollectionAfterOperation.collectionChanged.subscribe(collectionChangedEventHandler);
     observableCollectionAfterOperation.collectionReordered.subscribe(collectionReorderedEventHandler);

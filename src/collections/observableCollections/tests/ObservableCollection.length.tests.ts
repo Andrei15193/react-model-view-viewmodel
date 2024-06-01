@@ -47,7 +47,7 @@ describe('ObserableCollection.length', (): void => {
     it('changing collection length while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.length = 10;
@@ -58,7 +58,7 @@ describe('ObserableCollection.length', (): void => {
     it('setting collection length to the same value while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.length = 3;

@@ -41,7 +41,7 @@ describe('ObserableCollection.forEach', (): void => {
 
     it('calling forEach passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.forEach((item, index, collection) => {
             invocationCount++;
 
@@ -58,7 +58,7 @@ describe('ObserableCollection.forEach', (): void => {
     it('calling forEach with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.forEach(
             function (item, index, collection) {
                 invocationCount++;
@@ -79,7 +79,7 @@ describe('ObserableCollection.forEach', (): void => {
     it('modifying the collection while executing forEach throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.forEach(_ => {
                     observableCollection.pop();
                 });
@@ -90,7 +90,7 @@ describe('ObserableCollection.forEach', (): void => {
     it('calling forEach while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.forEach(_ => {});

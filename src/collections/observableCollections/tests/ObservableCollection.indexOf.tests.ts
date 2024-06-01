@@ -85,7 +85,7 @@ describe('ObserableCollection.indexOf', (): void => {
     it('searching while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.indexOf(2);

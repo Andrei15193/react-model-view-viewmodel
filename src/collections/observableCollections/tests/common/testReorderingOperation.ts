@@ -35,7 +35,7 @@ export function testReorderingOperation<TItem>({ collectionOperation, initialSta
     let actualChangedProperties: readonly (keyof ObservableCollection<TItem>)[] = [];
 
     const array = initialState.slice();
-    const observableCollection = new ObservableCollection<TItem>(...initialState);
+    const observableCollection = new ObservableCollection<TItem>(initialState);
     observableCollection.propertiesChanged.subscribe({
         handle(subject, changedProperties) {
             propertiesChangedRaiseCount++;

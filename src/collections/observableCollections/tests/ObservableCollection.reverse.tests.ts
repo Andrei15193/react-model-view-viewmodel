@@ -51,7 +51,7 @@ describe('ObserableCollection.reverse', (): void => {
     it('reversing items while iterating will break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2);
+                const observableCollection = new ObservableCollection<number>([1, 2]);
 
                 for (const _ of observableCollection)
                     observableCollection.reverse();
@@ -76,7 +76,7 @@ describe('ObserableCollection.reverse', (): void => {
     it('reversing a collection with one item while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1);
+                const observableCollection = new ObservableCollection<number>([1]);
                 const iterator = observableCollection[Symbol.iterator]();
 
                 observableCollection.reverse();

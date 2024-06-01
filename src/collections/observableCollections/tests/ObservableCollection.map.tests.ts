@@ -30,7 +30,7 @@ describe('ObserableCollection.map', (): void => {
 
     it('calling map passes arguments to each parameter accordingly', (): void => {
         let invocationCount = 0;
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.map((item, index, collection) => {
             invocationCount++;
 
@@ -47,7 +47,7 @@ describe('ObserableCollection.map', (): void => {
     it('calling map with context passes it to the callback', (): void => {
         let invocationCount = 0;
         const context = {};
-        const observableCollection = new ObservableCollection<number>(1);
+        const observableCollection = new ObservableCollection<number>([1]);
         observableCollection.map(
             function (item, index, collection) {
                 invocationCount++;
@@ -68,7 +68,7 @@ describe('ObserableCollection.map', (): void => {
     it('modifying the collection while executing map throws exception', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.map(_ => {
                     observableCollection.pop();
                 });
@@ -79,7 +79,7 @@ describe('ObserableCollection.map', (): void => {
     it('calling map while iterating will not break iterators', (): void => {
         expect(
             () => {
-                const observableCollection = new ObservableCollection<number>(1, 2, 3);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.map(item => item);
