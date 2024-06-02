@@ -13,8 +13,8 @@ import { ViewModel } from '../../viewModels';
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
 export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IReadOnlyObservableCollection<TItem> {
-    private _length: number;
-    private _changeToken: unknown;
+    private _length: number = 0;
+    private _changeToken: number = 0;
     private readonly _collectionChangedEvent: EventDispatcher<this, ICollectionChange<TItem>>;
     private readonly _collectionReorderedEvent: EventDispatcher<this, ICollectionReorder<TItem>>;
 
@@ -30,14 +30,11 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public constructor(items?: Iterable<TItem>) {
         super();
-        let index = 0;
         if (items !== null && items !== undefined)
             for (const item of items) {
-                defineIndexProperty(this, index, item);
-                index++;
+                defineIndexProperty(this, this._length, item);
+                this._length++;
             }
-        this._length = index;
-        this._changeToken = {};
 
         this.collectionChanged = this._collectionChangedEvent = new EventDispatcher<this, ICollectionChange<TItem>>();
         this.collectionReordered = this._collectionReorderedEvent = new EventDispatcher<this, ICollectionReorder<TItem>>();
@@ -70,7 +67,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     protected set length(value: number) {
         if (this._length < value) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const startIndex = this._length;
             const addedItems = new Array<TItem>(value - this._length);
@@ -93,7 +90,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this.notifyPropertiesChanged('length', ...addedIndexes);
         }
         else if (this._length > value) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const startIndex = value;
             const removedItems = new Array<TItem>(this._length - value);
@@ -917,7 +914,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     protected push(...items: readonly TItem[]): number {
         if (items.length > 0) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const startIndex = this._length;
             for (let index = 0; index < items.length; index++)
@@ -949,7 +946,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         if (this._length === 0)
             return undefined;
         else {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const removedIndex = this._length - 1;
             const removedItem = this[removedIndex];
@@ -977,7 +974,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     protected unshift(...items: readonly TItem[]): number {
         if (items.length > 0) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             for (let index = this._length - 1; index >= 0; index--)
                 defineIndexProperty(this, index + items.length, this[index]);
@@ -1010,7 +1007,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         if (this._length === 0)
             return undefined;
         else {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const removedItem = this[0];
             const changedIndexes = new Array<number>(this._length);
@@ -1056,7 +1053,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         const normalizedIndex = normalizeIndex(index, this._length);
 
         if (normalizedIndex < this._length) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const removedItem = this[normalizedIndex];
 
@@ -1071,7 +1068,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             this.notifyPropertiesChanged(normalizedIndex);
         }
         else {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const fillStartIndex = this._length;
             const addedItems = new Array<TItem>(normalizedIndex - fillStartIndex);
@@ -1133,7 +1130,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         if (normalizedDeleteCount === 0 && items.length === 0)
             return [];
         else {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const removedItems = new Array<TItem>(normalizedDeleteCount);
             for (let index = 0; index < normalizedDeleteCount; index++)
@@ -1213,7 +1210,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
             const sortedIndexes = sortIndexes(this, compareCallback, () => changeTokenCopy !== this._changeToken);
 
             if (sortedIndexes.some((sortedIndex, currentIndex) => sortedIndex !== currentIndex)) {
-                this._changeToken = {};
+                this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
                 const movedItems = new Array<ICollectionItemMove<TItem>>(sortedIndexes.filter((sortedIndex, currentIndex) => sortedIndex !== currentIndex).length);
                 const changedIndexes = new Array<number>(movedItems.length);
@@ -1253,7 +1250,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      */
     protected reverse(): this {
         if (this.length > 1) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const evenLength = this.length - this.length % 2;
             const movedItems = new Array<ICollectionItemMove<TItem>>(evenLength);
@@ -1315,7 +1312,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         const normalizedEndIndex = normalizeEndIndex(this, end);
 
         if (normalizedTargetIndex !== normalizedStartIndex && normalizedStartIndex < normalizedEndIndex) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const rangeLength = normalizedEndIndex - normalizedStartIndex;
             const changedIndexes = new Array<number>(rangeLength);
@@ -1389,7 +1386,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         const normalizedEndIndex = normalizeEndIndex(this, end);
 
         if (normalizedEndIndex > normalizedStartIndex) {
-            this._changeToken = {};
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
             const length = normalizedEndIndex - normalizedStartIndex;
             const changedIndexes = new Array<number>(length);
