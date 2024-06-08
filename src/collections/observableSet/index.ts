@@ -6,3 +6,5 @@ export type { ISetChange, SetChangeOperation } from './ISetChange';
 export type { ISetLike } from './ISetLike';
 export type { IReadOnlyObservableSet } from './IReadOnlyObservableSet';
 export type { IObservableSet } from './IObservableSet';
+
+export { isSetLike } from "./isSetLike";

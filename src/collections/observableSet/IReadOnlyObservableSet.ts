@@ -50,12 +50,12 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
     has(item: TItem): boolean;
 
     /**
-     * Checks whether none of the items from the current set are contained by the provided collection.
+     * Checks whether there are no items common in both the current set and the provided collection.
      * @param other The collection whose items to check.
-     * @returns Returns `true` if none of the items in the current set are found in the provided collection; otherwise `false`.
+     * @returns Returns `true` if there are no items common in both the current set and the provided collection; otherwise `false`.
      * @see [Set.isDisjointFrom](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/isDisjointFrom)
      */
-    isDisjointFrom(other: Set<TItem> | ISetLike<TItem>): boolean;
+    isDisjointFrom(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): boolean;
 
     /**
      * Checks whether all items from the current set are contained by the provided collection.

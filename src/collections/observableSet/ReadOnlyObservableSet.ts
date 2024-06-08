@@ -4,6 +4,7 @@ import type { ISetChange } from './ISetChange';
 import type { ISetChangedEvent } from './ISetChangedEvent';
 import { EventDispatcher } from '../../events';
 import { ViewModel } from '../../viewModels';
+import { isSetLike } from './isSetLike';
 
 /**
  * Represents a read-only observable set based on the [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) interface.
@@ -91,17 +92,25 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.has](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/has)
      */
     public has(item: TItem): boolean {
-        throw new Error('Method not implemented.');
+        return this._set.has(item);
     }
 
     /**
-     * Checks whether none of the items from the current set are contained by the provided collection.
+     * Checks whether there are no items common in both the current set and the provided collection.
      * @param other The collection whose items to check.
-     * @returns Returns `true` if none of the items in the current set are found in the provided collection; otherwise `false`.
+     * @returns Returns `true` if there are no items common in both the current set and the provided collection; otherwise `false`.
      * @see [Set.isDisjointFrom](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/isDisjointFrom)
      */
-    public isDisjointFrom(other: Set<TItem> | ISetLike<TItem>): boolean {
-        throw new Error('Method not implemented.');
+    public isDisjointFrom(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): boolean {
+        if (other === null || other === undefined || this._set.size === 0)
+            return true;
+        else {
+            for (const item of (isSetLike(other) ? other.keys() : other))
+                if (this._set.has(item))
+                    return false;
+
+            return true;
+        }
     }
 
     /**
@@ -314,4 +323,23 @@ class ObservableSetIterator<TItem, TValue = TItem> implements Iterator<TValue, T
             value: undefined
         };
     }
+}
+
+function resolveSetLike<TItem>(collection: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): ISetLike<TItem> {
+    if (collection === null || collection === undefined)
+        return {
+            size: 0,
+            keys() {
+                return [][Symbol.iterator]();
+            },
+            has() {
+                return false;
+            }
+        };
+    else if (collection instanceof Set)
+        return collection;
+    else if (isSetLike(collection))
+        return collection;
+    else
+        return new Set<TItem>(collection);
 }
