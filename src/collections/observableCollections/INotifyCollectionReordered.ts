@@ -13,6 +13,8 @@ import type { ICollectionReorderedEvent } from './ICollectionReorderedEvent';
  * @template TItem The type of items the collection contains.
  */
 export interface INotifyCollectionReordered<TItem> {
-    /** An event that is raised when the collection changed. */
+    /**
+     * An event that is raised when the collection changed.
+     */
     readonly collectionReordered: ICollectionReorderedEvent<this, TItem>;
 }

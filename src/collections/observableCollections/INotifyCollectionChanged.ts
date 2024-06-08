@@ -9,6 +9,8 @@ import type { INotifyCollectionReordered } from './INotifyCollectionReordered';
  * @template TItem The type of items the collection contains.
  */
 export interface INotifyCollectionChanged<TItem> {
-    /** An event that is raised when the collection changed by adding or removing items. */
+    /**
+     * An event that is raised when the collection changed by adding or removing items.
+     */
     readonly collectionChanged: ICollectionChangedEvent<this, TItem>;
 }

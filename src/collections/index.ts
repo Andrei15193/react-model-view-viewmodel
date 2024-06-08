@@ -29,4 +29,4 @@ export {
     type ISetLike,
     type IReadOnlyObservableSet,
     type IObservableSet
-} from "./observableSet";
+} from './observableSet';

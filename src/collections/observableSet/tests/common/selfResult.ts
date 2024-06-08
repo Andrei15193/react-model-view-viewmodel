@@ -1,0 +1,1 @@
+export const selfResult: symbol = Symbol('selfResult');

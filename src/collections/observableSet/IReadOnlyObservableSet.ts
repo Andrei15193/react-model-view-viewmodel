@@ -1,11 +1,12 @@
-import type { INotifySetChanged } from "./INotifySetChanged";
-import type { ISetLike } from "./ISetLike";
+import type { INotifyPropertiesChanged } from '../../viewModels';
+import type { INotifySetChanged } from './INotifySetChanged';
+import type { ISetLike } from './ISetLike';
 
 /**
  * Represents a read-only observable set based on the [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) interface.
  * @template TItem The type of items the set contains.
  */
-export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike<TItem>, INotifySetChanged<TItem> {
+export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike<TItem>, INotifyPropertiesChanged, INotifySetChanged<TItem> {
     /**
      * Gets the number of items in the collection.
      * @see [Set.size](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/size)
@@ -17,7 +18,7 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @returns An iterator going over each element in the collection.
      * @see [Set[@@iterator]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/@@iterator)
      */
-    [Symbol.iterator](): Iterator<TItem>;
+    [Symbol.iterator](): IterableIterator<TItem>;
 
     /**
      * Gets an iterator that provides each element in the collection in an item-item tupple. Items in a set are their own key.
@@ -103,7 +104,7 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @see [Set.symmetricDifference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/symmetricDifference)
      */
     symmetricDifference(other: Set<TItem> | ISetLike<TItem>): Set<TItem>;
-    
+
     /**
      * Iterates over the entire collections executing the `callback` for each.
      * @param callback The callback processing each item.
@@ -118,4 +119,10 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
     forEach<TContext>(callback: (this: TContext, item: TItem, index: number, set: this) => void, thisArg: TContext): void;
+
+    /**
+     * Converts the observable set to a native JavaScript [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set).
+     * @returns An [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) containing all the items in the collection.
+     */
+    toSet(): Set<TItem>;
 }
