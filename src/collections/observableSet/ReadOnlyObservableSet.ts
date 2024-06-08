@@ -241,7 +241,19 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.clear](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/clear)
      */
     protected clear(): void {
-        throw new Error('Method not implemented.');
+        if (this._set.size > 0) {
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
+
+            const removedItems = Array.from(this._set);
+            this._set.clear();
+
+            this._setChangedEvent.dispatch(this, {
+                operation: 'clear',
+                addedItems: [],
+                removedItems
+            });
+            this.notifyPropertiesChanged('size');
+        }
     }
 }
 
