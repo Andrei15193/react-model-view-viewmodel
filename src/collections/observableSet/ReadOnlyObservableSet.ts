@@ -218,10 +218,22 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * Ensures the provided `item` is not in the set.
      * @param item The item to remove from the set.
      * @returns Returns `true` if the provided item was found and removed from the set; otherwise `false`.
-     * @see [Set.add](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/add)
+     * @see [Set.delete](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/delete)
      */
     protected delete(item: TItem): boolean {
-        throw new Error('Method not implemented.');
+        if (this._set.delete(item)) {
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
+            this._setChangedEvent.dispatch(this, {
+                operation: 'delete',
+                addedItems: [],
+                removedItems: [item]
+            });
+            this.notifyPropertiesChanged('size');
+
+            return true;
+        }
+        else
+            return false;
     }
 
     /**

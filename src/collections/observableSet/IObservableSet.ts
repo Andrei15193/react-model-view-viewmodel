@@ -17,7 +17,7 @@ export interface IObservableSet<TItem> extends IReadOnlyObservableSet<TItem> {
      * Ensures the provided `item` is not in the set.
      * @param item The item to remove from the set.
      * @returns Returns `true` if the provided item was found and removed from the set; otherwise `false`.
-     * @see [Set.add](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/add)
+     * @see [Set.delete](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/delete)
      */
     delete(item: TItem): boolean;
 
