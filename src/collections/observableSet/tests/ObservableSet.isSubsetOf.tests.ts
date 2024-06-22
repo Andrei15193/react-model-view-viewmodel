@@ -18,7 +18,7 @@ describe('ObserableSet.isSubsetOf', (): void => {
     });
 
     it('checking when provided collection has fewer unique items than current set returns false', (): void => {
-        const other = [1, 2];
+        const other = [1, 2, 1, 2];
 
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],

@@ -141,10 +141,17 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * Checks whether all items from the provided collection are contained by the current set.
      * @param other The collection whose items to check.
      * @returns Returns `true` if all items from the provided collection are found in the current set; otherwise `false`.
-     * @see [Set.isSubsetOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/isSubsetOf)
+     * @see [Set.isSupersetOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/isSupersetOf)
      */
-    public isSupersetOf(other: Set<TItem> | ISetLike<TItem>): boolean {
-        throw new Error('Method not implemented.');
+    public isSupersetOf(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): boolean {
+        if (other === null || other === undefined)
+            return false;
+
+        for (const item of (isSetLike(other) ? other.keys() : other))
+            if (!this.has(item))
+                return false;
+
+        return true;
     }
 
     /**
