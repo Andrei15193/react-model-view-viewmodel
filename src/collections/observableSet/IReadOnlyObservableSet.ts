@@ -63,7 +63,7 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @returns Returns `true` if all items in the current set are found in the provided collection; otherwise `false`.
      * @see [Set.isSubsetOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/isSubsetOf)
      */
-    isSubsetOf(other: Set<TItem> | ISetLike<TItem>): boolean;
+    isSubsetOf(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): boolean;
 
     /**
      * Checks whether all items from the provided collection are contained by the current set.
