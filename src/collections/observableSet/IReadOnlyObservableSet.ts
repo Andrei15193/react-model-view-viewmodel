@@ -79,7 +79,7 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @returns Returns a new set containing all items in the current one, but not in the provided collection.
      * @see [Set.difference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/difference)
      */
-    difference(other: Set<TItem> | ISetLike<TItem>): Set<TItem>;
+    difference(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem>;
 
     /**
      * Generates a set that contains the common items from the current one and the provided collection.
@@ -98,9 +98,9 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
     union(other: Set<TItem> | ISetLike<TItem>): Set<TItem>;
 
     /**
-     * Generates a set that contains all items from both the current one and the provided collection, but not contained by both.
+     * Generates a set that contains all items from both the current and provided collection, but are not contained by both.
      * @param other The collection whose items to check.
-     * @returns Returns a new set containing all items from both the current one and the provided collection, but not contained by both.
+     * @returns Returns a new set containing all items from both the current and provided collection, but not contained by both.
      * @see [Set.symmetricDifference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/symmetricDifference)
      */
     symmetricDifference(other: Set<TItem> | ISetLike<TItem>): Set<TItem>;

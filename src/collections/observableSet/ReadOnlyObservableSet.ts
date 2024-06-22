@@ -51,8 +51,7 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set[@@iterator]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/@@iterator)
      */
     public [Symbol.iterator](): IterableIterator<TItem> {
-        var changeTokenCopy = this._changeToken;
-        return new ObservableSetIterator<TItem>(this._set[Symbol.iterator](), () => changeTokenCopy !== this._changeToken);
+        return this.values();
     }
 
     /**
@@ -71,8 +70,7 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/keys)
      */
     public keys(): IterableIterator<TItem> {
-        var changeTokenCopy = this._changeToken;
-        return new ObservableSetIterator<TItem>(this._set[Symbol.iterator](), () => changeTokenCopy !== this._changeToken);
+        return this.values();
     }
 
     /**
@@ -102,11 +100,11 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.isDisjointFrom](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/isDisjointFrom)
      */
     public isDisjointFrom(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): boolean {
-        if (other === null || other === undefined || this._set.size === 0)
+        if (other === null || other === undefined || this.size === 0)
             return true;
         else {
             for (const item of (isSetLike(other) ? other.keys() : other))
-                if (this._set.has(item))
+                if (this.has(item))
                     return false;
 
             return true;
@@ -123,11 +121,11 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
         if (other === null || other === undefined)
             return false;
 
-        if (this._set.size === 0)
+        if (this.size === 0)
             return true;
 
         const checkingSet = isSetLike(other) ? other : new Set(other);
-        if (checkingSet.size < this._set.size)
+        if (checkingSet.size < this.size)
             return false;
 
         for (const item of this)
@@ -160,8 +158,14 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @returns Returns a new set containing all items in the current one, but not in the provided collection.
      * @see [Set.difference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/difference)
      */
-    public difference(other: Set<TItem> | ISetLike<TItem>): Set<TItem> {
-        throw new Error('Method not implemented.');
+    public difference(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem> {
+        const result = new Set<TItem>(this);
+
+        if (other !== null && other !== undefined)
+            for (const item of (isSetLike(other) ? other.keys() : other))
+                result.delete(item);
+
+        return result;
     }
 
     /**
@@ -185,9 +189,9 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
     }
 
     /**
-     * Generates a set that contains all items from both the current one and the provided collection, but not contained by both.
+     * Generates a set that contains all items from both the current and provided collection, but are not contained by both.
      * @param other The collection whose items to check.
-     * @returns Returns a new set containing all items from both the current one and the provided collection, but not contained by both.
+     * @returns Returns a new set containing all items from both the current and provided collection, but not contained by both.
      * @see [Set.symmetricDifference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/symmetricDifference)
      */
     public symmetricDifference(other: Set<TItem> | ISetLike<TItem>): Set<TItem> {
@@ -228,10 +232,10 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.add](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/add)
      */
     protected add(item: TItem): this {
-        const previousSize = this._set.size;
+        const previousSize = this.size;
 
         this._set.add(item);
-        if (previousSize !== this._set.size) {
+        if (previousSize !== this.size) {
             this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
             this._setChangedEvent.dispatch(this, {
                 operation: 'add',
