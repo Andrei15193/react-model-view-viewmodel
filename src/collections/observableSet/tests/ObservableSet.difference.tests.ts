@@ -2,7 +2,7 @@ import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
 describe('ObserableSet.difference', (): void => {
-    it('getting difference between disjoint set and collection returns set with same items', (): void => {
+    it('getting the difference between disjoint set and collection returns set with same items', (): void => {
         const other = [1, 2, 3];
 
         testBlankMutatingOperation<number>({
@@ -17,7 +17,7 @@ describe('ObserableSet.difference', (): void => {
         });
     });
 
-    it('getting difference between set and collection having same items returns empty set', (): void => {
+    it('getting the difference between set and collection having same items returns empty set', (): void => {
         const other = [1, 2, 3];
 
         testBlankMutatingOperation<number>({
@@ -32,7 +32,7 @@ describe('ObserableSet.difference', (): void => {
         });
     });
 
-    it('getting difference between set and collection having some common items returns items from set that are not in the collection', (): void => {
+    it('getting the difference between set and collection having some common items returns items from set that are not in the collection', (): void => {
         const other = [3, 4, 5];
 
         testBlankMutatingOperation<number>({
@@ -47,7 +47,7 @@ describe('ObserableSet.difference', (): void => {
         });
     });
 
-    it('getting difference between set and empty collection returns set containing all items', (): void => {
+    it('getting the difference between set and empty collection returns set containing all items', (): void => {
         const other: readonly number[] = [];
 
         testBlankMutatingOperation<number>({
@@ -62,7 +62,7 @@ describe('ObserableSet.difference', (): void => {
         });
     });
 
-    it('getting difference between empty set and collection returns empty set', (): void => {
+    it('getting the difference between empty set and collection returns empty set', (): void => {
         const other = [1, 2, 3];
 
         testBlankMutatingOperation<number>({

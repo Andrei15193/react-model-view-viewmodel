@@ -169,13 +169,20 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
     }
 
     /**
-     * Generates a set that contains the common items from the current one and the provided collection.
+     * Generates a set that contains the items contained by both the current and provided collection.
      * @param other The collection whose items to check.
-     * @returns Returns a new set containing the common items from the current one and the provided collection.
+     * @returns Returns a set that contains the items contained by both the current and provided collection.
      * @see [Set.intersection](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/intersection)
      */
-    public intersection(other: Set<TItem> | ISetLike<TItem>): Set<TItem> {
-        throw new Error('Method not implemented.');
+    public intersection(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem> {
+        const result = new Set<TItem>();
+
+        if (other !== null && other !== undefined)
+            for (const item of (isSetLike(other) ? other.keys() : other))
+                if (this.has(item))
+                    result.add(item);
+
+        return result;
     }
 
     /**
