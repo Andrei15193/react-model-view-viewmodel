@@ -258,7 +258,7 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
 
     /**
      * Converts the observable set to a native JavaScript [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set).
-     * @returns An [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) containing all the items in the collection.
+     * @returns A [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) containing all the items in the collection.
      */
     public toSet(): Set<TItem> {
         return new Set<TItem>(this);
