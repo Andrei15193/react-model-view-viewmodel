@@ -235,7 +235,7 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @param callback The callback processing each item.
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
-    public forEach(callback: (item: TItem, index: number, set: this) => void): void;
+    public forEach(callback: (item: TItem, key: TItem, set: this) => void): void;
     /**
      * Iterates over the entire collections executing the `callback` for each.
      * @template TContext The context type in which the callback is executed.
@@ -243,10 +243,17 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @param thisArg A value to use as context when processing items.
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
-    public forEach<TContext>(callback: (this: TContext, item: TItem, index: number, set: this) => void, thisArg: TContext): void;
+    public forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this) => void, thisArg: TContext): void;
 
-    public forEach<TContext = void>(callback: (this: TContext, item: TItem, index: number, set: this) => void, thisArg?: TContext): void {
-        throw new Error('Method not implemented.');
+    public forEach<TContext = void>(callback: (this: TContext, item: TItem, key: TItem, set: this) => void, thisArg?: TContext): void {
+        const changeTokenCopy = this._changeToken;
+
+        for (const item of this) {
+            callback.call(thisArg, item, item, this);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Set has changed while being iterated.');
+        }
     }
 
     /**
@@ -380,23 +387,4 @@ class ObservableSetIterator<TItem, TValue = TItem> implements Iterator<TValue, T
             value: undefined
         };
     }
-}
-
-function resolveSetLike<TItem>(collection: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): ISetLike<TItem> {
-    if (collection === null || collection === undefined)
-        return {
-            size: 0,
-            keys() {
-                return [][Symbol.iterator]();
-            },
-            has() {
-                return false;
-            }
-        };
-    else if (collection instanceof Set)
-        return collection;
-    else if (isSetLike(collection))
-        return collection;
-    else
-        return new Set<TItem>(collection);
 }
