@@ -103,7 +103,7 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @returns Returns a new set containing all items from both the current and provided collection, but not contained by both.
      * @see [Set.symmetricDifference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/symmetricDifference)
      */
-    symmetricDifference(other: Set<TItem> | ISetLike<TItem>): Set<TItem>;
+    symmetricDifference(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem>;
 
     /**
      * Iterates over the entire collections executing the `callback` for each.

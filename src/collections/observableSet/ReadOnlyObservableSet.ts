@@ -207,8 +207,27 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @returns Returns a new set containing all items from both the current and provided collection, but not contained by both.
      * @see [Set.symmetricDifference](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/symmetricDifference)
      */
-    public symmetricDifference(other: Set<TItem> | ISetLike<TItem>): Set<TItem> {
-        throw new Error('Method not implemented.');
+    public symmetricDifference(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem> {
+        if (other === null || other === undefined)
+            return new Set<TItem>(this);
+        else if (this.size === 0)
+            return new Set<TItem>(isSetLike(other) ? other.keys() : other);
+        else {
+            const result = new Set<TItem>();
+
+            const commonItems = new Set<TItem>();
+            for (const item of (isSetLike(other) ? other.keys() : other))
+                if (!this.has(item))
+                    result.add(item);
+                else
+                    commonItems.add(item);
+
+            for (const item of this)
+                if (!commonItems.has(item))
+                    result.add(item);
+
+            return result;
+        }
     }
 
     /**
