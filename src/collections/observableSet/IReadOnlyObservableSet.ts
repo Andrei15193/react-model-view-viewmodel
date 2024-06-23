@@ -90,12 +90,12 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
     intersection(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem>;
 
     /**
-     * Generates a set that contains all items from both the current one and the provided collection.
+     * Generates a set that contains all items from both the current and the provided collection.
      * @param other The collection whose items to check.
-     * @returns Returns a new set containing all items from both the current one and the provided collection.
+     * @returns Returns a new set containing all items from both the current and the provided collection.
      * @see [Set.union](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/union)
      */
-    union(other: Set<TItem> | ISetLike<TItem>): Set<TItem>;
+    union(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem>;
 
     /**
      * Generates a set that contains all items from both the current and provided collection, but are not contained by both.

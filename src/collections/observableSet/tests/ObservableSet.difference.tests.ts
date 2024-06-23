@@ -77,7 +77,7 @@ describe('ObserableSet.difference', (): void => {
         });
     });
 
-    it('checking sets while iterating will not break iterators', (): void => {
+    it('getting the difference between sets while iterating will not break iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);
