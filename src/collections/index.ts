@@ -28,5 +28,20 @@ export {
 
     type ISetLike,
     type IReadOnlyObservableSet,
-    type IObservableSet
+    type IObservableSet,
+
+    ReadOnlyObservableSet,
+    ObservableSet,
+    isSetLike
 } from './observableSet';
+
+export {
+    type INotifyMapChanged,
+    type IMapChangedEvent,
+    type IMapChangedEventHandler,
+    type IMapChange,
+    type MapChangeOperation,
+
+    type IReadOnlyObservableMap,
+    type IObservableMap
+} from './observableMap';
