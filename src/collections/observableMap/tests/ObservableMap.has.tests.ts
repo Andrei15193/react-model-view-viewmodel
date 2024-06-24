@@ -15,9 +15,9 @@ describe('ObserableMap.has', (): void => {
     it('checking if existing item is part of map returns true', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [
-                [1, '1'],
-                [2, '2'],
-                [3, '3']
+                [1, 'a'],
+                [2, 'b'],
+                [3, 'c']
             ],
 
             applyOperation: map => map.has(2),
@@ -29,9 +29,9 @@ describe('ObserableMap.has', (): void => {
     it('checking if non-existing item is part of map returns false', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [
-                [1, '1'],
-                [2, '2'],
-                [3, '3']
+                [1, 'a'],
+                [2, 'b'],
+                [3, 'c']
             ],
 
             applyOperation: map => map.has(4),
@@ -44,9 +44,9 @@ describe('ObserableMap.has', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([
-                    [1, '1'],
-                    [2, '2'],
-                    [3, '3']
+                    [1, 'a'],
+                    [2, 'b'],
+                    [3, 'c']
                 ]);
 
                 let valueToCheck = 2;

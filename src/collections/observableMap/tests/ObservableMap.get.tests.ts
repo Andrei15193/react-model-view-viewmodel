@@ -31,9 +31,9 @@ describe('ObserableMap.get', (): void => {
     it('looking up item by non-existing key returns undefined', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [
-                [1, '1'],
-                [2, '2'],
-                [3, '3']
+                [1, 'a'],
+                [2, 'b'],
+                [3, 'c']
             ],
 
             applyOperation: map => map.get(4),
@@ -46,9 +46,9 @@ describe('ObserableMap.get', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([
-                    [1, '1'],
-                    [2, '2'],
-                    [3, '3']
+                    [1, 'a'],
+                    [2, 'b'],
+                    [3, 'c']
                 ]);
 
                 let valueToCheck = 2;

@@ -127,7 +127,14 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
      */
     public forEach<TContext = void>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg?: TContext): void {
-        throw new Error("Method not implemented.");
+        const changeTokenCopy = this._changeToken;
+
+        for (const [key, item] of this) {
+            callback.call(thisArg, item, key, this);
+
+            if (changeTokenCopy !== this._changeToken)
+                throw new Error('Map has changed while being iterated.');
+        }
     }
 
     /**
@@ -164,7 +171,8 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.clear](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/clear)
      */
     protected clear(): void {
-        throw new Error("Method not implemented.");
+        this._changeToken = 1;
+        // throw new Error("Method not implemented.");
     }
 }
 
