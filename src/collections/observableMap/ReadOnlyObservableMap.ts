@@ -177,7 +177,21 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.delete](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/delete)
      */
     protected delete(key: TKey): boolean {
-        throw new Error("Method not implemented.");
+        const removedItem = this._map.get(key);
+        const wasItemRemoved = this._map.delete(key);
+
+        if (wasItemRemoved) {
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
+
+            this._mapChangedEvent.dispatch(this, {
+                operation: 'delete',
+                addedEntries: [],
+                removedEntries: [[key, removedItem]]
+            });
+            this.notifyPropertiesChanged('size');
+        }
+
+        return wasItemRemoved;
     }
 
     /**
