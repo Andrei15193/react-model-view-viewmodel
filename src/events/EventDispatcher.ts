@@ -3,8 +3,8 @@ import type { IEventHandler } from './IEventHandler';
 
 /**
  * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an {@link IEvent}.
- * @template TSubject Optional, provides the object that raised the event.
- * @template TEventArgs Optional, provides context about the event.
+ * @template TSubject Optional, the type of object that raises the event.
+ * @template TEventArgs Optional, the type of the event context containing additional information about the event.
  */
 export class EventDispatcher<TSubject, TEventArgs = void> implements IEvent<TSubject, TEventArgs> {
     private _eventHandlers: readonly IEventHandler<TSubject, TEventArgs>[] = [];

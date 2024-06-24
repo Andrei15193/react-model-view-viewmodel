@@ -1,7 +1,7 @@
 /**
  * An event handler used to subscribe to events. Similar to an EventHandler delegate in .NET.
- * @template TSubject Provides the object that raised the event.
- * @template TEventArgs Optional, provides context about the event.
+ * @template TSubject The type of object that raises the event.
+ * @template TEventArgs Optional, the type of the event context containing additional information about the event.
  */
 export interface IEventHandler<TSubject, TEventArgs = void> {
     /**

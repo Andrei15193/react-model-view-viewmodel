@@ -8,43 +8,43 @@ import type { ISetLike } from './ISetLike';
  */
 export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike<TItem>, INotifyPropertiesChanged, INotifySetChanged<TItem> {
     /**
-     * Gets the number of items in the collection.
+     * Gets the number of items in the set.
      * @see [Set.size](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/size)
      */
     readonly size: number;
 
     /**
-     * Gets an iterator that provides each element in the collection.
-     * @returns An iterator going over each element in the collection.
+     * Gets an iterator that provides each element in the set.
+     * @returns An iterator going over each element in the set.
      * @see [Set[@@iterator]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/@@iterator)
      */
     [Symbol.iterator](): IterableIterator<TItem>;
 
     /**
-     * Gets an iterator that provides each element in the collection in an item-item tupple. Items in a set are their own key.
-     * @returns An iterator going over key-item pairs for each element in the collection.
+     * Gets an iterator that provides each element in the set in an item-item tupple. Items in a set are their own key.
+     * @returns An iterator going over key-item pairs for each element in the set.
      * @see [Set.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/entries)
      */
     entries(): IterableIterator<[TItem, TItem]>;
 
     /**
-     * Gets an iterator that provides each element in the collection, this is an alias for {@linkcode values}
-     * @returns An iterator going over each key in the collection.
+     * Gets an iterator that provides each element in the set, this is an alias for {@linkcode values}
+     * @returns An iterator going over each item in the set.
      * @see [Set.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/keys)
      */
     keys(): IterableIterator<TItem>;
 
     /**
-     * Gets an iterator that provides each item in the collection.
-     * @returns An iterator going over each item in the collection.
+     * Gets an iterator that provides each item in the set.
+     * @returns An iterator going over each item in the set.
      * @see [Set.values](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/values)
      */
     values(): IterableIterator<TItem>;
 
     /**
-     * Checks whether the provided item is in the collection.
+     * Checks whether the provided item is in the set.
      * @param item The item to search for.
-     * @returns Returns `true` if the provided item is found in the collection; otherwise `false`.
+     * @returns Returns `true` if the provided item is found in the set; otherwise `false`.
      * @see [Set.has](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/has)
      */
     has(item: TItem): boolean;
@@ -106,13 +106,13 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
     symmetricDifference(other: Set<TItem> | ISetLike<TItem> | Iterable<TItem>): Set<TItem>;
 
     /**
-     * Iterates over the entire collections executing the `callback` for each.
+     * Iterates over the entire set executing the `callback` for each item.
      * @param callback The callback processing each item.
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
     forEach(callback: (item: TItem, key: TItem, set: this) => void): void;
     /**
-     * Iterates over the entire collections executing the `callback` for each.
+     * Iterates over the entire set executing the `callback` for each item.
      * @template TContext The context type in which the callback is executed.
      * @param callback The callback processing each item.
      * @param thisArg A value to use as context when processing items.

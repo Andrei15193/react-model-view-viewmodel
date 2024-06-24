@@ -2,8 +2,8 @@ import type { IEventHandler } from './IEventHandler';
 
 /**
  * Represents an event to which objects can subscribe and unsubscribe from. Similar to an event in .NET.
- * @template TSubject Optional, provides the object that raised the event.
- * @template TEventArgs Optional, provides context about the event when notifying subscribers.
+ * @template TSubject Optional, the type of object that raises the event.
+ * @template TEventArgs Optional, the type of the event context containing additional information about the event.
  */
 export interface IEvent<TSubject, TEventArgs = void> {
     /**
