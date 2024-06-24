@@ -56,7 +56,7 @@ describe('ObservableCollection.with', (): void => {
             .toThrow(new RangeError('The provided index \'-4\' is outside the bounds of the collection.'));
     });
 
-    it('calling with while iterating will not break iterators', (): void => {
+    it('calling with while iterating does not break iterators', (): void => {
         expect(
             () => {
                 let index = 0;

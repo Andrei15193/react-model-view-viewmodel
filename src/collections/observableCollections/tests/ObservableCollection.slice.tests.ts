@@ -92,7 +92,7 @@ describe('ObservableCollection.slice', (): void => {
         });
     });
 
-    it('slicing while iterating will not break iterators', (): void => {
+    it('slicing while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

@@ -48,7 +48,7 @@ describe('ObservableCollection.reverse', (): void => {
         });
     });
 
-    it('reversing items while iterating will break iterators', (): void => {
+    it('reversing items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2]);
@@ -59,7 +59,7 @@ describe('ObservableCollection.reverse', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('reversing an empty collection while iterating will not break iterators', (): void => {
+    it('reversing an empty collection while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>();
@@ -73,7 +73,7 @@ describe('ObservableCollection.reverse', (): void => {
             .toThrow()
     });
 
-    it('reversing a collection with one item while iterating will not break iterators', (): void => {
+    it('reversing a collection with one item while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1]);

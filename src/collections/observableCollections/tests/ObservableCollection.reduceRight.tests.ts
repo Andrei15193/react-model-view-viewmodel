@@ -86,7 +86,7 @@ describe('ObservableCollection.reduceRight', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
-    it('calling reduceRight while iterating will not break iterators', (): void => {
+    it('calling reduceRight while iterating does not break iterators', (): void => {
         expect(
             () => {
                     const observableCollection = new ObservableCollection<number>([1, 2, 3]);

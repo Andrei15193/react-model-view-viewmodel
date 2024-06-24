@@ -87,7 +87,7 @@ describe('ObservableSet.forEach', (): void => {
             .toThrow(new Error('Set has changed while being iterated.'));
     });
 
-    it('calling forEach while iterating will not break iterators', (): void => {
+    it('calling forEach while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);

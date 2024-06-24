@@ -22,7 +22,7 @@ describe('ObservableCollection.toReversed', (): void => {
         });
     });
 
-    it('calling toReversed while iterating will not break iterators', (): void => {
+    it('calling toReversed while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

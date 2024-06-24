@@ -29,7 +29,7 @@ describe('ObservableMap.clear', (): void => {
         });
     });
 
-    it('clearing items while iterating will break iterators', (): void => {
+    it('clearing items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([

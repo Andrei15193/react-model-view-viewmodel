@@ -61,7 +61,7 @@ describe('ObservableCollection.sort', (): void => {
         });
     });
 
-    it('mutating the collection while sorting items will break the operation', (): void => {
+    it('mutating the collection while sorting items breaks the operation', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2]);
@@ -70,7 +70,7 @@ describe('ObservableCollection.sort', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('sorting sorted items while iterating will not break iterators', (): void => {
+    it('sorting sorted items while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2]);
@@ -82,7 +82,7 @@ describe('ObservableCollection.sort', (): void => {
             .toThrow()
     });
 
-    it('sorting unsorted items while iterating will break iterators', (): void => {
+    it('sorting unsorted items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([2, 1]);
@@ -93,7 +93,7 @@ describe('ObservableCollection.sort', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('sorting an empty collection while iterating will not break iterators', (): void => {
+    it('sorting an empty collection while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>();
@@ -107,7 +107,7 @@ describe('ObservableCollection.sort', (): void => {
             .toThrow()
     });
 
-    it('sorting a collection with one item while iterating will not break iterators', (): void => {
+    it('sorting a collection with one item while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1]);

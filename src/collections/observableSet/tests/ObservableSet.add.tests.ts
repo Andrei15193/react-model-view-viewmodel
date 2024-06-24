@@ -38,7 +38,7 @@ describe('ObservableSet.add', (): void => {
         });
     });
 
-    it('adding items while iterating will break iterators', (): void => {
+    it('adding items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);
@@ -49,7 +49,7 @@ describe('ObservableSet.add', (): void => {
             .toThrow(new Error('Set has changed while being iterated.'))
     });
 
-    it('adding existing item while iterating will not break iterators', (): void => {
+    it('adding existing item while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);

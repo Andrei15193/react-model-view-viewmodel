@@ -46,7 +46,7 @@ describe('ObservableMap.delete', (): void => {
         });
     });
 
-    it('deleting items while iterating will break iterators', (): void => {
+    it('deleting items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([
@@ -61,7 +61,7 @@ describe('ObservableMap.delete', (): void => {
             .toThrow(new Error('Map has changed while being iterated.'));
     });
 
-    it('deleting item that does not exist will not break iterators', (): void => {
+    it('deleting item that does not exist does not break iterators', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([

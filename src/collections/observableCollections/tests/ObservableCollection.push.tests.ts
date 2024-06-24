@@ -74,7 +74,7 @@ describe('ObservableCollection.push', (): void => {
         });
     });
 
-    it('pushing items while iterating will break iterators', (): void => {
+    it('pushing items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
@@ -85,7 +85,7 @@ describe('ObservableCollection.push', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('not pushing items while iterating will not break iterators', (): void => {
+    it('not pushing items while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

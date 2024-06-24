@@ -40,7 +40,7 @@ describe('ObservableMap.has', (): void => {
         });
     });
 
-    it('checking item existence while iterating will not break iterators', (): void => {
+    it('checking item existence while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([

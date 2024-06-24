@@ -120,7 +120,7 @@ describe('ObservableCollection.fill', (): void => {
         });
     });
 
-    it('filling items while iterating will break iterators', (): void => {
+    it('filling items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
@@ -131,7 +131,7 @@ describe('ObservableCollection.fill', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('filling items in an empty collection while iterating will not break iterators', (): void => {
+    it('filling items in an empty collection while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>();
@@ -145,7 +145,7 @@ describe('ObservableCollection.fill', (): void => {
             .toThrow()
     });
 
-    it('filling items when end index the same as start index while iterating will not break iterators', (): void => {
+    it('filling items when end index the same as start index while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
@@ -159,7 +159,7 @@ describe('ObservableCollection.fill', (): void => {
             .toThrow()
     });
 
-    it('filling items when end index is less than start index while iterating will not break iterators', (): void => {
+    it('filling items when end index is less than start index while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);

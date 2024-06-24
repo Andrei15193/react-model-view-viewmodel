@@ -25,7 +25,7 @@ describe('ObservableCollection.shift', (): void => {
         });
     });
 
-    it('shifting items while iterating will break iterators', (): void => {
+    it('shifting items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
@@ -36,7 +36,7 @@ describe('ObservableCollection.shift', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('shifting items from empty collection while iterating will not break iterators', (): void => {
+    it('shifting items from empty collection while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>();

@@ -35,7 +35,7 @@ describe('ObservableSet.delete', (): void => {
         });
     });
 
-    it('deleting items while iterating will break iterators', (): void => {
+    it('deleting items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);
@@ -46,7 +46,7 @@ describe('ObservableSet.delete', (): void => {
             .toThrow(new Error('Set has changed while being iterated.'))
     });
 
-    it('deleting non-existing item while iterating will not break iterators', (): void => {
+    it('deleting non-existing item while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);

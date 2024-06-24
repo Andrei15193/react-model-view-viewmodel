@@ -25,7 +25,7 @@ describe('ObservableSet.clear', (): void => {
         });
     });
 
-    it('clearing items while iterating will break iterators', (): void => {
+    it('clearing items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);

@@ -42,7 +42,7 @@ describe('ObservableCollection.concat', (): void => {
         });
     });
 
-    it('calling concat while iterating will not break iterators', (): void => {
+    it('calling concat while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

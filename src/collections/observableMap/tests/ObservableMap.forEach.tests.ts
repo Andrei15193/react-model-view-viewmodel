@@ -99,7 +99,7 @@ describe('ObservableMap.forEach', (): void => {
             .toThrow(new Error('Map has changed while being iterated.'));
     });
 
-    it('calling forEach while iterating will not break iterators', (): void => {
+    it('calling forEach while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([

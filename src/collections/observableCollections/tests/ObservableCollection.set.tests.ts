@@ -78,7 +78,7 @@ describe('ObservableCollection.set', (): void => {
         });
     });
 
-    it('setting items while iterating will break iterators', (): void => {
+    it('setting items while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

@@ -62,7 +62,7 @@ describe('ObservableSet.isDisjointFrom', (): void => {
         });
     });
 
-    it('checking sets while iterating will not break iterators', (): void => {
+    it('checking sets while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);

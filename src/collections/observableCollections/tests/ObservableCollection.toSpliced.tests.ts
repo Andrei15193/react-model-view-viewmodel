@@ -132,7 +132,7 @@ describe('ObservableCollection.toSpliced', (): void => {
         });
     });
 
-    it('calling toSpliced while iterating will not break iterators', (): void => {
+    it('calling toSpliced while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

@@ -42,7 +42,7 @@ describe('ObservableMap.get', (): void => {
         });
     });
 
-    it('looking up items while iterating will not break iterators', (): void => {
+    it('looking up items while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableMap = new ObservableMap<number, string>([

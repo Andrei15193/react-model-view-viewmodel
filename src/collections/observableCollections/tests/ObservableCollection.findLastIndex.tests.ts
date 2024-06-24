@@ -90,7 +90,7 @@ describe('ObservableCollection.findLastIndex', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
-    it('searching while iterating will not break iterators', (): void => {
+    it('searching while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

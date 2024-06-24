@@ -167,7 +167,7 @@ describe('ObservableCollection.splice', (): void => {
         });
     });
 
-    it('calling splice while iterating will break iterators', (): void => {
+    it('calling splice while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);

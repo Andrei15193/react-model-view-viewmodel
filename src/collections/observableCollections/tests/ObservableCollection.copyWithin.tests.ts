@@ -91,7 +91,7 @@ describe('ObservableCollection.copyWithin', (): void => {
         });
     });
 
-    it('copying within while iterating will break iterators', (): void => {
+    it('copying within while iterating breaks iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
@@ -102,7 +102,7 @@ describe('ObservableCollection.copyWithin', (): void => {
             .toThrow(new Error('Collection has changed while being iterated.'))
     });
 
-    it('copying within of an empty collection while iterating will not break iterators', (): void => {
+    it('copying within of an empty collection while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>();
@@ -116,7 +116,7 @@ describe('ObservableCollection.copyWithin', (): void => {
             .toThrow()
     });
 
-    it('copying within when target index the same as start index while iterating will not break iterators', (): void => {
+    it('copying within when target index the same as start index while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
@@ -130,7 +130,7 @@ describe('ObservableCollection.copyWithin', (): void => {
             .toThrow()
     });
 
-    it('copying within when end index is less than start index while iterating will not break iterators', (): void => {
+    it('copying within when end index is less than start index while iterating does not break iterators', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3, 4, 5]);
