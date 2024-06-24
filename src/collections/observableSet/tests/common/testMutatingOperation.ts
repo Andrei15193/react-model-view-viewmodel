@@ -22,7 +22,7 @@ export interface ITestMutatingOperationOptions<TItem> {
  * Applies the callback to both a set and an observable set constructed form the initial state,
  * checking the two before and after the operation is applied as well as checking the result of the operation.
  *
- * An observable set provides all relevant methods that are exposed by a native Set thus the
+ * An observable set provides all relevant methods that are exposed by a native set thus the
  * two need to behave the same.
  */
 export function testMutatingOperation<TItem>({ setOperation, initialState, changedProperties, expectedSet: expectedState, expectedResult, applyOperation }: ITestMutatingOperationOptions<TItem>): void {

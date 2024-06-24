@@ -7,6 +7,20 @@ import { ReadOnlyObservableSet } from './ReadOnlyObservableSet';
  */
 export class ObservableSet<TItem> extends ReadOnlyObservableSet<TItem> implements IObservableSet<TItem> {
     /**
+     * Initializes a new instance of the {@linkcode ObservableSet} class.
+     */
+    public constructor();
+    /**
+     * Initializes a new instance of the {@linkcode ObservableSet} class.
+     * @param items The items to initialize the set with.
+     */
+    public constructor(items: Iterable<TItem>);
+
+    public constructor(items?: Iterable<TItem>) {
+        super(items);
+    }
+
+    /**
      * Ensures the provided `item` is in the set. There can be at most only one instance of an item in a set at any given time.
      * @param item The item to add to the set.
      * @returns The observable set on which the operation is performed.

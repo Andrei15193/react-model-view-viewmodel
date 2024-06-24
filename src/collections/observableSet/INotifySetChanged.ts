@@ -5,6 +5,8 @@ import type { ISetChangedEvent } from './ISetChangedEvent';
  * @template TItem The type of items the set contains.
  */
 export interface INotifySetChanged<TItem> {
-    /** An event that is raised when the set changed by adding or removing items. */
+    /**
+     * An event that is raised when the set changed by adding or removing items.
+     */
     readonly setChanged: ISetChangedEvent<this, TItem>;
 }

@@ -6,6 +6,8 @@ import type { IMapChangedEvent } from './IMapChangedEvent';
  * @template TItem The type of items the map contains.
  */
 export interface INotifyMapChanged<TKey, TItem> {
-    /** An event that is raised when the map changed by adding or removing items. */
+    /**
+     * An event that is raised when the map changed by adding or removing entries.
+     */
     readonly mapChanged: IMapChangedEvent<this, TKey, TItem>;
 }

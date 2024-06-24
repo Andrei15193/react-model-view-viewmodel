@@ -8,7 +8,7 @@ import type { INotifyMapChanged } from "./INotifyMapChanged";
  */
 export interface IReadOnlyObservableMap<TKey, TItem> extends Iterable<[TKey, TItem]>, INotifyPropertiesChanged, INotifyMapChanged<TKey, TItem> {
     /**
-     * Gets the number of items in the map.
+     * Gets the number of entries in the map.
      * @see [Map.size](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/size)
      */
     readonly size: number;
@@ -67,14 +67,14 @@ export interface IReadOnlyObservableMap<TKey, TItem> extends Iterable<[TKey, TIt
      * Iterates over the entire map executing the `callback` for each pair.
      * @template TContext The context type in which the callback is executed.
      * @param callback The callback processing each item.
-     * @param thisArg A value to use as context when processing items.
+     * @param thisArg A value to use as context when processing entries.
      * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
      */
     forEach<TContext>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg: TContext): void;
 
     /**
      * Converts the observable map to a native JavaScript [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map).
-     * @returns An [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) containing all the items in the collection.
+     * @returns An [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) containing all the entries in the collection.
      */
     toMap(): Map<TKey, TItem>;
 }

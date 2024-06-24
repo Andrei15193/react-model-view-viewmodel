@@ -13,8 +13,8 @@ import { ViewModel } from '../../viewModels';
  * @see [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
  */
 export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IReadOnlyObservableCollection<TItem> {
-    private _length: number = 0;
-    private _changeToken: number = 0;
+    private _length: number;
+    private _changeToken: number;
     private readonly _collectionChangedEvent: EventDispatcher<this, ICollectionChange<TItem>>;
     private readonly _collectionReorderedEvent: EventDispatcher<this, ICollectionReorder<TItem>>;
 
@@ -30,6 +30,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     public constructor(items?: Iterable<TItem>) {
         super();
+
+        this._changeToken = 0;
+        this._length = 0;
         if (items !== null && items !== undefined)
             for (const item of items) {
                 defineIndexProperty(this, this._length, item);

@@ -11,23 +11,24 @@ import { isSetLike } from './isSetLike';
  * @template TItem The type of items the set contains.
  */
 export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnlyObservableSet<TItem> {
-    private _changeToken: number = 0;
+    private _changeToken: number;
     private readonly _set: Set<TItem>;
     private readonly _setChangedEvent: EventDispatcher<this, ISetChange<TItem>>;
 
     /**
      * Initializes a new instance of the {@linkcode ReadOnlyObservableSet} class.
      */
-    constructor();
+    public constructor();
     /**
      * Initializes a new instance of the {@linkcode ReadOnlyObservableSet} class.
      * @param items The items to initialize the set with.
      */
-    constructor(items: Iterable<TItem>);
+    public constructor(items: Iterable<TItem>);
 
-    constructor(items?: Iterable<TItem>) {
+    public constructor(items?: Iterable<TItem>) {
         super();
 
+        this._changeToken = 0;
         this._set = new Set<TItem>(items);
         this.setChanged = this._setChangedEvent = new EventDispatcher<this, ISetChange<TItem>>();
     }
@@ -35,12 +36,12 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
     /**
      * An event that is raised when the set changed by adding or removing items.
      */
-    readonly setChanged: ISetChangedEvent<this, TItem>;
+    public readonly setChanged: ISetChangedEvent<this, TItem>;
 
     /**
-      * Gets the number of items in the collection.
-      * @see [Set.size](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/size)
-      */
+     * Gets the number of items in the collection.
+     * @see [Set.size](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/size)
+     */
     public get size(): number {
         return this._set.size;
     }
