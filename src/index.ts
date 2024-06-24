@@ -41,7 +41,22 @@ export {
 
     type ISetLike,
     type IReadOnlyObservableSet,
-    type IObservableSet
+    type IObservableSet,
+
+    ReadOnlyObservableSet,
+    ObservableSet,
+
+    type INotifyMapChanged,
+    type IMapChangedEvent,
+    type IMapChangedEventHandler,
+    type IMapChange,
+    type MapChangeOperation,
+
+    type IReadOnlyObservableMap,
+    type IObservableMap,
+
+    ReadOnlyObservableMap,
+    ObservableMap
 } from './collections';
 
 export {

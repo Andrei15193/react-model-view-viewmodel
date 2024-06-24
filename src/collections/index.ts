@@ -43,5 +43,8 @@ export {
     type MapChangeOperation,
 
     type IReadOnlyObservableMap,
-    type IObservableMap
+    type IObservableMap,
+
+    ReadOnlyObservableMap,
+    ObservableMap
 } from './observableMap';
