@@ -15,7 +15,7 @@ describe('ObservableSet.clear', (): void => {
         });
     });
 
-    it('clearing itemsfrom an empty set has no effect', (): void => {
+    it('clearing items from an empty set has no effect', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 

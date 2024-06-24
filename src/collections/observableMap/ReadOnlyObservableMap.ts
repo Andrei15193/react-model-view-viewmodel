@@ -199,8 +199,19 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.clear](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/clear)
      */
     protected clear(): void {
-        this._changeToken = 1;
-        // throw new Error("Method not implemented.");
+        if (this.size > 0) {
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
+            
+            const removedEntries = Array.from(this._map.entries());
+            this._map.clear();
+
+            this._mapChangedEvent.dispatch(this, {
+                operation: 'clear',
+                addedEntries: [],
+                removedEntries
+            });
+            this.notifyPropertiesChanged('size');
+        }
     }
 }
 
