@@ -1,4 +1,4 @@
-import { IReadOnlyObservableSet } from '../../IReadOnlyObservableSet';
+import type { IReadOnlyObservableSet } from '../../IReadOnlyObservableSet';
 
 export function expectSetsToBeEqual<TItem>(observableSet: IReadOnlyObservableSet<TItem>, set: Set<TItem>): void {
     expect(observableSet.size).toBe(set.size);

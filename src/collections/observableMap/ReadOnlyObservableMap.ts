@@ -101,7 +101,7 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.get](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/get)
      */
     public get(key: TKey): TItem | undefined {
-        throw new Error("Method not implemented.");
+        return this._map.get(key);
     }
 
     /**
