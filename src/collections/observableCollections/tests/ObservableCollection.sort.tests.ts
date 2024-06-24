@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { selfResult, testBlankReorderingOperation, testReorderingOperation } from './common';
 
-describe('ObserableCollection.sort', (): void => {
+describe('ObservableCollection.sort', (): void => {
     it('sorting an empty collection has no effect', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [],

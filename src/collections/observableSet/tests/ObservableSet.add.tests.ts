@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { selfResult, testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableSet.add', (): void => {
+describe('ObservableSet.add', (): void => {
     it('adding an item adds it to the set', (): void => {
         testMutatingOperation<number>({
             setOperation: 'add',

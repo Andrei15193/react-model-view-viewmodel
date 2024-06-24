@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.toSorted', (): void => {
+describe('ObservableCollection.toSorted', (): void => {
     it('sorting an empty collection returns an empty array', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.toReversed', (): void => {
+describe('ObservableCollection.toReversed', (): void => {
     it('reversing an empty collection returns an empty array', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

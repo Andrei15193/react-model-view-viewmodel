@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.lastIndexOf', (): void => {
+describe('ObservableCollection.lastIndexOf', (): void => {
     it('searching in an empty colleciton returns -1', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

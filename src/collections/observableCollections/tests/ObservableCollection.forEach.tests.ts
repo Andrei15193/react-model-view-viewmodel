@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.forEach', (): void => {
+describe('ObservableCollection.forEach', (): void => {
     it('iterating over an empty collection does not invoke the callback', (): void => {
         let arrayInvocationCount = 0;
         let collectionInvocationCount = 0;

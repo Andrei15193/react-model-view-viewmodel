@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { selfResult, testBlankReorderingOperation, testReorderingOperation } from './common';
 
-describe('ObserableCollection.reverse', (): void => {
+describe('ObservableCollection.reverse', (): void => {
     it('reversing an empty collection has no effect', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [],

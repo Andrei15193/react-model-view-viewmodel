@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.with', (): void => {
+describe('ObservableCollection.with', (): void => {
     it('generating a collection using with returns array', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],

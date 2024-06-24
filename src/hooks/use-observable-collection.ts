@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 type Destructor = () => void;
 type EffectResult = void | Destructor;
 
-/** Watches an obserable collection for changes, requesting a render when it does. The collection is the only hook dependency.
+/** Watches an observable collection for changes, requesting a render when it does. The collection is the only hook dependency.
  * @template TItem The type of items the collection contains.
  * @param observableCollection The collection to watch.
  */

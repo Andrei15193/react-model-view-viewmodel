@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.intersection', (): void => {
+describe('ObservableSet.intersection', (): void => {
     it('getting the intersection between disjoint set and collection returns empty set', (): void => {
         const other = [1, 2, 3];
 

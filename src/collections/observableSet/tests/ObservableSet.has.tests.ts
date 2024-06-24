@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.has', (): void => {
+describe('ObservableSet.has', (): void => {
     it('checking if item is part of empty set returns false', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

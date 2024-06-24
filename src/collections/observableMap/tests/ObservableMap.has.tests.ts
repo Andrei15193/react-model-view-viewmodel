@@ -1,7 +1,7 @@
 import { ObservableMap } from '../ObservableMap';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableMap.has', (): void => {
+describe('ObservableMap.has', (): void => {
     it('checking if item is part of empty map returns false', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [],

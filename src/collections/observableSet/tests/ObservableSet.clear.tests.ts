@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableSet.clear', (): void => {
+describe('ObservableSet.clear', (): void => {
     it('clearing items removes all items from the set', (): void => {
         testMutatingOperation<number>({
             setOperation: 'clear',

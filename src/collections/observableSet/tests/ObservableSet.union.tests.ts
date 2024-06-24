@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.union', (): void => {
+describe('ObservableSet.union', (): void => {
     it('getting the union between disjoint set and collection returns set containing all items from both', (): void => {
         const other = [1, 2, 3];
 

@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.shift', (): void => {
+describe('ObservableCollection.shift', (): void => {
     it('shifting an item from an empty collection has no effect', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.length', (): void => {
+describe('ObservableCollection.length', (): void => {
     it('setting the length to the same value does not raise events', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],

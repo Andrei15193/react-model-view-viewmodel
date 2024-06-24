@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.every', (): void => {
+describe('ObservableCollection.every', (): void => {
     it('checking every element of an empty collection returns true', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

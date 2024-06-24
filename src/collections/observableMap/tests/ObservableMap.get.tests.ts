@@ -1,7 +1,7 @@
 import { ObservableMap } from '../ObservableMap';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableMap.get', (): void => {
+describe('ObservableMap.get', (): void => {
     it('looking up items in an empty map returns undefined', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [],

@@ -60,7 +60,7 @@ export function testMutatingOperation<TKey, TItem>({ mapOperation, initialState,
     expectMapsToBeEqual(observableMap, new Map<TKey, TItem>(expectedState));
     expect(observableMapResult).toEqual(expectedResult === selfResult ? observableMap : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(1);
+    expect(propertiesChangedRaiseCount).toBe(changedProperties.length === 0 ? 0 : 1);
     expect(mapChangedRaiseCount).toBe(1);
     expect(actualChangedProperties).toEqual(changedProperties);
 

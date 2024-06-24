@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.pop', (): void => {
+describe('ObservableCollection.pop', (): void => {
     it('poping an item from an empty collection has no effect', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

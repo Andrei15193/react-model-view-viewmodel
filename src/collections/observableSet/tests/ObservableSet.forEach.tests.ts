@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.forEach', (): void => {
+describe('ObservableSet.forEach', (): void => {
     it('iterating over an empty set does not invoke the callback', (): void => {
         let setInvocationCount = 0;
         let observableSetInvocationCount = 0;

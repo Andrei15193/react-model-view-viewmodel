@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.isDisjointFrom', (): void => {
+describe('ObservableSet.isDisjointFrom', (): void => {
     it('checking when item from current set is present in the provided collection returns false', (): void => {
         const other = [1, 2, 3];
 

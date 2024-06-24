@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { selfResult, testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.fill', (): void => {
+describe('ObservableCollection.fill', (): void => {
     it('filling an empty collection has no effect', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

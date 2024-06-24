@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.isSupersetOf', (): void => {
+describe('ObservableSet.isSupersetOf', (): void => {
     it('checking when all items from provided collection are present in the current set returns true', (): void => {
         const other = [1, 2];
 

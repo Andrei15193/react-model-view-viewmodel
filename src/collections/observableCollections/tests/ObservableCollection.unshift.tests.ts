@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.unshift', (): void => {
+describe('ObservableCollection.unshift', (): void => {
     it('unshifting an item adds it to the collection', (): void => {
         testMutatingOperation<number>({
             collectionOperation: 'unshift',

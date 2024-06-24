@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.join', (): void => {
+describe('ObservableCollection.join', (): void => {
     it('joining an empty collection returns an empty string', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

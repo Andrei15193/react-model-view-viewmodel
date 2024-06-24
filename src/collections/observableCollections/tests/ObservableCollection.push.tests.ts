@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.push', (): void => {
+describe('ObservableCollection.push', (): void => {
     it('pushing an item adds it to the collection', (): void => {
         testMutatingOperation<number>({
             collectionOperation: 'push',

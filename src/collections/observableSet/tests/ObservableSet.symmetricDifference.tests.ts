@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.symmetricDifference', (): void => {
+describe('ObservableSet.symmetricDifference', (): void => {
     it('getting the symmetric difference between disjoint set and collection returns set containing all items from both', (): void => {
         const other = [1, 2, 3];
 

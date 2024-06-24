@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.splice', (): void => {
+describe('ObservableCollection.splice', (): void => {
     it('splicing an empty collection does not change it', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

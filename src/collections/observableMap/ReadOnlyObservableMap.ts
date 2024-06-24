@@ -12,7 +12,7 @@ import { ViewModel } from "../../viewModels";
 export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IReadOnlyObservableMap<TKey, TItem> {
     private _changeToken: number;
     private readonly _map: Map<TKey, TItem>;
-    private readonly _mapChanged: EventDispatcher<this, IMapChange<TKey, TItem>>;
+    private readonly _mapChangedEvent: EventDispatcher<this, IMapChange<TKey, TItem>>;
 
     /**
      * Initializes a new instance of the {@linkcode ReadOnlyObservableMap} class.
@@ -29,7 +29,7 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
 
         this._changeToken = 0;
         this._map = new Map<TKey, TItem>(entries);
-        this.mapChanged = this._mapChanged = new EventDispatcher<this, IMapChange<TKey, TItem>>();
+        this.mapChanged = this._mapChangedEvent = new EventDispatcher<this, IMapChange<TKey, TItem>>();
     }
 
     /**
@@ -153,7 +153,21 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/set)
      */
     protected set(key: TKey, item: TItem): this {
-        throw new Error("Method not implemented.");
+        this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
+
+        const previousSize = this.size;
+        this._map.set(key, item);
+
+        this._mapChangedEvent.dispatch(this, {
+            operation: 'set',
+            addedEntries: [[key, item]],
+            removedEntries: []
+        });
+
+        if (previousSize !== this.size)
+            this.notifyPropertiesChanged('size');
+
+        return this;
     }
 
     /**

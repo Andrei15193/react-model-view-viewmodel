@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { selfResult, testBlankMutatingOperation, testMutatingOperation } from './common';
 
-describe('ObserableCollection.copyWithin', (): void => {
+describe('ObservableCollection.copyWithin', (): void => {
     it('copying within an empty collection has no effect', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],

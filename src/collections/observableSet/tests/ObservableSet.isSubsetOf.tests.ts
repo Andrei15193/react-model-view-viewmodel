@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.isSubsetOf', (): void => {
+describe('ObservableSet.isSubsetOf', (): void => {
     it('checking when all items from current set are present in the provided collection returns true', (): void => {
         const other = [1, 2, 3];
 

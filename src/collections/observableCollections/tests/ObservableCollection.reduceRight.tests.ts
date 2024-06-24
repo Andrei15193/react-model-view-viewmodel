@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.reduceRight', (): void => {
+describe('ObservableCollection.reduceRight', (): void => {
     it('reducing an empty collection without initial value throws exception', (): void => {
         const observableCollection = new ObservableCollection<number>();
 

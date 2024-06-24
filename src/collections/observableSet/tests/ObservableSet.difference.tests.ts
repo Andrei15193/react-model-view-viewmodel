@@ -1,7 +1,7 @@
 import { ObservableSet } from '../ObservableSet';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableSet.difference', (): void => {
+describe('ObservableSet.difference', (): void => {
     it('getting the difference between disjoint set and collection returns set with same items', (): void => {
         const other = [1, 2, 3];
 

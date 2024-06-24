@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testMutatingOperation } from './common';
 
-describe('ObserableCollection.set', (): void => {
+describe('ObservableCollection.set', (): void => {
     it('setting an item updates the collection', (): void => {
         testMutatingOperation<number>({
             collectionOperation: 'set',

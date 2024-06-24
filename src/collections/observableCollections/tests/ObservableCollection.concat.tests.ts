@@ -1,7 +1,7 @@
 import { ObservableCollection } from '../ObservableCollection';
 import { testBlankMutatingOperation } from './common';
 
-describe('ObserableCollection.concat', (): void => {
+describe('ObservableCollection.concat', (): void => {
     it('concatenating without any arguments returns a new array containing the same items', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
