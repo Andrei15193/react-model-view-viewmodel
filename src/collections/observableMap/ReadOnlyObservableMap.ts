@@ -1,8 +1,8 @@
-import type { IMapChange } from "./IMapChange";
-import type { IMapChangedEvent } from "./IMapChangedEvent";
-import type { IReadOnlyObservableMap } from "./IReadOnlyObservableMap";
-import { EventDispatcher } from "../../events";
-import { ViewModel } from "../../viewModels";
+import type { IMapChange } from './IMapChange';
+import type { IMapChangedEvent } from './IMapChangedEvent';
+import type { IReadOnlyObservableMap } from './IReadOnlyObservableMap';
+import { EventDispatcher } from '../../events';
+import { ViewModel } from '../../viewModels';
 
 /**
  * Represents a read-only observable map based on the [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) interface.

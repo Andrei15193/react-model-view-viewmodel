@@ -1,5 +1,5 @@
-import type { IObservableMap } from "./IObservableMap";
-import { ReadOnlyObservableMap } from "./ReadOnlyObservableMap";
+import type { IObservableMap } from './IObservableMap';
+import { ReadOnlyObservableMap } from './ReadOnlyObservableMap';
 
 export class ObservableMap<TKey, TItem> extends ReadOnlyObservableMap<TKey, TItem> implements IObservableMap<TKey, TItem> {
     /**

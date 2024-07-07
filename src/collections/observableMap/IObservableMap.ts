@@ -1,4 +1,4 @@
-import type { IReadOnlyObservableMap } from "./IReadOnlyObservableMap";
+import type { IReadOnlyObservableMap } from './IReadOnlyObservableMap';
 
 /**
  * Represents an observable map based on the [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) interface.

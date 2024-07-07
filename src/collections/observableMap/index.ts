@@ -6,5 +6,5 @@ export type { IMapChangedEventHandler } from './IMapChangedEventHandler';
 export type { IReadOnlyObservableMap } from './IReadOnlyObservableMap';
 export type { IObservableMap } from './IObservableMap';
 
-export type { ReadOnlyObservableMap } from './ReadOnlyObservableMap';
-export type { ObservableMap } from './ObservableMap';
+export { ReadOnlyObservableMap } from './ReadOnlyObservableMap';
+export { ObservableMap } from './ObservableMap';

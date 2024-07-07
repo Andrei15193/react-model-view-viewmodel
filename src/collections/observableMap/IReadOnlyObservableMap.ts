@@ -1,5 +1,5 @@
-import type { INotifyPropertiesChanged } from "../../viewModels";
-import type { INotifyMapChanged } from "./INotifyMapChanged";
+import type { INotifyPropertiesChanged } from '../../viewModels';
+import type { INotifyMapChanged } from './INotifyMapChanged';
 
 /**
  * Represents a read-only observable map based on the [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) interface.

@@ -1,5 +1,5 @@
-import type { IEventHandler } from "../../events";
-import type { IMapChange } from "./IMapChange";
+import type { IEventHandler } from '../../events';
+import type { IMapChange } from './IMapChange';
 
 /**
  * A specialized interface for handling map changed events.
