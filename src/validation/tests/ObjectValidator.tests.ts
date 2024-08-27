@@ -54,7 +54,7 @@ describe('ObjectValidator', (): void => {
             {
                 validate() {
                     validatorCalls.push('validator 3');
-                    return "";
+                    return '';
                 }
             },
             {

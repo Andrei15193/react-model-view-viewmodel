@@ -1,5 +1,5 @@
-import { ObservableSet } from "../../collections";
-import { SetChangedValidationTrigger } from "../triggers";
+import { ObservableSet } from '../../collections';
+import { SetChangedValidationTrigger } from '../triggers';
 
 describe('SetChangedValidationTrigger', (): void => {
     it('validation is triggered when set changes', (): void => {

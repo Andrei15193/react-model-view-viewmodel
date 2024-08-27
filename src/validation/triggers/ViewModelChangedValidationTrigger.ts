@@ -1,5 +1,5 @@
-import type { IPropertiesChangedEventHandler, INotifyPropertiesChanged } from "../../viewModels";
-import { ValidationTrigger } from "./ValidationTrigger";
+import type { IPropertiesChangedEventHandler, INotifyPropertiesChanged } from '../../viewModels';
+import { ValidationTrigger } from './ValidationTrigger';
 
 export interface IViewModelChangedValidationTriggerConfig<TViewModel extends INotifyPropertiesChanged = INotifyPropertiesChanged> {
     readonly viewModel: TViewModel;

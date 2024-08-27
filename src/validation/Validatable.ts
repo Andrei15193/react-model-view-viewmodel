@@ -1,5 +1,5 @@
-import type { IValidatable } from "./IValidatable";
-import { ViewModel } from "../viewModels";
+import type { IValidatable } from './IValidatable';
+import { ViewModel } from '../viewModels';
 
 export class Validatable<TValidationError = string> extends ViewModel implements IValidatable<TValidationError> {
     private _error: TValidationError | null
@@ -21,7 +21,7 @@ export class Validatable<TValidationError = string> extends ViewModel implements
 
         if (this._error !== normalizedError) {
             this._error = normalizedError;
-            this.notifyPropertiesChanged("error");
+            this.notifyPropertiesChanged('error');
         }
     }
 }

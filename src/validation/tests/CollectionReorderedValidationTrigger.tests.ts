@@ -1,5 +1,5 @@
-import { ObservableCollection } from "../../collections";
-import { CollectionReorderedValidationTrigger } from "../triggers";
+import { ObservableCollection } from '../../collections';
+import { CollectionReorderedValidationTrigger } from '../triggers';
 
 describe('CollectionReorderedValidationTrigger', (): void => {
     it('validation is triggered when collection changes', (): void => {

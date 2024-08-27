@@ -1,6 +1,6 @@
-import type { INotifyPropertiesChanged } from "../../viewModels";
-import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from "../../collections";
-import { type IEvent, EventDispatcher } from "../../events";
+import type { INotifyPropertiesChanged } from '../../viewModels';
+import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from '../../collections';
+import { type IEvent, EventDispatcher } from '../../events';
 
 export type WellKnownValidationTrigger
     = INotifyPropertiesChanged

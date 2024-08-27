@@ -1,6 +1,6 @@
 export type { IReadOnlyValidatable } from './IReadOnlyValidatable';
 export type { IValidatable } from './IValidatable';
-export { Validatable } from "./Validatable";
+export { Validatable } from './Validatable';
 
 export type { IValidator, ValidatorCallback } from './IValidator';
 

@@ -1,5 +1,5 @@
-import type { ICollectionReorder, ICollectionReorderedEventHandler, INotifyCollectionReordered } from "../../collections";
-import { ValidationTrigger } from "./ValidationTrigger";
+import type { ICollectionReorder, ICollectionReorderedEventHandler, INotifyCollectionReordered } from '../../collections';
+import { ValidationTrigger } from './ValidationTrigger';
 
 export interface ICollectionReorderedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionReordered<TItem> = INotifyCollectionReordered<TItem>> {
     readonly collection: TCollection;

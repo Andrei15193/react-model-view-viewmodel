@@ -1,9 +1,9 @@
-import type { WellKnownValidationTrigger, ValidationTrigger } from "./ValidationTrigger";
-import { CollectionChangedValidationTrigger } from "./CollectionChangedValidationTrigger";
-import { CollectionReorderedValidationTrigger } from "./CollectionReorderedValidationTrigger";
-import { SetChangedValidationTrigger } from "./SetChangedValidationTrigger";
-import { MapChangedValidationTrigger } from "./MapChangedValidationTrigger";
-import { ViewModelChangedValidationTrigger } from "./ViewModelChangedValidationTrigger";
+import type { WellKnownValidationTrigger, ValidationTrigger } from './ValidationTrigger';
+import { CollectionChangedValidationTrigger } from './CollectionChangedValidationTrigger';
+import { CollectionReorderedValidationTrigger } from './CollectionReorderedValidationTrigger';
+import { SetChangedValidationTrigger } from './SetChangedValidationTrigger';
+import { MapChangedValidationTrigger } from './MapChangedValidationTrigger';
+import { ViewModelChangedValidationTrigger } from './ViewModelChangedValidationTrigger';
 
 export function resolveValidationTriggers(validationTrigger: WellKnownValidationTrigger | ValidationTrigger): readonly ValidationTrigger[] {
     let isSpecialized = false;

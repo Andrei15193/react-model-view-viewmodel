@@ -1,5 +1,5 @@
-import { ViewModel } from "../../viewModels";
-import { ViewModelChangedValidationTrigger } from "../triggers";
+import { ViewModel } from '../../viewModels';
+import { ViewModelChangedValidationTrigger } from '../triggers';
 
 describe('ViewModelChangedValidationTrigger', (): void => {
     it('validation is triggered when view model changes', (): void => {
@@ -65,6 +65,6 @@ describe('ViewModelChangedValidationTrigger', (): void => {
 
 class FakeViewModel extends ViewModel {
     public notifyPropertiesChanged(): void {
-        super.notifyPropertiesChanged("propertiesChanged");
+        super.notifyPropertiesChanged('propertiesChanged');
     }
 }

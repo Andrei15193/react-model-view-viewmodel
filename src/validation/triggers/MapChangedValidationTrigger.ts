@@ -1,5 +1,5 @@
-import type { IMapChange, IMapChangedEventHandler, INotifyMapChanged } from "../../collections";
-import { ValidationTrigger } from "./ValidationTrigger";
+import type { IMapChange, IMapChangedEventHandler, INotifyMapChanged } from '../../collections';
+import { ValidationTrigger } from './ValidationTrigger';
 
 export interface IMapChangedValidationTriggerConfig<TKey = unknown, TItem = unknown, TMap extends INotifyMapChanged<TKey, TItem> = INotifyMapChanged<TKey, TItem>> {
     readonly map: TMap;

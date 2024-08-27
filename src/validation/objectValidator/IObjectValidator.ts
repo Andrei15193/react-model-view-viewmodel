@@ -1,9 +1,9 @@
-import type { IObservableCollection, IObservableSet } from "../../collections";
-import type { INotifyPropertiesChanged } from "../../viewModels";
-import type { IValidatable } from "../IValidatable";
-import type { IValidator, ValidatorCallback } from "../IValidator";
-import type { IReadOnlyObjectValidator } from "./IReadOnlyObjectValidator";
-import type { ValidationTrigger } from "../triggers";
+import type { IObservableCollection, IObservableSet } from '../../collections';
+import type { INotifyPropertiesChanged } from '../../viewModels';
+import type { IValidatable } from '../IValidatable';
+import type { IValidator, ValidatorCallback } from '../IValidator';
+import type { IReadOnlyObjectValidator } from './IReadOnlyObjectValidator';
+import type { ValidationTrigger } from '../triggers';
 
 
 export interface IObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> extends IReadOnlyObjectValidator<TValidatable, TValidationError> {

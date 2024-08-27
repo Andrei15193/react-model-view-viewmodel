@@ -1,5 +1,5 @@
-import type { ISetChange, ISetChangedEventHandler, INotifySetChanged } from "../../collections";
-import { ValidationTrigger } from "./ValidationTrigger";
+import type { ISetChange, ISetChangedEventHandler, INotifySetChanged } from '../../collections';
+import { ValidationTrigger } from './ValidationTrigger';
 
 export interface ISetChangedValidationTriggerConfig<TItem = unknown, TSet extends INotifySetChanged<TItem> = INotifySetChanged<TItem>> {
     readonly set: TSet;

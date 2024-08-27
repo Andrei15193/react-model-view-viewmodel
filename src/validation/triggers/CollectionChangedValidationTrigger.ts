@@ -1,5 +1,5 @@
-import type { ICollectionChange, ICollectionChangedEventHandler, INotifyCollectionChanged } from "../../collections";
-import { ValidationTrigger } from "./ValidationTrigger";
+import type { ICollectionChange, ICollectionChangedEventHandler, INotifyCollectionChanged } from '../../collections';
+import { ValidationTrigger } from './ValidationTrigger';
 
 export interface ICollectionChangedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionChanged<TItem> = INotifyCollectionChanged<TItem>> {
     readonly collection: TCollection;

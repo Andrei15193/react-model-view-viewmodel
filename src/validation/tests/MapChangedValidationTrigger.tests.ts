@@ -1,5 +1,5 @@
-import { ObservableMap } from "../../collections";
-import { MapChangedValidationTrigger } from "../triggers";
+import { ObservableMap } from '../../collections';
+import { MapChangedValidationTrigger } from '../triggers';
 
 describe('MapChangedValidationTrigger', (): void => {
     it('validation is triggered when map changes', (): void => {
