@@ -1,48 +1,34 @@
-import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { IValidatable } from '../IValidatable';
-import type { IValidationTrigger } from '../IValidationTrigger';
-import { type INotifyCollectionChanged, type ICollectionChange, type INotifyCollectionReordered, type ICollectionReorder, type INotifySetChanged, type ISetChange, type INotifyMapChanged, type IMapChange, ObservableCollection, ObservableSet, ObservableMap } from '../../collections';
+import { ViewModel } from '../../viewModels';
+import { ObservableCollection, ObservableSet, ObservableMap } from '../../collections';
 import { ObjectValidator } from '../objectValidator/ObjectValidator';
-import { FakeValidatable, FakeViewModelValidationTrigger } from './common';
 
 describe('ObjectValidator', (): void => {
     it('adding a validator validates the target', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateViewModelTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        }
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(() => {
             invocationCount++;
             return 'test error';
         });
 
-        expect(checkInvocationCount).toBe(0);
         expect(invocationCount).toBe(1);
         expect(validatable.error).toBe('test error');
     });
 
-    it('changing the target triggers a validaiton', (): void => {
+    it('changing the target triggers a validation', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateViewModelTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        }
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(() => {
             invocationCount++;
             return 'test error';
         });
-        validatable.triggerValidation();
+        validatable.notifyPropertiesChanged();
 
-        expect(checkInvocationCount).toBe(1);
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
     });
@@ -51,7 +37,7 @@ describe('ObjectValidator', (): void => {
         const validatorCalls: string[] = [];
         const validatable = new FakeValidatable();
 
-        const objectValidator = new TestObjectValidator(validatable);
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.validators.push(
             {
                 validate() {
@@ -84,15 +70,10 @@ describe('ObjectValidator', (): void => {
 
     it('adding a view model trigger validates target when it changes', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
-        const viewModelValidationTrigger = new FakeViewModelValidationTrigger();
+        const viewModelValidationTrigger = new FakeValidatable();
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateViewModelTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        }
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -100,24 +81,18 @@ describe('ObjectValidator', (): void => {
             },
             [viewModelValidationTrigger]
         );
-        viewModelValidationTrigger.triggerValidation();
+        viewModelValidationTrigger.notifyPropertiesChanged();
 
-        expect(checkInvocationCount).toBe(1);
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
     });
 
     it('adding an observable collection trigger validates target when it changes', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
         const observableCollectionValidationTrigger = new ObservableCollection<number>();
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateCollectionChangedTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        };
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -127,22 +102,16 @@ describe('ObjectValidator', (): void => {
         );
         observableCollectionValidationTrigger.push(1);
 
-        expect(checkInvocationCount).toBe(1);
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
     });
 
     it('adding an observable collection trigger validates target when it reorders', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
         const observableCollectionValidationTrigger = new ObservableCollection<number>([1, 2]);
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateCollectionReorderedTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        }
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -152,22 +121,16 @@ describe('ObjectValidator', (): void => {
         );
         observableCollectionValidationTrigger.reverse();
 
-        expect(checkInvocationCount).toBe(1);
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
     });
 
     it('adding an observable set trigger validates target when it changes', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
         const observableSetValidationTrigger = new ObservableSet<number>();
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateSetChangedTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        }
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -177,22 +140,16 @@ describe('ObjectValidator', (): void => {
         );
         observableSetValidationTrigger.add(1);
 
-        expect(checkInvocationCount).toBe(1);
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
     });
 
     it('adding an observable map trigger validates target when it changes', (): void => {
         let invocationCount = 0;
-        let checkInvocationCount = 0;
         const validatable = new FakeValidatable();
         const observableMapValidationTrigger = new ObservableMap<number, string>();
 
-        const objectValidator = new TestObjectValidator(validatable);
-        objectValidator.shouldValidateMapChangedTriggerCallback = () => {
-            checkInvocationCount++;
-            return true;
-        }
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -202,7 +159,6 @@ describe('ObjectValidator', (): void => {
         );
         observableMapValidationTrigger.set(1, 'a');
 
-        expect(checkInvocationCount).toBe(1);
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
     });
@@ -211,7 +167,7 @@ describe('ObjectValidator', (): void => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new TestObjectValidator(validatable);
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add({
             onAdd(target) {
                 expect(target).toBe(validatable);
@@ -229,7 +185,7 @@ describe('ObjectValidator', (): void => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new TestObjectValidator(validatable);
+        const objectValidator = new ObjectValidator(validatable);
         objectValidator.add({
             onRemove(target) {
                 expect(target).toBe(validatable);
@@ -243,47 +199,31 @@ describe('ObjectValidator', (): void => {
 
         expect(hookInvocationCount).toBe(1);
     });
-})
+});
 
-class TestObjectValidator<TValidatable extends IValidatable<TValidationError> & IValidationTrigger, TValidationError = string> extends ObjectValidator<TValidatable, TValidationError> {
-    public shouldValidateViewModelTriggerCallback?: typeof this.shouldValidateViewModelTrigger;
-    public shouldValidateCollectionChangedTriggerCallback?: typeof this.shouldValidateCollectionChangedTrigger;
-    public shouldValidateCollectionReorderedTriggerCallback?: typeof this.shouldValidateCollectionReorderedTrigger;
-    public shouldValidateSetChangedTriggerCallback?: typeof this.shouldValidateSetChangedTrigger;
-    public shouldValidateMapChangedTriggerCallback?: typeof this.shouldValidateMapChangedTrigger;
+export class FakeValidatable extends ViewModel implements IValidatable {
+    private _error: string | null = null;
 
-    protected shouldValidateViewModelTrigger(changedViewModel: INotifyPropertiesChanged, changedProperties: readonly PropertyKey[]): boolean {
-        return (
-            super.shouldValidateViewModelTrigger(changedViewModel, changedProperties)
-            && (!this.shouldValidateViewModelTriggerCallback || this.shouldValidateViewModelTriggerCallback(changedViewModel, changedProperties))
-        );
+    public get error(): string | null {
+        return this._error;
     }
 
-    protected shouldValidateCollectionChangedTrigger(changedCollection: INotifyCollectionChanged<unknown>, collectionChange: ICollectionChange<unknown>): boolean {
-        return (
-            super.shouldValidateCollectionChangedTrigger(changedCollection, collectionChange)
-            && (!this.shouldValidateCollectionChangedTriggerCallback || this.shouldValidateCollectionChangedTriggerCallback(changedCollection, collectionChange))
-        );
+    public set error(value: string | null) {
+        if (this._error !== value) {
+            this._error = value;
+            super.notifyPropertiesChanged('error');
+        }
     }
 
-    protected shouldValidateCollectionReorderedTrigger(changedCollection: INotifyCollectionReordered<unknown>, collectionReorder: ICollectionReorder<unknown>): boolean {
-        return (
-            super.shouldValidateCollectionReorderedTrigger(changedCollection, collectionReorder)
-            && (!this.shouldValidateCollectionReorderedTriggerCallback || this.shouldValidateCollectionReorderedTriggerCallback(changedCollection, collectionReorder))
-        );
+    public get isValid(): boolean {
+        return this.error === null || this.error === undefined;
     }
 
-    protected shouldValidateSetChangedTrigger(changedSet: INotifySetChanged<unknown>, setChange: ISetChange<unknown>): boolean {
-        return (
-            super.shouldValidateSetChangedTrigger(changedSet, setChange)
-            && (!this.shouldValidateSetChangedTriggerCallback || this.shouldValidateSetChangedTriggerCallback(changedSet, setChange))
-        );
+    public get isInvalid(): boolean {
+        return this.error !== null && this.error !== undefined;
     }
 
-    protected shouldValidateMapChangedTrigger(changedMap: INotifyMapChanged<unknown, unknown>, mapChange: IMapChange<unknown, unknown>): boolean {
-        return (
-            super.shouldValidateMapChangedTrigger(changedMap, mapChange)
-            && (!this.shouldValidateMapChangedTriggerCallback || this.shouldValidateMapChangedTriggerCallback(changedMap, mapChange))
-        );
+    public notifyPropertiesChanged() {
+        super.notifyPropertiesChanged('notifyPropertiesChanged');
     }
 }

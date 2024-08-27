@@ -9,6 +9,10 @@ import type { IEventHandler } from './IEventHandler';
 export class EventDispatcher<TSubject, TEventArgs = void> implements IEvent<TSubject, TEventArgs> {
     private _eventHandlers: readonly IEventHandler<TSubject, TEventArgs>[] = [];
 
+    /** Initializes a new instance of the {@linkcode EventDispatcher} class. */
+    public constructor() {
+    }
+
     /**
      * Subscribes the given eventHandler to the event.
      * @param eventHandler An event handler that gets notified when the event is raised.

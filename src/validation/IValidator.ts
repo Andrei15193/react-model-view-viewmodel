@@ -7,4 +7,5 @@ export interface IValidator<TValidatable extends IReadOnlyValidatable<TValidatio
     readonly validate: ValidatorCallback<TValidatable, TValidationError>;
 }
 
-export type ValidatorCallback<TValidatable extends IReadOnlyValidatable<TValidationError>, TValidationError = string> = (object: TValidatable) => TValidationError | null | undefined;
+export type ValidatorCallback<TValidatable extends IReadOnlyValidatable<TValidationError>, TValidationError = string>
+    = (object: TValidatable) => TValidationError | null | undefined;

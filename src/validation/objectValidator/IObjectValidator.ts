@@ -1,18 +1,17 @@
-import type { IObservableCollection, IObservableSet } from '../../collections';
-import type { IValidator, ValidatorCallback } from '../IValidator';
-import type { IValidationTrigger } from '../IValidationTrigger';
-import type { IReadOnlyObjectValidator } from './IReadOnlyObjectValidator';
-import type { IValidatable } from '../IValidatable';
+import type { IObservableCollection, IObservableSet } from "../../collections";
+import type { INotifyPropertiesChanged } from "../../viewModels";
+import type { IValidatable } from "../IValidatable";
+import type { IValidator, ValidatorCallback } from "../IValidator";
+import type { IReadOnlyObjectValidator } from "./IReadOnlyObjectValidator";
+import type { ValidationTrigger } from "../triggers";
 
-export interface IObjectValidator<TValidatable extends IValidatable<TValidationError> & IValidationTrigger, TValidationError = string> extends IReadOnlyObjectValidator<TValidatable, TValidationError> {
+
+export interface IObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> extends IReadOnlyObjectValidator<TValidatable, TValidationError> {
     readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
+    readonly triggers: IObservableSet<ValidationTrigger>;
 
-    readonly triggers: IObservableSet<IValidationTrigger>;
-
-    add(validator: IValidator<TValidatable, TValidationError>): this;
-    add(validator: IValidator<TValidatable, TValidationError>, triggers: readonly IValidationTrigger[]): this;
-    add(validator: ValidatorCallback<TValidatable, TValidationError>): this;
-    add(validator: ValidatorCallback<TValidatable, TValidationError>, triggers: readonly IValidationTrigger[]): this;
+    add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>): this;
+    add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers: readonly ValidationTrigger[]): this;
 
     validate(): TValidationError | null;
 

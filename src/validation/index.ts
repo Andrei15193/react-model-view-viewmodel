@@ -1,7 +1,6 @@
 export type { IReadOnlyValidatable } from './IReadOnlyValidatable';
 export type { IValidatable } from './IValidatable';
-
-export type { IValidationTrigger } from './IValidationTrigger';
+export { Validatable } from "./Validatable";
 
 export type { IValidator, ValidatorCallback } from './IValidator';
 
@@ -10,3 +9,13 @@ export {
     type IObjectValidator,
     ObjectValidator
 } from './objectValidator';
+
+export {
+    type WellKnownValidationTrigger, ValidationTrigger,
+
+    type IViewModelChangedValidationTriggerConfig, ViewModelChangedValidationTrigger,
+    type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger,
+    type ICollectionReorderedValidationTriggerConfig, CollectionReorderedValidationTrigger,
+    type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger,
+    type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger
+} from './triggers'
