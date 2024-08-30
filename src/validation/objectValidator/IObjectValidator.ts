@@ -3,12 +3,12 @@ import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { IValidatable } from '../IValidatable';
 import type { IValidator, ValidatorCallback } from '../IValidator';
 import type { IReadOnlyObjectValidator } from './IReadOnlyObjectValidator';
-import type { ValidationTrigger } from '../triggers';
+import type { WellKnownValidationTrigger, ValidationTrigger } from '../triggers';
 
 
 export interface IObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> extends IReadOnlyObjectValidator<TValidatable, TValidationError> {
     readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
-    readonly triggers: IObservableSet<ValidationTrigger>;
+    readonly triggers: IObservableSet<WellKnownValidationTrigger | ValidationTrigger>;
 
     add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>): this;
     add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers: readonly ValidationTrigger[]): this;

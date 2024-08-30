@@ -5,3 +5,5 @@ export { type ICollectionChangedValidationTriggerConfig, CollectionChangedValida
 export { type ICollectionReorderedValidationTriggerConfig, CollectionReorderedValidationTrigger } from './CollectionReorderedValidationTrigger';
 export { type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger } from './SetChangedValidationTrigger';
 export { type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger } from './MapChangedValidationTrigger';
+
+export { resolveValidationTriggers } from './resolveValidationTriggers';

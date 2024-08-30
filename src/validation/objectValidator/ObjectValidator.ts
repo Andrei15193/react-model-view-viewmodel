@@ -5,15 +5,24 @@ import type { IObjectValidator } from './IObjectValidator';
 import type { WellKnownValidationTrigger, ValidationTrigger } from '../triggers';
 import type { INotifyPropertiesChanged } from '../../viewModels';
 import { type IObservableCollection, type IObservableSet, ObservableCollection, ObservableSet } from '../../collections';
-import { resolveValidationTriggers } from '../triggers/resolveValidationTriggers';
+import { ViewModelChangedValidationTrigger, resolveValidationTriggers } from '../triggers';
+
+export interface IObjectValidatorConfig<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> {
+    readonly target: TValidatable;
+
+    shouldTargetTriggerValidation?(target: TValidatable, changedProperties: readonly (keyof TValidatable)[]): boolean;
+}
 
 export class ObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> implements IObjectValidator<TValidatable, TValidationError> {
-    private _isValidating: boolean;
-    private readonly _validationTriggeredEventHandler: IEventHandler<unknown, unknown> & {
-        _validate(): void;
-    };
+    private static defaultShouldTargetTriggerValidation<TValidationError = string>(target: IValidatable<TValidationError>, changedProperties: readonly (keyof IValidatable<TValidationError>)[]): boolean {
+        return changedProperties.some(changedProperty => {
+            return changedProperty !== 'error'
+                && changedProperty !== 'isValid'
+                && changedProperty !== 'isInvalid'
+        });
+    }
 
-    public constructor(target: TValidatable) {
+    public constructor({ target, shouldTargetTriggerValidation = ObjectValidator.defaultShouldTargetTriggerValidation<TValidationError> }: IObjectValidatorConfig<TValidatable, TValidationError>) {
         this.target = target;
 
         this.validators = new ObservableCollection<IValidator<TValidatable, TValidationError>>();
@@ -29,54 +38,55 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
             }
         });
 
-        this._validationTriggeredEventHandler = {
-            _validate: this.validate.bind(this),
-
-            handle() {
-                this._validate();
+        const validationTriggeredEventHandler: IEventHandler<unknown, unknown> = {
+            handle: () => {
+                this.validate();
             }
         };
 
-        this.target.propertiesChanged.subscribe(this._validationTriggeredEventHandler);
+        const targetValidationTrigger = new ViewModelChangedValidationTrigger({
+            viewModel: target,
+            shouldTriggerValidation: shouldTargetTriggerValidation
+        });
+        targetValidationTrigger.validationTriggered.subscribe(validationTriggeredEventHandler);
+
+        const resolvedValidationTriggersBySource = new Map<WellKnownValidationTrigger | ValidationTrigger, readonly ValidationTrigger[]>();
         this.triggers = new ObservableSet<ValidationTrigger>();
         this.triggers.setChanged.subscribe({
-            _validationTriggeredEventHandler: this._validationTriggeredEventHandler,
-
             handle(_, { addedItems: addedTriggers, removedItems: removedTriggers }) {
                 removedTriggers.forEach(removedTrigger => {
-                    removedTrigger.validationTriggered.unsubscribe(this._validationTriggeredEventHandler);
+                    resolvedValidationTriggersBySource
+                        .get(removedTrigger)
+                        .forEach(resolvedValidationTrigger => {
+                            resolvedValidationTrigger.validationTriggered.unsubscribe(validationTriggeredEventHandler);
+                        });
+                    resolvedValidationTriggersBySource.delete(removedTrigger);
                 });
 
                 addedTriggers.forEach(addedTrigger => {
-                    addedTrigger.validationTriggered.subscribe(this._validationTriggeredEventHandler);
+                    const resolvedValidationTriggers = resolveValidationTriggers(addedTrigger);
+                    resolvedValidationTriggers.forEach(resolvedValidationTrigger => {
+                        resolvedValidationTrigger.validationTriggered.subscribe(validationTriggeredEventHandler);
+                    });
+                    resolvedValidationTriggersBySource.set(addedTrigger, resolvedValidationTriggers);
                 });
             }
         });
 
-        try {
-            this._isValidating = true;
-
-            this.target.error = null;
-        }
-        finally {
-            this._isValidating = false;
-        }
+        this.target.error = null;
     }
 
     public readonly target: TValidatable;
 
     public readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
-    public readonly triggers: IObservableSet<ValidationTrigger>;
+    public readonly triggers: IObservableSet<WellKnownValidationTrigger | ValidationTrigger>;
 
     public add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>): this;
     public add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers: readonly (WellKnownValidationTrigger | ValidationTrigger)[]): this;
 
     public add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger | ValidationTrigger)[]): this {
         if (triggers !== null && triggers !== undefined)
-            triggers.forEach(trigger => {
-                const resolvedValidationTriggers = resolveValidationTriggers(trigger);
-                resolvedValidationTriggers.forEach(this.triggers.add, this.triggers);
-            });
+            triggers.forEach(this.triggers.add, this.triggers);
 
         if (validator !== null && validator !== undefined)
             switch (typeof validator) {
@@ -93,28 +103,19 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
     }
 
     public validate(): TValidationError | null {
-        if (this._isValidating)
-            return this.target.error;
-        else try {
-            this._isValidating = true;
+        let error: TValidationError | null = null;
+        let index: number = 0;
 
-            let error: TValidationError | null = null;
-            let index: number = 0;
-
-            while (index < this.validators.length && error === null) {
-                const validationResult = this.validators[index].validate(this.target);
-                if (validationResult !== null && validationResult !== undefined)
-                    error = validationResult;
-                else
-                    index++;
-            }
-
-            this.target.error = error;
-            return error;
+        while (index < this.validators.length && error === null) {
+            const validationResult = this.validators[index].validate(this.target);
+            if (validationResult !== null && validationResult !== undefined)
+                error = validationResult;
+            else
+                index++;
         }
-        finally {
-            this._isValidating = false;
-        }
+
+        this.target.error = error;
+        return error;
     }
 
     public reset(): this {

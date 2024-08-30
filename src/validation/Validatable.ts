@@ -17,11 +17,11 @@ export class Validatable<TValidationError = string> extends ViewModel implements
     }
 
     public set error(value: TValidationError | false | null | undefined) {
-        const normalizedError = value === false || value === null || value === undefined ? null : value;
+        const normalizedError = (value === false || value === null || value === undefined) ? null : value;
 
         if (this._error !== normalizedError) {
             this._error = normalizedError;
-            this.notifyPropertiesChanged('error');
+            this.notifyPropertiesChanged('error', 'isValid', 'isInvalid');
         }
     }
 }

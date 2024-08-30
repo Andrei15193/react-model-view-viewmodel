@@ -8,7 +8,7 @@ describe('ObjectValidator', (): void => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(() => {
             invocationCount++;
             return 'test error';
@@ -22,7 +22,7 @@ describe('ObjectValidator', (): void => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(() => {
             invocationCount++;
             return 'test error';
@@ -33,11 +33,31 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
+    it('changing the target triggers the validation one more time when changed target properties are ignored', (): void => {
+        let invocationCount = 0;
+        const validatable = new FakeValidatable();
+
+        const objectValidator = new ObjectValidator({
+            target: validatable,
+            shouldTargetTriggerValidation() {
+                return true;
+            }
+        });
+        objectValidator.add(() => {
+            invocationCount++;
+            return 'test error';
+        });
+        validatable.notifyPropertiesChanged();
+
+        expect(invocationCount).toBe(3);
+        expect(validatable.error).toBe('test error');
+    });
+
     it('using multiple validators executes them until first invalid one', (): void => {
         const validatorCalls: string[] = [];
         const validatable = new FakeValidatable();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.validators.push(
             {
                 validate() {
@@ -73,7 +93,7 @@ describe('ObjectValidator', (): void => {
         const validatable = new FakeValidatable();
         const viewModelValidationTrigger = new FakeValidatable();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -92,7 +112,7 @@ describe('ObjectValidator', (): void => {
         const validatable = new FakeValidatable();
         const observableCollectionValidationTrigger = new ObservableCollection<number>();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -111,7 +131,7 @@ describe('ObjectValidator', (): void => {
         const validatable = new FakeValidatable();
         const observableCollectionValidationTrigger = new ObservableCollection<number>([1, 2]);
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -130,7 +150,7 @@ describe('ObjectValidator', (): void => {
         const validatable = new FakeValidatable();
         const observableSetValidationTrigger = new ObservableSet<number>();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -149,7 +169,7 @@ describe('ObjectValidator', (): void => {
         const validatable = new FakeValidatable();
         const observableMapValidationTrigger = new ObservableMap<number, string>();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(
             () => {
                 invocationCount++;
@@ -163,11 +183,36 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
+    it('adding validation triggers multiple times only registers them once', () => {
+        const validatable = new FakeValidatable();
+        const viewModelValidationTrigger = new FakeValidatable();
+        const observableCollectionValidationTrigger = new ObservableCollection<number>();
+        const observableSetValidationTrigger = new ObservableSet<number>();
+        const observableMapValidationTrigger = new ObservableMap<number, string>();
+
+        const objectValidator = new ObjectValidator({ target: validatable });
+        objectValidator
+            .add(
+                () => 'test error 1',
+                [viewModelValidationTrigger, observableCollectionValidationTrigger, observableSetValidationTrigger, observableMapValidationTrigger]
+            )
+            .add(
+                () => 'test error 2',
+                [viewModelValidationTrigger, observableCollectionValidationTrigger, observableSetValidationTrigger, observableMapValidationTrigger]
+            );
+
+        expect(objectValidator.triggers.size).toBe(4);
+        expect(objectValidator.triggers).toContain(viewModelValidationTrigger);
+        expect(objectValidator.triggers).toContain(observableCollectionValidationTrigger);
+        expect(objectValidator.triggers).toContain(observableSetValidationTrigger);
+        expect(objectValidator.triggers).toContain(observableMapValidationTrigger);
+    });
+
     it('adding a validator calls its onAdd hook', (): void => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add({
             onAdd(target) {
                 expect(target).toBe(validatable);
@@ -185,7 +230,7 @@ describe('ObjectValidator', (): void => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();
 
-        const objectValidator = new ObjectValidator(validatable);
+        const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add({
             onRemove(target) {
                 expect(target).toBe(validatable);
