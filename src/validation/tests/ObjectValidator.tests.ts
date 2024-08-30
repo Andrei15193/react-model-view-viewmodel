@@ -208,6 +208,26 @@ describe('ObjectValidator', (): void => {
         expect(objectValidator.triggers).toContain(observableMapValidationTrigger);
     });
 
+    it('removing validaiton triggers no longer trigger validation', () => {
+        let invocationCount = 0;
+        const validatable = new FakeValidatable();
+        const viewModelValidationTrigger = new FakeValidatable();
+
+        const objectValidator = new ObjectValidator({ target: validatable });
+        objectValidator.add(
+            () => {
+                invocationCount++;
+                return 'test error 1';
+            },
+            [viewModelValidationTrigger]
+        );
+
+        objectValidator.triggers.clear();
+        viewModelValidationTrigger.notifyPropertiesChanged();
+
+        expect(invocationCount).toBe(1);
+    });
+
     it('adding a validator calls its onAdd hook', (): void => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();

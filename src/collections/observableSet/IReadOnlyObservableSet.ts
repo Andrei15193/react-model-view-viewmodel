@@ -107,18 +107,12 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
 
     /**
      * Iterates over the entire set executing the `callback` for each item.
-     * @param callback The callback processing each item.
-     * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
-     */
-    forEach(callback: (item: TItem, key: TItem, set: this) => void): void;
-    /**
-     * Iterates over the entire set executing the `callback` for each item.
      * @template TContext The context type in which the callback is executed.
      * @param callback The callback processing each item.
      * @param thisArg A value to use as context when processing items.
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
-    forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this) => void, thisArg: TContext): void;
+    forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this) => void, thisArg?: TContext): void;
 
     /**
      * Converts the observable set to a native JavaScript [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set).

@@ -23,7 +23,7 @@ describe('ObservableCollection.sort', (): void => {
     });
 
     it('sorting a collection reorders the items using default sort comparison', (): void => {
-        testReorderingOperation<number>({
+        testReorderingOperation<number | null | undefined>({
             collectionOperation: 'sort',
             initialState: [1, undefined, 2, 3, -1, undefined, 3, 100, null, 22, 11, 200, -100],
             changedProperties: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -36,12 +36,15 @@ describe('ObservableCollection.sort', (): void => {
     });
 
     it('sorting a collection reorders the items using provided sort comparison', (): void => {
-        testReorderingOperation<number>({
+        testReorderingOperation<number | undefined>({
             collectionOperation: 'sort',
             initialState: [1, undefined, 2, 3],
             changedProperties: [1, 2, 3],
 
-            applyOperation: collection => collection.sort((left, right) => left - right),
+            applyOperation: {
+                applyArrayOperation: collection => collection.sort((left, right) => left! - right!),
+                applyCollectionOperation: collection => collection.sort((left, right) => left - right)
+            },
 
             expectedResult: selfResult,
             expectedCollection: [1, 2, 3, undefined]
@@ -65,7 +68,10 @@ describe('ObservableCollection.sort', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2]);
-                observableCollection.sort(() => observableCollection.pop());
+                observableCollection.sort(() => {
+                    observableCollection.pop();
+                    return 0;
+                });
             })
             .toThrow(new Error('Collection has changed while being iterated.'))
     });

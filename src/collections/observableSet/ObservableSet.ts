@@ -8,14 +8,8 @@ import { ReadOnlyObservableSet } from './ReadOnlyObservableSet';
 export class ObservableSet<TItem> extends ReadOnlyObservableSet<TItem> implements IObservableSet<TItem> {
     /**
      * Initializes a new instance of the {@linkcode ObservableSet} class.
-     */
-    public constructor();
-    /**
-     * Initializes a new instance of the {@linkcode ObservableSet} class.
      * @param items The items to initialize the set with.
      */
-    public constructor(items: Iterable<TItem>);
-
     public constructor(items?: Iterable<TItem>) {
         super(items);
     }
@@ -26,9 +20,7 @@ export class ObservableSet<TItem> extends ReadOnlyObservableSet<TItem> implement
      * @returns The observable set on which the operation is performed.
      * @see [Set.add](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/add)
      */
-    public add(item: TItem): this;
-
-    public add() {
+    public add(item: TItem): this {
         return super.add.apply(this, arguments);
     }
 
@@ -38,9 +30,7 @@ export class ObservableSet<TItem> extends ReadOnlyObservableSet<TItem> implement
      * @returns Returns `true` if the provided item was found and removed from the set; otherwise `false`.
      * @see [Set.add](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/add)
      */
-    public delete(item: TItem): boolean;
-
-    public delete() {
+    public delete(item: TItem): boolean {
         return super.delete.apply(this, arguments);
     }
 
@@ -48,9 +38,7 @@ export class ObservableSet<TItem> extends ReadOnlyObservableSet<TItem> implement
      * Empties the set of all items.
      * @see [Set.clear](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/clear)
      */
-    public clear(): void;
-
-    public clear() {
+    public clear(): void {
         return super.clear.apply(this, arguments);
     }
 }

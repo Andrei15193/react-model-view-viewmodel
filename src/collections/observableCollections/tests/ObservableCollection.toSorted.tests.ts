@@ -13,7 +13,7 @@ describe('ObservableCollection.toSorted', (): void => {
     });
 
     it('sorting a collection returns an array containing the same items in sort order', (): void => {
-        testBlankMutatingOperation<number>({
+        testBlankMutatingOperation<number | undefined | null>({
             initialState: [1, undefined, 2, 3, -1, undefined, 3, 100, null, 22, 11, 200, -100],
 
             applyOperation: collection => collection.toSorted(),
@@ -23,10 +23,13 @@ describe('ObservableCollection.toSorted', (): void => {
     });
 
     it('sorting a collection with a compare callback returns an array containing the same items in sort order', (): void => {
-        testBlankMutatingOperation<number>({
+        testBlankMutatingOperation<number | undefined>({
             initialState: [1, undefined, 2, 3],
 
-            applyOperation: collection => collection.toSorted((left, right) => left - right),
+            applyOperation: {
+                applyArrayOperation: collection => collection.toSorted((left, right) => left! - right!),
+                applyCollectionOperation: collection => collection.toSorted((left, right) => left - right)
+            },
 
             expectedResult: [1, 2, 3, undefined]
         });
@@ -36,7 +39,10 @@ describe('ObservableCollection.toSorted', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2]);
-                observableCollection.toSorted(() => observableCollection.pop());
+                observableCollection.toSorted(() => {
+                    observableCollection.pop();
+                    return 0;
+                });
             })
             .toThrow(new Error('Collection has changed while being iterated.'))
     });

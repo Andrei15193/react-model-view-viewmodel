@@ -57,7 +57,7 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
                 removedTriggers.forEach(removedTrigger => {
                     resolvedValidationTriggersBySource
                         .get(removedTrigger)
-                        .forEach(resolvedValidationTrigger => {
+                        ?.forEach(resolvedValidationTrigger => {
                             resolvedValidationTrigger.validationTriggered.unsubscribe(validationTriggeredEventHandler);
                         });
                     resolvedValidationTriggersBySource.delete(removedTrigger);

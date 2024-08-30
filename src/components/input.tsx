@@ -1,6 +1,6 @@
 import type { DetailedHTMLProps, InputHTMLAttributes, FocusEvent, FocusEventHandler } from 'react';
 import type { IFormFieldViewModel } from '../form-field-view-model';
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, createRef } from 'react';
 import { useEvent } from '../hooks/use-event';
 
 interface IHtmlElementProps extends HTMLInputElement {
@@ -22,7 +22,7 @@ export interface IInputProps<TValue> extends DetailedHTMLProps<InputHTMLAttribut
  * @template TValue The type of values the field contains.
  */
 export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<TValue>): JSX.Element {
-    const input = useRef<IHtmlElementProps>();
+    const { current: input } = useRef(createRef<IHtmlElementProps>());
     const isHandlingFocusEvent = useRef(false);
 
     const onFocusHandler: FocusEventHandler<HTMLInputElement> = useCallback(
@@ -62,9 +62,9 @@ export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<
         (_, changedProperties) => {
             if (!isHandlingFocusEvent.current && changedProperties.indexOf('isFocused') >= 0)
                 if (field.isFocused)
-                    input.current.focus();
+                    input.current?.focus();
                 else
-                    input.current.blur();
+                    input.current?.blur();
         },
         []
     );
@@ -72,9 +72,9 @@ export function Input<TValue>({ field, onBlur, onFocus, ...other }: IInputProps<
     useEffect(
         () => {
             if (field.isFocused)
-                input.current.focus();
+                input.current?.focus();
             else
-                input.current.blur();
+                input.current?.blur();
         },
         []
     );

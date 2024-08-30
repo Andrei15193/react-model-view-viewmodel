@@ -56,7 +56,10 @@ describe('ObservableCollection.join', (): void => {
         testBlankMutatingOperation<unknown>({
             initialState: [null, undefined, 1, 'A', { prop: 'value' }, new Date('2024-05-05'), ObservableCollection],
 
-            applyOperation: collection => collection.join(null),
+            applyOperation: {
+                applyArrayOperation: collection => collection.join(null!),
+                applyCollectionOperation: collection => collection.join(null),
+            },
 
             expectedResult: `nullnull1nullAnull[object Object]null${new Date('2024-05-05').toString()}null${ObservableCollection.toString()}`
         });

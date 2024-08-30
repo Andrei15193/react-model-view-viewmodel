@@ -9,14 +9,8 @@ import { ReadOnlyObservableCollection } from './ReadOnlyObservableCollection';
 export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TItem> implements IObservableCollection<TItem> {
     /**
      * Initializes a new instance of the {@link ObservableCollection} class.
-     */
-    public constructor();
-    /**
-     * Initializes a new instance of the {@link ObservableCollection} class.
      * @param items The items to initialize the collection with.
      */
-    public constructor(items: Iterable<TItem>);
-
     public constructor(items?: Iterable<TItem>) {
         super(items);
     }
@@ -43,9 +37,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The new length of the collection.
      * @see [Array.push](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
      */
-    public push(...items: readonly TItem[]): number;
-
-    public push() {
+    public push(...items: readonly TItem[]): number {
         return super.push.apply(this, arguments);
     }
 
@@ -54,9 +46,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The last element in the collection that was removed.
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
      */
-    public pop(): TItem | undefined;
-
-    public pop() {
+    public pop(): TItem | undefined {
         return super.pop.apply(this, arguments);
     }
 
@@ -66,9 +56,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The new length of the collection.
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
      */
-    public unshift(...items: readonly TItem[]): number;
-
-    public unshift() {
+    public unshift(...items: readonly TItem[]): number {
         return super.unshift.apply(this, arguments);
     }
 
@@ -77,9 +65,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The first element in the collection that was removed.
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
      */
-    public shift(): TItem | undefined;
-
-    public shift() {
+    public shift(): TItem | undefined {
         return super.shift.apply(this, arguments);
     }
 
@@ -89,9 +75,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The item at the provided index.
      * @see [Array.at](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at)
      */
-    public get(index: number): TItem;
-
-    public get() {
+    public get(index: number): TItem {
         return super.get.apply(this, arguments);
     }
 
@@ -101,27 +85,10 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @param item The item to set.
      * @returns The length of the collection.
      */
-    public set(index: number, item: TItem): number;
-
-    public set() {
+    public set(index: number, item: TItem): number {
         return super.set.apply(this, arguments);
     }
 
-    /**
-     * Removes and/or adds elements to the collection and returns the deleted elements.
-     * @param start The zero-based location in the collection from which to start removing elements.
-     * @returns An array containing the elements that were deleted.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    public splice(start: number): TItem[];
-    /**
-     * Removes and/or adds elements to the collection and returns the deleted elements.
-     * @param start The zero-based location in the collection from which to start removing elements.
-     * @param deleteCount The number of elements to remove.
-     * @returns An array containing the elements that were deleted.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
-     */
-    public splice(start: number, deleteCount: number): TItem[];
     /**
      * Removes and/or adds elements to the collection and returns the deleted elements.
      * @param start The zero-based location in the collection from which to start removing elements.
@@ -130,18 +97,9 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns An array containing the elements that were deleted.
      * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
      */
-    public splice(start: number, deleteCount: number, ...items: readonly TItem[]): TItem[];
-
-    public splice() {
+    public splice(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
         return super.splice.apply(this, arguments);
     }
-
-    /**
-     * Reverses the items in the collections and returns the observable collection.
-     * @returns The observable collection on which the operation is performed.
-     * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
-     */
-    public sort(): this;
 
     /**
      * Reverses the items in the collections and returns the observable collection.
@@ -149,9 +107,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The observable collection on which the operation is performed.
      * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
      */
-    public sort(compareCallback?: (left: TItem, right: TItem) => number): this;
-
-    public sort() {
+    public sort(compareCallback?: (left: Exclude<TItem, undefined>, right: Exclude<TItem, undefined>) => number): this {
         return super.sort.apply(this, arguments);
     }
 
@@ -160,19 +116,9 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The observable collection on which the operation is performed.
      * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
      */
-    public reverse(): this;
-
-    public reverse() {
+    public reverse(): this {
         return super.reverse.apply(this, arguments);
     }
-
-    /**
-     * Copies items inside the collection overwriting existing ones.
-     * @param target The index at which to start copying items, accepts both positive and negative values.
-     * @param start The index from which to start copying items, accepts both positive and negative values.
-     * @see [Array.copyWithin](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
-     */
-    public copyWithin(target: number, start: number): this;
 
     /**
      * Copies items inside the collection overwriting existing ones.
@@ -181,28 +127,9 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @param end The index until where to copy items, accepts both positive and negative values.
      * @see [Array.copyWithin](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
      */
-    public copyWithin(target: number, start: number, end: number): this;
-
-    public copyWithin() {
+    public copyWithin(target: number, start: number, end?: number): this {
         return super.copyWithin.apply(this, arguments);
     }
-
-    /**
-     * Fills the collection with the provided `item`.
-     * @param item The item to fill the collection with.
-     * @returns The observable collection on which the operation is performed.
-     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
-     */
-    public fill(item: TItem): this;
-
-    /**
-     * Fills the collection with the provided `item`.
-     * @param item The item to fill the collection with.
-     * @param start The index from which to start filling the collection, accepts both positive and negative values.
-     * @returns The observable collection on which the operation is performed.
-     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
-     */
-    public fill(item: TItem, start: number): this;
 
     /**
      * Fills the collection with the provided `item`.
@@ -212,8 +139,6 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The observable collection on which the operation is performed.
      * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
      */
-    public fill(item: TItem, start: number, end: number): this;
-
     public fill(item: TItem, start?: number, end?: number): this {
         return super.fill.apply(this, arguments);
     }

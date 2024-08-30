@@ -16,14 +16,8 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
 
     /**
      * Initializes a new instance of the {@linkcode ReadOnlyObservableMap} class.
-     */
-    public constructor();
-    /**
-     * Initializes a new instance of the {@linkcode ReadOnlyObservableMap} class.
      * @param entries The key-value pairs to initialize the map with.
      */
-    public constructor(entries: Iterable<readonly [TKey, TItem]>);
-
     public constructor(entries?: Iterable<readonly [TKey, TItem]>) {
         super();
 
@@ -106,21 +100,6 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
 
     /**
      * Iterates over the entire map executing the `callback` for each pair.
-     * @param callback The callback processing each item.
-     * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
-     */
-    public forEach(callback: (item: TItem, key: TKey, map: this) => void): void;
-    /**
-     * Iterates over the entire map executing the `callback` for each pair.
-     * @template TContext The context type in which the callback is executed.
-     * @param callback The callback processing each item.
-     * @param thisArg A value to use as context when processing entries.
-     * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
-     */
-    public forEach<TContext>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg: TContext): void;
-
-    /**
-     * Iterates over the entire map executing the `callback` for each pair.
      * @template TContext The context type in which the callback is executed.
      * @param callback The callback processing each item.
      * @param thisArg A value to use as context when processing entries.
@@ -186,7 +165,7 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
             this._mapChangedEvent.dispatch(this, {
                 operation: 'delete',
                 addedEntries: [],
-                removedEntries: [[key, removedItem]]
+                removedEntries: [[key, removedItem!]]
             });
             this.notifyPropertiesChanged('size');
         }
@@ -233,7 +212,7 @@ class ObservableMapIterator<TItem, TValue = TItem> implements Iterator<TValue, T
         if (this._completed)
             return {
                 done: true,
-                value: undefined
+                value: undefined!
             };
         else if (this._mapChanged())
             throw new Error('Map has changed while being iterated.');
@@ -244,7 +223,7 @@ class ObservableMapIterator<TItem, TValue = TItem> implements Iterator<TValue, T
                 this._completed = true;
                 return {
                     done: true,
-                    value: undefined
+                    value: undefined!
                 };
             }
             else
@@ -260,7 +239,7 @@ class ObservableMapIterator<TItem, TValue = TItem> implements Iterator<TValue, T
 
         return {
             done: true,
-            value
+            value: value!
         };
     }
 
@@ -269,7 +248,7 @@ class ObservableMapIterator<TItem, TValue = TItem> implements Iterator<TValue, T
 
         return {
             done: true,
-            value: undefined
+            value: undefined!
         };
     }
 }

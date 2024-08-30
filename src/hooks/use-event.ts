@@ -28,8 +28,8 @@ export function useEvent<TSubject, TEventArgs>(event: IEvent<TSubject, TEventArg
     useEffect(
         (): EffectResult => {
             if (event) {
-                event.subscribe(eventHandlerRef.current);
-                return () => event.unsubscribe(eventHandlerRef.current);
+                event.subscribe(eventHandlerRef.current!);
+                return () => event.unsubscribe(eventHandlerRef.current!);
             }
         },
         [event, ...deps]

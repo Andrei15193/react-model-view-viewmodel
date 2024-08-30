@@ -30,7 +30,7 @@ describe('ObservableCollection.length', (): void => {
     });
 
     it('setting the length to greater than actual expands the collection', (): void => {
-        testMutatingOperation<number>({
+        testMutatingOperation<number | undefined>({
             collectionOperation: 'expand',
             initialState: [1, 2, 3],
             changedProperties: ['length', 3, 4],

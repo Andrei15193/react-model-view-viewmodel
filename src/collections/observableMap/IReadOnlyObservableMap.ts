@@ -59,18 +59,12 @@ export interface IReadOnlyObservableMap<TKey, TItem> extends Iterable<[TKey, TIt
 
     /**
      * Iterates over the entire map executing the `callback` for each pair.
-     * @param callback The callback processing each item.
-     * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
-     */
-    forEach(callback: (item: TItem, key: TKey, map: this) => void): void;
-    /**
-     * Iterates over the entire map executing the `callback` for each pair.
      * @template TContext The context type in which the callback is executed.
      * @param callback The callback processing each item.
      * @param thisArg A value to use as context when processing entries.
      * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
      */
-    forEach<TContext>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg: TContext): void;
+    forEach<TContext>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg?: TContext): void;
 
     /**
      * Converts the observable map to a native JavaScript [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map).

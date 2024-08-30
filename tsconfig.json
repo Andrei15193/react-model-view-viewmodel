@@ -10,6 +10,7 @@
         "declaration": true,
         "outDir": "./lib",
         "allowJs": false,
+        "strictNullChecks": true,
         "alwaysStrict": true,
         "noImplicitReturns": true,
         "noImplicitAny": true,

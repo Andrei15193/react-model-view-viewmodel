@@ -11,13 +11,16 @@ export interface IReadOnlyValidatable {
     readonly isInvalid: boolean;
 
     /** An error message (or translation key) providing information as to why the field is invalid. */
-    readonly error: string | undefined;
+    readonly error: string | null | undefined;
 }
 
 /** Represents an interface for objects that can be validated. */
 export interface IValidatable extends IReadOnlyValidatable {
     /** An error message (or translation key) providing information as to why the field is invalid. */
-    error: string | undefined;
+    get error(): string | null | undefined;
+
+    /** An error message (or translation key) providing information as to why the field is invalid. */
+    set error(value: string | undefined);
 }
 
 /** Represents a validation config covering scenarios where one object may depend on other objects to determine their valid state.
@@ -397,7 +400,7 @@ function applyCollectionItemValidators<TValidatable extends IValidatable, TItem>
     let error = undefined;
     while (index < validators.length && error === undefined) {
         const validator = validators[index];
-        if (validator && validator.call && validator.apply)
+        if (!!validator)
             error = validator(validatable, item, collection);
         index++;
     }
