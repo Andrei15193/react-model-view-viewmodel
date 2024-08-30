@@ -22,45 +22,6 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
     }
 
     /**
-     * Checks whether all elements in the collection satisfy a given condition.
-     * @param predicate The callback performing the check for each item.
-     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
-     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
-     */
-    public every(predicate: (item: TItem, index: number, collection: this) => boolean): boolean;
-    /**
-     * Checks whether all elements in the collection satisfy a given condition.
-     * @template TSpecific The specific item type the collection actually contains.
-     * @param predicate The callback performing the check for each item.
-     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
-     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
-     */
-    public every<TSpecific extends TItem>(predicate: (item: TItem, index: number, collection: this) => item is TSpecific): this is ObservableCollection<TSpecific>;
-    /**
-     * Checks whether all elements in the collection satisfy a given condition.
-     * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback performing the check for each item.
-     * @param thisArg A value to use as context when checking items.
-     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
-     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
-     */
-    public every<TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => boolean, thisArg: TContext): boolean;
-    /**
-     * Checks whether all elements in the collection satisfy a given condition.
-     * @template TSpecific The specific item type the collection actually contains.
-     * @template TContext The context type in which the callback is executed.
-     * @param predicate The callback performing the check for each item.
-     * @param thisArg A value to use as context when checking items.
-     * @returns Returns `true` if the provided `predicate` is `true` for all items; otherwise `false`.
-     * @see [Array.every](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
-     */
-    public every<TSpecific extends TItem, TContext>(predicate: (this: TContext, item: TItem, index: number, collection: this) => item is TSpecific, thisArg: TContext): this is ObservableCollection<TSpecific>;
-
-    public every() {
-        return super.every.apply(this, arguments);
-    }
-
-    /**
      * Gets or sets the number of items in the collection.
      * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
      */
