@@ -1,7 +1,7 @@
 import type { IEventHandler } from '../../events';
 import type { IValidatable } from '../IValidatable';
 import type { IValidator, ValidatorCallback } from '../IValidator';
-import type { IObjectValidator } from './IObjectValidator';
+import type { IObjectValidator, IValidationTriggersSet } from './IObjectValidator';
 import type { WellKnownValidationTrigger, ValidationTrigger } from '../triggers';
 import type { INotifyPropertiesChanged } from '../../viewModels';
 import { type IObservableCollection, type IObservableSet, ObservableCollection, ObservableSet } from '../../collections';
@@ -79,9 +79,9 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
     public readonly target: TValidatable;
 
     public readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
-    public readonly triggers: IObservableSet<WellKnownValidationTrigger | ValidationTrigger>;
+    public readonly triggers: IValidationTriggersSet;
 
-    public add<TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TItem> | ValidationTrigger)[]): this {
+    public add<TKey = unknown, TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TKey, TItem> | ValidationTrigger)[]): this {
         if (triggers !== null && triggers !== undefined)
             triggers.forEach(this.triggers.add, this.triggers);
 

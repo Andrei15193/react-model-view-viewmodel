@@ -132,19 +132,21 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/set)
      */
     protected set(key: TKey, item: TItem): this {
-        this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
+        if (!this._map.has(key) || item !== this._map.get(key)) {
+            this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
 
-        const previousSize = this.size;
-        this._map.set(key, item);
+            const previousSize = this.size;
+            this._map.set(key, item);
 
-        this._mapChangedEvent.dispatch(this, {
-            operation: 'set',
-            addedEntries: [[key, item]],
-            removedEntries: []
-        });
+            this._mapChangedEvent.dispatch(this, {
+                operation: 'set',
+                addedEntries: [[key, item]],
+                removedEntries: []
+            });
 
-        if (previousSize !== this.size)
-            this.notifyPropertiesChanged('size');
+            if (previousSize !== this.size)
+                this.notifyPropertiesChanged('size');
+        }
 
         return this;
     }
@@ -180,7 +182,7 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
     protected clear(): void {
         if (this.size > 0) {
             this._changeToken = (this._changeToken + 1) % Number.MAX_VALUE;
-            
+
             const removedEntries = Array.from(this._map.entries());
             this._map.clear();
 

@@ -5,14 +5,17 @@ import type { IValidator, ValidatorCallback } from '../IValidator';
 import type { IReadOnlyObjectValidator } from './IReadOnlyObjectValidator';
 import type { WellKnownValidationTrigger, ValidationTrigger } from '../triggers';
 
-
 export interface IObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> extends IReadOnlyObjectValidator<TValidatable, TValidationError> {
     readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
-    readonly triggers: IObservableSet<WellKnownValidationTrigger | ValidationTrigger>;
+    readonly triggers: IValidationTriggersSet;
 
-    add<TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TItem> | ValidationTrigger)[]): this;
+    add<TKey = unknown, TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TKey, TItem> | ValidationTrigger)[]): this;
 
     validate(): TValidationError | null;
 
     reset(): this;
+}
+
+export interface IValidationTriggersSet extends IObservableSet<WellKnownValidationTrigger | ValidationTrigger> {
+    add<TKey = unknown, TItem = unknown>(trigger: WellKnownValidationTrigger<TKey, TItem> | ValidationTrigger): this;
 }

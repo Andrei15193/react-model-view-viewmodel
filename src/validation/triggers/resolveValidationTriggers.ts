@@ -6,6 +6,7 @@ import { MapChangedValidationTrigger } from './MapChangedValidationTrigger';
 import { ViewModelChangedValidationTrigger } from './ViewModelChangedValidationTrigger';
 import { CollectionItemValidationTrigger } from './CollectionItemValidationTrigger';
 import { SetItemValidationTrigger } from './SetItemValidationTrigger';
+import { MapItemValidationTrigger } from './MapItemValidationTrigger';
 
 export function resolveValidationTriggers(validationTrigger: WellKnownValidationTrigger | ValidationTrigger): readonly ValidationTrigger[] {
     const validationTriggers = new Array<ValidationTrigger>();
@@ -19,6 +20,8 @@ export function resolveValidationTriggers(validationTrigger: WellKnownValidation
                     validationTriggers.push(new CollectionItemValidationTrigger({ collection, validationTriggerSelector }));
                 if ('setChanged' in collection)
                     validationTriggers.push(new SetItemValidationTrigger({ set: collection, validationTriggerSelector }));
+                if ('mapChanged' in collection)
+                    validationTriggers.push(new MapItemValidationTrigger({ map: collection, validationTriggerSelector }));
             }
         }
         else {
