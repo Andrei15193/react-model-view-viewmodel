@@ -10,8 +10,7 @@ export interface IObjectValidator<TValidatable extends IValidatable<TValidationE
     readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
     readonly triggers: IObservableSet<WellKnownValidationTrigger | ValidationTrigger>;
 
-    add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>): this;
-    add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers: readonly ValidationTrigger[]): this;
+    add<TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TItem> | ValidationTrigger)[]): this;
 
     validate(): TValidationError | null;
 

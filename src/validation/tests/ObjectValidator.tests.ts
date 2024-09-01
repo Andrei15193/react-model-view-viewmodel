@@ -3,8 +3,8 @@ import { ViewModel } from '../../viewModels';
 import { ObservableCollection, ObservableSet, ObservableMap } from '../../collections';
 import { ObjectValidator } from '../objectValidator/ObjectValidator';
 
-describe('ObjectValidator', (): void => {
-    it('adding a validator validates the target', (): void => {
+describe('ObjectValidator', () => {
+    it('adding a validator validates the target', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
 
@@ -18,7 +18,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('changing the target triggers a validation', (): void => {
+    it('changing the target triggers a validation', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
 
@@ -33,7 +33,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('changing the target triggers the validation one more time when changed target properties are ignored', (): void => {
+    it('changing the target triggers the validation one more time when changed target properties are ignored', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
 
@@ -53,7 +53,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('using multiple validators executes them until first invalid one', (): void => {
+    it('using multiple validators executes them until first invalid one', () => {
         const validatorCalls: string[] = [];
         const validatable = new FakeValidatable();
 
@@ -88,7 +88,7 @@ describe('ObjectValidator', (): void => {
         expect(validatorCalls).toEqual(['validator 1', 'validator 2', 'validator 3']);
     });
 
-    it('adding a view model trigger validates target when it changes', (): void => {
+    it('adding a view model trigger validates target when it changes', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
         const viewModelValidationTrigger = new FakeValidatable();
@@ -107,7 +107,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('adding an observable collection trigger validates target when it changes', (): void => {
+    it('adding an observable collection trigger validates target when it changes', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
         const observableCollectionValidationTrigger = new ObservableCollection<number>();
@@ -126,7 +126,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('adding an observable collection trigger validates target when it reorders', (): void => {
+    it('adding an observable collection trigger validates target when it reorders', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
         const observableCollectionValidationTrigger = new ObservableCollection<number>([1, 2]);
@@ -145,7 +145,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('adding an observable set trigger validates target when it changes', (): void => {
+    it('adding an observable set trigger validates target when it changes', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
         const observableSetValidationTrigger = new ObservableSet<number>();
@@ -164,7 +164,7 @@ describe('ObjectValidator', (): void => {
         expect(validatable.error).toBe('test error');
     });
 
-    it('adding an observable map trigger validates target when it changes', (): void => {
+    it('adding an observable map trigger validates target when it changes', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
         const observableMapValidationTrigger = new ObservableMap<number, string>();
@@ -178,6 +178,27 @@ describe('ObjectValidator', (): void => {
             [observableMapValidationTrigger]
         );
         observableMapValidationTrigger.set(1, 'a');
+
+        expect(invocationCount).toBe(2);
+        expect(validatable.error).toBe('test error');
+    });
+
+    it('adding an item trigger validates target when an item changes', () => {
+        let invocationCount = 0;
+        const item = new FakeValidatable();
+        const validatable = new FakeValidatable();
+        const observableCollection = new ObservableCollection<FakeValidatable>([item]);
+
+        const objectValidator = new ObjectValidator({ target: validatable });
+        objectValidator.add(
+            () => {
+                invocationCount++;
+                return 'test error';
+            },
+            [[observableCollection, item => [item]]]
+        );
+
+        item.notifyPropertiesChanged();
 
         expect(invocationCount).toBe(2);
         expect(validatable.error).toBe('test error');
@@ -208,7 +229,7 @@ describe('ObjectValidator', (): void => {
         expect(objectValidator.triggers).toContain(observableMapValidationTrigger);
     });
 
-    it('removing validaiton triggers no longer trigger validation', () => {
+    it('removing validation triggers no longer trigger validation', () => {
         let invocationCount = 0;
         const validatable = new FakeValidatable();
         const viewModelValidationTrigger = new FakeValidatable();
@@ -228,7 +249,7 @@ describe('ObjectValidator', (): void => {
         expect(invocationCount).toBe(1);
     });
 
-    it('adding a validator calls its onAdd hook', (): void => {
+    it('adding a validator calls its onAdd hook', () => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();
 
@@ -246,7 +267,7 @@ describe('ObjectValidator', (): void => {
         expect(hookInvocationCount).toBe(1);
     });
 
-    it('removing a validator calls its onRemove hook', (): void => {
+    it('removing a validator calls its onRemove hook', () => {
         let hookInvocationCount = 0;
         const validatable = new FakeValidatable();
 

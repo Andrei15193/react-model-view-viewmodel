@@ -14,7 +14,7 @@ export interface IObjectValidatorConfig<TValidatable extends IValidatable<TValid
 }
 
 export class ObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> implements IObjectValidator<TValidatable, TValidationError> {
-    private static defaultShouldTargetTriggerValidation<TValidationError = string>(target: IValidatable<TValidationError>, changedProperties: readonly (keyof IValidatable<TValidationError>)[]): boolean {
+    private static _defaultShouldTargetTriggerValidation<TValidationError = string>(target: IValidatable<TValidationError>, changedProperties: readonly (keyof IValidatable<TValidationError>)[]): boolean {
         return changedProperties.some(changedProperty => {
             return changedProperty !== 'error'
                 && changedProperty !== 'isValid'
@@ -22,7 +22,7 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
         });
     }
 
-    public constructor({ target, shouldTargetTriggerValidation = ObjectValidator.defaultShouldTargetTriggerValidation<TValidationError> }: IObjectValidatorConfig<TValidatable, TValidationError>) {
+    public constructor({ target, shouldTargetTriggerValidation = ObjectValidator._defaultShouldTargetTriggerValidation<TValidationError> }: IObjectValidatorConfig<TValidatable, TValidationError>) {
         this.target = target;
 
         this.validators = new ObservableCollection<IValidator<TValidatable, TValidationError>>();
@@ -81,10 +81,7 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
     public readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
     public readonly triggers: IObservableSet<WellKnownValidationTrigger | ValidationTrigger>;
 
-    public add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>): this;
-    public add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers: readonly (WellKnownValidationTrigger | ValidationTrigger)[]): this;
-
-    public add(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger | ValidationTrigger)[]): this {
+    public add<TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TItem> | ValidationTrigger)[]): this {
         if (triggers !== null && triggers !== undefined)
             triggers.forEach(this.triggers.add, this.triggers);
 

@@ -2,14 +2,15 @@ import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from '../../collections';
 import { type IEvent, EventDispatcher } from '../../events';
 
-export type WellKnownValidationTrigger
+export type WellKnownValidationTrigger<TItem = unknown>
     = INotifyPropertiesChanged
     | INotifyCollectionChanged<unknown>
     | INotifyCollectionReordered<unknown>
     | INotifySetChanged<unknown>
-    | INotifyMapChanged<unknown, unknown>;
+    | INotifyMapChanged<unknown, unknown>
+    | [INotifyCollectionChanged<TItem> & Iterable<TItem>, (item: TItem) => readonly (WellKnownValidationTrigger | ValidationTrigger)[]];
 
-export class ValidationTrigger<TTrigger = unknown> {
+export abstract class ValidationTrigger<TTrigger = unknown> {
     private readonly _validationTriggeredEventDispatcher: EventDispatcher<this>;
 
     protected constructor(trigger: TTrigger) {
@@ -39,11 +40,9 @@ export class ValidationTrigger<TTrigger = unknown> {
     public readonly trigger: TTrigger;
     public readonly validationTriggered: IEvent<this>;
 
-    protected subscribeToTarget(): void {
-    }
+    protected abstract subscribeToTarget(): void;
 
-    protected unsubscribeFromTarget(): void {
-    }
+    protected abstract unsubscribeFromTarget(): void;
 
     protected notifyValidationTriggered(): void {
         this._validationTriggeredEventDispatcher.dispatch(this);

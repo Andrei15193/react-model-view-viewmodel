@@ -6,4 +6,7 @@ export { type ICollectionReorderedValidationTriggerConfig, CollectionReorderedVa
 export { type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger } from './SetChangedValidationTrigger';
 export { type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger } from './MapChangedValidationTrigger';
 
+export { type ICollectionItemValidationTriggerConfig, CollectionItemValidationTrigger } from "./CollectionItemValidationTrigger";
+
 export { resolveValidationTriggers } from './resolveValidationTriggers';
+export { resolveAllValidationTriggers } from './resolveAllValidationTriggers';
