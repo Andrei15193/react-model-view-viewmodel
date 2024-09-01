@@ -7,6 +7,7 @@ export { type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger } 
 export { type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger } from './MapChangedValidationTrigger';
 
 export { type ICollectionItemValidationTriggerConfig, CollectionItemValidationTrigger } from "./CollectionItemValidationTrigger";
+export { type ISetItemValidationTriggerConfig, SetItemValidationTrigger } from "./SetItemValidationTrigger";
 
 export { resolveValidationTriggers } from './resolveValidationTriggers';
 export { resolveAllValidationTriggers } from './resolveAllValidationTriggers';

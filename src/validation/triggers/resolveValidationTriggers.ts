@@ -5,6 +5,7 @@ import { SetChangedValidationTrigger } from './SetChangedValidationTrigger';
 import { MapChangedValidationTrigger } from './MapChangedValidationTrigger';
 import { ViewModelChangedValidationTrigger } from './ViewModelChangedValidationTrigger';
 import { CollectionItemValidationTrigger } from './CollectionItemValidationTrigger';
+import { SetItemValidationTrigger } from './SetItemValidationTrigger';
 
 export function resolveValidationTriggers(validationTrigger: WellKnownValidationTrigger | ValidationTrigger): readonly ValidationTrigger[] {
     const validationTriggers = new Array<ValidationTrigger>();
@@ -16,6 +17,8 @@ export function resolveValidationTriggers(validationTrigger: WellKnownValidation
             if (collection !== null && collection !== undefined && validationTrigger !== null && validationTrigger !== undefined) {
                 if ('collectionChanged' in collection)
                     validationTriggers.push(new CollectionItemValidationTrigger({ collection, validationTriggerSelector }));
+                if ('setChanged' in collection)
+                    validationTriggers.push(new SetItemValidationTrigger({ set: collection, validationTriggerSelector }));
             }
         }
         else {

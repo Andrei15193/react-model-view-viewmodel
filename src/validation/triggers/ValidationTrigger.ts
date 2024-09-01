@@ -8,7 +8,7 @@ export type WellKnownValidationTrigger<TItem = unknown>
     | INotifyCollectionReordered<unknown>
     | INotifySetChanged<unknown>
     | INotifyMapChanged<unknown, unknown>
-    | [INotifyCollectionChanged<TItem> & Iterable<TItem>, (item: TItem) => readonly (WellKnownValidationTrigger | ValidationTrigger)[]];
+    | [(INotifyCollectionChanged<TItem>| INotifySetChanged<TItem>) & Iterable<TItem> , (item: TItem) => readonly (WellKnownValidationTrigger | ValidationTrigger)[]];
 
 export abstract class ValidationTrigger<TTrigger = unknown> {
     private readonly _validationTriggeredEventDispatcher: EventDispatcher<this>;

@@ -204,6 +204,27 @@ describe('ObjectValidator', () => {
         expect(validatable.error).toBe('test error');
     });
 
+    it('adding a set item trigger validates target when an item changes', () => {
+        let invocationCount = 0;
+        const item = new FakeValidatable();
+        const validatable = new FakeValidatable();
+        const observableSet = new ObservableSet<FakeValidatable>([item]);
+
+        const objectValidator = new ObjectValidator({ target: validatable });
+        objectValidator.add(
+            () => {
+                invocationCount++;
+                return 'test error';
+            },
+            [[observableSet, item => [item]]]
+        );
+
+        item.notifyPropertiesChanged();
+
+        expect(invocationCount).toBe(2);
+        expect(validatable.error).toBe('test error');
+    });
+
     it('adding validation triggers multiple times only registers them once', () => {
         const validatable = new FakeValidatable();
         const viewModelValidationTrigger = new FakeValidatable();
