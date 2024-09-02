@@ -60,33 +60,27 @@ export {
 } from './collections';
 
 export {
-    type IReadOnlyValidatable,
-    type IValidatable,
+    type IReadOnlyValidatable, type IValidatable, Validatable,
 
-    type IValidationConfig,
-    type ValidatorCallback,
+    type IValidator, type ValidatorCallback,
+    type IReadOnlyObjectValidator, type IObjectValidator, ObjectValidator,
 
-    type CollectionItemValidatorCallback,
-    type ValidatableSelectorCallback,
-    type ValidationConfigSelectorCallback,
-    type UnsubscribeCallback,
+    type WellKnownValidationTrigger, ValidationTrigger,
 
-    registerValidators,
-    registerCollectionValidators,
-    registerCollectionItemValidators
+    type IViewModelChangedValidationTriggerConfig, ViewModelChangedValidationTrigger,
+    type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger,
+    type ICollectionReorderedValidationTriggerConfig, CollectionReorderedValidationTrigger,
+    type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger,
+    type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger,
+
+    type ICollectionItemValidationTriggerConfig, CollectionItemValidationTrigger,
+    type ISetItemValidationTriggerConfig, SetItemValidationTrigger,
+    type IMapItemValidationTriggerConfig, MapItemValidationTrigger,
+
+    resolveValidationTriggers, resolveAllValidationTriggers
 } from './validation';
 
-export { type IFormFieldViewModel, type IFormFieldViewModelConfig, FormFieldViewModel } from './form-field-view-model';
-export { type FormFieldSet, FormFieldCollectionViewModel, DynamicFormFieldCollectionViewModel } from './form-field-collection-view-model';
-
-export { type EventHandler, useEvent, watchEvent } from './hooks/use-event';
-export { type ViewModelType, useViewModel, watchViewModel } from './hooks/use-view-model';
-export { type ViewModelFactory, useViewModelMemo, useViewModelFactory } from './hooks/use-view-model-memo';
-export { useObservableCollection, watchCollection } from './hooks/use-observable-collection';
-export { useViewModelType } from './hooks/use-view-model-type';
-
-export { useValidators } from './hooks/use-validators';
-export { useCollectionValidators } from './hooks/use-collection-validators';
-export { useCollectionItemValidators } from './hooks/use-collection-item-validators';
-
-export { type IInputProps, Input } from './components/input';
+export { type EventHandler, useEvent } from './hooks/use-event';
+export { type ViewModelType, useViewModel } from './hooks/use-view-model';
+export { type ViewModelFactory, useViewModelMemo } from './hooks/use-view-model-memo';
+export { useObservableCollection } from './hooks/use-observable-collection';

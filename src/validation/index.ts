@@ -17,5 +17,11 @@ export {
     type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger,
     type ICollectionReorderedValidationTriggerConfig, CollectionReorderedValidationTrigger,
     type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger,
-    type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger
+    type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger,
+
+    type ICollectionItemValidationTriggerConfig, CollectionItemValidationTrigger,
+    type ISetItemValidationTriggerConfig, SetItemValidationTrigger,
+    type IMapItemValidationTriggerConfig, MapItemValidationTrigger,
+
+    resolveValidationTriggers, resolveAllValidationTriggers
 } from './triggers'

@@ -99,13 +99,3 @@ function selectProps(object: any, properties: readonly PropertyKey[]): void {
         {}
     );
 }
-
-/** Watches the view model for changes, requesting a render when it does. The view model and watched properties are part of the hook dependencies.
- * @deprecated In future versions this hook will be removed, switch to {@link useViewModel}.
- * @template TViewModel The type of view model to watch.
- * @param viewModel The view model to change, a view model is any object that implements INotifyPropertiesChanged.
- * @param watchedProperties Optional, when provided, a render will be requested when only one of these properties has changed.
- */
-export function watchViewModel<TViewModel extends INotifyPropertiesChanged>(viewModel: TViewModel, watchedProperties?: readonly (keyof TViewModel)[]): void {
-    useViewModel(viewModel, watchedProperties);
-}

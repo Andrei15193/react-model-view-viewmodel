@@ -35,14 +35,3 @@ export function useEvent<TSubject, TEventArgs>(event: IEvent<TSubject, TEventArg
         [event, ...deps]
     );
 }
-
-/** Watches the event for changes, whenever the event is raised the callback will be invoked. The callback is not part of the hook dependencies, only the event is.
- * @deprecated In future versions this hook will be removed, switch to {@link useEvent}.
- * @template TEventArgs Optional, can be used to provide context when notifying subscribers.
- * @param event The event to watch.
- * @param handler The callback that handles the event.
- * @param deps Optional, additional dependencies along side the event.
- */
-export function watchEvent<TEventArgs>(event: IEvent<TEventArgs>, handler: EventHandler<TEventArgs>, deps?: DependencyList): void {
-    useEvent(event, handler, deps || []);
-}

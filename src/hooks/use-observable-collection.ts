@@ -40,12 +40,3 @@ export function useObservableCollection<TItem>(observableCollection: IReadOnlyOb
 function hasChanges<TItem>(previous: readonly TItem[], next: IReadOnlyObservableCollection<TItem>): boolean {
     return previous.length !== next.length || previous.some((item, index) => item !== next.at(index));
 }
-
-/** Watches the collection for changes, requesting a render when it does. The collection is the only hook dependency.
- * @deprecated In future versions this hook will be removed, switch to {@link useObservableCollection}.
- * @template TItem The type of items the collection contains.
- * @param observableCollection The collection to watch.
- */
-export function watchCollection<TItem>(observableCollection: IReadOnlyObservableCollection<TItem>): void {
-    useObservableCollection(observableCollection);
-}
