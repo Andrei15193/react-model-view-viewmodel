@@ -1,8 +1,8 @@
-import type { ICollectionChangedEventHandler, INotifyCollectionChanged } from "../../collections";
-import type { IEventHandler } from "../../events";
-import type { ValidationTriggerSelector } from "./ValidationTriggerSelector";
-import { ValidationTrigger } from "./ValidationTrigger";
-import { resolveAllValidationTriggers } from "./resolveAllValidationTriggers";
+import type { ICollectionChangedEventHandler, INotifyCollectionChanged } from '../../collections';
+import type { IEventHandler } from '../../events';
+import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
+import { ValidationTrigger } from './ValidationTrigger';
+import { resolveAllValidationTriggers } from './resolveAllValidationTriggers';
 
 interface IItemValidationTriggers {
     itemCount: number;

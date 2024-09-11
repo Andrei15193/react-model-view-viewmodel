@@ -1,5 +1,5 @@
-import { type WellKnownValidationTrigger, ValidationTrigger } from "./ValidationTrigger";
-import { resolveValidationTriggers } from "./resolveValidationTriggers";
+import { type WellKnownValidationTrigger, ValidationTrigger } from './ValidationTrigger';
+import { resolveValidationTriggers } from './resolveValidationTriggers';
 
 export function resolveAllValidationTriggers(validationTriggers: readonly (WellKnownValidationTrigger | ValidationTrigger)[]): readonly ValidationTrigger[] {
     if (validationTriggers === null || validationTriggers === undefined || validationTriggers.length === 0)

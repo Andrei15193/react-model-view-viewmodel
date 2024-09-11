@@ -1,8 +1,8 @@
-import type { INotifySetChanged, ISetChangedEventHandler } from "../../collections";
-import type { IEventHandler } from "../../events";
-import type { ValidationTriggerSelector } from "./ValidationTriggerSelector";
-import { ValidationTrigger } from "./ValidationTrigger";
-import { resolveAllValidationTriggers } from "./resolveAllValidationTriggers";
+import type { INotifySetChanged, ISetChangedEventHandler } from '../../collections';
+import type { IEventHandler } from '../../events';
+import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
+import { ValidationTrigger } from './ValidationTrigger';
+import { resolveAllValidationTriggers } from './resolveAllValidationTriggers';
 
 interface IItemValidationTriggers {
     readonly validationTriggerEventHandler: IEventHandler<unknown>;

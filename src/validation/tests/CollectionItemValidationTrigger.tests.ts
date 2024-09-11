@@ -1,6 +1,6 @@
-import { ObservableCollection } from "../../collections";
-import { ViewModel } from "../../viewModels";
-import { CollectionItemValidationTrigger } from "../triggers/CollectionItemValidationTrigger";
+import { ObservableCollection } from '../../collections';
+import { ViewModel } from '../../viewModels';
+import { CollectionItemValidationTrigger } from '../triggers/CollectionItemValidationTrigger';
 
 describe('CollectionItemValidationTrigger', (): void => {
     it('validation is triggered when collection item changes', (): void => {

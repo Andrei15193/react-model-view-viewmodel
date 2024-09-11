@@ -6,9 +6,9 @@ export { type ICollectionReorderedValidationTriggerConfig, CollectionReorderedVa
 export { type ISetChangedValidationTriggerConfig, SetChangedValidationTrigger } from './SetChangedValidationTrigger';
 export { type IMapChangedValidationTriggerConfig, MapChangedValidationTrigger } from './MapChangedValidationTrigger';
 
-export { type ICollectionItemValidationTriggerConfig, CollectionItemValidationTrigger } from "./CollectionItemValidationTrigger";
-export { type ISetItemValidationTriggerConfig, SetItemValidationTrigger } from "./SetItemValidationTrigger";
-export { type IMapItemValidationTriggerConfig, MapItemValidationTrigger } from "./MapItemValidationTrigger";
+export { type ICollectionItemValidationTriggerConfig, CollectionItemValidationTrigger } from './CollectionItemValidationTrigger';
+export { type ISetItemValidationTriggerConfig, SetItemValidationTrigger } from './SetItemValidationTrigger';
+export { type IMapItemValidationTriggerConfig, MapItemValidationTrigger } from './MapItemValidationTrigger';
 
 export { resolveValidationTriggers } from './resolveValidationTriggers';
 export { resolveAllValidationTriggers } from './resolveAllValidationTriggers';

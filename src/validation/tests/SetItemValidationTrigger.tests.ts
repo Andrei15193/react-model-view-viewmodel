@@ -1,6 +1,6 @@
-import { ObservableSet } from "../../collections";
-import { ViewModel } from "../../viewModels";
-import { SetItemValidationTrigger } from "../triggers/SetItemValidationTrigger";
+import { ObservableSet } from '../../collections';
+import { ViewModel } from '../../viewModels';
+import { SetItemValidationTrigger } from '../triggers/SetItemValidationTrigger';
 
 describe('SetItemValidationTrigger', (): void => {
     it('validation is triggered when set item changes', (): void => {

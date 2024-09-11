@@ -1,6 +1,6 @@
-import { ObservableMap } from "../../collections";
-import { ViewModel } from "../../viewModels";
-import { MapItemValidationTrigger } from "../triggers/MapItemValidationTrigger";
+import { ObservableMap } from '../../collections';
+import { ViewModel } from '../../viewModels';
+import { MapItemValidationTrigger } from '../triggers/MapItemValidationTrigger';
 
 describe('MapItemValidationTrigger', (): void => {
     it('validation is triggered when map item changes', (): void => {
