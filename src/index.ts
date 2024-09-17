@@ -80,7 +80,9 @@ export {
     resolveValidationTriggers, resolveAllValidationTriggers
 } from './validation';
 
-export { type EventHandlerCallback as EventHandler, useEvent } from './hooks/use-event';
-export { type ViewModelType, useViewModel } from './hooks/use-view-model';
-export { type ViewModelFactory, useViewModelMemo } from './hooks/use-view-model-memo';
+export { 
+    type ViewModelType, useViewModel,
+    type ViewModelFactory, useViewModelMemo
+} from './hooks';
+
 export { useObservableCollection } from './hooks/use-observable-collection';
