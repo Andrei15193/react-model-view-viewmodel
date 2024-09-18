@@ -5,14 +5,14 @@ import { type INotifyPropertiesChanged, ViewModel } from '../../viewModels';
 import { type ViewModelFactory, useViewModelMemo } from '../UseViewModelMemo';
 
 describe('useViewModelMemo', (): void => {
-    interface ITestComponentProps<TViewModel extends INotifyPropertiesChanged> {
+    interface ITestComponentProps<TViewModel extends INotifyPropertiesChanged | null | undefined> {
         readonly viewModelFactory: ViewModelFactory<TViewModel>;
         readonly deps: DependencyList;
 
         children(viewModel: TViewModel): JSX.Element;
     }
 
-    function TestComponent<TViewModel extends INotifyPropertiesChanged>({ viewModelFactory, deps, children }: ITestComponentProps<TViewModel>): JSX.Element {
+    function TestComponent<TViewModel extends INotifyPropertiesChanged | null | undefined>({ viewModelFactory, deps, children }: ITestComponentProps<TViewModel>): JSX.Element {
         const viewModel = useViewModelMemo(viewModelFactory, deps);
 
         return children(viewModel);
@@ -28,7 +28,7 @@ describe('useViewModelMemo', (): void => {
 
             public increment(): void {
                 this._value++;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -71,7 +71,7 @@ describe('useViewModelMemo', (): void => {
 
             public increment(): void {
                 this._value++;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -116,7 +116,7 @@ describe('useViewModelMemo', (): void => {
 
             public increment(): void {
                 this._value++;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -156,7 +156,7 @@ describe('useViewModelMemo', (): void => {
 
             public set value(value: number) {
                 this._value = value;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -192,5 +192,31 @@ describe('useViewModelMemo', (): void => {
 
         expect(getByText('Value: 0')).not.toBe(undefined);
         expect(renderCount).toBe(2);
+    });
+
+    it('using null view model works', () => {
+        const { getByText } = render(
+            <TestComponent viewModelFactory={() => null} deps={[]}>
+                {viewModel => (
+                    <>
+                        Value: {viewModel === null ? 'true' : 'false'}
+                    </>
+                )}
+            </TestComponent>
+        );
+        expect(getByText('Value: true')).not.toBe(undefined);
+    });
+
+    it('using undefined view model works', () => {
+        const { getByText } = render(
+            <TestComponent viewModelFactory={() => undefined} deps={[]}>
+                {viewModel => (
+                    <>
+                        Value: {viewModel === undefined ? 'true' : 'false'}
+                    </>
+                )}
+            </TestComponent>
+        );
+        expect(getByText('Value: true')).not.toBe(undefined);
     });
 });

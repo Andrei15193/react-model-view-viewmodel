@@ -6,13 +6,13 @@ import { useObservableSet } from '../UseObservableSet';
 
 describe('useObservableSet', (): void => {
     interface ITestComponentProps<TItem> {
-        readonly observableSet: IReadOnlyObservableSet<TItem>;
+        readonly observableSet: IReadOnlyObservableSet<TItem> | null | undefined;
     }
 
     function TestComponent<TITem>({ observableSet }: ITestComponentProps<TITem>): JSX.Element {
         useObservableSet(observableSet);
 
-        return (<>Values: {Array.from(observableSet).sort().join(', ')}</>);
+        return (<>Values: {Array.from(observableSet || []).sort().join(', ')}</>);
     }
 
     it('component reacts to observable set changes', () => {
@@ -39,6 +39,20 @@ describe('useObservableSet', (): void => {
             observableSet.clear();
         });
 
+        expect(getByText('Values:')).not.toBe(undefined);
+    });
+
+    it('using null observable set works', () => {
+        const { getByText } = render(
+            <TestComponent observableSet={null} />
+        );
+        expect(getByText('Values:')).not.toBe(undefined);
+    });
+
+    it('using undefined observable set works', () => {
+        const { getByText } = render(
+            <TestComponent observableSet={undefined} />
+        );
         expect(getByText('Values:')).not.toBe(undefined);
     });
 });

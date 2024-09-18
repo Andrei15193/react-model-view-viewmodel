@@ -19,7 +19,7 @@ export type ViewModelType<TViewModel extends INotifyPropertiesChanged, TConstruc
  * @param viewModel The view model to watch.
  * @returns Returns the provided view model instance.
  */
-export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewModel: TViewModel): TViewModel;
+export function useViewModel<TViewModel extends INotifyPropertiesChanged | null | undefined>(viewModel: TViewModel): TViewModel;
 
 /**
  * Creates a new instance of a view model of the given type and watches for property changes.
@@ -50,7 +50,17 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConst
  */
 export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<TViewModel, TConstructorArgs>, constructorArgs: TConstructorArgs): TViewModel;
 
-export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<TViewModel, TConstructorArgs>, constructorArgs?: TConstructorArgs): TViewModel {
+/**
+ * Watches the provided view model, or creates a new instance of the given type and watches it for property changes, constructor arguments act as dependencies.
+ * @template TViewModel The type of view model.
+ * @template TConstructorArgs The constructor parameter types.
+ * @param viewModelType The view model or class declaration to instantiate.
+ * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
+ * @returns Returns the provided view model or the initialized one.
+ */
+export function useViewModel<TViewModel extends INotifyPropertiesChanged | null | undefined, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs>, constructorArgs: TConstructorArgs): TViewModel;
+
+export function useViewModel<TViewModel extends INotifyPropertiesChanged | null | undefined, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs>, constructorArgs?: TConstructorArgs): TViewModel {
     const [, setState] = useState<unknown>(null);
 
     const viewModelPropsRef = useRef<Map<keyof TViewModel, unknown> | null>(null);
@@ -58,22 +68,29 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConst
         viewModelPropsRef.current = new Map<keyof TViewModel, unknown>();
     const { current: cachedViewModelPropertyValues } = viewModelPropsRef;
 
-    const viewModelRef = useRef<TViewModel | null>(null)
+    const viewModelRef = useRef<{ readonly instance: TViewModel | null | undefined } | null>(null);
+    const viewModelSourceRef = useRef<TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs> | null>(viewModelOrType);
     const normalizedConstructorArgs = constructorArgs === null || constructorArgs === undefined || !Array.isArray(constructorArgs) ? emptyConstructorArgs as TConstructorArgs : constructorArgs;
     const cachedConstructorArgsRef = useRef<TConstructorArgs>(normalizedConstructorArgs);
 
     if (viewModelRef.current === null
+        || viewModelSourceRef.current !== viewModelOrType
         || cachedConstructorArgsRef.current.length !== normalizedConstructorArgs.length
         || cachedConstructorArgsRef.current.some((constructorArg, constructorArgIndex) => constructorArg !== normalizedConstructorArgs[constructorArgIndex])) {
+        viewModelSourceRef.current = viewModelOrType;
         cachedConstructorArgsRef.current = normalizedConstructorArgs.slice() as any as TConstructorArgs;
-        viewModelRef.current = isViewModel(viewModelOrType) ? viewModelOrType : new viewModelOrType(...normalizedConstructorArgs);
+
+        if (viewModelOrType !== null && viewModelOrType !== undefined)
+            viewModelRef.current = { instance: isViewModel(viewModelOrType) ? viewModelOrType : new viewModelOrType(...normalizedConstructorArgs) };
+        else
+            viewModelRef.current = { instance: viewModelOrType };
     }
-    const { current: viewModel } = viewModelRef;
+    const { current: { instance: viewModel } } = viewModelRef;
 
     useEffect(
         () => {
-            const viewModelPropertiesChangedEventHandler: IPropertiesChangedEventHandler<TViewModel> = {
-                handle(_, changedProperties) {
+            const viewModelPropertiesChangedEventHandler: IPropertiesChangedEventHandler<Exclude<TViewModel, null | undefined>> = {
+                handle(viewModel, changedProperties: readonly (keyof TViewModel)[]) {
                     let hasChanges = false;
                     changedProperties.forEach(changedProperty => {
                         const viewModelPropertyValue = viewModel[changedProperty];
@@ -87,14 +104,16 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConst
                 }
             };
 
-            viewModel.propertiesChanged.subscribe(viewModelPropertiesChangedEventHandler);
+            if (viewModel !== null && viewModel !== undefined)
+                viewModel.propertiesChanged.subscribe(viewModelPropertiesChangedEventHandler);
             return () => {
-                viewModel.propertiesChanged.unsubscribe(viewModelPropertiesChangedEventHandler);
+                if (viewModel !== null && viewModel !== undefined)
+                    viewModel.propertiesChanged.unsubscribe(viewModelPropertiesChangedEventHandler);
                 cachedViewModelPropertyValues.clear();
             }
         },
         [viewModel, cachedViewModelPropertyValues, setState]
     )
 
-    return viewModel;
+    return viewModel!;
 }

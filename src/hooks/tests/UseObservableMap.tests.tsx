@@ -6,13 +6,13 @@ import { useObservableMap } from '../UseObservableMap';
 
 describe('useObservableMap', (): void => {
     interface ITestComponentProps<TKey, TItem> {
-        readonly observableMap: IReadOnlyObservableMap<TKey, TItem>;
+        readonly observableMap: IReadOnlyObservableMap<TKey, TItem> | null | undefined;
     }
 
     function TestComponent<TKey, TITem>({ observableMap }: ITestComponentProps<TKey, TITem>): JSX.Element {
         useObservableMap(observableMap);
 
-        return (<>Values: {Array.from(observableMap).map(([key, value]) => `${key}: ${value}`).sort().join(', ')}</>);
+        return (<>Values: {Array.from(observableMap || []).map(([key, value]) => `${key}: ${value}`).sort().join(', ')}</>);
     }
 
     it('component reacts to observable map changes', () => {
@@ -41,6 +41,20 @@ describe('useObservableMap', (): void => {
         act(() => {
             observableMap.clear();
         });
+        expect(getByText('Values:')).not.toBe(undefined);
+    });
+
+    it('using null observable map works', () => {
+        const { getByText } = render(
+            <TestComponent observableMap={null} />
+        );
+        expect(getByText('Values:')).not.toBe(undefined);
+    });
+
+    it('using undefined observable map works', () => {
+        const { getByText } = render(
+            <TestComponent observableMap={undefined} />
+        );
         expect(getByText('Values:')).not.toBe(undefined);
     });
 });

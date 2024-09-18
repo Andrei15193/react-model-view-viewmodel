@@ -6,13 +6,13 @@ import { useObservableCollection } from '../UseObservableCollection';
 
 describe('useObservableCollection', (): void => {
     interface ITestComponentProps<TItem> {
-        readonly observableCollection: IReadOnlyObservableCollection<TItem>;
+        readonly observableCollection: IReadOnlyObservableCollection<TItem> | null | undefined;
     }
 
     function TestComponent<TITem>({ observableCollection }: ITestComponentProps<TITem>): JSX.Element {
         useObservableCollection(observableCollection);
 
-        return (<>Values: {observableCollection.join(', ')}</>);
+        return (<>Values: {observableCollection?.join(', ') || ''}</>);
     }
 
     it('component reacts to observable collection changes', () => {
@@ -39,6 +39,20 @@ describe('useObservableCollection', (): void => {
             observableCollection.splice(0, Number.POSITIVE_INFINITY);
         });
 
+        expect(getByText('Values:')).not.toBe(undefined);
+    });
+
+    it('using null observable collection works', () => {
+        const { getByText } = render(
+            <TestComponent observableCollection={null} />
+        );
+        expect(getByText('Values:')).not.toBe(undefined);
+    });
+
+    it('using undefined observable collection works', () => {
+        const { getByText } = render(
+            <TestComponent observableCollection={undefined} />
+        );
         expect(getByText('Values:')).not.toBe(undefined);
     });
 });

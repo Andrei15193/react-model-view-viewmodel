@@ -5,14 +5,14 @@ import { type INotifyPropertiesChanged, ViewModel } from '../../viewModels';
 import { type ViewModelType, useViewModel } from '../UseViewModel';
 
 describe('useViewModel', (): void => {
-    interface ITestComponentProps<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]> {
-        readonly viewModelOrType: TViewModel | ViewModelType<TViewModel, TConstructorArgs>;
+    interface ITestComponentProps<TViewModel extends INotifyPropertiesChanged | null | undefined, TConstructorArgs extends readonly any[]> {
+        readonly viewModelOrType: TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs>;
         readonly constructorArgs: TConstructorArgs;
 
         children(viewModel: TViewModel): JSX.Element;
     }
 
-    function TestComponent<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>({ viewModelOrType, constructorArgs, children }: ITestComponentProps<TViewModel, TConstructorArgs>): JSX.Element {
+    function TestComponent<TViewModel extends INotifyPropertiesChanged | null | undefined, TConstructorArgs extends readonly any[]>({ viewModelOrType, constructorArgs, children }: ITestComponentProps<TViewModel, TConstructorArgs>): JSX.Element {
         const viewModel = useViewModel(viewModelOrType, constructorArgs);
 
         return children(viewModel);
@@ -35,7 +35,7 @@ describe('useViewModel', (): void => {
 
             public increment(): void {
                 this._value++;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -73,7 +73,7 @@ describe('useViewModel', (): void => {
             public readonly value: number;
 
             public notifyPropertiesChanged(): void {
-                super.notifyPropertiesChanged("value");
+                super.notifyPropertiesChanged('value');
             }
         }
 
@@ -111,7 +111,7 @@ describe('useViewModel', (): void => {
 
             public increment(): void {
                 this._value++;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -147,7 +147,7 @@ describe('useViewModel', (): void => {
 
             public set value(value: number) {
                 this._value = value;
-                this.notifyPropertiesChanged("value");
+                this.notifyPropertiesChanged('value');
             }
         }
 
@@ -179,5 +179,92 @@ describe('useViewModel', (): void => {
 
         expect(getByText('Value: 0')).not.toBe(undefined);
         expect(renderCount).toBe(2);
+    });
+
+    it('using null view model works', () => {
+        const { getByText } = render(
+            <TestComponent viewModelOrType={null} constructorArgs={[]}>
+                {viewModel => (
+                    <>
+                        Value: {viewModel === null ? 'true' : 'false'}
+                    </>
+                )}
+            </TestComponent>
+        );
+        expect(getByText('Value: true')).not.toBe(undefined);
+    });
+
+    it('using undefined view model works', () => {
+        const { getByText } = render(
+            <TestComponent viewModelOrType={undefined} constructorArgs={[]}>
+                {viewModel => (
+                    <>
+                        Value: {viewModel === undefined ? 'true' : 'false'}
+                    </>
+                )}
+            </TestComponent>
+        );
+        expect(getByText('Value: true')).not.toBe(undefined);
+    });
+
+    it('changing the view model instance switches event subscriptions', () => {
+        class TestCaseViewModel extends ViewModel {
+            private _value: number;
+
+            public constructor(value: number) {
+                super();
+
+                this._value = value;
+            }
+
+            public get value(): number {
+                return this._value;
+            }
+
+            public increment(): void {
+                this._value++;
+                super.notifyPropertiesChanged('value');
+            }
+        }
+
+        let refreshViewModel = new TestCaseViewModel(100);
+        let viewModel1 = new TestCaseViewModel(1);
+        let viewModel2 = new TestCaseViewModel(10);
+        let viewModel = viewModel1;
+
+        const { getByText } = render(
+            <TestComponent viewModelOrType={refreshViewModel} constructorArgs={[]}>
+                {() => {
+                    const actualViewModel = viewModel;
+
+                    return (
+                        <TestComponent viewModelOrType={actualViewModel} constructorArgs={[]}>
+                            {({ value }) => (
+                                <>
+                                    Value: {value}
+                                </>
+                            )}
+                        </TestComponent>
+                    )
+                }}
+            </TestComponent>
+        );
+        expect(getByText('Value: 1')).not.toBe(undefined);
+
+        act(() => {
+            viewModel = viewModel2;
+            refreshViewModel.increment();
+        });
+        expect(getByText('Value: 10')).not.toBe(undefined);
+
+        act(() => {
+            viewModel1.increment();
+        });
+        expect(getByText('Value: 10')).not.toBe(undefined);
+
+        act(() => {
+            viewModel2.increment();
+        });
+        expect(getByText('Value: 11')).not.toBe(undefined);
     });
 });
