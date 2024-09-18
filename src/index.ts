@@ -82,7 +82,9 @@ export {
 
 export { 
     type ViewModelType, useViewModel,
-    type ViewModelFactory, useViewModelMemo
-} from './hooks';
+    type ViewModelFactory, useViewModelMemo,
 
-export { useObservableCollection } from './hooks/use-observable-collection';
+    useObservableCollection,
+    useObservableSet,
+    useObservableMap
+} from './hooks';
