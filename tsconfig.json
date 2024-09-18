@@ -20,8 +20,8 @@
         "src/**/*"
     ],
     "exclude": [
-        "tests-old",
         "lib",
+        "**/tests/**",
         "node_modules"
     ]
 }
