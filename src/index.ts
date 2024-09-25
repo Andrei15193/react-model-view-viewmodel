@@ -80,7 +80,7 @@ export {
     resolveValidationTriggers, resolveAllValidationTriggers
 } from './validation';
 
-export { 
+export {
     type ViewModelType, useViewModel,
     type ViewModelFactory, useViewModelMemo,
 
@@ -88,3 +88,17 @@ export {
     useObservableSet,
     useObservableMap
 } from './hooks';
+
+export {
+    type ResolvableSimpleDependency, type BasicDependency, type SimpleDependency, type ComplexDependency, DependencyToken,
+    type IDependencyResolver,
+
+    type IDependencyContainer, type ConfigurableDependency, type DependencyFactoryCallback,
+    DependencyContainer,
+
+    type IDependencyResolverProviderProps, DependencyResolverProvider,
+
+    useDependencyResolver,
+    useDependency,
+    useViewModelDependency
+} from './dependencies'

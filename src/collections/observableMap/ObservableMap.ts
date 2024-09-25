@@ -1,6 +1,11 @@
 import type { IObservableMap } from './IObservableMap';
 import { ReadOnlyObservableMap } from './ReadOnlyObservableMap';
 
+/**
+ * Represents an observable map based on the [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) interface.
+ * @template TKey The type of keys the map contains.
+ * @template TItem The type of items the map contains.
+ */
 export class ObservableMap<TKey, TItem> extends ReadOnlyObservableMap<TKey, TItem> implements IObservableMap<TKey, TItem> {
     /**
      * Initializes a new instance of the {@linkcode ObservableMap} class.
