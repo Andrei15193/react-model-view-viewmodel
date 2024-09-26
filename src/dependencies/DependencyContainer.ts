@@ -7,6 +7,8 @@ type DependencyFactoryKey<T> = DependencyToken<T> | BasicDependency<T> | SimpleD
  * Represents a dependency container for configuring and later on resolving dependencies similar to a dependency injection mechanism.
  */
 export class DependencyContainer implements IDependencyContainer, IDependencyResolver {
+  private static _dependencyResolutionChain: any[] = [];
+
   private readonly _parent: DependencyContainer | null;
   private readonly _singletonDependencyFactories = new Map<DependencyFactoryKey<unknown>, IDependencyFactory<unknown>>();
   private readonly _scopedDependencyFactories = new Map<DependencyFactoryKey<unknown>, IDependencyFactory<unknown>>();
@@ -202,41 +204,50 @@ export class DependencyContainer implements IDependencyContainer, IDependencyRes
   public resolve<T, TAdditional extends readonly any[] = []>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
 
   public resolve<T, TAdditional extends readonly any[]>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies?: TAdditional): T {
-    if (!isDependency<T, TAdditional>(dependency))
-      return dependency;
+    try {
+      DependencyContainer._dependencyResolutionChain.push(dependency);
+      if (DependencyContainer._dependencyResolutionChain.lastIndexOf(dependency, -2) >= 0)
+        throw new Error(`Circular dependency detected while trying to resolve '${DependencyContainer._dependencyResolutionChain.map(dependency => dependency?.name ?? dependency).join(' -> ')}'.`)
 
-    if (isComplexDependency<T, TAdditional>(dependency, additionalDependencies))
-      return new dependency(this, ...additionalDependencies!);
+      if (!isDependency<T, TAdditional>(dependency))
+        return dependency;
 
-    let resolvedDependencyFactory: IDependencyFactory<unknown> | null = null;
-    let scope: DependencyContainer | null = this;
-    do {
-      let dependencyFactory = scope._scopedDependencyFactories.get(dependency);
+      if (isComplexDependency<T, TAdditional>(dependency, additionalDependencies))
+        return new dependency(this, ...additionalDependencies!);
 
-      if (dependencyFactory !== null && dependencyFactory !== undefined)
-        if (scope === this)
-          resolvedDependencyFactory = dependencyFactory;
-        else {
-          resolvedDependencyFactory = dependencyFactory.withScope(this);
-          this._scopedDependencyFactories.set(dependency, resolvedDependencyFactory);
-        }
-      else {
-        dependencyFactory = scope._singletonDependencyFactories.get(dependency);
+      let resolvedDependencyFactory: IDependencyFactory<unknown> | null = null;
+      let scope: DependencyContainer | null = this;
+      do {
+        let dependencyFactory = scope._scopedDependencyFactories.get(dependency);
 
         if (dependencyFactory !== null && dependencyFactory !== undefined)
-          resolvedDependencyFactory = dependencyFactory;
-        else
-          scope = scope._parent;
-      }
-    } while (scope !== null && resolvedDependencyFactory === null);
+          if (scope === this)
+            resolvedDependencyFactory = dependencyFactory;
+          else {
+            resolvedDependencyFactory = dependencyFactory.withScope(this);
+            this._scopedDependencyFactories.set(dependency, resolvedDependencyFactory);
+          }
+        else {
+          dependencyFactory = scope._singletonDependencyFactories.get(dependency);
 
-    if (resolvedDependencyFactory === null)
-      if (dependency instanceof DependencyToken)
-        throw new Error(`There is no configured dependency for token '${dependency.toString()}'.`);
+          if (dependencyFactory !== null && dependencyFactory !== undefined)
+            resolvedDependencyFactory = dependencyFactory;
+          else
+            scope = scope._parent;
+        }
+      } while (scope !== null && resolvedDependencyFactory === null);
+
+      if (resolvedDependencyFactory === null)
+        if (dependency instanceof DependencyToken)
+          throw new Error(`There is no configured dependency for token '${dependency.toString()}'.`);
+        else
+          return new dependency(this);
       else
-        return new dependency(this);
-    else
-      return resolvedDependencyFactory.resolve() as T;
+        return resolvedDependencyFactory.resolve() as T;
+    }
+    finally {
+      DependencyContainer._dependencyResolutionChain.pop();
+    }
   }
 }
 

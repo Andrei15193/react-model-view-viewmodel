@@ -6,7 +6,10 @@ describe('ObservableCollection.toSorted', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.toSorted(),
+            applyOperation: {
+                applyArrayOperation: array => array.slice().sort(),
+                applyCollectionOperation: collection => collection.toSorted()
+            },
 
             expectedResult: []
         });
@@ -16,7 +19,10 @@ describe('ObservableCollection.toSorted', (): void => {
         testBlankMutatingOperation<number | undefined | null>({
             initialState: [1, undefined, 2, 3, -1, undefined, 3, 100, null, 22, 11, 200, -100],
 
-            applyOperation: collection => collection.toSorted(),
+            applyOperation: {
+                applyArrayOperation: array => array.slice().sort(),
+                applyCollectionOperation: collection => collection.toSorted()
+            },
 
             expectedResult: [-1, -100, 1, 100, 11, 2, 200, 22, 3, 3, null, undefined, undefined]
         });
@@ -27,7 +33,7 @@ describe('ObservableCollection.toSorted', (): void => {
             initialState: [1, undefined, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: collection => collection.toSorted((left, right) => left! - right!),
+                applyArrayOperation: array => array.slice().sort((left, right) => left! - right!),
                 applyCollectionOperation: collection => collection.toSorted((left, right) => left - right)
             },
 

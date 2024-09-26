@@ -6,7 +6,10 @@ describe('ObservableCollection.toReversed', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.toReversed(),
+            applyOperation: {
+                applyArrayOperation: array => array.slice().reverse(),
+                applyCollectionOperation: collection => collection.toReversed()
+            },
 
             expectedResult: []
         });
@@ -16,7 +19,10 @@ describe('ObservableCollection.toReversed', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: collection => collection.toReversed(),
+            applyOperation: {
+                applyArrayOperation: array => array.slice().reverse(),
+                applyCollectionOperation: collection => collection.toReversed()
+            },
 
             expectedResult: [3, 2, 1]
         });
