@@ -19,17 +19,18 @@ export type ViewModelFactory<TViewModel extends INotifyPropertiesChanged | null 
  * @returns Returns the created view model instance.
  */
 export function useViewModelMemo<TViewModel extends INotifyPropertiesChanged | undefined | null>(viewModelFactory: ViewModelFactory<TViewModel>, deps: DependencyList): TViewModel {
-    const normalizedDeps = deps === null || deps === undefined || !Array.isArray(deps) ? emptyDeps : deps;
+    const normalizedDeps = deps === null || deps === undefined || !Array.isArray(deps)
+        ? emptyDeps
+        : deps;
 
-    const cachedDependencies = useRef(normalizedDeps);
     const viewModelRef = useRef<{ readonly instance: TViewModel | null } | null>(null);
-
+    const cachedDependencies = useRef(normalizedDeps);
     if (viewModelRef.current === null || cachedDependencies.current.length !== normalizedDeps.length || cachedDependencies.current.some((cachedDependency, dependencyIndex) => cachedDependency !== normalizedDeps[dependencyIndex])) {
         cachedDependencies.current = normalizedDeps.slice();
         viewModelRef.current = { instance: viewModelFactory() };
     }
-
     const { current: { instance: viewModel } } = viewModelRef;
+
     useViewModel(viewModel);
 
     return viewModel!;

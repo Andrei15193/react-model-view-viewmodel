@@ -2,8 +2,12 @@ export { type IDependencyResolver, type ResolvableSimpleDependency, type BasicDe
 export type { IDependencyContainer, ConfigurableDependency, DependencyFactoryCallback } from "./IDependencyContainer";
 export { DependencyContainer } from "./DependencyContainer";
 
-export { useDependency } from "./useDependency";
-export { useViewModelDependency } from "./useViewModelDependency";
+export { useDependency } from "./UseDependency";
+export { useViewModelDependency } from "./UseViewModelDependency";
 
-export { type IDependencyResolverProviderProps, DependencyResolverProvider } from "./DependencyResolverProvider";
-export { useDependencyResolver } from "./useDependencyResolver";
+export {
+    type IDependencyResolverProviderProps, DependencyResolverProvider,
+    type IDependencyResolverScopeProps, DependencyResolverScope,
+
+    useDependencyResolver
+} from "./DependencyResolverContext";

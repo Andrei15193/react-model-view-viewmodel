@@ -68,11 +68,13 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged | null 
         viewModelPropsRef.current = new Map<keyof TViewModel, unknown>();
     const { current: cachedViewModelPropertyValues } = viewModelPropsRef;
 
+    const normalizedConstructorArgs = constructorArgs === null || constructorArgs === undefined || !Array.isArray(constructorArgs)
+        ? emptyConstructorArgs as TConstructorArgs
+        : constructorArgs;
+
     const viewModelRef = useRef<{ readonly instance: TViewModel | null | undefined } | null>(null);
     const viewModelSourceRef = useRef<TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs> | null>(viewModelOrType);
-    const normalizedConstructorArgs = constructorArgs === null || constructorArgs === undefined || !Array.isArray(constructorArgs) ? emptyConstructorArgs as TConstructorArgs : constructorArgs;
     const cachedConstructorArgsRef = useRef<TConstructorArgs>(normalizedConstructorArgs);
-
     if (viewModelRef.current === null
         || viewModelSourceRef.current !== viewModelOrType
         || cachedConstructorArgsRef.current.length !== normalizedConstructorArgs.length
