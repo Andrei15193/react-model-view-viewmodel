@@ -106,7 +106,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  *   // Restrict all fields to be app-specific ones.
  *   public readonly fields: IReadOnlyObservableCollection<MyAppFormFieldViewModel<unknown>>;
  *
- *   protected withFields(...fields: readonly MyAppFormFieldViewModel<unknown>[]): IObservableCollection<MyAppFormFieldViewModel<unknown>> {
+ *   protected withFields(...fields: readonly MyAppFormFieldViewModel<any>[]): IObservableCollection<MyAppFormFieldViewModel<any>> {
  *     return super.withFields.apply(this, arguments);
  *   }
  *
@@ -301,7 +301,7 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
      * @returns Returns a collection containing the provided fields. The form reacts to changes made in
      * the returned collection always keeping in sync.
      */
-    protected withFields(...fields: readonly FormFieldViewModel<unknown, TValidationError>[]): IObservableCollection<FormFieldViewModel<unknown, TValidationError>> {
+    protected withFields(...fields: readonly FormFieldViewModel<any, TValidationError>[]): IObservableCollection<FormFieldViewModel<any, TValidationError>> {
         const fieldsCollection = new ObservableCollection<FormFieldViewModel<unknown, TValidationError>>(fields);
         this._fields.aggregatedCollections.push(fieldsCollection);
 

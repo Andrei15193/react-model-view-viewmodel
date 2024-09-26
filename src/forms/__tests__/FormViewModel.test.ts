@@ -41,7 +41,7 @@ describe('FormViewModel', (): void => {
 
     it('changing field collections keeps the entire collection in sync', (): void => {
         const form = new TestFormViewModel();
-        function expectFields(fields: readonly FormFieldViewModel<unknown>[]) {
+        function expectFields(fields: readonly FormFieldViewModel<any>[]) {
             expect(form.fields.length).toBe(fields.length);
             expect(form.fields.toArray().map(({ name }) => ({ name }))).toEqual(fields.map(({ name }) => ({ name })));
         }
@@ -137,7 +137,7 @@ describe('FormViewModel', (): void => {
 
     it('changing section collections keeps the entire collection in sync', (): void => {
         const form = new TestFormViewModel();
-        function expectSections(sections: readonly FormViewModel<unknown>[]) {
+        function expectSections(sections: readonly FormViewModel<any>[]) {
             expect(form.sections.length).toBe(sections.length);
             expect(form.sections.toArray()).toEqual(sections);
         }
@@ -365,11 +365,11 @@ describe('FormViewModel', (): void => {
 });
 
 class TestFormViewModel<TValidationError = string> extends FormViewModel<TValidationError> {
-    public withFields<TField extends FormFieldViewModel<unknown, TValidationError> = FormFieldViewModel<unknown, TValidationError>>(...fields: readonly TField[]): IObservableCollection<TField> {
+    public withFields(...fields: readonly FormFieldViewModel<any, TValidationError>[]): IObservableCollection<FormFieldViewModel<any, TValidationError>> {
         return super.withFields.apply(this, arguments);
     }
 
-    public withSections<TSection extends FormViewModel<TValidationError> = FormViewModel<TValidationError>>(...sections: readonly TSection[]): FormSectionCollection<TSection, TValidationError> {
+    public withSections(...sections: readonly FormViewModel<TValidationError>[]): FormSectionCollection<FormViewModel<TValidationError>, TValidationError> {
         return super.withSections.apply(this, arguments);
     }
 }

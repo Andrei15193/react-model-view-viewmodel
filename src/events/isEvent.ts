@@ -6,7 +6,7 @@ import type { IEvent } from './IEvent';
  * @param maybeEvent The value to check if is an event.
  * @returns Returns `true` if the provided instance implements {@link IEvent}; otherwise `false`.
  */
-export function isEvent<TEvent extends IEvent<unknown, unknown> = IEvent<unknown, unknown>>(maybeEvent: any): maybeEvent is TEvent {
+export function isEvent<TEvent extends IEvent<any, any> = IEvent<any, any>>(maybeEvent: any): maybeEvent is TEvent {
     return (
         maybeEvent !== null
         && maybeEvent !== undefined

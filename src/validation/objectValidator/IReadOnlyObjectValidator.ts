@@ -4,7 +4,6 @@ import type { IReadOnlyValidatable } from '../IReadOnlyValidatable';
 import type { IValidator } from '../IValidator';
 import type { WellKnownValidationTrigger, ValidationTrigger } from '../triggers';
 
-
 export interface IReadOnlyObjectValidator<TValidatable extends IReadOnlyValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> {
     readonly target: TValidatable;
 
