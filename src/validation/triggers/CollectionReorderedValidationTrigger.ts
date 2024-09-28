@@ -1,18 +1,37 @@
 import type { ICollectionReorder, ICollectionReorderedEventHandler, INotifyCollectionReordered } from '../../collections';
 import { ValidationTrigger } from './ValidationTrigger';
 
+/**
+ * Represents the collection reordered validation trigger configuration.
+ */
 export interface ICollectionReorderedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionReordered<TItem> = INotifyCollectionReordered<TItem>> {
+    /**
+     * Gets the collection that may trigger a validaiton.
+     */
     readonly collection: TCollection;
 
+    /**
+     * Optional, a guard method which controls when a validaiton should be triggered.
+     * @param collection The collection that changed.
+     * @param collectionReorder The collection reorder information.
+     */
     shouldTriggerValidation?(collection: TCollection, collectionReorder: ICollectionReorder<TItem>): boolean;
 }
 
+/**
+ * Represents a collection reordered validation trigger. Whenever the collection reorders a validation may be triggered.
+ */
 export class CollectionReorderedValidationTrigger<TItem = unknown, TCollection extends INotifyCollectionReordered<TItem> = INotifyCollectionReordered<TItem>> extends ValidationTrigger<TCollection> {
     private readonly _collectionReorderedEventHandler: ICollectionReorderedEventHandler<TCollection, TItem> & {
         _notifyValidationTriggered(): void;
     };
 
-    public constructor({ collection, shouldTriggerValidation }: ICollectionReorderedValidationTriggerConfig<TItem, TCollection>) {
+    /**
+     * Initializes a new instance of the {@linkcode CollectionReorderedValidationTrigger} class.
+     * @param config The validation trigger config.
+     */
+    public constructor(config: ICollectionReorderedValidationTriggerConfig<TItem, TCollection>) {
+        const { collection, shouldTriggerValidation } = config;
         super(collection);
 
         this._collectionReorderedEventHandler = {
@@ -25,11 +44,17 @@ export class CollectionReorderedValidationTrigger<TItem = unknown, TCollection e
         }
     }
 
-    public subscribeToTarget(): void {
+    /**
+     * Subscribes to collection reordering.
+     */
+    protected subscribeToTarget(): void {
         this.trigger.collectionReordered.subscribe(this._collectionReorderedEventHandler);
     }
 
-    public unsubscribeFromTarget(): void {
+    /**
+     * Unsubscribes from collection reordering.
+     */
+    protected unsubscribeFromTarget(): void {
         this.trigger.collectionReordered.unsubscribe(this._collectionReorderedEventHandler);
     }
 }

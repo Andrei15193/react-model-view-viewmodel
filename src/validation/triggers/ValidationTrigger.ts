@@ -2,6 +2,11 @@ import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from '../../collections';
 import { type IEvent, EventDispatcher } from '../../events';
 
+/**
+ * Represent a set of well-known validaiton triggers. These are used to simplify
+ * object validator configurations as a view model or observable collection can
+ * be directly passed as a trigger.
+ */
 export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
     = INotifyPropertiesChanged
     | INotifyCollectionChanged<unknown>
@@ -17,9 +22,17 @@ export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
         (item: TItem) => readonly (WellKnownValidationTrigger | ValidationTrigger)[]
     ]
 
+/**
+ * Represents a validation trigger. Generally, they wrap an observable object and whenever
+ * it changes the {@linkcode validationTriggered} event is raised.
+ */
 export abstract class ValidationTrigger<TTrigger = unknown> {
     private readonly _validationTriggeredEventDispatcher: EventDispatcher<this>;
 
+    /**
+     * Initializes a new instance of the {@linkcode ValidationTrigger} class.
+     * @param trigger The source object that triggers validation.
+     */
     protected constructor(trigger: TTrigger) {
         this.trigger = trigger;
 
@@ -44,13 +57,28 @@ export abstract class ValidationTrigger<TTrigger = unknown> {
         };
     }
 
+    /**
+     * Gets the source object that triggers validation.
+     */
     public readonly trigger: TTrigger;
+    /**
+     * Gets an event that is raised whenever the source object triggers a validation.
+     */
     public readonly validationTriggered: IEvent<this>;
 
+    /**
+     * A plug-in method that handles the actual event subscription to the {@linkcode trigger}.
+     */
     protected abstract subscribeToTarget(): void;
 
+    /**
+     * A plug-in method that handles the actual event unsubscription to the {@linkcode trigger}.
+     */
     protected abstract unsubscribeFromTarget(): void;
 
+    /**
+     * Raises the {@linkcode validationTriggered} event, notifying that a validation should occur.
+     */
     protected notifyValidationTriggered(): void {
         this._validationTriggeredEventDispatcher.dispatch(this);
     }

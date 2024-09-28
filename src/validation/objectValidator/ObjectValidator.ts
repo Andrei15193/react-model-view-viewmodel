@@ -13,6 +13,9 @@ export interface IObjectValidatorConfig<TValidatable extends IValidatable<TValid
     shouldTargetTriggerValidation?(target: TValidatable, changedProperties: readonly (keyof TValidatable)[]): boolean;
 }
 
+/**
+ * Represents a base implementation for an object validator.
+ */
 export class ObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> implements IObjectValidator<TValidatable, TValidationError> {
     private static _defaultShouldTargetTriggerValidation<TValidationError = string>(target: IValidatable<TValidationError>, changedProperties: readonly (keyof IValidatable<TValidationError>)[]): boolean {
         return changedProperties.some(changedProperty => {
@@ -22,7 +25,12 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
         });
     }
 
-    public constructor({ target, shouldTargetTriggerValidation = ObjectValidator._defaultShouldTargetTriggerValidation<TValidationError> }: IObjectValidatorConfig<TValidatable, TValidationError>) {
+    /**
+     * Initializes a new instance of the {@linkcode ObjectValidator} class.
+     * @param config The configuration to initialize the object validator with.
+     */
+    public constructor(config: IObjectValidatorConfig<TValidatable, TValidationError>) {
+        const { target, shouldTargetTriggerValidation = ObjectValidator._defaultShouldTargetTriggerValidation<TValidationError> } = config;
         this.target = target;
 
         this.validators = new ObservableCollection<IValidator<TValidatable, TValidationError>>();
@@ -76,11 +84,26 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
         this.target.error = null;
     }
 
+    /**
+     * Gets the object that is being validated.
+     */
     public readonly target: TValidatable;
 
+    /**
+     * Gets the validators that have been configured.
+     */
     public readonly validators: IObservableCollection<IValidator<TValidatable, TValidationError>>;
+    /**
+     * Gets the validation triggers that have been configured.
+     */
     public readonly triggers: IValidationTriggersSet;
 
+    /**
+     * Configures the given validator and configures the provided triggers.
+     * @param validator The validators to add.
+     * @param triggers The triggers for which a validation should occur.
+     * @returns Returns the current object validator.
+     */
     public add<TKey = unknown, TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TKey, TItem> | ValidationTrigger)[]): this {
         if (triggers !== null && triggers !== undefined)
             triggers.forEach(this.triggers.add, this.triggers);
@@ -99,6 +122,13 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
         return this;
     }
 
+    /**
+     * Validates the target using the currently configured validators. Validation does get triggered when the
+     * target changes or when a trigger notifies that a validation should occur.
+     * 
+     * Only use this method for specific cases where a validation need to be manually triggered, usually this
+     * should not be the case.
+     */
     public validate(): TValidationError | null {
         let error: TValidationError | null = null;
         let index: number = 0;
@@ -115,6 +145,9 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
         return error;
     }
 
+    /**
+     * Resets the validator configuraiton, removes all triggers and validators and sets the error on the target to `null`.
+     */
     public reset(): this {
         this.triggers.clear();
         this.validators.splice(0);

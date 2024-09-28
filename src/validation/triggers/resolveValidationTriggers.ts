@@ -8,6 +8,11 @@ import { CollectionItemValidationTrigger } from './CollectionItemValidationTrigg
 import { SetItemValidationTrigger } from './SetItemValidationTrigger';
 import { MapItemValidationTrigger } from './MapItemValidationTrigger';
 
+/**
+ * Resolves the given well-known validation trigger to concrete ones.
+ * @param validationTrigger The well-known validation trigger to interpret.
+ * @returns Returns a set of concrete validation triggers that correspond to the given well-known one.
+ */
 export function resolveValidationTriggers(validationTrigger: WellKnownValidationTrigger | ValidationTrigger): readonly ValidationTrigger[] {
     const validationTriggers = new Array<ValidationTrigger>();
 

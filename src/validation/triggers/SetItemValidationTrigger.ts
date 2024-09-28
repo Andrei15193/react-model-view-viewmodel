@@ -9,13 +9,33 @@ interface IItemValidationTriggers {
     readonly validationTriggers: readonly ValidationTrigger[];
 }
 
+/**
+ * Represents the set item validation trigger configuration.
+ */
 export interface ISetItemValidationTriggerConfig<TItem> {
+    /**
+     * Gets the set containing the items that may trigger validaiton.
+     */
     readonly set: INotifySetChanged<TItem> & Iterable<TItem>;
+    /**
+     * Gets the selector that provides the individual validation triggers for each item.
+     */
     readonly validationTriggerSelector: ValidationTriggerSelector<TItem>;
 
+    /**
+     * Optional, a guard method which controls when a validaiton should be triggered.
+     * @param item The item that changed which may trigger a validation.
+     */
     shouldTriggerValidation?(item: TItem): boolean;
 }
 
+/**
+ * Represents a set item validation trigger. Instead of triggering a validaiton only when the set changes,
+ * a validaiton may be triggered by any of the contained items when they themselves change.
+ * 
+ * This is useful when within the collection there is a field that needs to be unique,
+ * such as a unique name for each item in the collection.
+ */
 export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySetChanged<TItem> & Iterable<TItem>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;
     private readonly _shouldTriggerValidation: (item: TItem) => boolean;
@@ -26,7 +46,12 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
         return true;
     }
 
-    public constructor({ set, validationTriggerSelector, shouldTriggerValidation = SetItemValidationTrigger._defaultShouldTriggerValidation<TItem> }: ISetItemValidationTriggerConfig<TItem>) {
+    /**
+     * Initializes a new instance of the {@linkcode SetItemValidationTrigger} class.
+     * @param config The validation trigger config.
+     */
+    public constructor(config: ISetItemValidationTriggerConfig<TItem>) {
+        const { set, validationTriggerSelector, shouldTriggerValidation = SetItemValidationTrigger._defaultShouldTriggerValidation<TItem> } = config;
         super(set);
 
         this._validationTriggerSelector = validationTriggerSelector;
@@ -52,11 +77,17 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
         };
     }
 
+    /**
+     * Subscribes to set and item changes.
+     */
     protected subscribeToTarget(): void {
         Array.from(this.trigger).forEach(this._addItemValidationTriggers, this);
         this.trigger.setChanged.subscribe(this._setChangedEventHandler);
     }
 
+    /**
+     * Unsubscribes from set and item changes.
+     */
     protected unsubscribeFromTarget(): void {
         this.trigger.setChanged.unsubscribe(this._setChangedEventHandler);
 

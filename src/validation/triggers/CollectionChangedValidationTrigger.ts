@@ -1,18 +1,37 @@
 import type { ICollectionChange, ICollectionChangedEventHandler, INotifyCollectionChanged } from '../../collections';
 import { ValidationTrigger } from './ValidationTrigger';
 
+/**
+ * Represents the collection changed validation trigger configuration.
+ */
 export interface ICollectionChangedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionChanged<TItem> = INotifyCollectionChanged<TItem>> {
+    /**
+     * Gets the collection that may trigger a validaiton.
+     */
     readonly collection: TCollection;
 
+    /**
+     * Optional, a guard method which controls when a validaiton should be triggered.
+     * @param collection The collection that changed.
+     * @param collectionChange The collection change.
+     */
     shouldTriggerValidation?(collection: TCollection, collectionChange: ICollectionChange<TItem>): boolean;
 }
 
+/**
+ * Represents a collection changed validation trigger. Whenever the collection changes a validation may be triggered.
+ */
 export class CollectionChangedValidationTrigger<TItem = unknown, TCollection extends INotifyCollectionChanged<TItem> = INotifyCollectionChanged<TItem>> extends ValidationTrigger<TCollection> {
     private readonly _collectionChangedEventHandler: ICollectionChangedEventHandler<TCollection, TItem> & {
         _notifyValidationTriggered(): void;
     };
 
-    public constructor({ collection, shouldTriggerValidation }: ICollectionChangedValidationTriggerConfig<TItem, TCollection>) {
+    /**
+     * Initializes a new instance of the {@linkcode CollectionChangedValidationTrigger} class.
+     * @param config The validation trigger config.
+     */
+    public constructor(config: ICollectionChangedValidationTriggerConfig<TItem, TCollection>) {
+        const { collection, shouldTriggerValidation } = config;
         super(collection);
 
         this._collectionChangedEventHandler = {
@@ -25,11 +44,17 @@ export class CollectionChangedValidationTrigger<TItem = unknown, TCollection ext
         }
     }
 
-    public subscribeToTarget(): void {
+    /**
+     * Subscribes to collection changes.
+     */
+    protected subscribeToTarget(): void {
         this.trigger.collectionChanged.subscribe(this._collectionChangedEventHandler);
     }
 
-    public unsubscribeFromTarget(): void {
+    /**
+     * Unsubscribes from collection changes.
+     */
+    protected unsubscribeFromTarget(): void {
         this.trigger.collectionChanged.unsubscribe(this._collectionChangedEventHandler);
     }
 }

@@ -10,13 +10,33 @@ interface IItemValidationTriggers {
     readonly validationTriggers: readonly ValidationTrigger[];
 }
 
+/**
+ * Represents the collection item validation trigger configuration.
+ */
 export interface ICollectionItemValidationTriggerConfig<TItem> {
+    /**
+     * Gets the collection containing the items that may trigger validaiton.
+     */
     readonly collection: INotifyCollectionChanged<TItem> & Iterable<TItem>;
+    /**
+     * Gets the selector that provides the individual validation triggers for each item.
+     */
     readonly validationTriggerSelector: ValidationTriggerSelector<TItem>;
 
+    /**
+     * Optional, a guard method which controls when a validaiton should be triggered.
+     * @param item The item that changed which may trigger a validation.
+     */
     shouldTriggerValidation?(item: TItem): boolean;
 }
 
+/**
+ * Represents a collection item validation trigger. Instead of triggering a validaiton only when the collection changes,
+ * a validaiton may be triggered by any of the contained items when they themselves change.
+ * 
+ * This is useful when within the collection there is a field that needs to be unique,
+ * such as a unique name for each item in the collection.
+ */
 export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<INotifyCollectionChanged<TItem> & Iterable<TItem>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;
     private readonly _shouldTriggerValidation: (item: TItem) => boolean;
@@ -27,7 +47,12 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
         return true;
     }
 
-    public constructor({ collection, validationTriggerSelector, shouldTriggerValidation = CollectionItemValidationTrigger._defaultShouldTriggerValidation<TItem> }: ICollectionItemValidationTriggerConfig<TItem>) {
+    /**
+     * Initializes a new instance of the {@linkcode CollectionItemValidationTrigger} class.
+     * @param config The validation trigger config.
+     */
+    public constructor(config: ICollectionItemValidationTriggerConfig<TItem>) {
+        const { collection, validationTriggerSelector, shouldTriggerValidation = CollectionItemValidationTrigger._defaultShouldTriggerValidation<TItem> } = config;
         super(collection);
 
         this._validationTriggerSelector = validationTriggerSelector;
@@ -57,11 +82,17 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
         };
     }
 
+    /**
+     * Subscribes to collection and item changes.
+     */
     protected subscribeToTarget(): void {
         Array.from(this.trigger).forEach(this._ensureItemValidationTriggers, this);
         this.trigger.collectionChanged.subscribe(this._collectionChangedEventHandler);
     }
 
+    /**
+     * Unsubscribes from collection and item changes.
+     */
     protected unsubscribeFromTarget(): void {
         this.trigger.collectionChanged.unsubscribe(this._collectionChangedEventHandler);
 
