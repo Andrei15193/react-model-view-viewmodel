@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/Andrei15193/react-model-view-viewmodel/wiki",
   "peerDependencies": {
-    "react": "^18.3.1"
+    "react": ">=16.8.0"
   },
   "devDependencies": {
     "@testing-library/react": "^16.0.1",
