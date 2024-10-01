@@ -2,6 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "npm: build",
             "type": "npm",
             "script": "build",
             "group": {
@@ -10,10 +11,10 @@
             },
             "problemMatcher": [
                 "$tsc"
-            ],
-            "label": "npm: build"
+            ]
         },
         {
+            "label": "npm: test",
             "dependsOn": "npm: build",
             "type": "npm",
             "script": "test",
@@ -21,8 +22,14 @@
                 "kind": "test",
                 "isDefault": true
             },
-            "problemMatcher": [],
-            "label": "npm: test"
+            "problemMatcher": []
+        },
+        {
+            "label": "npm: docs",
+            "dependsOn": "npm: build",
+            "type": "npm",
+            "script": "docs",
+            "problemMatcher": []
         }
     ]
 }

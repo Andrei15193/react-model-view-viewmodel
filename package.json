@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "build": "webpack --mode production",
-    "test": "jest"
+    "test": "jest",
+    "docs": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,7 @@
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.26.7",
     "typescript": "^5.6.2",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
@@ -57,5 +59,11 @@
     "testMatch": [
       "**/*.test.ts"
     ]
+  },
+  "typedocOptions": {
+    "entryPoints": [
+      "src/index.ts"
+    ],
+    "json": "docs.json"
   }
 }

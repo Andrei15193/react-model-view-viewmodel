@@ -12,6 +12,7 @@ interface IItemValidationTriggers {
 
 /**
  * Represents the collection item validation trigger configuration.
+ * @template TItem The type of items the collection contains.
  */
 export interface ICollectionItemValidationTriggerConfig<TItem> {
     /**
@@ -36,6 +37,8 @@ export interface ICollectionItemValidationTriggerConfig<TItem> {
  * 
  * This is useful when within the collection there is a field that needs to be unique,
  * such as a unique name for each item in the collection.
+ * 
+ * @template TItem The type of items the collection contains.
  */
 export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<INotifyCollectionChanged<TItem> & Iterable<TItem>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;
