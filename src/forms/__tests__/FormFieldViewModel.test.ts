@@ -1,11 +1,11 @@
 import { ObservableCollection } from '../../collections';
 import { CollectionChangedValidationTrigger, CollectionReorderedValidationTrigger } from '../../validation/triggers';
-import { FormFieldViewModel } from '../FormFieldViewModel';
+import { FormField } from '../FormField';
 
-describe('FormFieldViewModel', (): void => {
+describe('FormField', (): void => {
     it('creating a field initializes it with provided values and fallbacks', (): void => {
         const initialValue = {};
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             initialValue
         });
@@ -21,7 +21,7 @@ describe('FormFieldViewModel', (): void => {
     it('creating a field with value initializes it', (): void => {
         const value = {};
         const initialValue = {};
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             value,
             initialValue
@@ -36,7 +36,7 @@ describe('FormFieldViewModel', (): void => {
     });
 
     it('creating a field with validators initializes it', (): void => {
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             initialValue: null,
             validators: [() => 'error']
@@ -54,7 +54,7 @@ describe('FormFieldViewModel', (): void => {
 
     it('creating a field with validation triggers initializes it', (): void => {
         const validationTrigger = new ObservableCollection<unknown>();
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             initialValue: null,
             validators: [() => 'error'],
@@ -76,7 +76,7 @@ describe('FormFieldViewModel', (): void => {
     it('changing a trigger revalidates the field', (): void => {
         let error = 'error 1';
         const validationTrigger = new ObservableCollection<unknown>();
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             initialValue: null,
             validators: [() => error],
@@ -92,7 +92,7 @@ describe('FormFieldViewModel', (): void => {
     });
 
     it('resetting validation on a field resets the error message', (): void => {
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             initialValue: null,
             validators: [() => 'error'],
@@ -109,7 +109,7 @@ describe('FormFieldViewModel', (): void => {
     });
 
     it('resetting a field resets validation', (): void => {
-        const field = new FormFieldViewModel<unknown>({
+        const field = new FormField<unknown>({
             name: 'name',
             initialValue: null,
             validators: [() => 'error'],

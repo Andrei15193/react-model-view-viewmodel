@@ -74,7 +74,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  * }
  *
  * // Or, define an input component for handling the binding of individual fields.
- * function MyInputComponent({ field }: { readonly field: Form<string> }): JSX.Element {
+ * function MyInputComponent({ field }: { readonly field: FormField<string> }): JSX.Element {
  *   // React to field property changes
  *   useViewModel(field);
  *

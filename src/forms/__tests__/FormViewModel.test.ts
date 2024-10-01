@@ -1,13 +1,13 @@
-import type { IObservableCollection, IReadOnlyObservableCollection } from '../../collections';
-import { FormFieldViewModel } from '../FormFieldViewModel';
+import type { IObservableCollection } from '../../collections';
+import { FormField } from '../FormField';
 import { FormSectionCollection } from '../FormSectionCollection';
-import { FormViewModel } from '../FormViewModel';
+import { Form } from '../Form';
 
-describe('FormViewModel', (): void => {
+describe('Form', (): void => {
     it('adding fields when initializing collections adds them to the form', (): void => {
-        const form = new TestFormViewModel();
-        const field1 = new FormFieldViewModel({ name: 'field 1', initialValue: {} });
-        const field2 = new FormFieldViewModel({ name: 'field 2', initialValue: {} });
+        const form = new TestForm();
+        const field1 = new FormField({ name: 'field 1', initialValue: {} });
+        const field2 = new FormField({ name: 'field 2', initialValue: {} });
 
         form.withFields(field1, field2);
 
@@ -16,9 +16,9 @@ describe('FormViewModel', (): void => {
     });
 
     it('adding fields to field collections adds them to the form', (): void => {
-        const form = new TestFormViewModel();
-        const field1 = new FormFieldViewModel({ name: 'field 1', initialValue: {} });
-        const field2 = new FormFieldViewModel({ name: 'field 2', initialValue: {} });
+        const form = new TestForm();
+        const field1 = new FormField({ name: 'field 1', initialValue: {} });
+        const field2 = new FormField({ name: 'field 2', initialValue: {} });
 
         const fields = form.withFields();
         fields.push(field1, field2);
@@ -28,9 +28,9 @@ describe('FormViewModel', (): void => {
     });
 
     it('initializing two field collections adds all to the form', (): void => {
-        const form = new TestFormViewModel();
-        const field1 = new FormFieldViewModel({ name: 'field 1', initialValue: {} });
-        const field2 = new FormFieldViewModel({ name: 'field 2', initialValue: {} });
+        const form = new TestForm();
+        const field1 = new FormField({ name: 'field 1', initialValue: {} });
+        const field2 = new FormField({ name: 'field 2', initialValue: {} });
 
         form.withFields(field1);
         form.withFields(field2);
@@ -40,22 +40,22 @@ describe('FormViewModel', (): void => {
     });
 
     it('changing field collections keeps the entire collection in sync', (): void => {
-        const form = new TestFormViewModel();
-        function expectFields(fields: readonly FormFieldViewModel<any>[]) {
+        const form = new TestForm();
+        function expectFields(fields: readonly FormField<any>[]) {
             expect(form.fields.length).toBe(fields.length);
             expect(form.fields.toArray().map(({ name }) => ({ name }))).toEqual(fields.map(({ name }) => ({ name })));
         }
 
-        const field1 = new FormFieldViewModel({ name: 'field 1', initialValue: {} });
-        const field2 = new FormFieldViewModel({ name: 'field 2', initialValue: {} });
-        const field3 = new FormFieldViewModel({ name: 'field 3', initialValue: {} });
-        const field4 = new FormFieldViewModel({ name: 'field 4', initialValue: {} });
-        const field5 = new FormFieldViewModel({ name: 'field 5', initialValue: {} });
-        const field6 = new FormFieldViewModel({ name: 'field 6', initialValue: {} });
-        const field7 = new FormFieldViewModel({ name: 'field 7', initialValue: {} });
-        const field8 = new FormFieldViewModel({ name: 'field 8', initialValue: {} });
-        const field9 = new FormFieldViewModel({ name: 'field 9', initialValue: {} });
-        const field10 = new FormFieldViewModel({ name: 'field 10', initialValue: {} });
+        const field1 = new FormField({ name: 'field 1', initialValue: {} });
+        const field2 = new FormField({ name: 'field 2', initialValue: {} });
+        const field3 = new FormField({ name: 'field 3', initialValue: {} });
+        const field4 = new FormField({ name: 'field 4', initialValue: {} });
+        const field5 = new FormField({ name: 'field 5', initialValue: {} });
+        const field6 = new FormField({ name: 'field 6', initialValue: {} });
+        const field7 = new FormField({ name: 'field 7', initialValue: {} });
+        const field8 = new FormField({ name: 'field 8', initialValue: {} });
+        const field9 = new FormField({ name: 'field 9', initialValue: {} });
+        const field10 = new FormField({ name: 'field 10', initialValue: {} });
 
         const fieldCollection1 = form.withFields(field1, field2, field3);
         const fieldCollection2 = form.withFields(field4, field5, field6, field7);
@@ -87,8 +87,8 @@ describe('FormViewModel', (): void => {
 
     it('removing a form field resets it', () => {
         let resetInvocationCount = 0;
-        const form = new TestFormViewModel();
-        const field = new FormFieldViewModel({ name: 'field', initialValue: null });
+        const form = new TestForm();
+        const field = new FormField({ name: 'field', initialValue: null });
         field.reset = () => {
             resetInvocationCount++;
         };
@@ -101,9 +101,9 @@ describe('FormViewModel', (): void => {
     });
 
     it('adding sections when initializing collections adds them to the form', (): void => {
-        const form = new TestFormViewModel();
-        const section1 = new FormViewModel();
-        const section2 = new FormViewModel();
+        const form = new TestForm();
+        const section1 = new Form();
+        const section2 = new Form();
 
         form.withSections(section1, section2);
 
@@ -112,9 +112,9 @@ describe('FormViewModel', (): void => {
     });
 
     it('adding sections to section collections adds them to the form', (): void => {
-        const form = new TestFormViewModel();
-        const section1 = new FormViewModel();
-        const section2 = new FormViewModel();
+        const form = new TestForm();
+        const section1 = new Form();
+        const section2 = new Form();
 
         const sections = form.withSections();
         sections.push(section1, section2);
@@ -124,9 +124,9 @@ describe('FormViewModel', (): void => {
     });
 
     it('initializing two section collections adds all to the form', (): void => {
-        const form = new TestFormViewModel();
-        const section1 = new FormViewModel();
-        const section2 = new FormViewModel();
+        const form = new TestForm();
+        const section1 = new Form();
+        const section2 = new Form();
 
         form.withSections(section1);
         form.withSections(section2);
@@ -136,22 +136,22 @@ describe('FormViewModel', (): void => {
     });
 
     it('changing section collections keeps the entire collection in sync', (): void => {
-        const form = new TestFormViewModel();
-        function expectSections(sections: readonly FormViewModel<any>[]) {
+        const form = new TestForm();
+        function expectSections(sections: readonly Form<any>[]) {
             expect(form.sections.length).toBe(sections.length);
             expect(form.sections.toArray()).toEqual(sections);
         }
 
-        const section1 = new FormViewModel();
-        const section2 = new FormViewModel();
-        const section3 = new FormViewModel();
-        const section4 = new FormViewModel();
-        const section5 = new FormViewModel();
-        const section6 = new FormViewModel();
-        const section7 = new FormViewModel();
-        const section8 = new FormViewModel();
-        const section9 = new FormViewModel();
-        const section10 = new FormViewModel();
+        const section1 = new Form();
+        const section2 = new Form();
+        const section3 = new Form();
+        const section4 = new Form();
+        const section5 = new Form();
+        const section6 = new Form();
+        const section7 = new Form();
+        const section8 = new Form();
+        const section9 = new Form();
+        const section10 = new Form();
 
         const sectionCollection1 = form.withSections(section1, section2, section3);
         const sectionCollection2 = form.withSections(section4, section5, section6, section7);
@@ -180,8 +180,8 @@ describe('FormViewModel', (): void => {
 
     it('removing a form section resets it', () => {
         let resetInvocationCount = 0;
-        const form = new TestFormViewModel();
-        const section = new FormViewModel();
+        const form = new TestForm();
+        const section = new Form();
         section.reset = () => {
             resetInvocationCount++;
         };
@@ -194,8 +194,8 @@ describe('FormViewModel', (): void => {
     });
 
     it('invalidating a field makes the entire form invalid', (): void => {
-        const form = new TestFormViewModel();
-        const [field] = form.withFields(new FormFieldViewModel({
+        const form = new TestForm();
+        const [field] = form.withFields(new FormField({
             name: 'field',
             initialValue: null
         }));
@@ -208,7 +208,7 @@ describe('FormViewModel', (): void => {
 
     it('invalidating a field propagates property change notifications', (): void => {
         let invocationCount = 0;
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         form.propertiesChanged.subscribe({
             handle(_, changedProperties) {
                 invocationCount++;
@@ -217,7 +217,7 @@ describe('FormViewModel', (): void => {
                 expect(changedProperties).toContain('isInvalid');
             }
         })
-        const field = new FormFieldViewModel({
+        const field = new FormField({
             name: 'field',
             initialValue: null
         });
@@ -229,9 +229,9 @@ describe('FormViewModel', (): void => {
     });
 
     it('invalidating a section makes the entire form invalid', (): void => {
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         const [section] = form.withSections(
-            new FormViewModel()
+            new Form()
         );
 
         section.error = 'invalid';
@@ -242,7 +242,7 @@ describe('FormViewModel', (): void => {
 
     it('invalidating a section propagates property change notifications', (): void => {
         let invocationCount = 0;
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         form.propertiesChanged.subscribe({
             handle(_, changedProperties) {
                 invocationCount++;
@@ -252,7 +252,7 @@ describe('FormViewModel', (): void => {
             }
         })
         const [section] = form.withSections(
-            new FormViewModel()
+            new Form()
         );
 
         section.error = 'invalid';
@@ -262,9 +262,9 @@ describe('FormViewModel', (): void => {
 
     it('configuring a form section collection initializes each added section', () => {
         let invocationCount = 0;
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         const sectionCollection = form.withSections();
-        const formSection = new FormViewModel();
+        const formSection = new Form();
         sectionCollection.withItemSetup(
             section => {
                 invocationCount++;
@@ -281,18 +281,18 @@ describe('FormViewModel', (): void => {
         let setup1InvocationCount = 0;
         let setup2InvocationCount = 0;
         let resetInvocationCount = 0;
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         const sectionCollection = form.withSections();
-        const formSection = new FormViewModel();
+        const formSection = new Form();
         formSection.reset = () => {
             resetInvocationCount++;
         }
 
-        const setup1 = (section: FormViewModel) => {
+        const setup1 = (section: Form) => {
             setup1InvocationCount++;
             expect(section).toStrictEqual(formSection);
         };
-        const setup2 = (section: FormViewModel) => {
+        const setup2 = (section: Form) => {
             setup2InvocationCount++;
             expect(section).toStrictEqual(formSection);
         };
@@ -310,9 +310,9 @@ describe('FormViewModel', (): void => {
 
     it('clearing configuration callbacks resets the section', () => {
         let resetInvocationCount = 0;
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         const sectionCollection = form.withSections();
-        const formSection = new FormViewModel();
+        const formSection = new Form();
         formSection.reset = () => {
             resetInvocationCount++;
         }
@@ -329,12 +329,12 @@ describe('FormViewModel', (): void => {
         let sectionResetInvocationCount = 0;
         let sectionSetupInvocationCount = 0;
 
-        const form = new TestFormViewModel();
+        const form = new TestForm();
         form.validation.add(() => 'error', [form]);
-        const field = new FormFieldViewModel({ name: 'field', initialValue: null });
+        const field = new FormField({ name: 'field', initialValue: null });
         field.reset = () => { fieldResetInvocationCount++; };
         form.withFields(field);
-        const formSection = new FormViewModel();
+        const formSection = new Form();
         formSection.reset = () => { sectionResetInvocationCount++; }
         const formSectionsCollection = form.withSections(formSection);
         formSectionsCollection.withItemSetup(
@@ -351,7 +351,7 @@ describe('FormViewModel', (): void => {
         expect(form.validation.triggers.size).toBe(1);
 
         form.reset();
-        formSectionsCollection.push(new FormViewModel());
+        formSectionsCollection.push(new Form());
 
         expect(fieldResetInvocationCount).toBe(1);
         expect(sectionResetInvocationCount).toBe(1);
@@ -364,12 +364,12 @@ describe('FormViewModel', (): void => {
     });
 });
 
-class TestFormViewModel<TValidationError = string> extends FormViewModel<TValidationError> {
-    public withFields(...fields: readonly FormFieldViewModel<any, TValidationError>[]): IObservableCollection<FormFieldViewModel<any, TValidationError>> {
+class TestForm<TValidationError = string> extends Form<TValidationError> {
+    public withFields(...fields: readonly FormField<any, TValidationError>[]): IObservableCollection<FormField<any, TValidationError>> {
         return super.withFields.apply(this, arguments);
     }
 
-    public withSections(...sections: readonly FormViewModel<TValidationError>[]): FormSectionCollection<FormViewModel<TValidationError>, TValidationError> {
+    public withSections(...sections: readonly Form<TValidationError>[]): FormSectionCollection<Form<TValidationError>, TValidationError> {
         return super.withSections.apply(this, arguments);
     }
 }
