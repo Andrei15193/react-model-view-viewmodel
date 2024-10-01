@@ -1,5 +1,5 @@
-export { FormViewModel } from './FormViewModel';
-export { type IFormFieldViewModelConfig, FormFieldViewModel } from './FormFieldViewModel';
+export { Form } from './Form';
+export { type IFormFieldConfig, FormField } from './FormField';
 
 export type { IConfigurableFormSectionCollection, FormSectionSetupCallback } from './IConfigurableFormSectionCollection'
 export type { IReadOnlyFormSectionCollection } from './IReadOnlyFormSectionCollection';

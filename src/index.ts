@@ -60,6 +60,17 @@ export {
 } from './collections';
 
 export {
+    Form,
+    IFormFieldConfig, FormField,
+    FormSectionCollection,
+
+    type IFormSectionCollection,
+    type IReadOnlyFormSectionCollection,
+    type IConfigurableFormSectionCollection,
+    type FormSectionSetupCallback,
+} from './forms';
+
+export {
     type IReadOnlyValidatable, type IValidatable, Validatable,
 
     type IValidator, type ValidatorCallback,

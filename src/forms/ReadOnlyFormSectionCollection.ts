@@ -1,5 +1,5 @@
 import { ReadOnlyObservableCollection } from '../collections';
-import type { FormViewModel } from './FormViewModel';
+import type { Form } from './Form';
 import type { IConfigurableFormSectionCollection, FormSectionSetupCallback } from './IConfigurableFormSectionCollection';
 
 /**
@@ -10,7 +10,7 @@ import type { IConfigurableFormSectionCollection, FormSectionSetupCallback } fro
  * @template TSection the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export class ReadOnlyFormSectionCollection<TSection extends FormViewModel<TValidationError>, TValidationError = string> extends ReadOnlyObservableCollection<TSection> implements IConfigurableFormSectionCollection<TSection, TValidationError> {
+export class ReadOnlyFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends ReadOnlyObservableCollection<TSection> implements IConfigurableFormSectionCollection<TSection, TValidationError> {
     private readonly _setupCallbacks: FormSectionSetupCallback<TSection, TValidationError>[];
     /**
      * Initializes a new instance of the {@link FormSectionCollection} class.

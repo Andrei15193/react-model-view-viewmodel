@@ -1,5 +1,5 @@
 import type { IObservableCollection } from '../collections';
-import type { FormViewModel } from './FormViewModel';
+import type { Form } from './Form';
 import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
 
 /** 
@@ -9,6 +9,6 @@ import type { IConfigurableFormSectionCollection } from './IConfigurableFormSect
  * @template TSection the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export interface IFormSectionCollection<TSection extends FormViewModel<TValidationError>, TValidationError = string>
+export interface IFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string>
     extends IObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
 }

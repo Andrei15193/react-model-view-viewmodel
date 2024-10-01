@@ -1,8 +1,8 @@
 import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
-import type { FormViewModel } from './FormViewModel';
+import type { Form } from './Form';
 import { ReadOnlyFormSectionCollection } from './ReadOnlyFormSectionCollection';
 
-export class FormSectionCollection<TSection extends FormViewModel<TValidationError>, TValidationError = string> extends ReadOnlyFormSectionCollection<TSection, TValidationError> implements IConfigurableFormSectionCollection<TSection, TValidationError> {
+export class FormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormSectionCollection<TSection, TValidationError> implements IConfigurableFormSectionCollection<TSection, TValidationError> {
     /**
      * Initializes a new instance of the {@link FormSectionCollection} class.
      * @param sections The items to initialize the collection with.

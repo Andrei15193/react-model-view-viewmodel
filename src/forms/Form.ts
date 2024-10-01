@@ -2,7 +2,7 @@ import type { IPropertiesChangedEventHandler } from '../viewModels';
 import type { IReadOnlyFormSectionCollection } from './IReadOnlyFormSectionCollection';
 import { type IReadOnlyObservableCollection, type IObservableCollection, type ICollectionChangedEventHandler, type ICollectionReorderedEventHandler, ObservableCollection, ReadOnlyObservableCollection } from '../collections';
 import { type IObjectValidator, Validatable, ObjectValidator } from '../validation';
-import { FormFieldViewModel } from './FormFieldViewModel';
+import { FormField } from './FormField';
 import { FormSectionCollection } from './FormSectionCollection';
 
 /**
@@ -24,7 +24,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  * changes.
  *
  * The design is mean to be extensible with the idea that each application would make its own customizations through inheritance (e.g.:
- * declaring a `MyAppFormViewModel` and a `MyAppFormFieldViewModel`). While it can be a bit redundant if no extra features are added,
+ * declaring a `MyAppForm` and a `MyAppFormModel`). While it can be a bit redundant if no extra features are added,
  * but it prepares the code in case any flag will be added in the future, the effort is small and covers for any scenario in the future.
  *
  * The validation error defaults to `string`, however this can be anything, enums, numbers, specific strings and so on. This is to enable
@@ -39,31 +39,31 @@ import { FormSectionCollection } from './FormSectionCollection';
  * our fields. We will be using the default validation result which is a string.
  *
  * ```tsx
- * export class MyFormViewModel extends FormViewModel {
+ * export class MyForm extends Form {
  *   public constructor() {
  *     super();
  *
  *     this.withFields(
- *       this.name = new FormFieldViewModel<string>({
+ *       this.name = new FormField<string>({
  *         name: 'name',
  *         initialValue: '',
  *         validators: [field => field.value === '' ? 'Required' : null]
  *       }),
- *       this.description = new FormFieldViewModel<string>({
+ *       this.description = new FormField<string>({
  *         name: 'description',
  *         initialValue: ''
  *       })
  *     );
  *   }
  *
- *   public readonly name: FormFieldViewModel<string>;
+ *   public readonly name: FormField<string>;
  *
- *   public readonly description: FormFieldViewModel<string>;
+ *   public readonly description: FormField<string>;
  * }
  *
  * // We can use one of the hooks to create an instance in a component.
  * function MyFormComponent(): JSX.Element {
- *   const myForm = useViewModel(MyFormViewModel);
+ *   const myForm = useViewModel(MyForm);
  *
  *   return (
  *     <>
@@ -74,7 +74,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  * }
  *
  * // Or, define an input component for handling the binding of individual fields.
- * function MyInputComponent({ field }: { readonly field: FormViewModel<string> }): JSX.Element {
+ * function MyInputComponent({ field }: { readonly field: Form<string> }): JSX.Element {
  *   // React to field property changes
  *   useViewModel(field);
  *
@@ -102,22 +102,22 @@ import { FormSectionCollection } from './FormSectionCollection';
  * ```ts
  * // Define an app-specific form, override some of the methods to restrict
  * // what type of fields can be added and which notifications propagate.
- * export class MyAppFormViewModel extends FormViewModel<number> {
+ * export class MyAppForm extends Form<number> {
  *   // Restrict all fields to be app-specific ones.
- *   public readonly fields: IReadOnlyObservableCollection<MyAppFormFieldViewModel<unknown>>;
+ *   public readonly fields: IReadOnlyObservableCollection<MyAppFormField<unknown>>;
  *
- *   protected withFields(...fields: readonly MyAppFormFieldViewModel<any>[]): IObservableCollection<MyAppFormFieldViewModel<any>> {
+ *   protected withFields(...fields: readonly MyAppFormField<any>[]): IObservableCollection<MyAppFormField<any>> {
  *     return super.withFields.apply(this, arguments);
  *   }
  *
  *   // Restrict all sections to be app-specific ones.
- *   public readonly sections: IReadOnlyObservableCollection<MyAppFormViewModel>;
+ *   public readonly sections: IReadOnlyObservableCollection<MyAppForm>;
  *
- *   protected withSections(...sections: readonly MyAppFormViewModel[]): FormSectionCollection<MyAppFormViewModel, number> {
+ *   protected withSections(...sections: readonly MyAppForm[]): FormSectionCollection<MyAppForm, number> {
  *     return super.withSections.apply(this, arguments);
  *   }
  *
- *   protected withSectionsCollection(sectionsCollection: IReadOnlyFormSectionCollection<MyAppFormViewModel, number>): IReadOnlyFormSectionCollection<MyAppFormViewModel, number> {
+ *   protected withSectionsCollection(sectionsCollection: IReadOnlyFormSectionCollection<MyAppForm, number>): IReadOnlyFormSectionCollection<MyAppForm, number> {
  *     return super.withSectionsCollection.apply(this, arguments);
  *   }
  *
@@ -132,8 +132,8 @@ import { FormSectionCollection } from './FormSectionCollection';
  *   // This gets called whenever a field's property has changed,
  *   // we can use this to propagate the notifications.
  *   protected onFieldChanged(
- *     field: MyAppFormFieldViewModel<unknown>,
- *     changedProperties: readonly (keyof MyAppFormFieldViewModel<unknown>)[]
+ *     field: MyAppFormField<unknown>,
+ *     changedProperties: readonly (keyof MyAppFormField<unknown>)[]
  *   ) {
  *     super.onFieldChanged.apply(this, arguments);
  *
@@ -146,8 +146,8 @@ import { FormSectionCollection } from './FormSectionCollection';
  *   // This gets called whenever a section's property has changed,
  *   // we can use this to propagate the notifications.
  *   protected onSectionChanged(
- *     section: MyAppFormViewModel,
- *     changedProperties: readonly (keyof MyAppFormViewModel)[]
+ *     section: MyAppForm,
+ *     changedProperties: readonly (keyof MyAppForm)[]
  *   ) {
  *     super.onSectionChanged.apply(this, arguments);
  *
@@ -159,7 +159,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  *   // should occur. In our case, the `hasChanges` flag does not impact validation thus we can
  *   // skip validation whenever this flag changes.
  *   // The `error`, `isValid` and `isInvalid` fields come from the base implementation.
- *   protected onShouldTriggerValidation(changedProperties: readonly (keyof MyAppFormViewModel)[]): boolean {
+ *   protected onShouldTriggerValidation(changedProperties: readonly (keyof MyAppForm)[]): boolean {
  *     return changedProperties.some(changedProperty => (
  *       changedProperty !== 'error'
  *       && changedProperty !== 'isValid'
@@ -172,7 +172,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  * // Define an app-specific field, we will use numbers for validation error.
  * // This will help us as well since we will not have to specify it every time
  * // and maintains consistency throughout the codebase.
- * class MyAppFormFieldViewModel<TValue> extends FormFieldViewModel<TValue, number> {
+ * class MyAppFormField<TValue> extends FormField<TValue, number> {
  *   public get hasChanged(): boolean {
  *     return this.value !== this.initialValue;
  *   }
@@ -188,12 +188,12 @@ import { FormSectionCollection } from './FormSectionCollection';
  * }
  * ```
  */
-export class FormViewModel<TValidationError = string> extends Validatable<TValidationError> {
-    private readonly _fields: AggregateObservableCollection<FormFieldViewModel<unknown, TValidationError>>;
-    private readonly _sections: AggregateObservableCollection<FormViewModel<TValidationError>, IReadOnlyFormSectionCollection<FormViewModel<TValidationError>, TValidationError>>;
+export class Form<TValidationError = string> extends Validatable<TValidationError> {
+    private readonly _fields: AggregateObservableCollection<FormField<unknown, TValidationError>>;
+    private readonly _sections: AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>;
 
     /**
-     * Initializes a new instance of the {@link FormViewModel} class.
+     * Initializes a new instance of the {@link Form} class.
      */
     public constructor() {
         super();
@@ -204,10 +204,10 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
                 return this.onShouldTriggerValidation(changedProperties);
             }
         });
-        this.fields = this._fields = new AggregateObservableCollection<FormFieldViewModel<unknown, TValidationError>>();
-        this.sections = this._sections = new AggregateObservableCollection<FormViewModel<TValidationError>, IReadOnlyFormSectionCollection<FormViewModel<TValidationError>, TValidationError>>();
+        this.fields = this._fields = new AggregateObservableCollection<FormField<unknown, TValidationError>>();
+        this.sections = this._sections = new AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>();
 
-        const fieldChangedEventHandler: IPropertiesChangedEventHandler<FormFieldViewModel<unknown, TValidationError>> = {
+        const fieldChangedEventHandler: IPropertiesChangedEventHandler<FormField<unknown, TValidationError>> = {
             handle: this.onFieldChanged.bind(this)
         };
         this.fields.collectionChanged.subscribe({
@@ -222,7 +222,7 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
             }
         });
 
-        const sectionChangedEventHandler: IPropertiesChangedEventHandler<FormViewModel<TValidationError>> = {
+        const sectionChangedEventHandler: IPropertiesChangedEventHandler<Form<TValidationError>> = {
             handle: this.onSectionChanged.bind(this)
         };
         this.sections.collectionChanged.subscribe({
@@ -246,12 +246,12 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
     /**
      * Gets the fields defined within the form instance.
      */
-    public readonly fields: IReadOnlyObservableCollection<FormFieldViewModel<unknown, TValidationError>>;
+    public readonly fields: IReadOnlyObservableCollection<FormField<unknown, TValidationError>>;
 
     /**
      * Gets the sections defined within the form instance.
      */
-    public readonly sections: IReadOnlyObservableCollection<FormViewModel<TValidationError>>;
+    public readonly sections: IReadOnlyObservableCollection<Form<TValidationError>>;
 
     /**
      * Indicates whether the form is valid.
@@ -301,8 +301,8 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
      * @returns Returns a collection containing the provided fields. The form reacts to changes made in
      * the returned collection always keeping in sync.
      */
-    protected withFields(...fields: readonly FormFieldViewModel<any, TValidationError>[]): IObservableCollection<FormFieldViewModel<any, TValidationError>> {
-        const fieldsCollection = new ObservableCollection<FormFieldViewModel<unknown, TValidationError>>(fields);
+    protected withFields(...fields: readonly FormField<any, TValidationError>[]): IObservableCollection<FormField<any, TValidationError>> {
+        const fieldsCollection = new ObservableCollection<FormField<unknown, TValidationError>>(fields);
         this._fields.aggregatedCollections.push(fieldsCollection);
 
         return fieldsCollection;
@@ -317,8 +317,8 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
      * @returns Returns a collection containing the provided sections. The form reacts to changes made in
      * the returned collection always keeping in sync.
      */
-    protected withSections(...sections: readonly FormViewModel<TValidationError>[]): FormSectionCollection<FormViewModel<TValidationError>, TValidationError> {
-        const sectionsCollection = new FormSectionCollection<FormViewModel<TValidationError>, TValidationError>(sections);
+    protected withSections(...sections: readonly Form<TValidationError>[]): FormSectionCollection<Form<TValidationError>, TValidationError> {
+        const sectionsCollection = new FormSectionCollection<Form<TValidationError>, TValidationError>(sections);
         this.withSectionsCollection(sectionsCollection);
 
         return sectionsCollection;
@@ -342,32 +342,32 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
      * each item is editable.
      *
      * ```ts
-     * class ToDoList extends FormViewModel {
+     * class ToDoList extends Form {
      *   public constructor() {
      *     super();
      *
      *     this.withFields(
-     *       this.name = new FormFieldViewModel<string>({ name: 'name', initialValue: '' })
+     *       this.name = new FormField<string>({ name: 'name', initialValue: '' })
      *     );
      *     this.withSectionsCollection(
      *       this.items = new ToDoListItemsCollection()
      *     );
      *   }
      *
-     *   public readonly name: FormFieldViewModel<string>;
+     *   public readonly name: FormField<string>;
      *
      *   public readonly items: ToDoListItemsCollection;
      * }
      *
-     * class ToDoListItemsCollection extends ReadOnlyFormSectionCollection<ToDoItemFormViewModel> {
-     *   public add(): ToDoItemFormViewModel {
-     *     const toDoItem = new ToDoItemFormViewModel();
+     * class ToDoListItemsCollection extends ReadOnlyFormSectionCollection<ToDoItemForm> {
+     *   public add(): ToDoItemForm {
+     *     const toDoItem = new ToDoItemForm();
      *     this.push(toDoItem);
      *
      *     return toDoItem;
      *   }
      *
-     *   public remove(toDoItem: ToDoItemFormViewModel): void {
+     *   public remove(toDoItem: ToDoItemForm): void {
      *     const toDoItemIndex = this.indexOf(toDoItem);
      *     if (toDoItemIndex >= 0)
      *       this.splice(toDoItemIndex, 1);
@@ -375,16 +375,16 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
      *
      * }
      *
-     * class ToDoItemFormViewModel extends FormViewModel {
+     * class ToDoItemForm extends Form {
      *   public constructor() {
      *     super();
      *
      *     this.withFields(
-     *       this.description = new FormFieldViewModel<string>({ name: 'description', initialValue: '' })
+     *       this.description = new FormField<string>({ name: 'description', initialValue: '' })
      *     );
      *   }
      *
-     *   public readonly description: FormFieldViewModel<string>;
+     *   public readonly description: FormField<string>;
      * }
      * ```
      *
@@ -399,7 +399,7 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
      * toDoList.items.remove(toDoItem);
      * ```
      */
-    protected withSectionsCollection(sectionsCollection: IReadOnlyFormSectionCollection<FormViewModel<TValidationError>, TValidationError>): IReadOnlyFormSectionCollection<FormViewModel<TValidationError>, TValidationError> {
+    protected withSectionsCollection(sectionsCollection: IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>): IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError> {
         this._sections.aggregatedCollections.push(sectionsCollection);
 
         return sectionsCollection;
@@ -408,7 +408,7 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
     /**
      * Invoked when a field's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
-    protected onFieldChanged(field: FormFieldViewModel<unknown, TValidationError>, changedProperties: readonly (keyof FormFieldViewModel<unknown, TValidationError>)[]) {
+    protected onFieldChanged(field: FormField<unknown, TValidationError>, changedProperties: readonly (keyof FormField<unknown, TValidationError>)[]) {
         if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
@@ -416,7 +416,7 @@ export class FormViewModel<TValidationError = string> extends Validatable<TValid
     /**
      * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
-    protected onSectionChanged(section: FormViewModel<TValidationError>, changedProperties: readonly (keyof FormViewModel<TValidationError>)[]) {
+    protected onSectionChanged(section: Form<TValidationError>, changedProperties: readonly (keyof Form<TValidationError>)[]) {
         if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }

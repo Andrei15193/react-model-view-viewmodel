@@ -1,7 +1,7 @@
-import type { FormViewModel } from './FormViewModel';
+import type { Form } from './Form';
 
 /** Represents a callback used to configure an individual form section within a collection. */
-export type FormSectionSetupCallback<TSection extends FormViewModel<TValidationError>, TValidationError = string> = (section: TSection) => void;
+export type FormSectionSetupCallback<TSection extends Form<TValidationError>, TValidationError = string> = (section: TSection) => void;
 
 /**
  * Represents collection of form sections that can be configured. This is useful for cases like having a list of editable items
@@ -10,7 +10,7 @@ export type FormSectionSetupCallback<TSection extends FormViewModel<TValidationE
  * @template TSection the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export interface IConfigurableFormSectionCollection<TSection extends FormViewModel<TValidationError>, TValidationError = string> {
+export interface IConfigurableFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> {
     /**
      * Configures the provided `setupCallback` and applies it on all existing form sections within the collection
      * and to any form section that is added.

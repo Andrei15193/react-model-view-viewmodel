@@ -3,12 +3,12 @@ import { Validatable, type IValidator, type ValidatorCallback, type IObjectValid
 /**
  * Represents the configuration of a field, this can be extended for custom fields to easily add more features.
  */
-export interface IFormFieldViewModelConfig<TValue, TValidationError = string> {
+export interface IFormFieldConfig<TValue, TValidationError = string> {
     readonly name: string;
     readonly value?: TValue;
     readonly initialValue: TValue;
 
-    readonly validators?: readonly (IValidator<FormFieldViewModel<TValue, TValidationError>, TValidationError> | ValidatorCallback<FormFieldViewModel<TValue, TValidationError>, TValidationError>)[];
+    readonly validators?: readonly (IValidator<FormField<TValue, TValidationError>, TValidationError> | ValidatorCallback<FormField<TValue, TValidationError>, TValidationError>)[];
     readonly validationTriggers?: readonly (WellKnownValidationTrigger | ValidationTrigger)[];
 }
 
@@ -46,7 +46,7 @@ export interface IFormFieldViewModelConfig<TValue, TValidationError = string> {
  * fields as already touched, the default will be `false`.
  *
  * ```ts
- * interface IMyFieldConfig<TValue> extends IFormFieldViewModelConfig<TValue> {
+ * interface IMyFieldConfig<TValue> extends IFormFieldConfig<TValue> {
  *   readonly isTouched?: boolean;
  * }
  * ```
@@ -54,7 +54,7 @@ export interface IFormFieldViewModelConfig<TValue, TValidationError = string> {
  * Next, we will define our field.
  * 
  * ```ts
- * class MyFormFieldViewModel<TValue> extends FormFieldViewModel<TValue> {
+ * class MyFormField<TValue> extends FormField<TValue> {
  *   // Define a backing field as we will be using getters and setters
  *   private _isTouched: boolean;
  * 
@@ -82,7 +82,7 @@ export interface IFormFieldViewModelConfig<TValue, TValidationError = string> {
  *   // should occur. In our case, the `isTouched` flag does not impact validation thus we can
  *   // skip validation whenever this flag changes.
  *   // The `error`, `isValid` and `isInvalid` fields come from the base implementation.
- *   protected onShouldTriggerValidation(changedProperties: readonly (keyof MyFormFieldViewModel<TValue>)[]): boolean {
+ *   protected onShouldTriggerValidation(changedProperties: readonly (keyof MyFormField<TValue>)[]): boolean {
  *     return changedProperties.some(changedProperty => (
  *       changedProperty !== 'error'
  *       && changedProperty !== 'isValid'
@@ -99,16 +99,16 @@ export interface IFormFieldViewModelConfig<TValue, TValidationError = string> {
  * The library provides the basic form model that can easily be extended allowing for users to define
  * the missing parts with ease while still benefiting from the full form model structure.
  */
-export class FormFieldViewModel<TValue, TValidationError = string> extends Validatable<TValidationError> {
+export class FormField<TValue, TValidationError = string> extends Validatable<TValidationError> {
     private _name: string;
     private _value: TValue;
     private _initialValue: TValue;
 
     /**
-     * Initializes a new instance of the {@link FormFieldViewModel} class.
+     * Initializes a new instance of the {@link FormField} class.
      * @param config The initial configuration of the field (name, value, validators etc.).
      */
-    public constructor(config: IFormFieldViewModelConfig<TValue, TValidationError>) {
+    public constructor(config: IFormFieldConfig<TValue, TValidationError>) {
         super();
 
         const {
