@@ -165,12 +165,12 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
      * @param index The index at which to set the item in the result array, accepts both positive and negative values.
-     * @param value The item to set in the result array.
+     * @param item The item to set in the result array.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements of the collection having the provided value set at the provided index.
      * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
      * @throws [RangeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError) Thrown when the normalized index is out of bounds.
      */
-    public with(index: number, value: TItem): TItem[] {
+    public with(index: number, item: TItem): TItem[] {
         if (index < -this._length || index >= this._length)
             throw new RangeError(`The provided index '${index}' is outside the bounds of the collection.`);
 
@@ -180,7 +180,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
         for (let itemIndex = 0; itemIndex < normalizedIndex; itemIndex++)
             result[itemIndex] = this[itemIndex];
 
-        result[normalizedIndex] = value;
+        result[normalizedIndex] = item;
 
         for (let itemIndex = normalizedIndex + 1; itemIndex < this._length; itemIndex++)
             result[itemIndex] = this[itemIndex];
@@ -240,15 +240,15 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Returns the first index of an item, or `-1` if none can be found.
-     * @param item The item to search for.
+     * @param searchElement The item to search for.
      * @param fromIndex The index from where to start the search, accepts both positive and negative values.
      * @returns Returns the index where the provided `searchElement` was first found; otherwise `-1`.
      * @see [Array.indexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
      */
-    public indexOf(item: TItem, fromIndex?: number): number {
+    public indexOf(searchElement: TItem, fromIndex?: number): number {
         let searchElementIndex = normalizeStartIndex(this, fromIndex);
 
-        while (searchElementIndex < this._length && this[searchElementIndex] !== item)
+        while (searchElementIndex < this._length && this[searchElementIndex] !== searchElement)
             searchElementIndex++;
 
         if (searchElementIndex >= this._length)

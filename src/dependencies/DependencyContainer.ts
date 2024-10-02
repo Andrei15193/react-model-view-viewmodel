@@ -191,7 +191,7 @@ export class DependencyContainer implements IDependencyContainer, IDependencyRes
   /**
    * Resolves a complex dependency. All such dependencies are transient as they require
    * additional dependencies on the constructor.
-   * @param resolvableDependency The complex dependnecy to resolve.
+   * @param dependency The complex dependnecy to resolve.
    * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
    * @returns The resolved dependency.
    */

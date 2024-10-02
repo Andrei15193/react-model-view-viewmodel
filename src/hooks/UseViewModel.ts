@@ -25,7 +25,6 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged | null 
  * Creates a new instance of a view model of the given type and watches for property changes.
  * @template TViewModel The type of view model.
  * @param viewModelType The view model class declaration to instantiate.
- * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
  * @returns Returns the created view model instance.
  */
 export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewModelType: ViewModelType<TViewModel>): TViewModel;
@@ -44,7 +43,7 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConst
  * Watches the provided view model, or creates a new instance of the given type and watches it for property changes, constructor arguments act as dependencies.
  * @template TViewModel The type of view model.
  * @template TConstructorArgs The constructor parameter types.
- * @param viewModelType The view model or class declaration to instantiate.
+ * @param viewModelOrType The view model or class declaration to instantiate.
  * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
  * @returns Returns the provided view model or the initialized one.
  */
@@ -54,7 +53,7 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConst
  * Watches the provided view model, or creates a new instance of the given type and watches it for property changes, constructor arguments act as dependencies.
  * @template TViewModel The type of view model.
  * @template TConstructorArgs The constructor parameter types.
- * @param viewModelType The view model or class declaration to instantiate.
+ * @param viewModelOrType The view model or class declaration to instantiate.
  * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
  * @returns Returns the provided view model or the initialized one.
  */

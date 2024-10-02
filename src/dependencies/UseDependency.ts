@@ -18,7 +18,7 @@ export function useDependency<T, TAdditional extends readonly any[]>(dependency:
 /**
  * Resolves the requested dependency using the resolver in the current context.
  * 
- * This is a function allowing for easier reuse in other similarly defined hooks, such as {@see useViewModelDependency}.
+ * This is a function allowing for easier reuse in other similarly defined hooks, such as {@linkcode useViewModelDependency}.
  * @param dependency The dependency to resolve.
  * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the dependency will be reinitialized.
  */

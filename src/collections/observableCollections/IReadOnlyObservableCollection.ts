@@ -60,7 +60,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
     /**
      * Returns a JavaScript [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements from the collection and having the one at the provided index replaced with the provided value.
      * @param index The index at which to set the item in the result array, accepts both positive and negative values.
-     * @param value The item to set in the result array.
+     * @param item The item to set in the result array.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) containing the elements of the collection having the provided value set at the provided index.
      * @see [Array.with](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/with)
      * @throws [RangeError](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError) Thrown when the normalized index is out of bounds.
@@ -92,7 +92,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
      * @returns Returns the index where the provided `searchElement` was first found; otherwise `-1`.
      * @see [Array.indexOf](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf)
      */
-    indexOf(item: TItem, fromIndex?: number): number;
+    indexOf(searchElement: TItem, fromIndex?: number): number;
 
     /**
      * Returns the last index of an item, or `-1` if none can be found.

@@ -61,9 +61,9 @@
     ]
   },
   "typedocOptions": {
+    "lang": "en",
     "entryPoints": [
       "src/index.ts"
-    ],
-    "json": "docs.json"
+    ]
   }
 }
