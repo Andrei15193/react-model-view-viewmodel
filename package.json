@@ -1,6 +1,6 @@
 {
   "name": "react-model-view-viewmodel",
-  "version": "3.0.0-forms.2",
+  "version": "3.0.0-forms.3",
   "description": "A library for developing React applications using Model-View-ViewModel inspired by .NET",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -39,8 +39,8 @@
   "devDependencies": {
     "@testing-library/react": "^16.0.1",
     "@types/jest": "^29.5.13",
-    "@types/node": "^22.5.5",
-    "@types/react": "^18.3.7",
+    "@types/node": "^22.7.4",
+    "@types/react": "^18.3.11",
     "global-jsdom": "^25.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -48,9 +48,9 @@
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.26.7",
+    "typedoc": "^0.26.8",
     "typescript": "^5.6.2",
-    "webpack": "^5.94.0",
+    "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4"
   },
   "jest": {

@@ -260,6 +260,38 @@ describe('Form', (): void => {
         expect(invocationCount).toBe(1);
     });
 
+    it('invalidating a sections collection makes the entire form invalid', (): void => {
+        const form = new TestForm();
+        const sections = form.withSections(
+            new Form()
+        );
+
+        sections.error = 'invalid';
+
+        expect(form.isValid).toBeFalsy();
+        expect(form.isInvalid).toBeTruthy();
+    });
+
+    it('invalidating a sections collection propagates property change notifications', (): void => {
+        let invocationCount = 0;
+        const form = new TestForm();
+        form.propertiesChanged.subscribe({
+            handle(_, changedProperties) {
+                invocationCount++;
+                expect(changedProperties.length).toBe(2);
+                expect(changedProperties).toContain('isValid');
+                expect(changedProperties).toContain('isInvalid');
+            }
+        });
+        const sections = form.withSections(
+            new Form()
+        );
+
+        sections.error = 'invalid';
+
+        expect(invocationCount).toBe(1);
+    });
+
     it('configuring a form section collection initializes each added section', () => {
         let invocationCount = 0;
         const form = new TestForm();

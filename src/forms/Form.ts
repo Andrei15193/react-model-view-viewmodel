@@ -206,6 +206,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
         });
         this.fields = this._fields = new AggregateObservableCollection<FormField<unknown, TValidationError>>();
         this.sections = this._sections = new AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>();
+        this.sectionsCollections = this._sections.aggregatedCollections;
 
         const fieldChangedEventHandler: IPropertiesChangedEventHandler<FormField<unknown, TValidationError>> = {
             handle: this.onFieldChanged.bind(this)
@@ -229,10 +230,24 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
             handle(_, { addedItems: addedSections, removedItems: removedSections }) {
                 removedSections.forEach(removedSection => {
                     removedSection.propertiesChanged.unsubscribe(sectionChangedEventHandler);
-                    removedSection.reset();
                 });
                 addedSections.forEach(addedSection => {
                     addedSection.propertiesChanged.subscribe(sectionChangedEventHandler);
+                });
+            }
+        });
+
+        const sectionsCollectionsChangedEventHandler: IPropertiesChangedEventHandler<IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>> = {
+            handle: this.onSectionsCollectionChanged.bind(this)
+        };
+        this._sections.aggregatedCollections.collectionChanged.subscribe({
+            handle(_, { addedItems: addedSectionsConllections, removedItems: removedSectionsCollections }) {
+                removedSectionsCollections.forEach(removedSectionsCollection => {
+                    removedSectionsCollection.propertiesChanged.unsubscribe(sectionsCollectionsChangedEventHandler);
+                    removedSectionsCollection.reset();
+                });
+                addedSectionsConllections.forEach(addedSectionsCollection => {
+                    addedSectionsCollection.propertiesChanged.subscribe(sectionsCollectionsChangedEventHandler);
                 });
             }
         });
@@ -254,6 +269,11 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
     public readonly sections: IReadOnlyObservableCollection<Form<TValidationError>>;
 
     /**
+     * Gets the sections collections defined within the form instance.
+     */
+    public readonly sectionsCollections: IReadOnlyObservableCollection<IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>;
+
+    /**
      * Indicates whether the form is valid.
      *
      * A form is only valid when all contained fields and sections are valid.
@@ -262,7 +282,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
         return (
             super.isValid
             && this.fields.every(field => field.isValid)
-            && this.sections.every(section => section.isValid)
+            && this.sectionsCollections.every(sectionsCollection => sectionsCollection.isValid)
         );
     }
 
@@ -275,7 +295,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
         return (
             super.isInvalid
             || this.fields.some(field => field.isInvalid)
-            || this.sections.some(section => section.isInvalid)
+            || this.sectionsCollections.some(sectionsCollection => sectionsCollection.isInvalid)
         );
     }
 
@@ -285,8 +305,8 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * Validation and other flags are reset, fields retain their current values.
      */
     public reset(): void {
-        this._sections.aggregatedCollections.forEach(sectionsCollection => {
-            sectionsCollection.clearItemSetups();
+        this.sectionsCollections.forEach(sectionsCollection => {
+            sectionsCollection.reset();
         });
         this.fields.forEach(field => field.reset());
         this.validation.reset();
@@ -417,6 +437,12 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
     protected onSectionChanged(section: Form<TValidationError>, changedProperties: readonly (keyof Form<TValidationError>)[]) {
+    }
+
+    /**
+     * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
+     */
+    protected onSectionsCollectionChanged(sectionsCollection: IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>, changedProperties: readonly (keyof IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>)[]) {
         if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }

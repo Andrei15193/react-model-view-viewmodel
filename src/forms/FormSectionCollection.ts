@@ -1,141 +1,178 @@
-import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
+import type { IPropertiesChangedEventHandler } from '../viewModels';
 import type { Form } from './Form';
-import { ReadOnlyFormSectionCollection } from './ReadOnlyFormSectionCollection';
+import type { FormSectionSetupCallback } from './IConfigurableFormSectionCollection';
+import type { IFormSectionCollection } from './IFormSectionCollection';
+import type { IReadOnlyFormSectionCollection } from './IReadOnlyFormSectionCollection';
+import { ObjectValidator, type IObjectValidator, type IValidatable } from '../validation';
+import { ObservableCollection } from '../collections';
 
-export class FormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormSectionCollection<TSection, TValidationError> implements IConfigurableFormSectionCollection<TSection, TValidationError> {
+/**
+ * Represents a configurable read-only observable collection of form sections. Callbacks can be configured for setting
+ * up individual form sections for cases where validation and other aspects are based on the state of an entity or the
+ * form itself.
+ *
+ * @template TSection the concrete type of the form section.
+ * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ */
+export class FormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends ObservableCollection<TSection> implements IReadOnlyFormSectionCollection<TSection, TValidationError>, IFormSectionCollection<TSection, TValidationError>, IValidatable<TValidationError> {
+    private _error: TValidationError | null;
+    private readonly _setupCallbacks: FormSectionSetupCallback<TSection, TValidationError>[];
+
     /**
      * Initializes a new instance of the {@link FormSectionCollection} class.
-     * @param sections The items to initialize the collection with.
+     * @param sections The sections to initialize the collection with.
      */
     public constructor(sections?: Iterable<TSection>) {
         super(sections);
+
+        this._setupCallbacks = [];
+        this.validation = new ObjectValidator<this, TValidationError>({
+            target: this,
+            shouldTargetTriggerValidation: (_, changedProperties) => {
+                return this.onShouldTriggerValidation(changedProperties);
+            }
+        });
+
+        const sectionChangedEventHandler: IPropertiesChangedEventHandler<Form<TValidationError>> = {
+            handle: this.onSectionChanged.bind(this)
+        };
+        this.forEach(section => {
+            section.propertiesChanged.subscribe(sectionChangedEventHandler);
+        });
+        this.collectionChanged.subscribe({
+            handle: (_, { addedItems: addedSections, removedItems: removedSections }) => {
+                removedSections.forEach(removedSection => {
+                    removedSection.propertiesChanged.unsubscribe(sectionChangedEventHandler);
+                    removedSection.reset();
+                });
+
+                addedSections.forEach(addedSection => {
+                    addedSection.propertiesChanged.subscribe(sectionChangedEventHandler);
+                    this._setupCallbacks.forEach(setupCallback => {
+                        setupCallback(addedSection);
+                    });
+                });
+
+                this.notifyPropertiesChanged('isValid', 'isInvalid');
+            }
+        });
+        this._setupSections();
     }
 
     /**
-     * Gets or sets the number of items in the collection.
-     * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+     * Gets the validation configuration for the form. Fields have their own individual validation config as well.
      */
-    public get length(): number {
-        return super.length;
+    readonly validation: IObjectValidator<this, TValidationError>;
+
+    /**
+     * A flag indicating whether the section collection is valid.
+     *
+     * A section collection is valid only when itself is valid and all contained sections are valid.
+     */
+    public get isValid(): boolean {
+        return this._error === null && this.every(section => section.isValid);
     }
 
     /**
-     * Gets or sets the number of items in the collection.
-     * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+     * A flag indicating whether the section collection is invalid.
+     *
+     * A section collection is invalid when itself is invalid or any contained sections is invalid.
      */
-    public set length(value: number) {
-        super.length = value;
+    public get isInvalid(): boolean {
+        return this._error !== null || this.some(section => section.isInvalid);
     }
 
     /**
-     * Appends new elements to the end of the collection, and returns the new length of the collection.
-     * @param items New elements to add at the end of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.push](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
+     * Gets or sets the error message when the section collection is invalid.
      */
-    public push(...items: readonly TSection[]): number {
-        return super.push.apply(this, arguments);
+    public get error(): TValidationError | null {
+        return this._error;
     }
 
     /**
-     * Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
-     * @returns The last element in the collection that was removed.
-     * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
+     * Gets or sets the error message when the section collection is invalid.
      */
-    public pop(): TSection | undefined {
-        return super.pop.apply(this, arguments);
+    public set error(value: TValidationError | false | null | undefined) {
+        const normalizedError = (value === false || value === null || value === undefined) ? null : value;
+
+        if (this._error !== normalizedError) {
+            this._error = normalizedError;
+            this.notifyPropertiesChanged('error', 'isValid', 'isInvalid');
+        }
     }
 
     /**
-     * Inserts new elements at the start of the collection, and returns the new length of the collection.
-     * @param items Elements to insert at the start of the collection.
-     * @returns The new length of the collection.
-     * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
+     * Configures the provided `setupCallback` and applies it on all existing form sections within the collection
+     * and to any form section that is added.
+     * @param setupCallback The callback performing the setup.
      */
-    public unshift(...items: readonly TSection[]): number {
-        return super.unshift.apply(this, arguments);
+    public withItemSetup(setupCallback: FormSectionSetupCallback<TSection, TValidationError>): this {
+        if (typeof setupCallback === 'function') {
+            this._setupCallbacks.push(setupCallback);
+            this.forEach(section => {
+                setupCallback(section);
+            });
+        }
+
+        return this;
     }
 
     /**
-     * Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
-     * @returns The first element in the collection that was removed.
-     * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
+     * Removes the provided `setupCallback` and no longer applies it to form sections that are added, all existing
+     * form sections are reset and re-configured using the remaining setup callbacks.
+     * @param setupCallback The callback performing the setup.
      */
-    public shift(): TSection | undefined {
-        return super.shift.apply(this, arguments);
+    public withoutItemSetup(setupCallback: FormSectionSetupCallback<TSection, TValidationError>): this {
+        if (typeof setupCallback === 'function') {
+            const setupCallbackIndex = this._setupCallbacks.indexOf(setupCallback);
+            if (setupCallbackIndex > 0) {
+                this._setupCallbacks.splice(setupCallbackIndex, 1);
+                this.forEach(section => section.reset());
+                this._setupSections();
+            }
+        }
+
+        return this;
     }
 
     /**
-     * Gets the item at the provided index.
-     * @param index The index from which to retrieve an item.
-     * @returns The item at the provided index.
-     * @see [Array.at](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at)
+     * Clears all setup callbacks and resets all existing form sections.
      */
-    public get(index: number): TSection {
-        return super.get.apply(this, arguments);
+    public clearItemSetups(): void {
+        this._setupCallbacks.splice(0, Number.POSITIVE_INFINITY);
+        this.forEach(section => section.reset());
     }
 
     /**
-     * Sets the provided item at the provided index.
-     * @param index The index to which to set the item.
-     * @param item The item to set.
-     * @returns The length of the collection.
+     * Resets the form, contained fields and sections to their initial configuration.
+     *
+     * Validation and other flags are reset, fields retain their current values.
      */
-    public set(index: number, item: TSection): number {
-        return super.set.apply(this, arguments);
+    public reset(): void {
+        this._setupCallbacks.splice(0, Number.POSITIVE_INFINITY);
+        this.forEach(section => section.reset());
+        this.validation.reset();
     }
 
     /**
-     * Removes and/or adds elements to the collection and returns the deleted elements.
-     * @param start The zero-based location in the collection from which to start removing elements.
-     * @param deleteCount The number of elements to remove.
-     * @param items The items to insert at the given start location.
-     * @returns An array containing the elements that were deleted.
-     * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+     * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
-    public splice(start: number, deleteCount?: number, ...items: readonly TSection[]): TSection[] {
-        return super.splice.apply(this, arguments);
+    protected onSectionChanged(section: Form<TValidationError>, changedProperties: readonly (keyof Form<TValidationError>)[]) {
+        if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
+            this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
 
     /**
-     * Reverses the items in the collections and returns the observable collection.
-     * @param compareCallback Optional, a callback used to determine the sort order between two items.
-     * @returns The observable collection on which the operation is performed.
-     * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+     * Invoked when the current instance's properties change, this is a plugin method to help reduce validations when changes do not
+     * have an effect on validation.
      */
-    public sort(compareCallback?: (left: Exclude<TSection, undefined>, right: Exclude<TSection, undefined>) => number): this {
-        return super.sort.apply(this, arguments);
+    protected onShouldTriggerValidation(changedProperties: readonly (keyof this)[]): boolean {
+        return changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');
     }
 
-    /**
-     * Reverses the items in the collections and returns the observable collection..
-     * @returns The observable collection on which the operation is performed.
-     * @see [Array.reverse](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
-     */
-    public reverse(): this {
-        return super.reverse.apply(this, arguments);
-    }
-
-    /**
-     * Copies items inside the collection overwriting existing ones.
-     * @param target The index at which to start copying items, accepts both positive and negative values.
-     * @param start The index from which to start copying items, accepts both positive and negative values.
-     * @param end The index until where to copy items, accepts both positive and negative values.
-     * @see [Array.copyWithin](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin)
-     */
-    public copyWithin(target: number, start: number, end?: number): this {
-        return super.copyWithin.apply(this, arguments);
-    }
-
-    /**
-     * Fills the collection with the provided `item`.
-     * @param item The item to fill the collection with.
-     * @param start The index from which to start filling the collection, accepts both positive and negative values.
-     * @param end The index until which to fill the collection, accepts both positive and negative values.
-     * @returns The observable collection on which the operation is performed.
-     * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
-     */
-    public fill(item: TSection, start?: number, end?: number): this {
-        return super.fill.apply(this, arguments);
+    private _setupSections(): void {
+        this.forEach(section => {
+            this._setupCallbacks.forEach(setupCallback => setupCallback(section));
+        });
     }
 }

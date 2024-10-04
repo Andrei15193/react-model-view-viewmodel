@@ -5,7 +5,7 @@ import { ViewModel } from '../viewModels';
  * Represents a base implementation for a validatable
  */
 export class Validatable<TValidationError = string> extends ViewModel implements IValidatable<TValidationError> {
-    private _error: TValidationError | null
+    private _error: TValidationError | null;
 
     /**
      * A flag indicating whether the object is valid.

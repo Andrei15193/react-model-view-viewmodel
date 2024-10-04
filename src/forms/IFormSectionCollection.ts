@@ -1,4 +1,5 @@
 import type { IObservableCollection } from '../collections';
+import type { IValidatable } from '../validation';
 import type { Form } from './Form';
 import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
 
@@ -9,6 +10,11 @@ import type { IConfigurableFormSectionCollection } from './IConfigurableFormSect
  * @template TSection the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export interface IFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string>
-    extends IObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
+export interface IFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
+    /**
+     * Resets the sections collection and all contained items.
+     *
+     * Validation and other flags are reset, fields retain their current values.
+     */
+    reset(): void;
 }

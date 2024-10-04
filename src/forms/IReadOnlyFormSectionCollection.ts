@@ -1,4 +1,5 @@
 import type { IReadOnlyObservableCollection } from '../collections';
+import type { IObjectValidator, IValidatable } from '../validation';
 import type { Form } from './Form';
 import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
 
@@ -10,6 +11,16 @@ import type { IConfigurableFormSectionCollection } from './IConfigurableFormSect
  * @template TSection the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export interface IReadOnlyFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string>
-    extends IReadOnlyObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
+export interface IReadOnlyFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IReadOnlyObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
+    /**
+     * Gets the validation configuration for the form. Fields have their own individual validation config as well.
+     */
+    readonly validation: IObjectValidator<this, TValidationError>;
+
+    /**
+     * Resets the sections collection and all contained items.
+     *
+     * Validation and other flags are reset, fields retain their current values.
+     */
+    reset(): void;
 }
