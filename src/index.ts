@@ -61,7 +61,8 @@ export {
 
 export {
     Form,
-    IFormFieldConfig, FormField,
+    type IFormFieldConfig, FormField,
+    ReadOnlyFormSectionCollection,
     FormSectionCollection,
 
     type IFormSectionCollection,
