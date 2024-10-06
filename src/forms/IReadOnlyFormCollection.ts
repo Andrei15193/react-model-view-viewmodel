@@ -1,17 +1,17 @@
 import type { IReadOnlyObservableCollection } from '../collections';
 import type { IObjectValidator, IValidatable } from '../validation';
 import type { Form } from './Form';
-import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
+import type { IConfigurableFormCollection } from './IConfigurableFormCollection';
 
 /** 
  * Represents a read-only configurable observable collection of form sections. Callbacks can be configured for setting
  * up individual form sections for cases where validation and other aspects are based on the state of an entity or the
  * form itself.
  *
- * @template TSection the concrete type of the form section.
+ * @template TForm the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export interface IReadOnlyFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IReadOnlyObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
+export interface IReadOnlyFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IReadOnlyObservableCollection<TForm>, IConfigurableFormCollection<TForm, TValidationError> {
     /**
      * Gets the validation configuration for the form. Fields have their own individual validation config as well.
      */

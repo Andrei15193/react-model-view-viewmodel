@@ -1,8 +1,8 @@
 export { Form } from './Form';
 export { type IFormFieldConfig, FormField } from './FormField';
 
-export type { IConfigurableFormSectionCollection, FormSectionSetupCallback } from './IConfigurableFormSectionCollection'
-export type { IReadOnlyFormSectionCollection } from './IReadOnlyFormSectionCollection';
-export type { IFormSectionCollection } from './IFormSectionCollection'
-export { ReadOnlyFormSectionCollection } from './ReadOnlyFormSectionCollection';
-export { FormSectionCollection } from './FormSectionCollection';
+export type { IConfigurableFormCollection, FormSetupCallback } from './IConfigurableFormCollection'
+export type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
+export type { IFormCollection } from './IFormCollection'
+export { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
+export { FormCollection } from './FormCollection';

@@ -1,6 +1,6 @@
 import type { IObservableCollection } from '../../collections';
 import { FormField } from '../FormField';
-import { FormSectionCollection } from '../FormSectionCollection';
+import { FormCollection } from '../FormCollection';
 import { Form } from '../Form';
 
 describe('Form', (): void => {
@@ -401,7 +401,7 @@ class TestForm<TValidationError = string> extends Form<TValidationError> {
         return super.withFields.apply(this, arguments);
     }
 
-    public withSections(...sections: readonly Form<TValidationError>[]): FormSectionCollection<Form<TValidationError>, TValidationError> {
+    public withSections(...sections: readonly Form<TValidationError>[]): FormCollection<Form<TValidationError>, TValidationError> {
         return super.withSections.apply(this, arguments);
     }
 }

@@ -1,20 +1,20 @@
 import type { Form } from './Form';
-import type { IFormSectionCollection } from './IFormSectionCollection';
-import { ReadOnlyFormSectionCollection } from './ReadOnlyFormSectionCollection';
+import type { IFormCollection } from './IFormCollection';
+import { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
 
 /**
- * Represents a configurable observable collection of form sections. Callbacks can be configured for setting up individual
+ * Represents a configurable observable collection of forms. Callbacks can be configured for setting up individual
  * form sections for cases where validation and other aspects are based on the state of an entity or the form itself.
  *
- * @template TSection the concrete type of the form section.
+ * @template TForm the concrete type of the form.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export class FormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormSectionCollection<TSection, TValidationError> implements IFormSectionCollection<TSection, TValidationError> {
+export class FormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormCollection<TForm, TValidationError> implements IFormCollection<TForm, TValidationError> {
     /**
-     * Initializes a new instance of the {@link FormSectionCollection} class.
+     * Initializes a new instance of the {@link FormCollection} class.
      * @param sections The sections to initialize the collection with.
      */
-    public constructor(sections?: Iterable<TSection>) {
+    public constructor(sections?: Iterable<TForm>) {
         super(sections);
     }
 
@@ -40,7 +40,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The new length of the collection.
      * @see [Array.push](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/push)
      */
-    public push(...items: readonly TSection[]): number {
+    public push(...items: readonly TForm[]): number {
         return super.push.apply(this, arguments);
     }
 
@@ -49,7 +49,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The last element in the collection that was removed.
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
      */
-    public pop(): TSection | undefined {
+    public pop(): TForm | undefined {
         return super.pop.apply(this, arguments);
     }
 
@@ -59,7 +59,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The new length of the collection.
      * @see [Array.unshift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
      */
-    public unshift(...items: readonly TSection[]): number {
+    public unshift(...items: readonly TForm[]): number {
         return super.unshift.apply(this, arguments);
     }
 
@@ -68,7 +68,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The first element in the collection that was removed.
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
      */
-    public shift(): TSection | undefined {
+    public shift(): TForm | undefined {
         return super.shift.apply(this, arguments);
     }
 
@@ -78,7 +78,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The item at the provided index.
      * @see [Array.at](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at)
      */
-    public get(index: number): TSection {
+    public get(index: number): TForm {
         return super.get.apply(this, arguments);
     }
 
@@ -88,7 +88,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @param item The item to set.
      * @returns The length of the collection.
      */
-    public set(index: number, item: TSection): number {
+    public set(index: number, item: TForm): number {
         return super.set.apply(this, arguments);
     }
 
@@ -100,7 +100,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns An array containing the elements that were deleted.
      * @see [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
      */
-    public splice(start: number, deleteCount?: number, ...items: readonly TSection[]): TSection[] {
+    public splice(start: number, deleteCount?: number, ...items: readonly TForm[]): TForm[] {
         return super.splice.apply(this, arguments);
     }
 
@@ -110,7 +110,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The observable collection on which the operation is performed.
      * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
      */
-    public sort(compareCallback?: (left: Exclude<TSection, undefined>, right: Exclude<TSection, undefined>) => number): this {
+    public sort(compareCallback?: (left: Exclude<TForm, undefined>, right: Exclude<TForm, undefined>) => number): this {
         return super.sort.apply(this, arguments);
     }
 
@@ -142,7 +142,7 @@ export class FormSectionCollection<TSection extends Form<TValidationError>, TVal
      * @returns The observable collection on which the operation is performed.
      * @see [Array.fill](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)
      */
-    public fill(item: TSection, start?: number, end?: number): this {
+    public fill(item: TForm, start?: number, end?: number): this {
         return super.fill.apply(this, arguments);
     }
 }

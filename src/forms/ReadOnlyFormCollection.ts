@@ -1,7 +1,7 @@
 import type { IPropertiesChangedEventHandler } from '../viewModels';
 import type { Form } from './Form';
-import type { FormSectionSetupCallback } from './IConfigurableFormSectionCollection';
-import type { IReadOnlyFormSectionCollection } from './IReadOnlyFormSectionCollection';
+import type { FormSetupCallback } from './IConfigurableFormCollection';
+import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 import { ObjectValidator, type IObjectValidator, type IValidatable } from '../validation';
 import { ReadOnlyObservableCollection } from '../collections';
 
@@ -10,18 +10,18 @@ import { ReadOnlyObservableCollection } from '../collections';
  * up individual form sections for cases where validation and other aspects are based on the state of an entity or the
  * form itself.
  *
- * @template TSection the concrete type of the form section.
+ * @template TForm the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export class ReadOnlyFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends ReadOnlyObservableCollection<TSection> implements IReadOnlyFormSectionCollection<TSection, TValidationError>, IValidatable<TValidationError> {
+export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyObservableCollection<TForm> implements IReadOnlyFormCollection<TForm, TValidationError>, IValidatable<TValidationError> {
     private _error: TValidationError | null;
-    private readonly _setupCallbacks: FormSectionSetupCallback<TSection, TValidationError>[];
+    private readonly _setupCallbacks: FormSetupCallback<TForm, TValidationError>[];
 
     /**
-     * Initializes a new instance of the {@link ReadOnlyFormSectionCollection} class.
+     * Initializes a new instance of the {@link ReadOnlyFormCollection} class.
      * @param sections The sections to initialize the collection with.
      */
-    public constructor(sections?: Iterable<TSection>) {
+    public constructor(sections?: Iterable<TForm>) {
         super(sections);
 
         this._setupCallbacks = [];
@@ -105,7 +105,7 @@ export class ReadOnlyFormSectionCollection<TSection extends Form<TValidationErro
      * and to any form section that is added.
      * @param setupCallback The callback performing the setup.
      */
-    public withItemSetup(setupCallback: FormSectionSetupCallback<TSection, TValidationError>): this {
+    public withItemSetup(setupCallback: FormSetupCallback<TForm, TValidationError>): this {
         if (typeof setupCallback === 'function') {
             this._setupCallbacks.push(setupCallback);
             this.forEach(section => {
@@ -121,7 +121,7 @@ export class ReadOnlyFormSectionCollection<TSection extends Form<TValidationErro
      * form sections are reset and re-configured using the remaining setup callbacks.
      * @param setupCallback The callback performing the setup.
      */
-    public withoutItemSetup(setupCallback: FormSectionSetupCallback<TSection, TValidationError>): this {
+    public withoutItemSetup(setupCallback: FormSetupCallback<TForm, TValidationError>): this {
         if (typeof setupCallback === 'function') {
             const setupCallbackIndex = this._setupCallbacks.indexOf(setupCallback);
             if (setupCallbackIndex > 0) {

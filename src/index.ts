@@ -62,13 +62,13 @@ export {
 export {
     Form,
     type IFormFieldConfig, FormField,
-    ReadOnlyFormSectionCollection,
-    FormSectionCollection,
 
-    type IFormSectionCollection,
-    type IReadOnlyFormSectionCollection,
-    type IConfigurableFormSectionCollection,
-    type FormSectionSetupCallback,
+    type IFormCollection,
+    type IReadOnlyFormCollection,
+    type IConfigurableFormCollection,
+    type FormSetupCallback,
+    ReadOnlyFormCollection,
+    FormCollection,
 } from './forms';
 
 export {

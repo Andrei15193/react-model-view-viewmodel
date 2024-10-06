@@ -1,9 +1,9 @@
 import type { IPropertiesChangedEventHandler } from '../viewModels';
-import type { IReadOnlyFormSectionCollection } from './IReadOnlyFormSectionCollection';
+import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 import { type IReadOnlyObservableCollection, type IObservableCollection, type ICollectionChangedEventHandler, type ICollectionReorderedEventHandler, ObservableCollection, ReadOnlyObservableCollection } from '../collections';
 import { type IObjectValidator, Validatable, ObjectValidator } from '../validation';
 import { FormField } from './FormField';
-import { FormSectionCollection } from './FormSectionCollection';
+import { FormCollection } from './FormCollection';
 
 /**
  * Represents a form for which both fields and sections can be configured. Form sections are forms themselves making this a tree structure
@@ -113,11 +113,11 @@ import { FormSectionCollection } from './FormSectionCollection';
  *   // Restrict all sections to be app-specific ones.
  *   public readonly sections: IReadOnlyObservableCollection<MyAppForm>;
  *
- *   protected withSections(...sections: readonly MyAppForm[]): FormSectionCollection<MyAppForm, number> {
+ *   protected withSections(...sections: readonly MyAppForm[]): FormCollection<MyAppForm, number> {
  *     return super.withSections.apply(this, arguments);
  *   }
  *
- *   protected withSectionsCollection(sectionsCollection: IReadOnlyFormSectionCollection<MyAppForm, number>): IReadOnlyFormSectionCollection<MyAppForm, number> {
+ *   protected withSectionsCollection(sectionsCollection: IReadOnlyFormCollection<MyAppForm, number>): IReadOnlyFormCollection<MyAppForm, number> {
  *     return super.withSectionsCollection.apply(this, arguments);
  *   }
  *
@@ -190,7 +190,7 @@ import { FormSectionCollection } from './FormSectionCollection';
  */
 export class Form<TValidationError = string> extends Validatable<TValidationError> {
     private readonly _fields: AggregateObservableCollection<FormField<unknown, TValidationError>>;
-    private readonly _sections: AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>;
+    private readonly _sections: AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormCollection<Form<TValidationError>, TValidationError>>;
 
     /**
      * Initializes a new instance of the {@link Form} class.
@@ -205,7 +205,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
             }
         });
         this.fields = this._fields = new AggregateObservableCollection<FormField<unknown, TValidationError>>();
-        this.sections = this._sections = new AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>();
+        this.sections = this._sections = new AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormCollection<Form<TValidationError>, TValidationError>>();
         this.sectionsCollections = this._sections.aggregatedCollections;
 
         const fieldChangedEventHandler: IPropertiesChangedEventHandler<FormField<unknown, TValidationError>> = {
@@ -237,7 +237,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
             }
         });
 
-        const sectionsCollectionsChangedEventHandler: IPropertiesChangedEventHandler<IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>> = {
+        const sectionsCollectionsChangedEventHandler: IPropertiesChangedEventHandler<IReadOnlyFormCollection<Form<TValidationError>, TValidationError>> = {
             handle: this.onSectionsCollectionChanged.bind(this)
         };
         this._sections.aggregatedCollections.collectionChanged.subscribe({
@@ -271,7 +271,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
     /**
      * Gets the sections collections defined within the form instance.
      */
-    public readonly sectionsCollections: IReadOnlyObservableCollection<IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>>;
+    public readonly sectionsCollections: IReadOnlyObservableCollection<IReadOnlyFormCollection<Form<TValidationError>, TValidationError>>;
 
     /**
      * Indicates whether the form is valid.
@@ -337,8 +337,8 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * @returns Returns a collection containing the provided sections. The form reacts to changes made in
      * the returned collection always keeping in sync.
      */
-    protected withSections(...sections: readonly Form<TValidationError>[]): FormSectionCollection<Form<TValidationError>, TValidationError> {
-        const sectionsCollection = new FormSectionCollection<Form<TValidationError>, TValidationError>(sections);
+    protected withSections(...sections: readonly Form<TValidationError>[]): FormCollection<Form<TValidationError>, TValidationError> {
+        const sectionsCollection = new FormCollection<Form<TValidationError>, TValidationError>(sections);
         this.withSectionsCollection(sectionsCollection);
 
         return sectionsCollection;
@@ -379,7 +379,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      *   public readonly items: ToDoListItemsCollection;
      * }
      *
-     * class ToDoListItemsCollection extends ReadOnlyFormSectionCollection<ToDoItemForm> {
+     * class ToDoListItemsCollection extends ReadOnlyFormCollection<ToDoItemForm> {
      *   public add(): ToDoItemForm {
      *     const toDoItem = new ToDoItemForm();
      *     this.push(toDoItem);
@@ -419,7 +419,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * toDoList.items.remove(toDoItem);
      * ```
      */
-    protected withSectionsCollection(sectionsCollection: IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>): IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError> {
+    protected withSectionsCollection(sectionsCollection: IReadOnlyFormCollection<Form<TValidationError>, TValidationError>): IReadOnlyFormCollection<Form<TValidationError>, TValidationError> {
         this._sections.aggregatedCollections.push(sectionsCollection);
 
         return sectionsCollection;
@@ -442,7 +442,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
     /**
      * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
-    protected onSectionsCollectionChanged(sectionsCollection: IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>, changedProperties: readonly (keyof IReadOnlyFormSectionCollection<Form<TValidationError>, TValidationError>)[]) {
+    protected onSectionsCollectionChanged(sectionsCollection: IReadOnlyFormCollection<Form<TValidationError>, TValidationError>, changedProperties: readonly (keyof IReadOnlyFormCollection<Form<TValidationError>, TValidationError>)[]) {
         if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }

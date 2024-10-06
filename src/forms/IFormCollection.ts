@@ -1,16 +1,16 @@
 import type { IObservableCollection } from '../collections';
 import type { IValidatable } from '../validation';
 import type { Form } from './Form';
-import type { IConfigurableFormSectionCollection } from './IConfigurableFormSectionCollection';
+import type { IConfigurableFormCollection } from './IConfigurableFormCollection';
 
 /** 
- * Represents a configurable observable collection of form sections. Callbacks can be configured for setting up individual
+ * Represents a configurable observable collection of forms. Callbacks can be configured for setting up individual
  * form sections for cases where validation and other aspects are based on the state of an entity or the form itself.
  *
- * @template TSection the concrete type of the form section.
+ * @template TForm the concrete type of the form section.
  * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
-export interface IFormSectionCollection<TSection extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IObservableCollection<TSection>, IConfigurableFormSectionCollection<TSection, TValidationError> {
+export interface IFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IObservableCollection<TForm>, IConfigurableFormCollection<TForm, TValidationError> {
     /**
      * Resets the sections collection and all contained items.
      *
