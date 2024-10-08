@@ -123,15 +123,13 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
         this._value = value;
         this._initialValue = initialValue;
 
-        this.validation = validators.reduce(
-            (objectValidator, validator) => objectValidator.add(validator),
-            new ObjectValidator<this, TValidationError>({
-                target: this,
-                shouldTargetTriggerValidation: (_, changedProperties) => {
-                    return this.onShouldTriggerValidation(changedProperties);
-                }
-            })
-        );
+        this.validation = new ObjectValidator<this, TValidationError>({
+            target: this,
+            shouldTargetTriggerValidation: (_, changedProperties) => {
+                return this.onShouldTriggerValidation(changedProperties);
+            }
+        })
+        this.validation.add.apply(this.validation, validators);
 
         resolveAllValidationTriggers(validationTriggers).forEach(this.validation.triggers.add, this.validation.triggers);
     }

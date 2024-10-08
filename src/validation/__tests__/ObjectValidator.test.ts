@@ -94,13 +94,13 @@ describe('ObjectValidator', () => {
         const viewModelValidationTrigger = new FakeValidatable();
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [viewModelValidationTrigger]
-        );
+            })
+            .triggers
+            .add(viewModelValidationTrigger);
         viewModelValidationTrigger.notifyPropertiesChanged();
 
         expect(invocationCount).toBe(2);
@@ -113,13 +113,13 @@ describe('ObjectValidator', () => {
         const observableCollectionValidationTrigger = new ObservableCollection<number>();
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [observableCollectionValidationTrigger]
-        );
+            })
+            .triggers
+            .add(observableCollectionValidationTrigger);
         observableCollectionValidationTrigger.push(1);
 
         expect(invocationCount).toBe(2);
@@ -132,13 +132,13 @@ describe('ObjectValidator', () => {
         const observableCollectionValidationTrigger = new ObservableCollection<number>([1, 2]);
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [observableCollectionValidationTrigger]
-        );
+            })
+            .triggers
+            .add(observableCollectionValidationTrigger);
         observableCollectionValidationTrigger.reverse();
 
         expect(invocationCount).toBe(2);
@@ -151,13 +151,13 @@ describe('ObjectValidator', () => {
         const observableSetValidationTrigger = new ObservableSet<number>();
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [observableSetValidationTrigger]
-        );
+            })
+            .triggers
+            .add(observableSetValidationTrigger);
         observableSetValidationTrigger.add(1);
 
         expect(invocationCount).toBe(2);
@@ -170,13 +170,13 @@ describe('ObjectValidator', () => {
         const observableMapValidationTrigger = new ObservableMap<number, string>();
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [observableMapValidationTrigger]
-        );
+            })
+            .triggers
+            .add(observableMapValidationTrigger);
         observableMapValidationTrigger.set(1, 'a');
 
         expect(invocationCount).toBe(2);
@@ -190,13 +190,13 @@ describe('ObjectValidator', () => {
         const observableCollection = new ObservableCollection<FakeValidatable>([item]);
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [[observableCollection, item => [item]]]
-        );
+            })
+            .triggers
+            .add([observableCollection, item => [item]]);
 
         item.notifyPropertiesChanged();
 
@@ -211,13 +211,13 @@ describe('ObjectValidator', () => {
         const observableSet = new ObservableSet<FakeValidatable>([item]);
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [[observableSet, item => [item]]]
-        );
+            })
+            .triggers
+            .add([observableSet, item => [item]]);
 
         item.notifyPropertiesChanged();
 
@@ -232,13 +232,13 @@ describe('ObjectValidator', () => {
         const observableMap = new ObservableMap<number, FakeValidatable>([[1, item]]);
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error';
-            },
-            [[observableMap, item => [item]]]
-        );
+            })
+            .triggers
+            .add([observableMap, item => [item]]);
 
         item.notifyPropertiesChanged();
 
@@ -257,12 +257,17 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(
                 () => 'test error 1',
-                [viewModelValidationTrigger, observableCollectionValidationTrigger, observableSetValidationTrigger, observableMapValidationTrigger]
-            )
-            .add(
                 () => 'test error 2',
-                [viewModelValidationTrigger, observableCollectionValidationTrigger, observableSetValidationTrigger, observableMapValidationTrigger]
-            );
+            )
+            .triggers
+            .add(viewModelValidationTrigger)
+            .add(observableCollectionValidationTrigger)
+            .add(observableSetValidationTrigger)
+            .add(observableMapValidationTrigger)
+            .add(viewModelValidationTrigger)
+            .add(observableCollectionValidationTrigger)
+            .add(observableSetValidationTrigger)
+            .add(observableMapValidationTrigger);
 
         expect(objectValidator.triggers.size).toBe(4);
         expect(objectValidator.triggers).toContain(viewModelValidationTrigger);
@@ -277,13 +282,13 @@ describe('ObjectValidator', () => {
         const viewModelValidationTrigger = new FakeValidatable();
 
         const objectValidator = new ObjectValidator({ target: validatable });
-        objectValidator.add(
-            () => {
+        objectValidator
+            .add(() => {
                 invocationCount++;
                 return 'test error 1';
-            },
-            [viewModelValidationTrigger]
-        );
+            })
+            .triggers
+            .add(viewModelValidationTrigger);
 
         objectValidator.triggers.clear();
         viewModelValidationTrigger.notifyPropertiesChanged();

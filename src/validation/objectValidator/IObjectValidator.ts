@@ -19,12 +19,11 @@ export interface IObjectValidator<TValidatable extends IValidatable<TValidationE
     readonly triggers: IValidationTriggersSet;
 
     /**
-     * Configures the given validator and configures the provided triggers.
-     * @param validator The validators to add.
-     * @param triggers The triggers for which a validation should occur.
+     * Configures the given validators and validates the target afterwards.
+     * @param validators The validators to add.
      * @returns Returns the current object validator.
      */
-    add<TKey = unknown, TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TKey, TItem> | ValidationTrigger)[]): this;
+    add(...validators: readonly (IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>)[]): this;
 
     /**
      * Resets the validator configuraiton, removes all triggers and validators and sets the error on the target to `null`.

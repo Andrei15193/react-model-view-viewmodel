@@ -7,6 +7,9 @@ import type { INotifyPropertiesChanged } from '../../viewModels';
 import { type IObservableCollection, type IObservableSet, ObservableCollection, ObservableSet } from '../../collections';
 import { ViewModelChangedValidationTrigger, resolveValidationTriggers } from '../triggers';
 
+/**
+ * Represents the object validator configuration.
+ */
 export interface IObjectValidatorConfig<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> {
     readonly target: TValidatable;
 
@@ -99,25 +102,20 @@ export class ObjectValidator<TValidatable extends IValidatable<TValidationError>
     public readonly triggers: IValidationTriggersSet;
 
     /**
-     * Configures the given validator and configures the provided triggers.
-     * @param validator The validators to add.
-     * @param triggers The triggers for which a validation should occur.
+     * Configures the given validators and validates the target afterwards.
+     * @param validators The validators to add.
      * @returns Returns the current object validator.
      */
-    public add<TKey = unknown, TItem = unknown>(validator: IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>, triggers?: readonly (WellKnownValidationTrigger<TKey, TItem> | ValidationTrigger)[]): this {
-        if (triggers !== null && triggers !== undefined)
-            triggers.forEach(this.triggers.add, this.triggers);
-
-        if (validator !== null && validator !== undefined)
-            switch (typeof validator) {
-                case 'function':
-                    this.validators.push({ validate: validator });
-                    break;
-
-                case 'object':
-                    this.validators.push(validator);
-                    break;
-            }
+    public add(...validators: readonly (IValidator<TValidatable, TValidationError> | ValidatorCallback<TValidatable, TValidationError>)[]): this {
+        if (validators !== null && validators !== undefined && Array.isArray(validators))
+            this.validators.push(...validators.map(validator => {
+                if (typeof validator === 'function')
+                    return {
+                        validate: validator
+                    };
+                else
+                    return validator;
+            }));
 
         return this;
     }

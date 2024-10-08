@@ -362,7 +362,7 @@ describe('Form', (): void => {
         let sectionSetupInvocationCount = 0;
 
         const form = new TestForm();
-        form.validation.add(() => 'error', [form]);
+        form.validation.add(() => 'error').triggers.add(form);
         const field = new FormField({ name: 'field', initialValue: null });
         field.reset = () => { fieldResetInvocationCount++; };
         form.withFields(field);
