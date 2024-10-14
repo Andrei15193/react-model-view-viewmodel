@@ -22,9 +22,12 @@ export {
     type ICollectionChange,
     type CollectionChangeOperation,
 
+
     type INotifyCollectionReordered,
     type ICollectionReorderedEvent,
     type ICollectionReorderedEventHandler,
+    type ICollectionReorder,
+    type CollectionReorderOperation,
     type ICollectionItemMove,
 
     type IReadOnlyObservableCollection,

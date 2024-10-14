@@ -10,7 +10,7 @@ export interface ISetLike<TItem> {
     readonly size: number;
 
     /**
-     * Gets an iterator that provides each element in the collection, this is an alias for {@linkcode values}
+     * Gets an iterator that provides each element in the collection.
      * @returns An iterator going over each key in the collection.
      * @see [Set.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/keys)
      */

@@ -13,9 +13,7 @@ export type DependencyFactoryCallback<T> = (dependecyResolver: IDependencyResolv
 /**
  * Represents a dependency container for configuring and later on resolving dependencies similar to a dependency injection mechanism.
  * 
- * ----
- * 
- * There are three levels for configuring dependencies.
+ * @description There are three levels for configuring dependencies.
  * 
  * **Singleton** - dependencies are initialized only once and each time they are requested the same instance is returned.
  * 
