@@ -70,6 +70,8 @@ ${getSourceCodeLink(interfaceDeclaration)}
 
 ${getDescription(interfaceDeclaration)}
 
+${getRemarks(interfaceDeclaration)}
+
 ${getConstructorsList(interfaceDeclaration)}
 
 ${getPropertiesList(interfaceDeclaration)}
@@ -100,6 +102,8 @@ ${getSourceCodeLink(classDeclaration)}
 
 ${getDescription(classDeclaration)}
 
+${getRemarks(classDeclaration)}
+
 ${getConstructorsList(classDeclaration)}
 
 ${getPropertiesList(classDeclaration)}
@@ -123,6 +127,7 @@ ${getReferences(classDeclaration)}
                 case ReflectionKind.Class:
                 case ReflectionKind.Interface:
                 case ReflectionKind.TypeParameter:
+                case ReflectionKind.Function:
                     return declaration.name;
 
                 default:
@@ -140,6 +145,7 @@ ${getReferences(classDeclaration)}
 
                 case ReflectionKind.Class:
                 case ReflectionKind.Interface:
+                case ReflectionKind.Function:
                     return getSimpleName(declaration);
 
                 default:
@@ -358,11 +364,27 @@ ${getReferences(classDeclaration)}
             }
         }
 
+        function getRemarks(declaration: DeclarationReflection): string {
+            try {
+                const remarks = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@remarks');
+                if (remarks !== null && remarks !== undefined && remarks.content.length > 0)
+                    return '### Remarks\n\n' + getBlock(remarks.content);
+                else
+                    return '';
+            }
+            catch (error) {
+                throw new Error(`Could not process '${declaration}' declaration description.\n${error}`);
+            }
+        }
+
         function getExamples(declaration: DeclarationReflection): string {
-            const examples = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@example') || [];
+            const examples = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@snippet') || [];
 
             return examples
-                .map(example => '### Example\n\n' + getBlock(example.content))
+                .map(example => {
+                    const [title, ...content] = getBlock(example.content).split('\n');
+                    return `### Example: ${title.trim()}\n\n${content.join('\n').trim()}`;
+                })
                 .join('\n');
         }
 
@@ -484,19 +506,25 @@ ${getReferences(classDeclaration)}
                         switch (comment.tag) {
                             case '@link':
                             case '@linkcode':
+                                const getDisplayText = (text: string): string => (
+                                    comment.tag === '@linkcode'
+                                        ? `\`${text}\``
+                                        : text
+                                );
+
                                 if (comment.target && 'qualifiedName' in (comment.target as any)) {
                                     const declarationReference = (comment.target as ReflectionSymbolId).toDeclarationReference();
                                     if (declarationReference.resolutionStart === 'global' && declarationReference.moduleSource === 'typescript') {
                                         const typeScriptReference = declarationReference.symbolReference?.path?.map(componentPath => componentPath.path).join('.') || '';
                                         switch (typeScriptReference) {
                                             case 'String':
-                                                return '[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)';
+                                                return `[${getDisplayText('String')}](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)`;
                                         }
                                     }
                                 }
 
                                 const targetDeclaration = findDeclaration(comment.target);
-                                return `[${getFullName(targetDeclaration)}](${getProjectReferenceUrl(targetDeclaration)})`;
+                                return `[${getDisplayText(getFullName(targetDeclaration))}](${getProjectReferenceUrl(targetDeclaration)})`;
 
                             default:
                                 throw new Error(`Unhandled '${comment.tag}' inline-tag.`);

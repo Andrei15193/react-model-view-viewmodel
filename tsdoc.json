@@ -7,6 +7,14 @@
         {
             "tagName": "@description",
             "syntaxKind": "block"
+        },
+        {
+            "tagName": "@remarks",
+            "syntaxKind": "block"
+        },
+        {
+            "tagName": "@snippet",
+            "syntaxKind": "block"
         }
     ]
 }

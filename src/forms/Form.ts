@@ -32,13 +32,42 @@ import { FormCollection } from './FormCollection';
  * something else, the option is available as well.
  *
  * ----
+ * 
+ * @remarks
+ * 
+ * The library makes a distinction between form definition and form configuration.
+ * 
+ * **Form definition** relates to the structure of the form, what fields and what
+ * type of value they handle along side any sections or collections of editable
+ * items the form can handle.
+ * 
+ * Large forms can be broken down into sections to group relevant fields together,
+ * in essence, it is still one form, however the object model allows for an easier
+ * navigation and understanding of the form structure.
+ * 
+ * **Form configuration** relates to form validation and field locking. In more
+ * complex scenarios, an edit form may have different validation rules depending
+ * on the underlying entity state.
+ * 
+ * For instnace, when placing orders in an online shop, the respective order
+ * goes through a number of states and some fields are editable dependent on that.
  *
- * @example
+ * The configuration does not change the state, the form still looks more or less
+ * the same, but the way fields behave is different. Some fields become required
+ * or have different validaiton rules while other can become locked and are no
+ * longer editable.
+ * 
+ * ----
  *
- * In this example we will define a form for our application, we do this by simply extending the base form view model and then adding
- * our fields. We will be using the default validation result which is a string.
+ * @snippet Define a Form
  *
- * ```tsx
+ * To define a form with all related fields we need to extend from the base class
+ * and then declare the fields it contains and add them to the form.
+ *
+ * We can do this in one expression, we assign each individual field to properties
+ * to easily access them later on.
+ *
+ * ```ts
  * export class MyForm extends Form {
  *   public constructor() {
  *     super();
@@ -60,123 +89,55 @@ import { FormCollection } from './FormCollection';
  *
  *   public readonly description: FormField<string>;
  * }
+ * ```
  *
- * // We can use one of the hooks to create an instance in a component.
+ * All forms are view models as well, we can create an instance and watch it
+ * for changes using the {@linkcode useViewModel} hook.
+ *
+ * ```tsx
  * function MyFormComponent(): JSX.Element {
  *   const myForm = useViewModel(MyForm);
  *
  *   return (
  *     <>
- *       <input value={myForm.name.value} onChange={event => myForm.name.value = event.target.value} />
- *       <input value={myForm.description.value} onChange={event => myForm.description.value = event.target.value} />
+ *       <input
+ *         value={myForm.name.value}
+ *         onChange={event => myForm.name.value = event.target.value} />
+ *       <input
+ *         value={myForm.description.value}
+ *         onChange={event => myForm.description.value = event.target.value} />
  *     </>
- *   )
- * }
- *
- * // Or, define an input component for handling the binding of individual fields.
- * function MyInputComponent({ field }: { readonly field: FormField<string> }): JSX.Element {
- *   // React to field property changes
- *   useViewModel(field);
- *
- *   return (
- *     <input value={field.value} onChange={event => field.value = event.target.value} />
  *   )
  * }
  * ```
  *
- * Depending on the application, there can be a wide range of field components each providing
- * different features depending on the value type of a field, text inputs for `string`s, number
- * inputs for `number`s, date pickers for `Date`s and so on. Even complex objects can be handled
- * with custom input components.
+ * Ideally, input binding is done through a specific component that handles a
+ * specific type of input (text, numbers dates etc.) with appropriate memoization.
  *
- * The binding allows us to select the part of the field value that is relevant, while keeping
- * all other aspects are hidden, but useful in validation or interaction with other fields.
+ * For more information about input binding see {@linkcode FormField}.
  *
  * ----
  *
- * @example
+ * @snippet Field Changes Proparagation
  *
- * In this example we will define a custom field that tracks whether its value changed from the initial one. This is a minimal implementation
- * and can further be extended by adding a custom comparer so we would be able to accurately compare complex types.
+ * One of the big features of this library is extensibility, especially when it
+ * comes to forms.
+ *
+ * It is very easy to extend a {@linkcode FormField}, however that is not always
+ * enough. Some extensions apply to the form as a whole, changes at the field
+ * level propagate to the form that contains them.
+ *
+ * One such example is adding a _has changes_ feature which can be used as a
+ * navigation guard on edit pages. If there are no changes, then there is no need
+ * to prompt the user.
+ *
+ * Whether a form has changed is determined at the field level, if there is at
+ * least one field that changed then we can say that the form indeed has changes.
+ *
+ * First, we will define a custom {@linkcode FormField} to define this flag.
  *
  * ```ts
- * // Define an app-specific form, override some of the methods to restrict
- * // what type of fields can be added and which notifications propagate.
- * export class MyAppForm extends Form<number> {
- *   // Restrict all fields to be app-specific ones.
- *   public readonly fields: IReadOnlyObservableCollection<MyAppFormField<unknown>>;
- *
- *   protected withFields(...fields: readonly MyAppFormField<any>[]): IObservableCollection<MyAppFormField<any>> {
- *     return super.withFields.apply(this, arguments);
- *   }
- *
- *   // Restrict all sections to be app-specific ones.
- *   public readonly sections: IReadOnlyObservableCollection<MyAppForm>;
- *
- *   protected withSections(...sections: readonly MyAppForm[]): FormCollection<MyAppForm, number> {
- *     return super.withSections.apply(this, arguments);
- *   }
- *
- *   protected withSectionsCollection(sectionsCollection: IReadOnlyFormCollection<MyAppForm, number>): IReadOnlyFormCollection<MyAppForm, number> {
- *     return super.withSectionsCollection.apply(this, arguments);
- *   }
- *
- *   // Any field or section that has changes propapages to the root.
- *   public get hasChanges(): boolean {
- *     return (
- *       this.fields.some(field => field.hasChanged)
- *       || this.sections.some(section => section.hasChanges)
- *     );
- *   }
- *
- *   // This gets called whenever a field's property has changed,
- *   // we can use this to propagate the notifications.
- *   protected onFieldChanged(
- *     field: MyAppFormField<unknown>,
- *     changedProperties: readonly (keyof MyAppFormField<unknown>)[]
- *   ) {
- *     super.onFieldChanged.apply(this, arguments);
- *
- *     // Small difference here between fields and sections,
- *     // a field `hasChanged` while a section `hasChanges`.
- *     if (changedProperties.some(changedProperty => changedProperty === 'hasChanged'))
- *       this.notifyPropertiesChanged('hasChanges');
- *   }
- *
- *   // This gets called whenever a section's property has changed,
- *   // we can use this to propagate the notifications.
- *   protected onSectionChanged(
- *     section: MyAppForm,
- *     changedProperties: readonly (keyof MyAppForm)[]
- *   ) {
- *     super.onSectionChanged.apply(this, arguments);
- *
- *     if (changedProperties.some(changedProperty => changedProperty === 'hasChanges'))
- *       this.notifyPropertiesChanged('hasChanges');
- *   }
- *
- *   // This gets called whenever the current instance changes and determines whether a validation
- *   // should occur. In our case, the `hasChanges` flag does not impact validation thus we can
- *   // skip validation whenever this flag changes.
- *   // The `error`, `isValid` and `isInvalid` fields come from the base implementation.
- *   protected onShouldTriggerValidation(changedProperties: readonly (keyof MyAppForm)[]): boolean {
- *     return changedProperties.some(changedProperty => (
- *       changedProperty !== 'error'
- *       && changedProperty !== 'isValid'
- *       && changedProperty !== 'isInvalid'
- *       && changedProperty !== 'hasChanges'
- *     ));
- *   }
- * }
- *
- * // Define an app-specific field, we will use numbers for validation error.
- * // This will help us as well since we will not have to specify it every time
- * // and maintains consistency throughout the codebase.
- * class MyAppFormField<TValue> extends FormField<TValue, number> {
- *   public get hasChanged(): boolean {
- *     return this.value !== this.initialValue;
- *   }
- *
+ * class MyCustomFormField<TValue> extends FormField<TValue> {
  *   public get value(): TValue {
  *     return super.value;
  *   }
@@ -185,8 +146,54 @@ import { FormCollection } from './FormCollection';
  *     super.value = value;
  *     this.notifyPropertiesChanged('hasChanged');
  *   }
+ *
+ *   public get hasChanged(): boolean {
+ *     return this.initialValue !== this.value;
+ *   }
  * }
  * ```
+ *
+ * We can further improve on the code above, even extend the field config to
+ * ask for an equality comparer in case we are dealing with complex types, but
+ * for this example it will do.
+ *
+ * We need to define a custom form as well which will take into account the
+ * newly defined flag on our custom field. Whenever we are notified that
+ * `hasChanged` may have changed (no pun intended), we will propagate this
+ * on the form itself.
+ *
+ * ```ts
+ * class MyCustomForm extends Form {
+ *   public readonly fields: IReadOnlyObservableCollection<MyCustomFormField<unknown>>;
+ *
+ *   protected withFields(
+ *     ...fields: readonly MyCustomFormField<any>[]
+ *   ): IObservableCollection<MyCustomFormField<any>> {
+ *     return super.withFields.apply(this, arguments);
+ *   }
+ * 
+ *   public get hasChanges(): boolean {
+ *     return this.fields.some(field => field.hasChanged);
+ *   }
+ *
+ *   protected onFieldChanged(
+ *     field: MyCustomFormField<unknown>,
+ *     changedProperties: readonly (keyof MyCustomFormField<unknown>)[]
+ *   ): void {
+ *     if (changedProperties.includes('hasChanged'))
+ *       this.notifyPropertiesChanged('hasChanges');
+ *   }
+ * }
+ * ```
+ * 
+ * This example only covers field extension propagation, forms can contain
+ * sub-forms, or sections, which they too can propagate changes. For more
+ * information about this check {@linkcode sections}.
+ * 
+ * Sections are part of complex forms and more than enough applications will
+ * not even need to cover for this, however keep in mind that the library
+ * provides easy extension throughout the form definition including complex
+ * scenarios like lists or tables of editable items.
  */
 export class Form<TValidationError = string> extends Validatable<TValidationError> {
     private readonly _fields: AggregateObservableCollection<FormField<unknown, TValidationError>>;
@@ -357,7 +364,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      *
      * ----
      *
-     * @example
+     * @snippet
      * In this example we will define a custom sections collection for our form. We have a todo list where
      * each item is editable.
      *
