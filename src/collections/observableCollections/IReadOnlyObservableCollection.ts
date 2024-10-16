@@ -1,6 +1,7 @@
 import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifyCollectionChanged } from './INotifyCollectionChanged';
 import type { INotifyCollectionReordered } from './INotifyCollectionReordered';
+import type { ObservableCollection } from './ObservableCollection';
 
 /**
  * Represents a read-only observable collection based on the [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) interface.
@@ -212,9 +213,9 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
     slice(start?: number, end?: number): TItem[];
 
     /**
-     * Aggregates the contained items into a {@link String} placing the provided `separator` between them.
-     * @param separator The separator used to insert between items when aggregating them into a {@link String}.
-     * @returns The aggregated items as a {@link String}.
+     * Aggregates the contained items into a {@linkcode String} placing the provided `separator` between them.
+     * @param separator The separator used to insert between items when aggregating them into a {@linkcode String}.
+     * @returns The aggregated items as a {@linkcode String}.
      * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
      */
     join(separator?: string | null): string;
@@ -300,7 +301,7 @@ export interface IReadOnlyObservableCollection<TItem> extends Iterable<TItem>, A
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
-     * @see {@link ObservableCollection.splice}
+     * @see {@linkcode ObservableCollection.splice}
      * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
      */
     toSpliced(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[];

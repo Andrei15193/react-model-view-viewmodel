@@ -11,7 +11,7 @@ import { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
  */
 export class FormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormCollection<TForm, TValidationError> implements IFormCollection<TForm, TValidationError> {
     /**
-     * Initializes a new instance of the {@link FormCollection} class.
+     * Initializes a new instance of the {@linkcode FormCollection} class.
      * @param sections The sections to initialize the collection with.
      */
     public constructor(sections?: Iterable<TForm>) {

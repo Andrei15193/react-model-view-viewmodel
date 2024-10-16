@@ -122,7 +122,7 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
     private _initialValue: TValue;
 
     /**
-     * Initializes a new instance of the {@link FormField} class.
+     * Initializes a new instance of the {@linkcode FormField} class.
      * @param config The initial configuration of the field (name, value, validators etc.).
      */
     public constructor(config: IFormFieldConfig<TValue, TValidationError>) {

@@ -274,7 +274,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
     private readonly _sections: AggregateObservableCollection<Form<TValidationError>, IReadOnlyFormCollection<Form<TValidationError>, TValidationError>>;
 
     /**
-     * Initializes a new instance of the {@link Form} class.
+     * Initializes a new instance of the {@linkcode Form} class.
      */
     public constructor() {
         super();

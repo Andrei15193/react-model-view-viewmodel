@@ -1,4 +1,4 @@
-import { Application, CommentDisplayPart, DeclarationReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SomeType, TypeParameterReflection } from 'typedoc';
+import { Application, CommentDisplayPart, DeclarationReflection, ParameterReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SignatureReflection, SomeType, TypeParameterReflection } from 'typedoc';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
 import path from 'path';
 
@@ -29,12 +29,16 @@ void async function () {
             await Promise.all(project.children.map(async declaration => {
                 let documentation: string | null = null;
                 switch (declaration.kind) {
+                    case ReflectionKind.Interface:
+                        documentation = getInterfaceDocumentation(declaration);
+                        break;
+
                     case ReflectionKind.Class:
                         documentation = getClassDocumentation(declaration);
                         break;
 
-                    case ReflectionKind.Interface:
-                        documentation = getInterfaceDocumentation(declaration);
+                    case ReflectionKind.Function:
+                        documentation = getFunctionDocumentation(declaration);
                         break;
                 }
 
@@ -70,7 +74,7 @@ ${getDeclaration(interfaceDeclaration)}
 
 ${getSourceCodeLink(interfaceDeclaration)}
 
-${getTemplateParameters(interfaceDeclaration)}
+${getGenericParameters(interfaceDeclaration)}
 
 ${getDescription(interfaceDeclaration)}
 
@@ -106,7 +110,7 @@ ${getDeclaration(classDeclaration)}
 
 ${getSourceCodeLink(classDeclaration)}
 
-${getTemplateParameters(classDeclaration)}
+${getGenericParameters(classDeclaration)}
 
 ${getDescription(classDeclaration)}
 
@@ -124,6 +128,42 @@ ${getReferences(classDeclaration)}
 `.replace(/\n{3,}/g, '\n\n').trim();
         }
 
+        function getFunctionDocumentation(functionDeclaration: DeclarationReflection): string {
+            return `
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(functionDeclaration)} ${functionDeclaration.name.startsWith('use') ? 'hook' : 'function'}
+
+${functionDeclaration.signatures && functionDeclaration.signatures.length > 1 ? 'This hook has multiple overloads.\n\n----\n\n' : ''}
+
+${(functionDeclaration.signatures || []).map(getFunctionSignatureDocumentation).join('\n\n----\n\n')}
+`.replace(/\n{3,}/g, '\n\n').trim();
+        }
+
+        function getFunctionSignatureDocumentation(functionSignature: SignatureReflection): string {
+            return `
+${getDeprecationNotice(functionSignature)}
+
+${getSummary(functionSignature)}
+
+\`\`\`ts
+${getDeclaration(functionSignature)}
+\`\`\`
+
+${getSourceCodeLink(functionSignature)}
+
+${getGenericParameters(functionSignature)}
+
+${getParameters(functionSignature)}
+
+${getDescription(functionSignature)}
+
+${getRemarks(functionSignature)}
+
+${getGuidance(functionSignature)}
+
+${getReferences(functionSignature)}
+`.replace(/\n{3,}/g, '\n\n').trim();
+        }
+
         function getIdentifier(declaration: DeclarationReflection): string {
             switch (declaration.kind) {
                 case ReflectionKind.Constructor:
@@ -136,7 +176,9 @@ ${getReferences(classDeclaration)}
                 case ReflectionKind.Interface:
                 case ReflectionKind.TypeParameter:
                 case ReflectionKind.Function:
+                case ReflectionKind.TypeAlias:
                     return declaration.name;
+
 
                 default:
                     throw new Error(`Unhandled '${declaration}' declaration when trying to determine identifier.`);
@@ -193,7 +235,7 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getDeclaration(declaration: DeclarationReflection): string {
+        function getDeclaration(declaration: DeclarationReflection | SignatureReflection): string {
             switch (declaration.kind) {
                 case ReflectionKind.Class:
                     let classDeclaration = `class ${declaration.name}`;
@@ -220,6 +262,25 @@ ${getReferences(classDeclaration)}
 
                     return interfaceDeclaration;
 
+                case ReflectionKind.CallSignature:
+                    let functionDeclaration = 'function ' + declaration.name;
+
+                    if (declaration.typeParameters && declaration.typeParameters.length > 0)
+                        functionDeclaration += `<${declaration.typeParameters.map(getTypeParameterDeclaration).join(', ')}>`;
+
+                    const paramters = (declaration as SignatureReflection)?.parameters || [];
+                    if (paramters.length > 0) {
+                        functionDeclaration += '(\n  ';
+                        functionDeclaration += ((declaration as SignatureReflection)?.parameters || [])
+                            .map(getParameterDeclaration)
+                            .join(',  \n');
+                        functionDeclaration += '\n)';
+                    }
+                    else
+                        functionDeclaration += '()';
+
+                    return functionDeclaration;
+
                 default:
                     throw new Error(`Unhandled '${declaration.kind}' declaration type.`);
             }
@@ -236,6 +297,21 @@ ${getReferences(classDeclaration)}
             return declaration;
         }
 
+        function getParameterDeclaration(parameter: ParameterReflection): string {
+            let declaration = parameter.name;
+
+            if (parameter.flags.isOptional)
+                declaration += '?'
+            declaration += ': '
+
+            declaration += getTypeReferenceDeclaration(parameter.type!);
+
+            if (parameter.defaultValue)
+                declaration += ' = ' + parameter.defaultValue;
+
+            return declaration;
+        }
+
         function getTypeReferenceDeclaration(typeReference: SomeType): string {
             switch (typeReference.type) {
                 case 'reference':
@@ -247,11 +323,30 @@ ${getReferences(classDeclaration)}
                 case 'intrinsic':
                     return typeReference.name;
 
+                case 'literal':
+                    if (typeReference.value === null)
+                        return 'null';
+                    else switch (typeof typeReference.value) {
+                        case 'string':
+                            return `"${typeReference.value}"`;
+
+                        case 'number':
+                        case 'bigint':
+                        case 'boolean':
+                            return typeReference.value.toString();
+
+                        default:
+                            throw new Error(`Unhandled '${typeReference.value}' literal value.`);
+                    }
+
                 case 'tuple':
                     return `[${typeReference.elements.map(getTypeReferenceDeclaration).join(', ')}]`;
 
                 case 'typeOperator':
                     return `${typeReference.operator} ${getTypeReferenceDeclaration(typeReference.target)}`;
+
+                case 'union':
+                    return typeReference.types.map(getTypeReferenceDeclaration).join(' | ');
 
                 case 'array':
                     switch (typeReference.elementType.type) {
@@ -276,6 +371,9 @@ ${getReferences(classDeclaration)}
 
                 case 'typescript':
                     switch (typeReference.name) {
+                        case 'Exclude':
+                            return 'https://www.typescriptlang.org/docs/handbook/utility-types.html#excludeuniontype-excludedmembers';
+
                         case 'Iterable':
                             return 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol';
 
@@ -286,8 +384,21 @@ ${getReferences(classDeclaration)}
                             throw new Error(`Could not determine URL for TypeScript reference '${typeReference.name}'.`);
                     }
 
+                case '@types/react':
+                    switch (typeReference.name) {
+                        case 'PropsWithChildren':
+                            return 'https://react.dev/learn/passing-props-to-a-component#passing-jsx-as-children';
+
+                        case 'DependencyList':
+                            return 'https://react.dev/learn/removing-effect-dependencies#dependencies-should-match-the-code';
+
+                        default:
+                            throw new Error(`Could not determine URL for React reference '${typeReference.name}'.`);
+                    }
+
+
                 default:
-                    throw new Error(`Could not determine URL for '${typeReference}'.`);
+                    throw new Error(`Could not determine URL for '${typeReference}' in package '${typeReference.package}'.`);
             }
         }
 
@@ -334,6 +445,9 @@ ${getReferences(classDeclaration)}
                     case 'intersection':
                         return typeReference.types.map(getReferenceLink).join(' & ');
 
+                    case 'union':
+                        return typeReference.types.map(getReferenceLink).join(' | ');
+
                     case 'typeOperator':
                         let operatorLink: string;
                         switch (typeReference.operator) {
@@ -364,17 +478,32 @@ ${getReferences(classDeclaration)}
 
                     case 'intrinsic':
                         switch (typeReference.name) {
+                            case 'undefined':
+                                return '[`undefined`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined)';
+
                             case 'string':
                                 return '[`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)';
 
                             case 'unknown':
                                 return '[`unknown`](https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown)';
 
+                            case 'any':
+                                return '[`any`](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#any)';
+
                             case 'void':
                                 return '[`void`](https://www.typescriptlang.org/docs/handbook/2/functions.html#void)';
 
                             default:
                                 throw new Error(`'Unhandled '${typeReference.name}' intrinsic type reference.'`);
+                        }
+
+                    case 'literal':
+                        switch (typeReference.value) {
+                            case null:
+                                return '[`null`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null)';
+
+                            default:
+                                throw new Error(`Unhandled '${typeReference.value}' literal value.`);
                         }
 
                     default:
@@ -386,7 +515,7 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getDeprecationNotice(declaration: DeclarationReflection): string {
+        function getDeprecationNotice(declaration: DeclarationReflection | SignatureReflection): string {
             if (declaration.isDeprecated()) {
                 let declarationName: string;
                 switch (declaration.kind) {
@@ -413,16 +542,17 @@ ${getReferences(classDeclaration)}
                 return '';
         }
 
-        function getSummary(declaration: DeclarationReflection): string {
+        function getSummary(declaration: DeclarationReflection | SignatureReflection): string {
             try {
-                if (declaration.comment && declaration.comment.summary)
-                    return getBlock(declaration.comment.summary);
-                else if (
-                    declaration.signatures
+                if (
+                    'signatures' in declaration
+                    && declaration.signatures
                     && declaration.signatures.length > 0
                     && declaration.signatures.at(0)!.comment
                     && declaration.signatures.at(0)!.comment!.summary)
                     return getBlock(declaration.signatures.at(0)!.comment!.summary);
+                else if (declaration.comment && declaration.comment.summary)
+                    return getBlock(declaration.comment.summary);
                 else
                     return '';
             }
@@ -431,7 +561,7 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getDescription(declaration: DeclarationReflection): string {
+        function getDescription(declaration: DeclarationReflection | SignatureReflection): string {
             try {
                 const description = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@description');
                 if (description !== null && description !== undefined && description.content.length > 0)
@@ -444,7 +574,7 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getRemarks(declaration: DeclarationReflection): string {
+        function getRemarks(declaration: DeclarationReflection | SignatureReflection): string {
             try {
                 const remarks = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@remarks');
                 if (remarks !== null && remarks !== undefined && remarks.content.length > 0)
@@ -457,7 +587,7 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getGuidance(declaration: DeclarationReflection): string {
+        function getGuidance(declaration: DeclarationReflection | SignatureReflection): string {
             const examples = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@guidance') || [];
 
             return examples
@@ -468,7 +598,7 @@ ${getReferences(classDeclaration)}
                 .join('\n');
         }
 
-        function getTemplateParameters(declaration: DeclarationReflection): string {
+        function getGenericParameters(declaration: DeclarationReflection | SignatureReflection): string {
             if (declaration.typeParameters && declaration.typeParameters.length > 0) {
                 return '### Generic Parameters\n\n' + declaration
                     .typeParameters
@@ -488,6 +618,29 @@ ${getReferences(classDeclaration)}
                                 genericParameter += `  \n  Default value: ${getReferenceLink(typeParameter.default)}.`;
 
                             return genericParameter;
+                        },
+                    ).join('\n\n');
+            }
+            else
+                return '';
+        }
+
+        function getParameters(declaration: SignatureReflection): string {
+            if (declaration.parameters && declaration.parameters.length > 0) {
+                return '### Parameters\n\n' + declaration
+                    .parameters
+                    .map(
+                        parameterDeclaration => {
+                            let parameter = `* **${parameterDeclaration.name}**: ${getReferenceLink(parameterDeclaration.type!)}`;
+                            let parameterDescription = getBlock(parameterDeclaration.comment?.summary);
+
+                            if (parameterDescription.length > 0)
+                                parameter += '  \n' + parameterDescription;
+
+                            if (parameterDeclaration.defaultValue)
+                                parameter += `\n\n  Default value: \`${parameterDeclaration.defaultValue}\`.`;
+
+                            return parameter;
                         },
                     ).join('\n\n');
             }
@@ -586,7 +739,7 @@ ${getReferences(classDeclaration)}
             return 0;
         }
 
-        function getReferences(declaration: DeclarationReflection): string {
+        function getReferences(declaration: DeclarationReflection | SignatureReflection): string {
             const references = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@see') || [];
             if (references.length > 0)
                 return '### See also\n\n' + references.reduce((result, reference) => result + `* ${getBlock(reference.content)}\n`, '');
@@ -624,19 +777,29 @@ ${getReferences(classDeclaration)}
 
                                 if (comment.target && 'qualifiedName' in (comment.target as any)) {
                                     const declarationReference = (comment.target as ReflectionSymbolId).toDeclarationReference();
-                                    if (declarationReference.resolutionStart === 'global' && declarationReference.moduleSource === 'typescript') {
-                                        const typeScriptReference = declarationReference.symbolReference?.path?.map(componentPath => componentPath.path).join('.') || '';
-                                        switch (typeScriptReference) {
-                                            case 'String':
-                                                return `[${getDisplayText('String')}](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)`;
+                                    if (declarationReference.resolutionStart === 'global')
+                                        switch (declarationReference.moduleSource) {
+                                            case 'typescript':
+                                                const typeScriptReference = declarationReference.symbolReference?.path?.map(componentPath => componentPath.path).join('.') || '';
+                                                switch (typeScriptReference) {
+                                                    case 'String':
+                                                        return `[${getDisplayText('String')}](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)`;
+                                                }
+
+                                            case '@types/react':
+                                                switch (declarationReference.symbolReference?.path?.at(-1)!.path) {
+                                                    case 'useMemo':
+                                                        return `[${getDisplayText('useMemo')}](https://react.dev/reference/react/useMemo)`;
+
+                                                    default:
+                                                        throw new Error(`Unhandled '${comment.target}' React reference.`);
+                                                }
                                         }
-                                    }
                                 }
-                                else {
-                                    const reflectionTarget = comment.target as Reflection;
-                                    if (reflectionTarget.kind === ReflectionKind.TypeParameter)
-                                        return getDisplayText(reflectionTarget.name);
-                                }
+
+                                const reflectionTarget = comment.target as Reflection;
+                                if (reflectionTarget.kind === ReflectionKind.TypeParameter)
+                                    return getDisplayText(reflectionTarget.name);
 
                                 const targetDeclaration = findDeclaration(comment.target);
                                 return `[${getDisplayText(getFullName(targetDeclaration))}](${getProjectReferenceUrl(targetDeclaration)})`;
@@ -654,7 +817,7 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getSourceCodeLink(declaration: DeclarationReflection): string {
+        function getSourceCodeLink(declaration: DeclarationReflection | SignatureReflection): string {
             if (declaration.sources && declaration.sources.length > 0) {
                 const [{ fileName, line }] = declaration.sources;
 

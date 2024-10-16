@@ -2,7 +2,7 @@ import type { IEvent } from './IEvent';
 import type { IEventHandler } from './IEventHandler';
 
 /**
- * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an {@link IEvent}.
+ * A base implementation of an event. To avoid misuse, declare a private event of this type and expose it as an {@linkcode IEvent}.
  * @template TSubject Optional, the type of object that raises the event.
  * @template TEventArgs Optional, the type of the event context containing additional information about the event.
  */

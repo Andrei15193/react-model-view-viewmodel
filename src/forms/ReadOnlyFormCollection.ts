@@ -18,7 +18,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
     private readonly _setupCallbacks: FormSetupCallback<TForm, TValidationError>[];
 
     /**
-     * Initializes a new instance of the {@link ReadOnlyFormCollection} class.
+     * Initializes a new instance of the {@linkcode ReadOnlyFormCollection} class.
      * @param sections The sections to initialize the collection with.
      */
     public constructor(sections?: Iterable<TForm>) {

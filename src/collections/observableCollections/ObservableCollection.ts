@@ -8,7 +8,7 @@ import { ReadOnlyObservableCollection } from './ReadOnlyObservableCollection';
  */
 export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TItem> implements IObservableCollection<TItem> {
     /**
-     * Initializes a new instance of the {@link ObservableCollection} class.
+     * Initializes a new instance of the {@linkcode ObservableCollection} class.
      * @param items The items to initialize the collection with.
      */
     public constructor(items?: Iterable<TItem>) {

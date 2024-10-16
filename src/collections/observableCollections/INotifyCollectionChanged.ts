@@ -2,7 +2,7 @@ import type { ICollectionChangedEvent } from './ICollectionChangedEvent';
 import type { INotifyCollectionReordered } from './INotifyCollectionReordered';
 
 /**
- * Notifies when a collection has items added or removed to it. Item reordering is handled through the {@link INotifyCollectionReordered} interface.
+ * Notifies when a collection has items added or removed to it. Item reordering is handled through the {@linkcode INotifyCollectionReordered} interface.
  *
  * Any collection change can be reduced to [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice),
  * event handlers receive all the relevant information to easily reproduce the operation on mapped collections.

@@ -1,10 +1,10 @@
 import type { IEvent } from './IEvent';
 
 /**
- * Checkes whether the provided instance is an event (implements {@link IEvent}).
- * @template TEvent The type of event to check, defaults to {@link IEvent}.
+ * Checkes whether the provided instance is an event (implements {@linkcode IEvent}).
+ * @template TEvent The type of event to check, defaults to {@linkcode IEvent}.
  * @param maybeEvent The value to check if is an event.
- * @returns Returns `true` if the provided instance implements {@link IEvent}; otherwise `false`.
+ * @returns Returns `true` if the provided instance implements {@linkcode IEvent}; otherwise `false`.
  */
 export function isEvent<TEvent extends IEvent<any, any> = IEvent<any, any>>(maybeEvent: any): maybeEvent is TEvent {
     return (

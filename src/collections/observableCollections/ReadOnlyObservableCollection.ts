@@ -3,6 +3,7 @@ import type { ICollectionChange } from './ICollectionChange';
 import type { ICollectionReorderedEvent } from './ICollectionReorderedEvent';
 import type { ICollectionReorder, ICollectionItemMove } from './ICollectionReorder';
 import type { IReadOnlyObservableCollection } from './IReadOnlyObservableCollection';
+import type { ObservableCollection } from './ObservableCollection';
 import { EventDispatcher } from '../../events';
 import { ViewModel } from '../../viewModels';
 
@@ -19,7 +20,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     private readonly _collectionReorderedEvent: EventDispatcher<this, ICollectionReorder<TItem>>;
 
     /**
-     * Initializes a new instance of the {@link ReadOnlyObservableCollection} class.
+     * Initializes a new instance of the {@linkcode ReadOnlyObservableCollection} class.
      * @param items The items to initialize the collection with.
      */
     public constructor(items?: Iterable<TItem>) {
@@ -208,9 +209,9 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
     };
 
     /**
-     * Aggregates the contained items into a {@link String} placing the provided `separator` between them.
-     * @param separator The separator used to insert between items when aggregating them into a {@link String}.
-     * @returns The aggregated items as a {@link String}.
+     * Aggregates the contained items into a {@linkcode String} placing the provided `separator` between them.
+     * @param separator The separator used to insert between items when aggregating them into a {@linkcode String}.
+     * @returns The aggregated items as a {@linkcode String}.
      * @see [Array.join](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/join)
      */
     public join(separator?: string | null): string {
@@ -670,7 +671,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
      * @param deleteCount The number of elements to remove.
      * @param items The items to insert at the given start location.
      * @returns A new [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) without the removed items and containing the replacements.
-     * @see {@link ObservableCollection.splice}
+     * @see {@linkcode ObservableCollection.splice}
      * @see [Array.toSpliced](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced)
      */
     public toSpliced(start: number, deleteCount?: number, ...items: readonly TItem[]): TItem[] {
