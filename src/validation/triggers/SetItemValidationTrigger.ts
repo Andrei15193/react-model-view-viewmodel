@@ -11,6 +11,7 @@ interface IItemValidationTriggers {
 
 /**
  * Represents the set item validation trigger configuration.
+ * @template TItem The type of items the set contains.
  */
 export interface ISetItemValidationTriggerConfig<TItem> {
     /**
@@ -32,9 +33,11 @@ export interface ISetItemValidationTriggerConfig<TItem> {
 /**
  * Represents a set item validation trigger. Instead of triggering a validaiton only when the set changes,
  * a validaiton may be triggered by any of the contained items when they themselves change.
- * 
+ *
  * This is useful when within the collection there is a field that needs to be unique,
  * such as a unique name for each item in the collection.
+ *
+ * @template TItem The type of items the set contains.
  */
 export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySetChanged<TItem> & Iterable<TItem>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;

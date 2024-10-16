@@ -12,6 +12,8 @@ interface IItemValidationTriggers {
 
 /**
  * Represents the map item validation trigger configuration.
+ * @template TKey The type of keys the map contains.
+ * @template TItem The type of items the map contains.
  */
 export interface IMapItemValidationTriggerConfig<TKey, TItem> {
     /**
@@ -33,9 +35,12 @@ export interface IMapItemValidationTriggerConfig<TKey, TItem> {
 /**
  * Represents a map item validation trigger. Instead of triggering a validaiton only when the map changes,
  * a validaiton may be triggered by any of the contained items when they themselves change.
- * 
+ *
  * This is useful when within the collection there is a field that needs to be unique,
  * such as a unique name for each item in the collection.
+ *
+ * @template TKey The type of keys the map contains.
+ * @template TItem The type of items the map contains.
  */
 export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INotifyMapChanged<TKey, TItem> & Iterable<[TKey, TItem]>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;

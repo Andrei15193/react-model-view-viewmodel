@@ -6,6 +6,8 @@ import type { WellKnownValidationTrigger, ValidationTrigger } from '../triggers'
 
 /**
  * Represents a read-only object validator.
+ * @template TValidatable The instance type that is being validated.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
 export interface IReadOnlyObjectValidator<TValidatable extends IReadOnlyValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> {
     /**

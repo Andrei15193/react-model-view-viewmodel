@@ -3,6 +3,7 @@ import { ValidationTrigger } from './ValidationTrigger';
 
 /**
  * Represents the view model validation trigger configuration.
+ * @template TViewModel The view model type that may trigger validations.
  */
 export interface IViewModelChangedValidationTriggerConfig<TViewModel extends INotifyPropertiesChanged = INotifyPropertiesChanged> {
     /**
@@ -20,6 +21,7 @@ export interface IViewModelChangedValidationTriggerConfig<TViewModel extends INo
 
 /**
  * Represents a view model validation trigger, whenever the view model changes a validation should occur.
+ * @template TViewModel The view model type that may trigger validations.
  */
 export class ViewModelChangedValidationTrigger<TViewModel extends INotifyPropertiesChanged = INotifyPropertiesChanged> extends ValidationTrigger<TViewModel> {
     private readonly _viewModelChangedEventHandler: IPropertiesChangedEventHandler<TViewModel> & {

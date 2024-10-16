@@ -58,6 +58,8 @@ void async function () {
             return `
 ###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(interfaceDeclaration)} interface
 
+${getDeprecationNotice(interfaceDeclaration)}
+
 ${getSummary(interfaceDeclaration)}
 
 ${getInheritaceAndImplementations(interfaceDeclaration)}
@@ -67,6 +69,8 @@ ${getDeclaration(interfaceDeclaration)}
 \`\`\`
 
 ${getSourceCodeLink(interfaceDeclaration)}
+
+${getTemplateParameters(interfaceDeclaration)}
 
 ${getDescription(interfaceDeclaration)}
 
@@ -88,6 +92,8 @@ ${getReferences(interfaceDeclaration)}
             return `
 ###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(classDeclaration)} class
 
+${getDeprecationNotice(classDeclaration)}
+
 ${getSummary(classDeclaration)}
 
 ${getInheritaceAndImplementations(classDeclaration)}
@@ -99,6 +105,8 @@ ${getDeclaration(classDeclaration)}
 \`\`\`
 
 ${getSourceCodeLink(classDeclaration)}
+
+${getTemplateParameters(classDeclaration)}
 
 ${getDescription(classDeclaration)}
 
@@ -243,10 +251,18 @@ ${getReferences(classDeclaration)}
                     return `[${typeReference.elements.map(getTypeReferenceDeclaration).join(', ')}]`;
 
                 case 'typeOperator':
-                    return `${typeReference.operator}(${getTypeReferenceDeclaration(typeReference.target)})`;
+                    return `${typeReference.operator} ${getTypeReferenceDeclaration(typeReference.target)}`;
 
                 case 'array':
-                    return `${getTypeReferenceDeclaration(typeReference.elementType)}[]`;
+                    switch (typeReference.elementType.type) {
+                        case 'reference':
+                        case 'literal':
+                        case 'reflection':
+                            return `${getTypeReferenceDeclaration(typeReference.elementType)}[]`;
+
+                        default:
+                            return `(${getTypeReferenceDeclaration(typeReference.elementType)})[]`;
+                    }
 
                 default:
                     throw new Error(`Unhandled '${typeReference.type}' type declaration.`);
@@ -319,10 +335,47 @@ ${getReferences(classDeclaration)}
                         return typeReference.types.map(getReferenceLink).join(' & ');
 
                     case 'typeOperator':
-                        return `\`${typeReference.operator}\` (${getReferenceLink(typeReference.target)})`;
+                        let operatorLink: string;
+                        switch (typeReference.operator) {
+                            case 'readonly':
+                                operatorLink = '[`readonly`](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#readonly-and-const)';
+                                break;
+
+                            case 'keyof':
+                                operatorLink = '[`keyof`](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html)';
+                                break;
+
+                            default:
+                                throw new Error(`Unhandled '${typeReference.operator}' type operator link.`);
+                        }
+
+                        return `${operatorLink} ${getReferenceLink(typeReference.target)}`;
 
                     case 'array':
-                        return getReferenceLink(typeReference.elementType) + '[]';
+                        switch (typeReference.elementType.type) {
+                            case 'reference':
+                            case 'literal':
+                            case 'reflection':
+                                return `${getReferenceLink(typeReference.elementType)}[]`;
+
+                            default:
+                                return `(${getReferenceLink(typeReference.elementType)})[]`;
+                        }
+
+                    case 'intrinsic':
+                        switch (typeReference.name) {
+                            case 'string':
+                                return '[`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)';
+
+                            case 'unknown':
+                                return '[`unknown`](https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown)';
+
+                            case 'void':
+                                return '[`void`](https://www.typescriptlang.org/docs/handbook/2/functions.html#void)';
+
+                            default:
+                                throw new Error(`'Unhandled '${typeReference.name}' intrinsic type reference.'`);
+                        }
 
                     default:
                         throw new Error(`Unhandled '${typeReference.type}' type reference for '${typeReference}'.`);
@@ -331,6 +384,33 @@ ${getReferences(classDeclaration)}
             catch (error) {
                 throw new Error(`Could not get a reference link for '${typeReference}'.\n${error}`)
             }
+        }
+
+        function getDeprecationNotice(declaration: DeclarationReflection): string {
+            if (declaration.isDeprecated()) {
+                let declarationName: string;
+                switch (declaration.kind) {
+                    case ReflectionKind.Class:
+                        declarationName = 'class';
+                        break;
+
+                    default:
+                        throw new Error(`Unhandled '${declaration.kind}' deprecated declaration.`);
+                }
+
+                let deprecationNotice = '\n----\n\n';
+                deprecationNotice += `**This ${declarationName} has been deprecated.**`;
+
+                const deprecationDescription = getBlock(declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@deprecated')?.content);
+                if (deprecationDescription.length > 0)
+                    deprecationNotice += '  \n' + deprecationDescription;
+
+                deprecationNotice += '\n\n----\n';
+
+                return deprecationNotice;
+            }
+            else
+                return '';
         }
 
         function getSummary(declaration: DeclarationReflection): string {
@@ -386,6 +466,33 @@ ${getReferences(classDeclaration)}
                     return `### Example: ${title.trim()}\n\n${content.join('\n').trim()}`;
                 })
                 .join('\n');
+        }
+
+        function getTemplateParameters(declaration: DeclarationReflection): string {
+            if (declaration.typeParameters && declaration.typeParameters.length > 0) {
+                return '### Generic Parameters\n\n' + declaration
+                    .typeParameters
+                    .map(
+                        typeParameter => {
+                            let genericParameter = `* **${typeParameter.name}**`;
+                            let genericParameterDescription = getBlock(typeParameter.comment?.summary);
+
+                            if (genericParameterDescription.length > 0)
+                                genericParameter += ' - ' + genericParameterDescription;
+
+                            genericParameter += '\n'
+                            if (typeParameter.type)
+                                genericParameter += `  \n  Type constraints: ${getReferenceLink(typeParameter.type)}.`;
+
+                            if (typeParameter.default)
+                                genericParameter += `  \n  Default value: ${getReferenceLink(typeParameter.default)}.`;
+
+                            return genericParameter;
+                        },
+                    ).join('\n\n');
+            }
+            else
+                return '';
         }
 
         function getConstructorsList(declaration: DeclarationReflection): string {
@@ -487,7 +594,10 @@ ${getReferences(classDeclaration)}
                 return '';
         }
 
-        function getBlock(comments: readonly CommentDisplayPart[]): string {
+        function getBlock(comments: readonly CommentDisplayPart[] | null | undefined): string {
+            if (comments === null || comments === undefined || comments.length === 0)
+                return '';
+
             return comments
                 .reduce((result, comment) => result + getCommentMarkdown(comment), '')
                 .replace(/^----$/gm, '');
@@ -508,7 +618,7 @@ ${getReferences(classDeclaration)}
                             case '@linkcode':
                                 const getDisplayText = (text: string): string => (
                                     comment.tag === '@linkcode'
-                                        ? `\`${text}\``
+                                        ? `\`${text.replace(/\\(.)/g, '$1')}\``
                                         : text
                                 );
 

@@ -10,8 +10,8 @@ import { ReadOnlyObservableCollection } from '../collections';
  * up individual form sections for cases where validation and other aspects are based on the state of an entity or the
  * form itself.
  *
- * @template TForm the concrete type of the form section.
- * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TForm The concrete type of the form section.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
 export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyObservableCollection<TForm> implements IReadOnlyFormCollection<TForm, TValidationError>, IValidatable<TValidationError> {
     private _error: TValidationError | null;

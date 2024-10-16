@@ -6,8 +6,8 @@ import { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
  * Represents a configurable observable collection of forms. Callbacks can be configured for setting up individual
  * form sections for cases where validation and other aspects are based on the state of an entity or the form itself.
  *
- * @template TForm the concrete type of the form.
- * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TForm The concrete type of the form.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
 export class FormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormCollection<TForm, TValidationError> implements IFormCollection<TForm, TValidationError> {
     /**

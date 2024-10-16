@@ -3,6 +3,8 @@ import { ValidationTrigger } from './ValidationTrigger';
 
 /**
  * Represents the set changed validation trigger configuration.
+ * @template TItem The type of items the set contains.
+ * @template TSet The set type that may trigger validations.
  */
 export interface ISetChangedValidationTriggerConfig<TItem = unknown, TSet extends INotifySetChanged<TItem> = INotifySetChanged<TItem>> {
     /**
@@ -20,6 +22,8 @@ export interface ISetChangedValidationTriggerConfig<TItem = unknown, TSet extend
 
 /**
  * Represents a set changed validation trigger. Whenever the set changes a validation may be triggered.
+ * @template TItem The type of items the set contains.
+ * @template TSet The set type that may trigger validations.
  */
 export class SetChangedValidationTrigger<TItem = unknown, TSet extends INotifySetChanged<TItem> = INotifySetChanged<TItem>> extends ValidationTrigger<TSet> {
     private readonly _setChangedEventHandler: ISetChangedEventHandler<TSet, TItem> & {

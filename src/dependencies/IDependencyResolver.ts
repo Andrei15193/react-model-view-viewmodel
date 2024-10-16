@@ -28,7 +28,7 @@ export interface IDependencyResolver {
    * @param dependency The dependency to resolve.
    * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
    */
-  resolve<T, TAdditional extends readonly any[] = []>(dependency:  ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
+  resolve<T, TAdditional extends readonly any[] = []>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
 }
 
 /**
@@ -72,14 +72,26 @@ export type ComplexDependency<T, TAdditional extends readonly any[]> = {
  * This is an abstraction where definitions cannot be configured directly, such as interfaces.
  * Instead binding an interface to an implementation, a dependency token is configured for
  * an implementation.
+ * 
+ * @template T The type that is associated with the dependency token.
  */
 export class DependencyToken<T> {
+  /**
+   * Initializes a new instance of the {@linkcode DependencyToken} class.
+   * @param description A textual description of the token used in exception messages.
+   */
   public constructor(description: string) {
     this.description = description;
   }
 
+  /**
+   * Gets the dependency token textual description.
+   */
   public readonly description: string;
 
+  /**
+   * Gets the string representation of the dependency token.
+   */
   public toString(): string {
     return this.description;
   }

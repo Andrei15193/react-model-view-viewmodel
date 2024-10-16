@@ -9,7 +9,7 @@ import { FormCollection } from './FormCollection';
  * Represents a form for which both fields and sections can be configured. Form sections are forms themselves making this a tree structure
  * where fields represent leaves and sections are parent nodes.
  *
- * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  *
  * ----
  *

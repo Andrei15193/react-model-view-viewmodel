@@ -7,8 +7,8 @@ export type FormSetupCallback<TSection extends Form<TValidationError>, TValidati
  * Represents collection of form sections that can be configured. This is useful for cases like having a list of editable items
  * and neeeding to add validaiton for each based on the state of an entity or the form itself.
  *
- * @template TSection the concrete type of the form section.
- * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TSection The concrete type of the form section.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
 export interface IConfigurableFormCollection<TSection extends Form<TValidationError>, TValidationError = string> {
     /**

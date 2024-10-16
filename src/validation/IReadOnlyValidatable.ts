@@ -1,5 +1,6 @@
 /**
  * Represents a read-only validatable object.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
 export interface IReadOnlyValidatable<TValidationError = string> {
     /**

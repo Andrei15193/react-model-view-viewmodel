@@ -3,6 +3,9 @@ import { ValidationTrigger } from './ValidationTrigger';
 
 /**
  * Represents the map changed validation trigger configuration.
+ * @template TKey The type of keys the map contains.
+ * @template TItem The type of items the map contains.
+ * @template TMap The map type that may trigger validations.
  */
 export interface IMapChangedValidationTriggerConfig<TKey = unknown, TItem = unknown, TMap extends INotifyMapChanged<TKey, TItem> = INotifyMapChanged<TKey, TItem>> {
     /**
@@ -20,6 +23,9 @@ export interface IMapChangedValidationTriggerConfig<TKey = unknown, TItem = unkn
 
 /**
  * Represents a map changed validation trigger. Whenever the map changes a validation may be triggered.
+ * @template TKey The type of keys the map contains.
+ * @template TItem The type of items the map contains.
+ * @template TMap The map type that may trigger validations.
  */
 export class MapChangedValidationTrigger<TKey = unknown, TItem = unknown, TMap extends INotifyMapChanged<TKey, TItem> = INotifyMapChanged<TKey, TItem>> extends ValidationTrigger<TMap> {
     private readonly _mapChangedEventHandler: IMapChangedEventHandler<TMap, TKey, TItem> & {

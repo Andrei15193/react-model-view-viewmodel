@@ -6,6 +6,9 @@ import { type IEvent, EventDispatcher } from '../../events';
  * Represent a set of well-known validaiton triggers. These are used to simplify
  * object validator configurations as a view model or observable collection can
  * be directly passed as a trigger.
+ *
+ * @template TKey The type of keys the map contains.
+ * @template TItem The type of items the collection, set, or map contains.
  */
 export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
     = INotifyPropertiesChanged
@@ -25,6 +28,8 @@ export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
 /**
  * Represents a validation trigger. Generally, they wrap an observable object and whenever
  * it changes the {@linkcode validationTriggered} event is raised.
+ *
+ * @template TTrigger The concrete type that may trigger validations.
  */
 export abstract class ValidationTrigger<TTrigger = unknown> {
     private readonly _validationTriggeredEventDispatcher: EventDispatcher<this>;

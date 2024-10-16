@@ -2,21 +2,38 @@ import { Validatable, type IValidator, type ValidatorCallback, type IObjectValid
 
 /**
  * Represents the configuration of a field, this can be extended for custom fields to easily add more features.
+ * @template TValue The value of the field.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  */
 export interface IFormFieldConfig<TValue, TValidationError = string> {
+    /**
+     * Provides the name of the field.
+     */
     readonly name: string;
+    /**
+     * Provides the value of the field.
+     * @default - {@linkcode initialValue}
+     */
     readonly value?: TValue;
+    /**
+     * Provides the initial value of the field.
+     */
     readonly initialValue: TValue;
 
+    /**
+     * Provides the validators of the field, these can be later reconfigured.
+     */
     readonly validators?: readonly (IValidator<FormField<TValue, TValidationError>, TValidationError> | ValidatorCallback<FormField<TValue, TValidationError>, TValidationError>)[];
+    /**
+     * Provides the validation triggers of the field, these can be later reconfigured.
+     */
     readonly validationTriggers?: readonly (WellKnownValidationTrigger | ValidationTrigger)[];
 }
 
 /**
  * Represents a form field containing the minimum set of information required to describe a field in a form.
- *
- * @template TValue the value of the field.
- * @template TValidationError the concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValue The value of the field.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
  *
  * ----
  *

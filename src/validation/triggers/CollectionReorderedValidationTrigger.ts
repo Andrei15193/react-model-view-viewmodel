@@ -3,6 +3,8 @@ import { ValidationTrigger } from './ValidationTrigger';
 
 /**
  * Represents the collection reordered validation trigger configuration.
+ * @template TItem The type of item the collection contains.
+ * @template TCollection The collection type that may trigger validations.
  */
 export interface ICollectionReorderedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionReordered<TItem> = INotifyCollectionReordered<TItem>> {
     /**
@@ -20,6 +22,8 @@ export interface ICollectionReorderedValidationTriggerConfig<TItem = unknown, TC
 
 /**
  * Represents a collection reordered validation trigger. Whenever the collection reorders a validation may be triggered.
+ * @template TItem The type of item the collection contains.
+ * @template TCollection The collection type that may trigger validations.
  */
 export class CollectionReorderedValidationTrigger<TItem = unknown, TCollection extends INotifyCollectionReordered<TItem> = INotifyCollectionReordered<TItem>> extends ValidationTrigger<TCollection> {
     private readonly _collectionReorderedEventHandler: ICollectionReorderedEventHandler<TCollection, TItem> & {

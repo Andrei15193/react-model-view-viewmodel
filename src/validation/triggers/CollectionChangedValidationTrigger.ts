@@ -3,6 +3,8 @@ import { ValidationTrigger } from './ValidationTrigger';
 
 /**
  * Represents the collection changed validation trigger configuration.
+ * @template TItem The type of item the collection contains.
+ * @template TCollection The collection type that may trigger validations.
  */
 export interface ICollectionChangedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionChanged<TItem> = INotifyCollectionChanged<TItem>> {
     /**
@@ -20,6 +22,8 @@ export interface ICollectionChangedValidationTriggerConfig<TItem = unknown, TCol
 
 /**
  * Represents a collection changed validation trigger. Whenever the collection changes a validation may be triggered.
+ * @template TItem The type of item the collection contains.
+ * @template TCollection The collection type that may trigger validations.
  */
 export class CollectionChangedValidationTrigger<TItem = unknown, TCollection extends INotifyCollectionChanged<TItem> = INotifyCollectionChanged<TItem>> extends ValidationTrigger<TCollection> {
     private readonly _collectionChangedEventHandler: ICollectionChangedEventHandler<TCollection, TItem> & {
