@@ -82,7 +82,7 @@ ${getPropertiesList(interfaceDeclaration)}
 
 ${getMethodsList(interfaceDeclaration)}
 
-${getExamples(interfaceDeclaration)}
+${getGuidance(interfaceDeclaration)}
 
 ${getReferences(interfaceDeclaration)}
 `.replace(/\n{3,}/g, '\n\n').trim();
@@ -118,7 +118,7 @@ ${getPropertiesList(classDeclaration)}
 
 ${getMethodsList(classDeclaration)}
 
-${getExamples(classDeclaration)}
+${getGuidance(classDeclaration)}
 
 ${getReferences(classDeclaration)}
 `.replace(/\n{3,}/g, '\n\n').trim();
@@ -457,13 +457,13 @@ ${getReferences(classDeclaration)}
             }
         }
 
-        function getExamples(declaration: DeclarationReflection): string {
-            const examples = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@snippet') || [];
+        function getGuidance(declaration: DeclarationReflection): string {
+            const examples = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@guidance') || [];
 
             return examples
                 .map(example => {
                     const [title, ...content] = getBlock(example.content).split('\n');
-                    return `### Example: ${title.trim()}\n\n${content.join('\n').trim()}`;
+                    return `### Guidance: ${title.trim()}\n\n${content.join('\n').trim()}`;
                 })
                 .join('\n');
         }
@@ -632,6 +632,11 @@ ${getReferences(classDeclaration)}
                                         }
                                     }
                                 }
+                                else {
+                                    const reflectionTarget = comment.target as Reflection;
+                                    if (reflectionTarget.kind === ReflectionKind.TypeParameter)
+                                        return getDisplayText(reflectionTarget.name);
+                                }
 
                                 const targetDeclaration = findDeclaration(comment.target);
                                 return `[${getDisplayText(getFullName(targetDeclaration))}](${getProjectReferenceUrl(targetDeclaration)})`;
@@ -645,7 +650,6 @@ ${getReferences(classDeclaration)}
                 }
             }
             catch (error) {
-                console.log(comment);
                 throw new Error(`Could not process '${comment}' comment\n${error}`);
             }
         }

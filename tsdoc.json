@@ -13,7 +13,7 @@
             "syntaxKind": "block"
         },
         {
-            "tagName": "@snippet",
+            "tagName": "@guidance",
             "syntaxKind": "block"
         }
     ]

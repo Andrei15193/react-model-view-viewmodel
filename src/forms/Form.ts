@@ -1,7 +1,7 @@
 import type { IPropertiesChangedEventHandler } from '../viewModels';
 import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 import { type IReadOnlyObservableCollection, type IObservableCollection, type ICollectionChangedEventHandler, type ICollectionReorderedEventHandler, ObservableCollection, ReadOnlyObservableCollection } from '../collections';
-import { type IObjectValidator, Validatable, ObjectValidator } from '../validation';
+import { type IValidatable, type IObjectValidator, Validatable, ObjectValidator } from '../validation';
 import { FormField } from './FormField';
 import { FormCollection } from './FormCollection';
 
@@ -32,23 +32,23 @@ import { FormCollection } from './FormCollection';
  * something else, the option is available as well.
  *
  * ----
- * 
+ *
  * @remarks
- * 
+ *
  * The library makes a distinction between form definition and form configuration.
- * 
+ *
  * **Form definition** relates to the structure of the form, what fields and what
  * type of value they handle along side any sections or collections of editable
  * items the form can handle.
- * 
+ *
  * Large forms can be broken down into sections to group relevant fields together,
  * in essence, it is still one form, however the object model allows for an easier
  * navigation and understanding of the form structure.
- * 
+ *
  * **Form configuration** relates to form validation and field locking. In more
  * complex scenarios, an edit form may have different validation rules depending
  * on the underlying entity state.
- * 
+ *
  * For instnace, when placing orders in an online shop, the respective order
  * goes through a number of states and some fields are editable dependent on that.
  *
@@ -56,10 +56,10 @@ import { FormCollection } from './FormCollection';
  * the same, but the way fields behave is different. Some fields become required
  * or have different validaiton rules while other can become locked and are no
  * longer editable.
- * 
+ *
  * ----
  *
- * @snippet Define a Form
+ * @guidance Define a Form
  *
  * To define a form with all related fields we need to extend from the base class
  * and then declare the fields it contains and add them to the form.
@@ -118,7 +118,7 @@ import { FormCollection } from './FormCollection';
  *
  * ----
  *
- * @snippet Field Changes Proparagation
+ * @guidance Field Changes Proparagation
  *
  * One of the big features of this library is extensibility, especially when it
  * comes to forms.
@@ -171,7 +171,7 @@ import { FormCollection } from './FormCollection';
  *   ): IObservableCollection<MyCustomFormField<any>> {
  *     return super.withFields.apply(this, arguments);
  *   }
- * 
+ *
  *   public get hasChanges(): boolean {
  *     return this.fields.some(field => field.hasChanged);
  *   }
@@ -185,15 +185,89 @@ import { FormCollection } from './FormCollection';
  *   }
  * }
  * ```
- * 
+ *
  * This example only covers field extension propagation, forms can contain
  * sub-forms, or sections, which they too can propagate changes. For more
  * information about this check {@linkcode sections}.
- * 
+ *
  * Sections are part of complex forms and more than enough applications will
  * not even need to cover for this, however keep in mind that the library
  * provides easy extension throughout the form definition including complex
  * scenarios like lists or tables of editable items.
+ *
+ * ----
+ *
+ * @guidance Specific Validation Errors
+ *
+ * Generally, when validating a field or perform validation on any type of
+ * {@linkcode IValidatable} object the general way to represent an error
+ * is through a `string`.
+ *
+ * Validation errors can be represented in several ways such as `number`s
+ * or error codes, `enum`s or even [literal types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
+ * which are more or less predefined strings.
+ *
+ * Some offer more freedom as to how errors are represented, while others are
+ * more restrictive on one hand, but on the other provide type checking and
+ * intellisense support.
+ *
+ * By default, validation errors are represented using `string`s, however this
+ * can be changed through the {@linkcode TValidationError} generic parameter.
+ * The snippet below illustrates using a [literal type](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
+ * for validaiton results.
+ *
+ * ```ts
+ * type ValidationError = 'Required' | 'GreaterThanZero';
+ *
+ * class AppForm extends Form<ValidationError> {
+ * }
+ * ```
+ *
+ * This is all, additionally an `AppFormField` can be defined as well to bind
+ * the generic parameter at the field level as well.
+ *
+ * Defining a specific form is similar as in the first example, inherit from
+ * the newly defined `AppForm` class and define the fields.
+ *
+ * ```ts
+ * class SpecificAppForm extends AppForm {
+ *   constructor() {
+ *     super();
+ *
+ *     this.withFields(
+ *       this.description = new FormField<string, ValidationError>({
+ *         name: 'description',
+ *         initialValue: ''
+ *       }),
+ *       this.count = new FormField<number, ValidationError>({
+ *         name: 'count',
+ *         initialValue: 0
+ *       })
+ *     )
+ *   }
+ *
+ *   public readonly description: FormField<string, ValidationError>;
+ *
+ *   public readonly count: FormField<number, ValidationError>;
+ * }
+ * ```
+ *
+ * Finally, we get to configuring the form and adding validators. We can do
+ * this when we instantiate the fields as well. Each validator is bound to
+ * the specific `ValidationResult` type. Attempting to return something else
+ * would result in a compilation error.
+ *
+ * ```ts
+ * const form = new SpecificAppForm();
+ *
+ * form.description
+ *   .validation
+ *   .add(field => !field.value ? 'Required' : null);
+ *
+ * form.count
+ *   .validation
+ *   .add(field => field.value <= 0 ? 'GreaterThanZero' : null);
+ * ```
  */
 export class Form<TValidationError = string> extends Validatable<TValidationError> {
     private readonly _fields: AggregateObservableCollection<FormField<unknown, TValidationError>>;
@@ -364,7 +438,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      *
      * ----
      *
-     * @snippet
+     * @guidance
      * In this example we will define a custom sections collection for our form. We have a todo list where
      * each item is editable.
      *

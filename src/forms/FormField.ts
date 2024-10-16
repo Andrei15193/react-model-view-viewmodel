@@ -52,7 +52,7 @@ export interface IFormFieldConfig<TValue, TValidationError = string> {
  * 
  * ----
  *
- * @snippet
+ * @guidance
  *
  * One of the common features that a field may use is to track whether it was touched, i.e. if the input it is
  * bound to ever came into focus.
