@@ -1,4 +1,6 @@
-import type { IDependencyResolver } from "./IDependencyResolver";
+import type { IDependencyResolver, ResolvableSimpleDependency } from "./IDependencyResolver";
+import type { IDependencyContainer, ConfigurableDependency } from "./IDependencyContainer";
+import type { useDependency } from './UseDependency';
 import { DependencyContainer } from "./DependencyContainer";
 import { type PropsWithChildren, createContext, createElement, useContext, useMemo, useRef } from "react";
 
@@ -6,7 +8,16 @@ const DependencyResolverContext = createContext<IDependencyResolver>(new Depende
 
 /**
  * Gets the currently configured dependency resolver.
+ *
  * @returns Returns the currently configured dependency resolver.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ConfigurableDependency}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link useDependency}
+ * @see {@link DependencyResolverProvider}
+ * @see {@link DependencyResolverScope}
  */
 export function useDependencyResolver(): IDependencyResolver {
     return useContext(DependencyResolverContext);
@@ -14,6 +25,8 @@ export function useDependencyResolver(): IDependencyResolver {
 
 /**
  * Represents the dependency resolver context provider props.
+ * 
+ * @see {@link DependencyResolverProvider}
  */
 export interface IDependencyResolverProviderProps {
     /**
@@ -24,8 +37,15 @@ export interface IDependencyResolverProviderProps {
 
 /**
  * Configures a dependency resolver in the context of child components.
+ *
+ * @returns Returns the `children` in the context of the provided `dependencyResolver`.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link useDependency}
  */
-export function DependencyResolverProvider({ dependencyResolver, children }: PropsWithChildren<IDependencyResolverProviderProps>): JSX.Element {
+export function DependencyResolverProvider(props: PropsWithChildren<IDependencyResolverProviderProps>): JSX.Element {
+    const { dependencyResolver, children } = props;
     return createElement(DependencyResolverContext.Provider, {
         value: dependencyResolver,
         children
@@ -34,6 +54,8 @@ export function DependencyResolverProvider({ dependencyResolver, children }: Pro
 
 /**
  * Represents the dependency resolver scope context provider props.
+ *
+ * @see {@link DependencyResolverScope}
  */
 export interface IDependencyResolverScopeProps {
     /**
@@ -47,6 +69,10 @@ const emptyDeps: readonly any[] = [];
 
 /**
  * Configures a dependency resolver scope in the context of child components.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link useDependency}
  */
 export function DependencyResolverScope({ deps, children }: PropsWithChildren<IDependencyResolverScopeProps>): JSX.Element {
     const normalizedDeps = deps === null || deps === undefined || !Array.isArray(deps) || deps.length === 0

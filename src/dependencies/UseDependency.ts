@@ -1,6 +1,8 @@
-import type { ResolvableSimpleDependency, ComplexDependency } from "./IDependencyResolver";
+import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from "./IDependencyResolver";
+import type { IDependencyContainer } from './IDependencyContainer';
+import type { useViewModelDependency } from './UseViewModelDependency';
 import { useMemo, useRef } from "react";
-import { useDependencyResolver } from "./DependencyResolverContext";
+import { useDependencyResolver, type DependencyResolverProvider, type DependencyResolverScope } from "./DependencyResolverContext";
 
 const emptyAdditionalDependencies: readonly unknown[] = [];
 
@@ -12,6 +14,14 @@ const emptyAdditionalDependencies: readonly unknown[] = [];
  * @param dependency The dependency to resolve.
  *
  * @returns Returns the resolved dependency.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link useDependencyResolver}
+ * @see {@link useViewModelDependency}
+ * @see {@link DependencyResolverProvider}
+ * @see {@link DependencyResolverScope}
  */
 export function useDependency<T>(dependency: ResolvableSimpleDependency<T>): T;
 
@@ -25,6 +35,14 @@ export function useDependency<T>(dependency: ResolvableSimpleDependency<T>): T;
  * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the dependency will be reinitialized.
  *
  * @returns Returns the resolved dependency.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link useDependencyResolver}
+ * @see {@link useViewModelDependency}
+ * @see {@link DependencyResolverProvider}
+ * @see {@link DependencyResolverScope}
  */
 export function useDependency<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
 
@@ -41,7 +59,7 @@ export function useDependency<T, TAdditional extends readonly any[]>(dependency:
   const { current: cachedAdditionalDependencies } = cachedAdditionalDependenciesRef;
 
   const instance = useMemo(
-    () => dependecyResolver.resolve<T, TAdditional>(dependency, cachedAdditionalDependencies),
+    () => dependecyResolver.resolve<T, TAdditional>(dependency as ComplexDependency<T, TAdditional>, cachedAdditionalDependencies),
     [dependecyResolver, dependency, cachedAdditionalDependencies]
   );
 

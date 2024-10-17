@@ -27,23 +27,37 @@ void async function () {
 
         if (project.children)
             await Promise.all(project.children.map(async declaration => {
+                const subDirectory1 = declaration.sources?.at(0)?.fileName.split('/').at(0);
+                let subDirectory2: string;
                 let documentation: string | null = null;
                 switch (declaration.kind) {
+                    case ReflectionKind.TypeAlias:
+                        subDirectory2 = 'aliases';
+                        documentation = getAliasDocumentation(declaration);
+                        break;
+
                     case ReflectionKind.Interface:
+                        subDirectory2 = 'interfaces';
                         documentation = getInterfaceDocumentation(declaration);
                         break;
 
                     case ReflectionKind.Class:
+                        subDirectory2 = 'classes';
                         documentation = getClassDocumentation(declaration);
                         break;
 
                     case ReflectionKind.Function:
+                        subDirectory2 = 'functions';
                         documentation = getFunctionDocumentation(declaration);
                         break;
                 }
 
-                if (documentation !== null)
-                    await writeFileAsync(path.join(outputDirectory, `${getIdentifier(declaration)}.md`), documentation);
+                if (documentation !== null) {
+                    const directoryPath = path.join(outputDirectory, subDirectory1!, subDirectory2!);
+
+                    await mkdirAsync(directoryPath, { recursive: true });
+                    await writeFileAsync(path.join(directoryPath, `${getIdentifier(declaration)}.md`), documentation);
+                }
             }));
 
         function findDeclaration(target: Reflection | ReflectionSymbolId | string | undefined): DeclarationReflection {
@@ -56,6 +70,32 @@ void async function () {
                 throw new Error(`Cannot find declaration with id '${JSON.stringify(target)}'.`);
 
             return declaration;
+        }
+
+        function getAliasDocumentation(aliasDeclaration: DeclarationReflection): string {
+            return `
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(aliasDeclaration)} alias
+
+${getDeprecationNotice(aliasDeclaration)}
+
+${getSummary(aliasDeclaration)}
+
+\`\`\`ts
+${getDeclaration(aliasDeclaration)}
+\`\`\`
+
+${getSourceCodeLink(aliasDeclaration)}
+
+${getGenericParameters(aliasDeclaration)}
+
+${getDescription(aliasDeclaration)}
+
+${getRemarks(aliasDeclaration)}
+
+${getGuidance(aliasDeclaration)}
+
+${getReferences(aliasDeclaration)}
+`.replace(/\n{3,}/g, '\n\n').trim();
         }
 
         function getInterfaceDocumentation(interfaceDeclaration: DeclarationReflection): string {
@@ -195,6 +235,7 @@ ${getReferences(functionSignature)}
                 case ReflectionKind.Method:
                     return declaration.parent!.name + '.' + getSimpleName(declaration);
 
+                case ReflectionKind.TypeAlias:
                 case ReflectionKind.Class:
                 case ReflectionKind.Interface:
                 case ReflectionKind.Function:
@@ -239,6 +280,56 @@ ${getReferences(functionSignature)}
 
         function getDeclaration(declaration: DeclarationReflection | SignatureReflection): string {
             switch (declaration.kind) {
+                case ReflectionKind.TypeAlias:
+                    let aliasDeclaration = `type ${declaration.name}`;
+
+                    if (declaration.typeParameters && declaration.typeParameters.length > 0)
+                        aliasDeclaration += `<${declaration.typeParameters.map(getTypeParameterDeclaration).join(', ')}>`;
+
+                    switch (declaration.type?.type) {
+                        case 'union':
+                            return aliasDeclaration
+                                + '\n= '
+                                + declaration
+                                    .type
+                                    .types
+                                    .map(type => {
+                                        if (type.type === 'tuple')
+                                            return `[\n    ${type.elements.map(getTypeReferenceDeclaration).join(',\n    ')}\n  ]`;
+                                        else
+                                            return getTypeReferenceDeclaration(type);
+                                    })
+                                    .join('\n| ')
+                                + ';';
+
+                        case 'reflection':
+                            if (
+                                declaration.type.declaration.kind === ReflectionKind.TypeLiteral
+                                && declaration.type.declaration.signatures
+                                && declaration.type.declaration.signatures.length === 1
+                                && declaration.type.declaration.signatures.at(0)!.name === declaration.type.declaration.name
+                            )
+                                return aliasDeclaration + '\n  = ' + getTypeReferenceDeclaration(declaration.type!) + ';';
+                            else
+                                return aliasDeclaration + ' = ' + getTypeReferenceDeclaration(declaration.type!) + ';';
+
+                        case 'indexedAccess':
+                            return aliasDeclaration + '\n  = ' + getTypeReferenceDeclaration(declaration.type!) + ';';
+
+                        default:
+                            throw new Error(`Unhandled '${declaration.type?.type}' declaration type.`);
+                    }
+
+                case ReflectionKind.Interface:
+                    let interfaceDeclaration = `interface ${declaration.name}`;
+
+                    if (declaration.typeParameters && declaration.typeParameters.length > 0)
+                        interfaceDeclaration += `<${declaration.typeParameters.map(getTypeParameterDeclaration).join(', ')}>`;
+                    if (declaration.extendedTypes && declaration.extendedTypes.length > 0)
+                        interfaceDeclaration += `\n    extends ${declaration.extendedTypes.map(getTypeReferenceDeclaration).join(', ')}`;
+
+                    return interfaceDeclaration;
+
                 case ReflectionKind.Class:
                     let classDeclaration = `class ${declaration.name}`;
 
@@ -253,16 +344,6 @@ ${getReferences(functionSignature)}
                         classDeclaration += `\n    implements ${declaration.implementedTypes.map(getTypeReferenceDeclaration).join(', ')}`;
 
                     return classDeclaration;
-
-                case ReflectionKind.Interface:
-                    let interfaceDeclaration = `interface ${declaration.name}`;
-
-                    if (declaration.typeParameters && declaration.typeParameters.length > 0)
-                        interfaceDeclaration += `<${declaration.typeParameters.map(getTypeParameterDeclaration).join(', ')}>`;
-                    if (declaration.extendedTypes && declaration.extendedTypes.length > 0)
-                        interfaceDeclaration += `\n    extends ${declaration.extendedTypes.map(getTypeReferenceDeclaration).join(', ')}`;
-
-                    return interfaceDeclaration;
 
                 case ReflectionKind.CallSignature:
                     let functionDeclaration = 'function ' + declaration.name;
@@ -322,7 +403,65 @@ ${getReferences(functionSignature)}
                 case 'reference':
                     return `${typeReference.name}${typeReference.typeArguments && typeReference.typeArguments.length > 0 ? `<${typeReference.typeArguments.map(getTypeReferenceDeclaration).join(', ')}>` : ''}`;
 
+                case 'reflection':
+                    switch (typeReference.declaration.kind) {
+                        case ReflectionKind.TypeAlias:
+                        case ReflectionKind.Class:
+                        case ReflectionKind.Interface:
+                            let typeReferenceDeclaration = typeReference.declaration.name;
+                            if (typeReference.declaration.typeParameters && typeReference.declaration.typeParameters.length > 0) {
+                                typeReferenceDeclaration += '<';
+                                typeReferenceDeclaration += typeReference
+                                    .declaration
+                                    .typeParameters
+                                    .map(genericParameter => getTypeReferenceDeclaration(genericParameter.type!))
+                                    .join(', ');
+                                typeReferenceDeclaration += '>';
+                            }
+
+                            return typeReferenceDeclaration;
+
+                        case ReflectionKind.TypeLiteral:
+                            if (typeReference.declaration.type)
+                                return getTypeReferenceDeclaration(typeReference.declaration.type);
+                            else if (typeReference.declaration.signatures) {
+                                if (typeReference.declaration.signatures.length === 1 && typeReference.declaration.signatures.at(0)!.name === typeReference.declaration.name) {
+                                    const signature = typeReference.declaration.signatures.at(0)!
+                                    return `(${(signature.parameters || []).map(getParameterDeclaration).join(', ')}) => ${getTypeReferenceDeclaration(signature.type!)}`;
+                                }
+                                else {
+                                    let signaturesDeclarations = '{\n  ';
+                                    signaturesDeclarations += typeReference
+                                        .declaration
+                                        .signatures
+                                        .map(signature => {
+                                            if (signature.kind === ReflectionKind.ConstructorSignature)
+                                                return `new (${(signature.parameters || []).map(getParameterDeclaration).join(', ')}): ${getTypeReferenceDeclaration(signature.type!)};`;
+                                            else {
+                                                const genericTypeDeclaration = signature.typeParameters?.map(getTypeParameterDeclaration).join(', ') || '';
+                                                return `${signature.name}${genericTypeDeclaration.length > 0 ? '<' + genericTypeDeclaration + '>' : ''}(${(signature.parameters || []).map(getParameterDeclaration).join(', ')}): ${getTypeReferenceDeclaration(signature.type!)};`;
+                                            }
+                                        })
+                                        .join('\n  ');
+                                    signaturesDeclarations += '\n}';
+
+                                    return signaturesDeclarations;
+                                }
+                            }
+                            else
+                                throw new Error(`Unhandled '${typeReference.declaration}' type literal reflection reference declaration.`);
+
+                        case ReflectionKind.IndexSignature:
+                            return typeReference.declaration.name;
+
+                        default:
+                            throw new Error(`Unhandled '${typeReference.declaration}' reflection reference declaration.`);
+                    }
+
                 case 'intersection':
+                    return typeReference.types.map(getTypeReferenceDeclaration).join(' | ');
+
+                case 'union':
                     return typeReference.types.map(getTypeReferenceDeclaration).join(' | ');
 
                 case 'intrinsic':
@@ -350,9 +489,6 @@ ${getReferences(functionSignature)}
                 case 'typeOperator':
                     return `${typeReference.operator} ${getTypeReferenceDeclaration(typeReference.target)}`;
 
-                case 'union':
-                    return typeReference.types.map(getTypeReferenceDeclaration).join(' | ');
-
                 case 'array':
                     switch (typeReference.elementType.type) {
                         case 'reference':
@@ -370,6 +506,9 @@ ${getReferences(functionSignature)}
                         return `${typeReference.name} is ${getTypeReferenceDeclaration(typeReference.targetType)}`;
                     else
                         throw new Error('Unhandled predicate type declaration.');
+
+                case 'indexedAccess':
+                    return getTypeReferenceDeclaration(typeReference.objectType) + `[${getTypeReferenceDeclaration(typeReference.indexType)}]`;
 
                 default:
                     throw new Error(`Unhandled '${typeReference.type}' type declaration.`);
@@ -777,7 +916,7 @@ ${getReferences(functionSignature)}
         function getReferences(declaration: DeclarationReflection | SignatureReflection): string {
             const references = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@see') || [];
             if (references.length > 0)
-                return '### See also\n\n' + references.reduce((result, reference) => result + `* ${getBlock(reference.content)}\n`, '');
+                return '### See also\n\n' + references.map(reference => getBlock(reference.content).replace(/^[ \t]-/gm, '*')).join('\n');
             else
                 return '';
         }

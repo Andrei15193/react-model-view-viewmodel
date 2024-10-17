@@ -112,6 +112,7 @@ export {
     DependencyContainer,
 
     type IDependencyResolverProviderProps, DependencyResolverProvider,
+    type IDependencyResolverScopeProps, DependencyResolverScope,
 
     useDependencyResolver,
     useDependency,

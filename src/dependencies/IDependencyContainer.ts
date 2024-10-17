@@ -1,12 +1,31 @@
-import type { IDependencyResolver, BasicDependency, SimpleDependency, DependencyToken } from "./IDependencyResolver";
+import type { IDependencyResolver, BasicDependency, SimpleDependency, ComplexDependency, DependencyToken, ResolvableSimpleDependency } from "./IDependencyResolver";
+import type { useDependency } from './UseDependency';
 
 /**
  * Represents a configurable dependency.
+ *
+ * @template T The configurable dependency type.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link BasicDependency}
+ * @see {@link SimpleDependency}
+ * @see {@link ComplexDependency}
+ * @see {@link DependencyToken}
+ * @see {@link useDependency}
  */
 export type ConfigurableDependency<T> = BasicDependency<T> | SimpleDependency<T>;
 
 /**
  * Represents a callback for initializing dependencies.
+ * 
+ * @template T The dependency type that is resolved.
+ * 
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
  */
 export type DependencyFactoryCallback<T> = (dependecyResolver: IDependencyResolver) => T;
 
@@ -48,6 +67,10 @@ export type DependencyFactoryCallback<T> = (dependecyResolver: IDependencyResolv
  * const transient2 = dependencyContainer.resolve(MyThirdClass);
  * transient1 === transient2; // false
  * ```
+ * @see {@link IDependencyResolver}
+ * @see {@link SimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
  */
 export interface IDependencyContainer {
   /**

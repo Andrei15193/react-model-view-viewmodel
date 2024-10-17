@@ -1,6 +1,11 @@
 import type { Form } from './Form';
 
-/** Represents a callback used to configure an individual form section within a collection. */
+/**
+ * Represents a callback used to configure an individual form section within a collection.
+ * 
+ * @template TSection The form section type to configure.
+ * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ */
 export type FormSetupCallback<TSection extends Form<TValidationError>, TValidationError = string> = (section: TSection) => void;
 
 /**

@@ -184,24 +184,27 @@ export class DependencyContainer implements IDependencyContainer, IDependencyRes
 
   /**
    * Resolves a dependency based on its configuration, if any. All unconfigured dependencies are transient.
+   *
+   * @template T The dependency type to resolve.
+   *
    * @param dependency The dependnecy to resolve.
+   *
    * @returns The resolved dependency.
    */
   public resolve<T>(dependency: ResolvableSimpleDependency<T>): T;
   /**
    * Resolves a complex dependency. All such dependencies are transient as they require
    * additional dependencies on the constructor.
+   *
+   * @template T The dependency type to resolve.
+   * @template TAdditional A tuple representing additional parameters required by the constructor.
+   *
    * @param dependency The complex dependnecy to resolve.
    * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
-   * @returns The resolved dependency.
+   *
+   *  @returns The resolved dependency.
    */
   public resolve<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
-  /**
-   * Resolves a dependency based on its configuration. All complex dependencies are transient, all unconfigured dependencies are transient.
-   * @param dependency The dependency to resolve.
-   * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
-   */
-  public resolve<T, TAdditional extends readonly any[] = []>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
 
   public resolve<T, TAdditional extends readonly any[]>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies?: TAdditional): T {
     try {
