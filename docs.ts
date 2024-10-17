@@ -1,6 +1,6 @@
 import { Application, CommentDisplayPart, DeclarationReflection, ParameterReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SignatureReflection, SomeType, TypeParameterReflection } from 'typedoc';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
-import path from 'path';
+import path, { join } from 'path';
 
 void async function () {
     try {
@@ -22,8 +22,53 @@ void async function () {
             }
         }
 
+        const namespaceSortOrder = new Map<string, number>([
+            ['events', 1],
+            ['viewModels', 2],
+            ['collections', 3],
+            ['forms', 4],
+            ['validation', 5],
+            ['dependencies', 6],
+            ['hooks', 7]
+        ]);
+        const declarationKindSortOrder = new Map<ReflectionKind, number>()
+            .set(ReflectionKind.Interface, 1)
+            .set(ReflectionKind.TypeAlias, 2)
+            .set(ReflectionKind.Class, 3)
+            .set(ReflectionKind.Function, 4);
+
+        let apiLinks = Array
+            .from(
+                Array
+                    .from(declarationsById.values())
+                    .filter(declaration => declarationKindSortOrder.has(declaration.kind))
+                    .sort((left, right) => {
+                        let leftSource = left.sources?.at(0)!;
+                        let rightSource = right.sources?.at(0)!;
+                        return (
+                            leftSource.fileName.localeCompare(rightSource.fileName, 'en-US')
+                            || (declarationKindSortOrder.get(left.kind)! - declarationKindSortOrder.get(right.kind)!)
+                            || (leftSource.line - rightSource.line)
+                        );
+                    })
+                    .reduce(
+                        (result, declaration) => {
+                            let namespace = declaration.sources!.at(0)!.fileName.split('/').slice(0, -1).join('/');
+
+                            return result.set(namespace, [...(result.get(namespace) || []), declaration]);
+                        },
+                        new Map<string, readonly DeclarationReflection[]>()
+                    )
+                    .entries()
+            )
+            .sort(([leftNamespace], [rightNamespace]) => namespaceSortOrder.get(leftNamespace)! - namespaceSortOrder.get(rightNamespace)!)
+            .map(([namespace, declarations]) => {
+                return `### ${namespace}\n\n` + declarations.map(declaration => `* [${getSimpleName(declaration)}](${getIdentifier(declaration)})`).join('\n');
+            })
+            .join('\n\n');
+
         const outputDirectory = await mkdirAsync(path.join(__dirname, 'docs'), { recursive: true });
-        await writeFileAsync(path.join(outputDirectory, 'index.md'), '### Test');
+        await writeFileAsync(path.join(outputDirectory, 'index.md'), '### Test\n\n' + apiLinks);
 
         if (project.children)
             await Promise.all(project.children.map(async declaration => {
