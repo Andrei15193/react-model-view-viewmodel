@@ -132,7 +132,7 @@ ${getReferences(classDeclaration)}
             return `
 ###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(functionDeclaration)} ${functionDeclaration.name.startsWith('use') ? 'hook' : 'function'}
 
-${functionDeclaration.signatures && functionDeclaration.signatures.length > 1 ? 'This hook has multiple overloads.\n\n----\n\n' : ''}
+${functionDeclaration.signatures && functionDeclaration.signatures.length > 1 ? `This ${functionDeclaration.name.startsWith('use') ? 'hook' : 'function'} has multiple overloads.\n\n----\n\n` : ''}
 
 ${(functionDeclaration.signatures || []).map(getFunctionSignatureDocumentation).join('\n\n----\n\n')}
 `.replace(/\n{3,}/g, '\n\n').trim();
@@ -153,6 +153,8 @@ ${getSourceCodeLink(functionSignature)}
 ${getGenericParameters(functionSignature)}
 
 ${getParameters(functionSignature)}
+
+${getReturn(functionSignature)}
 
 ${getDescription(functionSignature)}
 
@@ -273,11 +275,14 @@ ${getReferences(functionSignature)}
                         functionDeclaration += '(\n  ';
                         functionDeclaration += ((declaration as SignatureReflection)?.parameters || [])
                             .map(getParameterDeclaration)
-                            .join(',  \n');
+                            .join(',\n  ');
                         functionDeclaration += '\n)';
                     }
                     else
                         functionDeclaration += '()';
+
+                    if (declaration.type)
+                        functionDeclaration += ': ' + getTypeReferenceDeclaration(declaration.type);
 
                     return functionDeclaration;
 
@@ -351,13 +356,20 @@ ${getReferences(functionSignature)}
                 case 'array':
                     switch (typeReference.elementType.type) {
                         case 'reference':
-                        case 'literal':
                         case 'reflection':
+                        case 'literal':
+                        case 'intrinsic':
                             return `${getTypeReferenceDeclaration(typeReference.elementType)}[]`;
 
                         default:
                             return `(${getTypeReferenceDeclaration(typeReference.elementType)})[]`;
                     }
+
+                case 'predicate':
+                    if (typeReference.targetType)
+                        return `${typeReference.name} is ${getTypeReferenceDeclaration(typeReference.targetType)}`;
+                    else
+                        throw new Error('Unhandled predicate type declaration.');
 
                 default:
                     throw new Error(`Unhandled '${typeReference.type}' type declaration.`);
@@ -391,6 +403,9 @@ ${getReferences(functionSignature)}
 
                         case 'DependencyList':
                             return 'https://react.dev/learn/removing-effect-dependencies#dependencies-should-match-the-code';
+
+                        case 'JSX.Element':
+                            return 'https://react.dev/learn/writing-markup-with-jsx';
 
                         default:
                             throw new Error(`Could not determine URL for React reference '${typeReference.name}'.`);
@@ -468,8 +483,9 @@ ${getReferences(functionSignature)}
                     case 'array':
                         switch (typeReference.elementType.type) {
                             case 'reference':
-                            case 'literal':
                             case 'reflection':
+                            case 'literal':
+                            case 'intrinsic':
                                 return `${getReferenceLink(typeReference.elementType)}[]`;
 
                             default:
@@ -505,6 +521,12 @@ ${getReferences(functionSignature)}
                             default:
                                 throw new Error(`Unhandled '${typeReference.value}' literal value.`);
                         }
+
+                    case 'predicate':
+                        if (typeReference.targetType)
+                            return `\`${typeReference.name}\` is ${getReferenceLink(typeReference.targetType)}`;
+                        else
+                            throw new Error('Unhandled predicate type reference.');
 
                     default:
                         throw new Error(`Unhandled '${typeReference.type}' type reference for '${typeReference}'.`);
@@ -643,6 +665,19 @@ ${getReferences(functionSignature)}
                             return parameter;
                         },
                     ).join('\n\n');
+            }
+            else
+                return '';
+        }
+
+        function getReturn(declaration: SignatureReflection): string {
+            if (declaration.type) {
+                let returnDocumentation = `### Returns: ${getReferenceLink(declaration.type)}`;
+                const returnDescription = getBlock(declaration.comment?.blockTags.find(blocKTag => blocKTag.tag === '@returns')?.content);
+                if (returnDescription.length > 0)
+                    returnDocumentation += '\n\n' + returnDescription;
+
+                return returnDocumentation;
             }
             else
                 return '';

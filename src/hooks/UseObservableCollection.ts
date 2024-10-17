@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 /**
  * Watches an observable collection for changes. The collection is the only hook dependency.
+ * @template TObservableCollection The observable collection type.
  * @template TItem The type of items the collection contains.
  * @param observableCollection The collection to watch.
  * @returns Returns the provided observable collection.

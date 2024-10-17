@@ -5,11 +5,11 @@ import { type PropsWithChildren, createContext, createElement, useContext, useMe
 const DependencyResolverContext = createContext<IDependencyResolver>(new DependencyContainer());
 
 /**
- * Returns the currently configured dependency resolver.
- * @returns Returns a dependency resolver.
+ * Gets the currently configured dependency resolver.
+ * @returns Returns the currently configured dependency resolver.
  */
 export function useDependencyResolver(): IDependencyResolver {
-    return useContext(DependencyResolverContext)!;
+    return useContext(DependencyResolverContext);
 }
 
 /**

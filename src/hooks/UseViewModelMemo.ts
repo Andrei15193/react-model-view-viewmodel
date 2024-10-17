@@ -25,7 +25,7 @@ export function useViewModelMemo<TViewModel extends INotifyPropertiesChanged | u
 
     const viewModelRef = useRef<{ readonly instance: TViewModel | null } | null>(null);
     const cachedDependencies = useRef(normalizedDeps);
-    if (viewModelRef.current === null || cachedDependencies.current.length !== normalizedDeps.length || cachedDependencies.current.some((cachedDependency, dependencyIndex) => cachedDependency !== normalizedDeps[dependencyIndex])) {
+    if (viewModelRef.current === null || cachedDependencies.current.length !== normalizedDeps.length || cachedDependencies.current.some((cachedDependency, dependencyIndex) => !Object.is(cachedDependency, normalizedDeps[dependencyIndex]))) {
         cachedDependencies.current = normalizedDeps.slice();
         viewModelRef.current = { instance: viewModelFactory() };
     }

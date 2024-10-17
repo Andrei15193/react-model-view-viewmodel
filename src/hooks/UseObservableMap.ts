@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 
 /**
  * Watches an observable map for changes. The map is the only hook dependency.
+ * @template TObservableMap The observable map type.
+ * @template TKey The type of keys the map contains.
  * @template TItem The type of items the map contains.
  * @param observableMap The map to watch.
  * @returns Returns the provided observable map.

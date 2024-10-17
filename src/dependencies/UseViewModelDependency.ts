@@ -12,9 +12,15 @@ import { useDependency } from "./UseDependency";
  * const viewModel = useDependency(viewModelDependency);
  * useViewModel(viewModel);
  * ```
+ * 
+ * @template TViewModel The view model type to resolve.
+ *
  * @param viewModelDependency The view model dependency to resolve.
+ *
+ *  @returns Returns the resolved view model which is also watched for changes.
  */
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged>(viewModelDependency: ResolvableSimpleDependency<TViewModel>): TViewModel;
+
 /**
  * Resolves the requested complex view model dependency and subscribes to it for changes.
  *
@@ -24,21 +30,19 @@ export function useViewModelDependency<TViewModel extends INotifyPropertiesChang
  * const viewModel = useDependency(viewModelDependency, additionalDependencies);
  * useViewModel(viewModel);
  * ```
+ * 
+ * @template TViewModel The view model type to resolve.
+ * @template TAdditional A tuple representing additional parameters required by the constructor.
+ *
  * @param viewModelDependency The view model dependency to resolve.
  * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the view model will be reinitialized.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
  */
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ComplexDependency<TViewModel, TAdditional>, additionalDependencies: TAdditional): TViewModel;
-/**
- * Resolves the requested view model dependency and subscribes to it for changes.
- *
- * This is a function allowing for easier reuse in other similarly defined hooks.
- * @param viewModelDependency The view model dependency to resolve.
- * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the view model will be reinitialized.
- */
-export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[] = []>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | ComplexDependency<TViewModel, TAdditional>, additionalDependencies: TAdditional): TViewModel;
 
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | ComplexDependency<TViewModel, TAdditional>, additionalDependencies?: TAdditional): TViewModel {
-  const viewModel = useDependency<TViewModel, TAdditional>(viewModelDependency, additionalDependencies!);
+  const viewModel = useDependency<TViewModel, TAdditional>(viewModelDependency as ComplexDependency<TViewModel, TAdditional>, additionalDependencies!);
   useViewModel(viewModel);
 
   return viewModel;

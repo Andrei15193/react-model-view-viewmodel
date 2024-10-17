@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 /**
  * Watches an observable set for changes. The set is the only hook dependency.
+ * @template TObservableSet The observable set type.
  * @template TItem The type of items the set contains.
  * @param observableSet The set to watch.
  * @returns Returns the provided observable set.

@@ -39,26 +39,6 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged>(viewMo
  */
 export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelType: ViewModelType<TViewModel, TConstructorArgs>, constructorArgs: TConstructorArgs): TViewModel;
 
-/**
- * Watches the provided view model, or creates a new instance of the given type and watches it for property changes, constructor arguments act as dependencies.
- * @template TViewModel The type of view model.
- * @template TConstructorArgs The constructor parameter types.
- * @param viewModelOrType The view model or class declaration to instantiate.
- * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
- * @returns Returns the provided view model or the initialized one.
- */
-export function useViewModel<TViewModel extends INotifyPropertiesChanged, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<TViewModel, TConstructorArgs>, constructorArgs: TConstructorArgs): TViewModel;
-
-/**
- * Watches the provided view model, or creates a new instance of the given type and watches it for property changes, constructor arguments act as dependencies.
- * @template TViewModel The type of view model.
- * @template TConstructorArgs The constructor parameter types.
- * @param viewModelOrType The view model or class declaration to instantiate.
- * @param constructorArgs The constructor arguments used for initialization, whenever these change a new instance is created.
- * @returns Returns the provided view model or the initialized one.
- */
-export function useViewModel<TViewModel extends INotifyPropertiesChanged | null | undefined, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs>, constructorArgs: TConstructorArgs): TViewModel;
-
 export function useViewModel<TViewModel extends INotifyPropertiesChanged | null | undefined, TConstructorArgs extends readonly any[]>(viewModelOrType: TViewModel | ViewModelType<Exclude<TViewModel, null | undefined>, TConstructorArgs>, constructorArgs?: TConstructorArgs): TViewModel {
     const [, setState] = useState<unknown>(null);
 
@@ -77,7 +57,7 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged | null 
     if (viewModelRef.current === null
         || viewModelSourceRef.current !== viewModelOrType
         || cachedConstructorArgsRef.current.length !== normalizedConstructorArgs.length
-        || cachedConstructorArgsRef.current.some((constructorArg, constructorArgIndex) => constructorArg !== normalizedConstructorArgs[constructorArgIndex])) {
+        || cachedConstructorArgsRef.current.some((constructorArg, constructorArgIndex) => !Object.is(constructorArg, normalizedConstructorArgs[constructorArgIndex]))) {
         viewModelSourceRef.current = viewModelOrType;
         cachedConstructorArgsRef.current = normalizedConstructorArgs.slice() as any as TConstructorArgs;
 
