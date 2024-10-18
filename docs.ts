@@ -1,6 +1,6 @@
 import { Application, CommentDisplayPart, DeclarationReflection, ParameterReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SignatureReflection, SomeType, TypeParameterReflection } from 'typedoc';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
-import path, { join } from 'path';
+import path from 'path';
 
 void async function () {
     try {
@@ -15,60 +15,34 @@ void async function () {
         const toVisit = project.children?.slice() || [];
         while (toVisit.length > 0) {
             const declaration = toVisit.shift()!;
-            if (declaration.variant === 'declaration') {
-                declarationsById.set(declaration.id, declaration);
-                if (declaration.children && declaration.children.length > 0)
-                    toVisit.push(...declaration.children);
-            }
+            if (declaration.variant === 'declaration')
+                switch (declaration.kind) {
+                    case ReflectionKind.TypeAlias:
+                    case ReflectionKind.Interface:
+                    case ReflectionKind.Class:
+                    case ReflectionKind.Constructor:
+                    case ReflectionKind.Property:
+                    case ReflectionKind.Accessor:
+                    case ReflectionKind.Method:
+                    case ReflectionKind.Function:
+                        declarationsById.set(declaration.id, declaration);
+                        if (declaration.children && declaration.children.length > 0)
+                            toVisit.push(...declaration.children);
+                        break;
+
+                    default:
+                        console.warn(`Skipped '${declaration}' declaration.`);
+                }
         }
 
-        const namespaceSortOrder = new Map<string, number>([
-            ['events', 1],
-            ['viewModels', 2],
-            ['collections', 3],
-            ['forms', 4],
-            ['validation', 5],
-            ['dependencies', 6],
-            ['hooks', 7]
-        ]);
-        const declarationKindSortOrder = new Map<ReflectionKind, number>()
-            .set(ReflectionKind.Interface, 1)
-            .set(ReflectionKind.TypeAlias, 2)
-            .set(ReflectionKind.Class, 3)
-            .set(ReflectionKind.Function, 4);
-
-        let apiLinks = Array
-            .from(
-                Array
-                    .from(declarationsById.values())
-                    .filter(declaration => declarationKindSortOrder.has(declaration.kind))
-                    .sort((left, right) => {
-                        let leftSource = left.sources?.at(0)!;
-                        let rightSource = right.sources?.at(0)!;
-                        return (
-                            leftSource.fileName.localeCompare(rightSource.fileName, 'en-US')
-                            || (declarationKindSortOrder.get(left.kind)! - declarationKindSortOrder.get(right.kind)!)
-                            || (leftSource.line - rightSource.line)
-                        );
-                    })
-                    .reduce(
-                        (result, declaration) => {
-                            let namespace = declaration.sources!.at(0)!.fileName.split('/').slice(0, -1).join('/');
-
-                            return result.set(namespace, [...(result.get(namespace) || []), declaration]);
-                        },
-                        new Map<string, readonly DeclarationReflection[]>()
-                    )
-                    .entries()
-            )
-            .sort(([leftNamespace], [rightNamespace]) => namespaceSortOrder.get(leftNamespace)! - namespaceSortOrder.get(rightNamespace)!)
-            .map(([namespace, declarations]) => {
-                return `### ${namespace}\n\n` + declarations.map(declaration => `* [${getSimpleName(declaration)}](${getIdentifier(declaration)})`).join('\n');
-            })
-            .join('\n\n');
+        const documentationIndex = getDocumentationIndex();
 
         const outputDirectory = await mkdirAsync(path.join(__dirname, 'docs'), { recursive: true });
-        await writeFileAsync(path.join(outputDirectory, 'index.md'), '### Test\n\n' + apiLinks);
+
+        await writeFileAsync(path.join(outputDirectory, 'index.md'), getLandingPage());
+        await writeFileAsync(path.join(outputDirectory, '_Sidebar.md'), getSidebar());
+
+        getClassDocumentation
 
         if (project.children)
             await Promise.all(project.children.map(async declaration => {
@@ -115,6 +89,336 @@ void async function () {
                 throw new Error(`Cannot find declaration with id '${JSON.stringify(target)}'.`);
 
             return declaration;
+        }
+
+        function getDocumentationIndex(): IDocumentationIndex {
+            function getNamespaceSortOrder(namespaceId: string): number {
+                switch (namespaceId) {
+                    case 'events':
+                        return 1;
+
+                    case 'viewModels':
+                        return 2;
+
+                    case 'forms':
+                        return 3;
+
+                    case 'validation':
+                        return 4;
+                    case 'validation/triggers':
+                        return 6;
+
+                    case 'collections/observableCollections':
+                        return 7;
+                    case 'collections/observableMap':
+                        return 8;
+                    case 'collections/observableSet':
+                        return 9;
+
+                    case 'dependencies':
+                        return 10;
+
+                    case 'hooks':
+                        return 11;
+
+                    default:
+                        return 1000;
+                }
+            }
+
+            function getNamespaceDisplayName(namespaceId: string): string {
+                switch (namespaceId) {
+                    case 'events':
+                        return 'Events';
+
+                    case 'viewModels':
+                        return 'ViewModels';
+
+                    case 'forms':
+                        return 'Forms';
+
+                    case 'validation':
+                        return 'Validation';
+                    case 'validation/triggers':
+                        return 'Validation / Triggers';
+
+                    case 'collections/observableCollections':
+                        return 'Observable Collection';
+                    case 'collections/observableMap':
+                        return 'Observable Map';
+                    case 'collections/observableSet':
+                        return 'Observable Set';
+
+                    case 'dependencies':
+                        return 'Dependency Handling';
+
+                    case 'hooks':
+                        return 'React Hooks';
+
+                    default:
+                        throw new Error(`Unhandled '${namespaceId}' namespace ID.`);
+                }
+            }
+
+            function getModuleSortOrder(module: IModuleDeclarationIndex): number {
+                if (module.declarations.every(declaration => declaration.kind === ReflectionKind.TypeAlias))
+                    return 1;
+                if (module.declarations.every(declaration => declaration.kind === ReflectionKind.Interface))
+                    return 2;
+                if (module.declarations.every(declaration => declaration.kind === ReflectionKind.TypeAlias || declaration.kind === ReflectionKind.Interface))
+                    return 3;
+
+                return 1000;
+            }
+
+            function getDeclarationSortOrder(declaration: DeclarationReflection): number {
+                switch (declaration.kind) {
+                    case ReflectionKind.Interface:
+                        return 1;
+
+                    case ReflectionKind.TypeAlias:
+                        return 2;
+
+                    case ReflectionKind.Class:
+                        return 3;
+
+                    case ReflectionKind.Function:
+                        return 4;
+
+                    default:
+                        return 1000;
+                }
+            }
+
+            function getDeclarationPromotionSortOrder(declaration: DeclarationReflection): number | null {
+                switch (declaration.name) {
+                    case 'IEvent':
+                        return 1;
+                    case 'IEventHandler':
+                        return 2;
+                    case 'EventDispatcher':
+                        return 3;
+
+                    case 'INotifyPropertiesChanged':
+                        return 1;
+                    case 'ViewModel':
+                        return 2;
+
+                    case 'Form':
+                        return 1;
+                    case 'IFormFieldConfig':
+                        return 2;
+                    case 'FormField':
+                        return 3;
+                    case 'ReadOnlyFormCollection':
+                        return 4;
+                    case 'FormCollection':
+                        return 5;
+                    case 'IConfigurableFormCollection':
+                        return 6;
+                    case 'FormSetupCallback':
+                        return 7;
+
+                    case 'IValidator':
+                        return 1;
+                    case 'ValidatorCallback':
+                        return 2;
+                    case 'IObjectValidator':
+                        return 3;
+                    case 'IValidatable':
+                        return 4;
+
+                    case 'WellKnownValidationTrigger':
+                        return 1;
+                    case 'ValidationTrigger':
+                        return 2;
+
+                    case 'ReadOnlyObservableCollection':
+                        return 1;
+                    case 'ObservableCollection':
+                        return 2;
+                    case 'INotifyCollectionChanged':
+                        return 3;
+                    case 'CollectionChangeOperation':
+                        return 4;
+                    case 'INotifyCollectionReordered':
+                        return 5;
+                    case 'CollectionReorderOperation':
+                        return 6;
+
+                    case 'ReadOnlyObservableMap':
+                        return 1;
+                    case 'ObservableMap':
+                        return 2;
+                    case 'INotifyMapChanged':
+                        return 3;
+                    case 'MapChangeOperation':
+                        return 4;
+
+                    case 'ReadOnlyObservableSet':
+                        return 1;
+                    case 'ObservableSet':
+                        return 2;
+                    case 'INotifySetChanged':
+                        return 3;
+                    case 'SetChangeOperation':
+                        return 4;
+
+                    case 'IDependencyResolver':
+                        return 1;
+                    case 'IDependencyContainer':
+                        return 2;
+                    case 'DependencyContainer':
+                        return 3;
+                    case 'useDependency':
+                        return 4;
+                    case 'useViewModelDependency':
+                        return 5;
+                    case 'useDependencyResolver':
+                        return 6;
+
+                    case 'useViewModel':
+                        return 1;
+                    case 'useViewModelMemo':
+                        return 2;
+                    case 'useObservableCollection':
+                        return 3;
+                    case 'useObservableMap':
+                        return 4;
+                    case 'useObservableSet':
+                        return 5;
+
+                    default:
+                        return null;
+                }
+            }
+
+            const declarationIndex: IDeclarationIndex = {
+                namespaces: Array
+                    .from(declarationsById.values())
+                    .filter(declaration => {
+                        switch (declaration.kind) {
+                            case ReflectionKind.TypeAlias:
+                            case ReflectionKind.Interface:
+                            case ReflectionKind.Class:
+                            case ReflectionKind.Function:
+                                return true;
+
+                            default:
+                                return false;
+                        }
+                    })
+                    .reduce(
+                        (namespaces, declaration) => {
+                            let namespaceId = declaration.sources?.at(0)?.fileName.split('/').slice(0, -1).join('/')!;
+                            if (namespaceId === 'validation/objectValidator')
+                                namespaceId = 'validation';
+
+                            const moduleId = declaration.sources?.at(0)?.fileName!;
+                            let namespace = namespaces.find(namespace => namespace.id === namespaceId);
+                            if (!namespace) {
+                                namespace = {
+                                    id: namespaceId,
+                                    modules: []
+                                };
+                                namespaces.push(namespace);
+                            }
+
+                            let module = namespace.modules.find(module => module.id === moduleId);
+                            if (!module) {
+                                module = {
+                                    id: moduleId,
+                                    declarations: []
+                                };
+                                namespace.modules.push(module);
+                            }
+
+                            module.declarations.push(declaration)
+
+                            return namespaces;
+                        },
+                        new Array<INamespaceDeclarationIndex>()
+                    )
+                    .sort((left, right) => getNamespaceSortOrder(left.id) - getNamespaceSortOrder(right.id))
+                    .map(namespace => {
+                        namespace
+                            .modules
+                            .sort((left, right) => getModuleSortOrder(left) - getModuleSortOrder(right))
+                            .forEach(module => {
+                                module.declarations.sort((left, right) => getDeclarationSortOrder(left) - getDeclarationSortOrder(right))
+                            });
+
+                        return namespace;
+                    })
+            }
+
+            const documentationIndex: IDocumentationIndex = {
+                namespaces: declarationIndex
+                    .namespaces
+                    .map(namespace => ({
+                        name: getNamespaceDisplayName(namespace.id),
+                        declarations: namespace
+                            .modules
+                            .reduce(
+                                (declarations, module) => declarations.concat(module.declarations),
+                                new Array<DeclarationReflection>()
+                            )
+                            .map(declaration => Object.assign({}, declaration, { promoted: getDeclarationPromotionSortOrder(declaration) !== null }))
+                            .sort((left, right) => {
+                                const leftSortOrder = getDeclarationPromotionSortOrder(left);
+                                const rightSortOrder = getDeclarationPromotionSortOrder(right);
+
+                                if (leftSortOrder === null)
+                                    return rightSortOrder === null ? 0 : 1;
+                                else if (rightSortOrder === null)
+                                    return -1;
+                                else
+                                    return leftSortOrder - rightSortOrder;
+                            })
+                    }))
+            };
+
+            return documentationIndex;
+        }
+
+        function getLandingPage(): string {
+            return '### API\n\n' + documentationIndex
+                .namespaces
+                .map(namespace => {
+                    let listMarker = '*';
+
+                    return `* **${namespace.name}**\n` + namespace
+                        .declarations
+                        .map((declaration, declarationIndex, declarations) => {
+                            if (declarationIndex > 0 && declarations[declarationIndex - 1].promoted !== declarations[declarationIndex].promoted)
+                                listMarker = '-';
+
+                            return `  ${listMarker} [${getSimpleName(declaration)}](${getIdentifier(declaration)})`;
+                        })
+                        .join('\n');
+                })
+                .join('\n');
+        }
+
+        function getSidebar(): string {
+            return (
+                '**[Motivation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#motivation)**  \n'
+                + '**[Overview](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#overview)**  \n'
+                + '**[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)**  \n'
+                + '**[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)**\n'
+                + '\n'
+                + '**[API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)**  \n'
+                + documentationIndex
+                    .namespaces
+                    .map(namespace => {
+                        return `**${namespace.name}**  \n` + namespace
+                            .declarations
+                            .filter(declaration => declaration.promoted)
+                            .map(declaration => `[${getSimpleName(declaration)}](${getIdentifier(declaration)})`)
+                            .join('  \n');
+                    })
+                    .join('\n\n')
+            );
         }
 
         function getAliasDocumentation(aliasDeclaration: DeclarationReflection): string {
@@ -1068,3 +1372,26 @@ ${getReferences(functionSignature)}
         console.error(error);
     }
 }();
+
+interface IDocumentationIndex {
+    readonly namespaces: readonly INamespaceDocumentationIndex[];
+}
+
+interface INamespaceDocumentationIndex {
+    readonly name: string;
+    readonly declarations: readonly (DeclarationReflection & { readonly promoted: boolean })[];
+}
+
+interface IDeclarationIndex {
+    readonly namespaces: readonly INamespaceDeclarationIndex[];
+}
+
+interface INamespaceDeclarationIndex {
+    readonly id: string;
+    readonly modules: IModuleDeclarationIndex[];
+}
+
+interface IModuleDeclarationIndex {
+    readonly id: string;
+    readonly declarations: DeclarationReflection[];
+}
