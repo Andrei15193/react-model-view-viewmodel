@@ -48,6 +48,7 @@ export {
 
     ReadOnlyObservableSet,
     ObservableSet,
+    isSetLike,
 
     type INotifyMapChanged,
     type IMapChangedEvent,

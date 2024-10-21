@@ -1,7 +1,6 @@
 import { Application, CommentDisplayPart, DeclarationReflection, ParameterReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SignatureReflection, SomeType, TypeParameterReflection } from 'typedoc';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
 import path from 'path';
-import { getNameOfDeclaration } from 'typescript';
 
 void async function () {
     try {
@@ -71,6 +70,13 @@ void async function () {
                         if (!declaration.flags.isInherited) {
                             subDirectory2 = 'properties';
                             documentation = getPropertyDocumentation(declaration);
+                        }
+                        break;
+
+                    case ReflectionKind.Method:
+                        if (!declaration.flags.isInherited) {
+                            subDirectory2 = 'methods';
+                            documentation = getMethodDocumentation(declaration);
                         }
                         break;
 
@@ -600,6 +606,46 @@ ${getReferences(propertyDeclaration)}
 `.replace(/\n{3,}/g, '\n\n').trim();
         }
 
+        function getMethodDocumentation(methodDeclaration: DeclarationReflection): string {
+            return `
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)/ [${getFullName(methodDeclaration.parent as DeclarationReflection)}](${getProjectReferenceUrl(methodDeclaration.parent as DeclarationReflection)}) / ${getFullName(methodDeclaration)} method
+
+${getOverride(methodDeclaration)}
+
+${methodDeclaration.signatures && methodDeclaration.signatures.length > 1 ? `This method has multiple overloads.\n\n----\n\n` : ''}
+
+${(methodDeclaration.signatures || []).map(getMethodSignatureDocumentation).join('\n\n----\n\n')}
+`.replace(/\n{3,}/g, '\n\n').trim();
+        }
+
+        function getMethodSignatureDocumentation(methodSignature: SignatureReflection): string {
+            return `
+${getDeprecationNotice(methodSignature)}
+
+${getSummary(methodSignature)}
+
+\`\`\`ts
+${getDeclaration(methodSignature)}
+\`\`\`
+
+${getSourceReference(methodSignature)}
+
+${getGenericParameters(methodSignature)}
+
+${getParameters(methodSignature)}
+
+${getReturn(methodSignature)}
+
+${getDescription(methodSignature)}
+
+${getRemarks(methodSignature)}
+
+${getGuidance(methodSignature)}
+
+${getReferences(methodSignature)}
+`.replace(/\n{3,}/g, '\n\n').trim();
+        }
+
         function getFunctionDocumentation(functionDeclaration: DeclarationReflection): string {
             return `
 ###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(functionDeclaration)} ${functionDeclaration.name.startsWith('use') ? 'hook' : 'function'}
@@ -932,7 +978,26 @@ ${getReferences(functionSignature)}
                     return signatures.join('\n');
 
                 case ReflectionKind.CallSignature:
-                    let functionDeclaration = 'function ' + declaration.name;
+                    let functionDeclaration = '';
+
+                    if (declaration.parent && declaration.parent.parent && declaration.parent.parent.kind !== ReflectionKind.Project) {
+                        functionDeclaration += [
+                            declaration.parent.flags.isPrivate && 'private',
+                            declaration.parent.flags.isProtected && 'protected',
+                            declaration.parent.flags.isPublic && 'public',
+
+                            declaration.parent.flags.isAbstract && 'abstract'
+                        ]
+                            .filter(flag => flag)
+                            .join(' ');
+
+                        if (functionDeclaration.length > 0)
+                            functionDeclaration += ' ';
+                    }
+                    else {
+                        functionDeclaration += 'function ';
+                    }
+                    functionDeclaration += declaration.name;
 
                     if (declaration.typeParameters && declaration.typeParameters.length > 0)
                         functionDeclaration += `<${declaration.typeParameters.map(getTypeParameterDeclaration).join(', ')}>`;
@@ -972,9 +1037,12 @@ ${getReferences(functionSignature)}
         function getParameterDeclaration(parameter: ParameterReflection): string {
             let declaration = parameter.name;
 
+            if (parameter.flags.isRest)
+                declaration = '...' + declaration;
+
             if (parameter.flags.isOptional)
-                declaration += '?'
-            declaration += ': '
+                declaration += '?';
+            declaration += ': ';
 
             declaration += getTypeReferenceDeclaration(parameter.type!);
 
@@ -1056,6 +1124,8 @@ ${getReferences(functionSignature)}
                 case 'literal':
                     if (typeReference.value === null)
                         return 'null';
+                    else if (typeReference.value === 'propertiesChanged')
+                        return 'keyof this';
                     else switch (typeof typeReference.value) {
                         case 'string':
                             return `"${typeReference.value}"`;
@@ -1066,7 +1136,7 @@ ${getReferences(functionSignature)}
                             return typeReference.value.toString();
 
                         default:
-                            throw new Error(`Unhandled '${typeReference.value}' literal value.`);
+                            throw new Error(`Unhandled '${typeof typeReference.value}' (${typeReference.value}) literal value.`);
                     }
 
                 case 'tuple':
@@ -1079,9 +1149,14 @@ ${getReferences(functionSignature)}
                     switch (typeReference.elementType.type) {
                         case 'reference':
                         case 'reflection':
-                        case 'literal':
                         case 'intrinsic':
                             return `${getTypeReferenceDeclaration(typeReference.elementType)}[]`;
+
+                        case 'literal':
+                            if (typeReference.elementType.value === 'propertiesChanged')
+                                return '(keyof this)[]';
+                            else
+                                return `${getTypeReferenceDeclaration(typeReference.elementType)}[]`;
 
                         default:
                             return `(${getTypeReferenceDeclaration(typeReference.elementType)})[]`;
@@ -1114,8 +1189,17 @@ ${getReferences(functionSignature)}
                         case 'Iterable':
                             return 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol';
 
+                        case 'IterableIterator':
+                            return 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol';
+
                         case 'ArrayLike':
                             return 'https://developer.mozilla.org/docs/Web/JavaScript/Guide/Indexed_collections#working_with_array-like_objects';
+
+                        case 'Map':
+                            return 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map';
+
+                        case 'Set':
+                            return 'https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set';
 
                         default:
                             throw new Error(`Could not determine URL for TypeScript reference '${typeReference.name}'.`);
@@ -1222,9 +1306,14 @@ ${getReferences(functionSignature)}
                         switch (typeReference.elementType.type) {
                             case 'reference':
                             case 'reflection':
-                            case 'literal':
                             case 'intrinsic':
                                 return `${getReferenceLink(typeReference.elementType)}[]`;
+
+                            case 'literal':
+                                if (typeReference.elementType.value === 'propertiesChanged')
+                                    return `(${getReferenceLink(typeReference.elementType)})[]`;
+                                else
+                                    return `${getReferenceLink(typeReference.elementType)}[]`;
 
                             default:
                                 return `(${getReferenceLink(typeReference.elementType)})[]`;
@@ -1265,6 +1354,9 @@ ${getReferences(functionSignature)}
                             case null:
                                 return '[`null`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null)';
 
+                            case 'propertiesChanged':
+                                return '[`keyof`](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html) [`this`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/this)';
+
                             default:
                                 throw new Error(`Unhandled '${typeReference.value}' literal value.`);
                         }
@@ -1274,6 +1366,32 @@ ${getReferences(functionSignature)}
                             return `\`${typeReference.name}\` is ${getReferenceLink(typeReference.targetType)}`;
                         else
                             throw new Error('Unhandled predicate type reference.');
+
+                    case 'reflection':
+                        const declaration = typeReference.declaration;
+                        switch (declaration.kind) {
+                            case ReflectionKind.TypeLiteral:
+                                if (declaration.signatures)
+                                    return declaration
+                                        .signatures
+                                        .map(signature => {
+                                            return '(' +
+                                                (signature.parameters || [])
+                                                    .map(parameter => parameter.name +
+                                                        (parameter.flags.isOptional ? '?: ' : ':') +
+                                                        getReferenceLink(parameter.type!)
+                                                    )
+                                                    .join(', ') +
+                                                ') => ' +
+                                                getReferenceLink(signature.type!)
+                                        })
+                                        .join(' | ');
+                                else
+                                    throw new Error(`Unhandled '${declaration}' type literal reflection reference.`)
+
+                            default:
+                                throw new Error(`Unhandled '${typeReference.declaration.kind}' reflection type reference.`);
+                        }
 
                     default:
                         throw new Error(`Unhandled '${typeReference.type}' type reference for '${typeReference}'.`);
@@ -1404,7 +1522,7 @@ ${getReferences(functionSignature)}
                     .parameters
                     .map(
                         parameterDeclaration => {
-                            let parameter = `* **${parameterDeclaration.name}**: ${getReferenceLink(parameterDeclaration.type!)}`;
+                            let parameter = `* **${parameterDeclaration.name}**${parameterDeclaration.flags.isRest ? ' ([rest](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Functions/rest_parameters))' : ''}: ${getReferenceLink(parameterDeclaration.type!)}`;
                             let parameterDescription = getBlock(parameterDeclaration.comment?.summary);
 
                             if (parameterDescription.length > 0)
@@ -1427,6 +1545,8 @@ ${getReferences(functionSignature)}
                 const returnDescription = getBlock(declaration.comment?.blockTags.find(blocKTag => blocKTag.tag === '@returns')?.content);
                 if (returnDescription.length > 0)
                     returnDocumentation += '\n\n' + returnDescription;
+                else if (declaration.type.type === 'intrinsic' && declaration.type.name === 'void')
+                    return '';
 
                 return returnDocumentation;
             }
