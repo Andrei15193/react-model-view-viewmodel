@@ -4,16 +4,16 @@ import type { Form } from './Form';
  * Represents a callback used to configure an individual form section within a collection.
  * 
  * @template TSection The form section type to configure.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export type FormSetupCallback<TSection extends Form<TValidationError>, TValidationError = string> = (section: TSection) => void;
 
 /**
  * Represents collection of form sections that can be configured. This is useful for cases like having a list of editable items
- * and neeeding to add validaiton for each based on the state of an entity or the form itself.
+ * and neeeding to add validation for each based on the state of an entity or the form itself.
  *
  * @template TSection The concrete type of the form section.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IConfigurableFormCollection<TSection extends Form<TValidationError>, TValidationError = string> {
     /**

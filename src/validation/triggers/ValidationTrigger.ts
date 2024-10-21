@@ -3,7 +3,7 @@ import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetCh
 import { type IEvent, EventDispatcher } from '../../events';
 
 /**
- * Represent a set of well-known validaiton triggers. These are used to simplify
+ * Represent a set of well-known validation triggers. These are used to simplify
  * object validator configurations as a view model or observable collection can
  * be directly passed as a trigger.
  *

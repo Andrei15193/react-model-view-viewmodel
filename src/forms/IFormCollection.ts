@@ -8,7 +8,7 @@ import type { IConfigurableFormCollection } from './IConfigurableFormCollection'
  * form sections for cases where validation and other aspects are based on the state of an entity or the form itself.
  *
  * @template TForm The concrete type of the form section.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IObservableCollection<TForm>, IConfigurableFormCollection<TForm, TValidationError> {
     /**

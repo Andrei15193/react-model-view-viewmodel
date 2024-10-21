@@ -5,7 +5,7 @@ import type { IReadOnlyValidatable } from './IReadOnlyValidatable';
  * additional actions need to be performed, such as flags, when a validator is added.
  *
  * @template TValidatable The instance type that is being validated.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IValidator<TValidatable extends IReadOnlyValidatable<TValidationError>, TValidationError = string> {
     /**

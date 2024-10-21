@@ -9,12 +9,12 @@ import { ValidationTrigger } from './ValidationTrigger';
  */
 export interface IMapChangedValidationTriggerConfig<TKey = unknown, TItem = unknown, TMap extends INotifyMapChanged<TKey, TItem> = INotifyMapChanged<TKey, TItem>> {
     /**
-     * Gets the map that may trigger a validaiton.
+     * Gets the map that may trigger a validation.
      */
     readonly map: TMap;
 
     /**
-     * Optional, a guard method which controls when a validaiton should be triggered.
+     * Optional, a guard method which controls when a validation should be triggered.
      * @param map The map that changed.
      * @param mapChange The map change.
      */

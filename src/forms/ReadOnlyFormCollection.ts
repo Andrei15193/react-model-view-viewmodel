@@ -11,7 +11,7 @@ import { ReadOnlyObservableCollection } from '../collections';
  * form itself.
  *
  * @template TForm The concrete type of the form section.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyObservableCollection<TForm> implements IReadOnlyFormCollection<TForm, TValidationError>, IValidatable<TValidationError> {
     private _error: TValidationError | null;

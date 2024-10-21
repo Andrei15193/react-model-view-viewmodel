@@ -2,7 +2,7 @@ import type { IReadOnlyValidatable } from './IReadOnlyValidatable';
 
 /**
  * Represents a validatable object.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IValidatable<TValidationError = string> extends IReadOnlyValidatable<TValidationError> {
     /**

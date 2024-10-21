@@ -9,7 +9,7 @@ import { FormCollection } from './FormCollection';
  * Represents a form for which both fields and sections can be configured. Form sections are forms themselves making this a tree structure
  * where fields represent leaves and sections are parent nodes.
  *
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  *
  * ----
  *
@@ -54,9 +54,82 @@ import { FormCollection } from './FormCollection';
  *
  * The configuration does not change the state, the form still looks more or less
  * the same, but the way fields behave is different. Some fields become required
- * or have different validaiton rules while other can become locked and are no
+ * or have different validation rules while other can become locked and are no
  * longer editable.
+ * 
+ * #### Form Structure and Change Propagation
+ * 
+ * Forms have a hierarchical structure comprising of fields and sections which are
+ * forms themselves. This allows for both simple and complex form definitions
+ * through the same model.
+ * 
+ * Any form contrains a collection of fields and a collection of sections, however
+ * propagation has an additional level of sections collections. Any form is a parent
+ * node while fields are leaves in the tree structure with propagation generally
+ * going bottom-up.
+ * 
+ * * {@linkcode Form} - root or parent node
+ *   * {@linkcode FormField} - leaf nodes, any changes to a field are propagated to the parent node, a {@linkcode Form}.
+ *   * {@linkcode FormCollection} - a collection of {@linkcode Form} instances, any change to a form collection is propagated to the parent node, a {@linkcode Form}.
  *
+ * Any changes to a {@linkcode Form} is propagated to the {@linkcode FormCollection}
+ * to which it was added. With this, extensions and validation can be added at any level,
+ * from fields, to forms and form collections themselves.
+ * 
+ * For simple cases, defining a form is done by extending a {@linkcode Form} and
+ * adding fields using {@linkcode withFields}.
+ * 
+ * In case of large forms it can be beneficial to group fields into sections,
+ * which are just different {@linkcode Form} composing a larger one. This can be
+ * done using {@linkcode withSections}.
+ * 
+ * For more complex cases where there are collections of forms where items can
+ * be added and removed, and each item has its own set of editable fields, a
+ * {@linkcode FormCollection} must be used to allow for items to be added and
+ * removed. To conrol the interface for mutating the collection consider
+ * extending {@link ReadOnlyFormCollection} instead.
+ * 
+ * To add your own form collections to a form use {@linkcode withSectionsCollection}
+ * as this will perform the same operation as {@linkcode withSections} only that
+ * you have control over the underlying form collection. Any changes to the
+ * collection are reflected on the form as well.
+ * 
+ * All fields and sections that are added with any of the mentioned methods are
+ * available through the {@linkcode fields} and {@linkcode sections} properties.
+ *
+ * #### Validation
+ *
+ * Validation is one of the best examples for change propagation and is offered
+ * out of the box. Whenever a field becomes invalid, the entire form becomes
+ * invalid.
+ * 
+ * This applies to form sections as well, whenever a section collection is
+ * invalid, the form (parent node) becomes invalid, and finally, when a form
+ * becomes invalid, the form collection it was added to also becomes invalid.
+ * 
+ * With this, the propagation can be seen clearly as validity is determined
+ * completely by the status of each component of the entire form, from all levels.
+ * Any change in one of the nodes goes all the way up to the root node making it
+ * very easy to check if the entire form is valid or not, and later on checking
+ * which sections or fields are invalid.
+ * 
+ * Multiple validators can be added and upon any change that is notified by the
+ * target invokes them until the first validator returns an error message. E.g.:
+ * if a field is required and has 2nd validator for checking the length of the
+ * content, the 2nd validator will only be invoked when the 1st one passes, when
+ * the field has an actual value.
+ * 
+ * This allows for granular validation messages as well as reusing them across
+ * {@linkcode IValidatable} objects.
+ * 
+ * For more complex cases when the validity of one field is dependent on the
+ * value of another field, such as the start date/end date pair, then validation
+ * triggers can be configured so that when either field changes the validators
+ * are invoked. This is similar in a way to how dependencies work on a ReactJS
+ * hook.
+ * 
+ * All form components have a `validation` property where configuraiton can be
+ * made, check {@linkcode validation} for more information.
  * ----
  *
  * @guidance Define a Form
@@ -214,7 +287,7 @@ import { FormCollection } from './FormCollection';
  * By default, validation errors are represented using `string`s, however this
  * can be changed through the {@linkcode TValidationError} generic parameter.
  * The snippet below illustrates using a [literal type](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
- * for validaiton results.
+ * for validation results.
  *
  * ```ts
  * type ValidationError = 'Required' | 'GreaterThanZero';

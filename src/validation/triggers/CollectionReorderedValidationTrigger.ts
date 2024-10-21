@@ -8,12 +8,12 @@ import { ValidationTrigger } from './ValidationTrigger';
  */
 export interface ICollectionReorderedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionReordered<TItem> = INotifyCollectionReordered<TItem>> {
     /**
-     * Gets the collection that may trigger a validaiton.
+     * Gets the collection that may trigger a validation.
      */
     readonly collection: TCollection;
 
     /**
-     * Optional, a guard method which controls when a validaiton should be triggered.
+     * Optional, a guard method which controls when a validation should be triggered.
      * @param collection The collection that changed.
      * @param collectionReorder The collection reorder information.
      */

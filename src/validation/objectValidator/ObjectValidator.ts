@@ -10,7 +10,7 @@ import { ViewModelChangedValidationTrigger, resolveValidationTriggers } from '..
 /**
  * Represents the object validator configuration.
  * @template TValidatable The instance type that is being validated.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IObjectValidatorConfig<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> {
     readonly target: TValidatable;
@@ -21,7 +21,7 @@ export interface IObjectValidatorConfig<TValidatable extends IValidatable<TValid
 /**
  * Represents a base implementation for an object validator.
  * @template TValidatable The instance type that is being validated.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export class ObjectValidator<TValidatable extends IValidatable<TValidationError> & INotifyPropertiesChanged, TValidationError = string> implements IObjectValidator<TValidatable, TValidationError> {
     private static _defaultShouldTargetTriggerValidation<TValidationError = string>(target: IValidatable<TValidationError>, changedProperties: readonly (keyof IValidatable<TValidationError>)[]): boolean {

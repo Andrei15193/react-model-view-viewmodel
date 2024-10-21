@@ -7,7 +7,7 @@ import { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
  * form sections for cases where validation and other aspects are based on the state of an entity or the form itself.
  *
  * @template TForm The concrete type of the form.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export class FormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormCollection<TForm, TValidationError> implements IFormCollection<TForm, TValidationError> {
     /**

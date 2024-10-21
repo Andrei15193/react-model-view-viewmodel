@@ -12,7 +12,7 @@ export interface IViewModelChangedValidationTriggerConfig<TViewModel extends INo
     readonly viewModel: TViewModel;
 
     /**
-     * Optional, a guard method which controls when a validaiton should be triggered.
+     * Optional, a guard method which controls when a validation should be triggered.
      * @param viewModel The view model that has changed.
      * @param changedProperties The properties that have changed on the view model.
      */

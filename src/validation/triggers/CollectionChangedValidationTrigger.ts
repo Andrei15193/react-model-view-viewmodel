@@ -8,12 +8,12 @@ import { ValidationTrigger } from './ValidationTrigger';
  */
 export interface ICollectionChangedValidationTriggerConfig<TItem = unknown, TCollection extends INotifyCollectionChanged<TItem> = INotifyCollectionChanged<TItem>> {
     /**
-     * Gets the collection that may trigger a validaiton.
+     * Gets the collection that may trigger a validation.
      */
     readonly collection: TCollection;
 
     /**
-     * Optional, a guard method which controls when a validaiton should be triggered.
+     * Optional, a guard method which controls when a validation should be triggered.
      * @param collection The collection that changed.
      * @param collectionChange The collection change.
      */

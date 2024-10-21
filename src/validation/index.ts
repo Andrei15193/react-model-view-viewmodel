@@ -7,11 +7,12 @@ export type { IValidator, ValidatorCallback } from './IValidator';
 export {
     type IReadOnlyObjectValidator,
     type IObjectValidator,
-    ObjectValidator
+    type IValidationTriggersSet,
+    ObjectValidator,
 } from './objectValidator';
 
 export {
-    type WellKnownValidationTrigger, ValidationTrigger,
+    type WellKnownValidationTrigger, ValidationTriggerSelector, ValidationTrigger,
 
     type IViewModelChangedValidationTriggerConfig, ViewModelChangedValidationTrigger,
     type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger,

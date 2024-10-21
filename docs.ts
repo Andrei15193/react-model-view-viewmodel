@@ -1,6 +1,7 @@
 import { Application, CommentDisplayPart, DeclarationReflection, ParameterReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SignatureReflection, SomeType, TypeParameterReflection } from 'typedoc';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
 import path from 'path';
+import { getNameOfDeclaration } from 'typescript';
 
 void async function () {
     try {
@@ -39,13 +40,13 @@ void async function () {
 
         const outputDirectory = await mkdirAsync(path.join(__dirname, 'docs'), { recursive: true });
 
-        await writeFileAsync(path.join(outputDirectory, 'index.md'), getLandingPage());
+        await writeFileAsync(path.join(outputDirectory, 'README.md'), getReadMe());
+        await writeFileAsync(path.join(outputDirectory, 'Home.md'), getLandingPage());
         await writeFileAsync(path.join(outputDirectory, '_Sidebar.md'), getSidebar());
+        await writeFileAsync(path.join(outputDirectory, '_Footer.md'), getFooter());
 
-        getClassDocumentation
-
-        if (project.children)
-            await Promise.all(project.children.map(async declaration => {
+        await Promise.all(Array.from(declarationsById.values()).map(async declaration => {
+            try {
                 const subDirectory1 = declaration.sources?.at(0)?.fileName.split('/').at(0);
                 let subDirectory2: string;
                 let documentation: string | null = null;
@@ -65,6 +66,14 @@ void async function () {
                         documentation = getClassDocumentation(declaration);
                         break;
 
+                    case ReflectionKind.Property:
+                    case ReflectionKind.Accessor:
+                        if (!declaration.flags.isInherited) {
+                            subDirectory2 = 'properties';
+                            documentation = getPropertyDocumentation(declaration);
+                        }
+                        break;
+
                     case ReflectionKind.Function:
                         subDirectory2 = 'functions';
                         documentation = getFunctionDocumentation(declaration);
@@ -77,7 +86,11 @@ void async function () {
                     await mkdirAsync(directoryPath, { recursive: true });
                     await writeFileAsync(path.join(directoryPath, `${getIdentifier(declaration)}.md`), documentation);
                 }
-            }));
+            }
+            catch (error) {
+                throw new Error(`Could not generate documentation for '${declaration}' on '${declaration.parent}'.\n${error}.`);
+            }
+        }));
 
         function findDeclaration(target: Reflection | ReflectionSymbolId | string | undefined): DeclarationReflection {
             const declaration = declarationsById.get(
@@ -86,7 +99,7 @@ void async function () {
                 || Number(target)
             );
             if (declaration === null || declaration === undefined)
-                throw new Error(`Cannot find declaration with id '${JSON.stringify(target)}'.`);
+                throw new Error(`Cannot find declaration with id (forgot to export it in root index.ts?) '${JSON.stringify(target)}'.`);
 
             return declaration;
         }
@@ -381,23 +394,53 @@ void async function () {
             return documentationIndex;
         }
 
+        function getReadMe(): string {
+            return (
+                `${packageInfo.description}\n` +
+                '\n' +
+                [
+                    '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
+                    '[Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions)',
+                    '[Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)',
+                    '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)'
+                ].join(' | ') + '\n' +
+                '\n' +
+                '**API**\n' +
+                '\n' +
+                documentationIndex
+                    .namespaces
+                    .map(namespace => {
+                        return `* **${namespace.name}**\n` + namespace
+                            .declarations
+                            .filter(declaration => declaration.promoted)
+                            .map(declaration => `  * [${getSimpleName(declaration)}](${getIdentifier(declaration)})`)
+                            .join('\n');
+                    })
+                    .join('\n')
+            );
+        }
+
         function getLandingPage(): string {
-            return '### API\n\n' + documentationIndex
-                .namespaces
-                .map(namespace => {
-                    let listMarker = '*';
+            return (
+                `${packageInfo.description}\n` +
+                '\n' +
+                '### API\n\n' + documentationIndex
+                    .namespaces
+                    .map(namespace => {
+                        let listMarker = '*';
 
-                    return `* **${namespace.name}**\n` + namespace
-                        .declarations
-                        .map((declaration, declarationIndex, declarations) => {
-                            if (declarationIndex > 0 && declarations[declarationIndex - 1].promoted !== declarations[declarationIndex].promoted)
-                                listMarker = '-';
+                        return `* **${namespace.name}**\n` + namespace
+                            .declarations
+                            .map((declaration, declarationIndex, declarations) => {
+                                if (declarationIndex > 0 && declarations[declarationIndex - 1].promoted !== declarations[declarationIndex].promoted)
+                                    listMarker = '-';
 
-                            return `  ${listMarker} [${getSimpleName(declaration)}](${getIdentifier(declaration)})`;
-                        })
-                        .join('\n');
-                })
-                .join('\n');
+                                return `  ${listMarker} [${getSimpleName(declaration)}](${getIdentifier(declaration)})`;
+                            })
+                            .join('\n');
+                    })
+                    .join('\n')
+            );
         }
 
         function getSidebar(): string {
@@ -421,6 +464,16 @@ void async function () {
             );
         }
 
+        function getFooter(): string {
+            return [
+                '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
+                '[Motivation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#motivation)',
+                '[Overview](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#overview)',
+                '[API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)',
+                '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)'
+            ].join(' | ');
+        }
+
         function getAliasDocumentation(aliasDeclaration: DeclarationReflection): string {
             return `
 ###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / ${getFullName(aliasDeclaration)} alias
@@ -433,7 +486,7 @@ ${getSummary(aliasDeclaration)}
 ${getDeclaration(aliasDeclaration)}
 \`\`\`
 
-${getSourceCodeLink(aliasDeclaration)}
+${getSourceReference(aliasDeclaration)}
 
 ${getGenericParameters(aliasDeclaration)}
 
@@ -461,7 +514,7 @@ ${getInheritaceAndImplementations(interfaceDeclaration)}
 ${getDeclaration(interfaceDeclaration)}
 \`\`\`
 
-${getSourceCodeLink(interfaceDeclaration)}
+${getSourceReference(interfaceDeclaration)}
 
 ${getGenericParameters(interfaceDeclaration)}
 
@@ -497,7 +550,7 @@ ${classDeclaration.flags.isAbstract ? 'This is an abstract class.' : ''}
 ${getDeclaration(classDeclaration)}
 \`\`\`
 
-${getSourceCodeLink(classDeclaration)}
+${getSourceReference(classDeclaration)}
 
 ${getGenericParameters(classDeclaration)}
 
@@ -514,6 +567,36 @@ ${getMethodsList(classDeclaration)}
 ${getGuidance(classDeclaration)}
 
 ${getReferences(classDeclaration)}
+`.replace(/\n{3,}/g, '\n\n').trim();
+        }
+
+        function getPropertyDocumentation(propertyDeclaration: DeclarationReflection): string {
+            return `
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)/ [${getFullName(propertyDeclaration.parent as DeclarationReflection)}](${getProjectReferenceUrl(propertyDeclaration.parent as DeclarationReflection)}) / ${getFullName(propertyDeclaration)} property
+
+${getDeprecationNotice(propertyDeclaration)}
+
+${getSummary(propertyDeclaration)}
+
+${getOverride(propertyDeclaration)}
+
+${getPropertyType(propertyDeclaration)}
+
+${propertyDeclaration.flags.isAbstract ? 'This is an abstract property.' : ''}
+
+\`\`\`ts
+${getDeclaration(propertyDeclaration)}
+\`\`\`
+
+${getSourceReference(propertyDeclaration)}
+
+${getDescription(propertyDeclaration)}
+
+${getRemarks(propertyDeclaration)}
+
+${getGuidance(propertyDeclaration)}
+
+${getReferences(propertyDeclaration)}
 `.replace(/\n{3,}/g, '\n\n').trim();
         }
 
@@ -537,7 +620,7 @@ ${getSummary(functionSignature)}
 ${getDeclaration(functionSignature)}
 \`\`\`
 
-${getSourceCodeLink(functionSignature)}
+${getSourceReference(functionSignature)}
 
 ${getGenericParameters(functionSignature)}
 
@@ -561,7 +644,10 @@ ${getReferences(functionSignature)}
                 case ReflectionKind.Property:
                 case ReflectionKind.Accessor:
                 case ReflectionKind.Method:
-                    return declaration.parent!.name + '.' + declaration.name;
+                    if (declaration.flags.isInherited)
+                        return declaration.inheritedFrom!.reflection!.parent!.name + '.' + declaration.name;
+                    else
+                        return declaration.parent!.name + '.' + declaration.name;
 
                 case ReflectionKind.Class:
                 case ReflectionKind.Interface:
@@ -624,6 +710,60 @@ ${getReferences(functionSignature)}
             }
             catch (error) {
                 throw new Error(`Could not generate inheritance and implementation information for ${declaration}.\n${error}`);
+            }
+        }
+
+        function getOverride(declaration: DeclarationReflection): string {
+            try {
+                let override = '';
+
+                if (declaration.parent?.kind !== ReflectionKind.Interface && declaration.overwrites) {
+                    let declarationName: string;
+                    switch (declaration.kind) {
+                        case ReflectionKind.Property:
+                        case ReflectionKind.Accessor:
+                            declarationName = 'property';
+                            break;
+
+                        case ReflectionKind.Method:
+                            declarationName = 'method';
+                            break;
+
+                        default:
+                            throw new Error(`Unhandled '${declaration.kind}' overriden declaration.`);
+                    }
+
+                    override += `This ${declarationName} overrides [${getFullName(declaration.overwrites.reflection as DeclarationReflection)}](${getProjectReferenceUrl(declaration.overwrites)}).`;
+                }
+
+                return override;
+            }
+            catch (error) {
+                throw new Error(`Could not generate override information for ${declaration}.\n${error}`);
+            }
+        }
+
+        function getPropertyType(declaration: DeclarationReflection): string {
+            try {
+                switch (declaration.kind) {
+                    case ReflectionKind.Property:
+                        if (declaration.type)
+                            return `Property type: ${getReferenceLink(declaration.type)}.`;
+                        else
+                            throw new Error(`Property '${declaration.name}' on ${declaration.parent?.name} has no type.`);
+
+                    case ReflectionKind.Accessor:
+                        if (declaration.getSignature && declaration.getSignature.type)
+                            return `Property type: ${getReferenceLink(declaration.getSignature.type)}.`;
+                        else
+                            throw new Error(`Property (accessor) '${declaration.name}' on ${declaration.parent?.name} has no type.`);
+
+                    default:
+                        throw new Error(`Unhandled '${declaration.kind}' property type.`);
+                }
+            }
+            catch (error) {
+                throw new Error(`Could not generate property type information for ${declaration}.\n${error}`);
             }
         }
 
@@ -693,6 +833,103 @@ ${getReferences(functionSignature)}
                         classDeclaration += `\n    implements ${declaration.implementedTypes.map(getTypeReferenceDeclaration).join(', ')}`;
 
                     return classDeclaration;
+
+                case ReflectionKind.Property:
+                    let propertyDeclaration: string = [
+                        declaration.flags.isPrivate && 'private',
+                        declaration.flags.isProtected && 'protected',
+                        declaration.flags.isPublic && 'public',
+
+                        declaration.flags.isAbstract && 'abstract',
+                        declaration.flags.isStatic && 'static',
+
+                        declaration.flags.isReadonly && 'readonly',
+                        declaration.flags.isConst && 'const'
+                    ]
+                        .filter(flag => flag)
+                        .join(' ');
+
+                    propertyDeclaration += ` ${declaration.name}`;
+
+                    if (declaration.flags.isOptional)
+                        propertyDeclaration += '?';
+
+                    if (declaration.type)
+                        propertyDeclaration += ': ' + getTypeReferenceDeclaration(declaration.type);
+                    else
+                        throw new Error(`Property '${declaration.name}' on '${declaration.parent?.name}' has no type.`);
+
+                    return propertyDeclaration;
+
+                case ReflectionKind.Accessor:
+                    let signatures: string[] = [];
+
+                    if (declaration.getSignature) {
+                        let getSignature = [
+                            declaration.getSignature.flags.isPrivate && 'private',
+                            declaration.getSignature.flags.isProtected && 'protected',
+                            declaration.getSignature.flags.isPublic && 'public',
+
+                            declaration.flags.isPrivate && 'private',
+                            declaration.flags.isProtected && 'protected',
+                            declaration.flags.isPublic && 'public'
+                        ]
+                            .filter(flag => flag)
+                            .at(0) as string;
+
+                        getSignature += [
+                            declaration.flags.isAbstract && 'abstract',
+                            declaration.flags.isStatic && 'static'
+                        ]
+                            .filter(flag => flag)
+                            .join(' ');
+                        getSignature += ' get ';
+                        getSignature += declaration.name;
+                        getSignature += '(): ';
+                        if (declaration.getSignature.type)
+                            getSignature += getTypeReferenceDeclaration(declaration.getSignature.type);
+                        else
+                            throw new Error(`Accessor '${declaration.name}' on '${declaration.parent?.name}' has no get type.`);
+
+                        signatures.push(getSignature);
+                    }
+
+                    if (declaration.setSignature) {
+                        let setSignature = [
+                            declaration.setSignature.flags.isPrivate && 'private',
+                            declaration.setSignature.flags.isProtected && 'protected',
+                            declaration.setSignature.flags.isPublic && 'public',
+
+                            declaration.flags.isPrivate && 'private',
+                            declaration.flags.isProtected && 'protected',
+                            declaration.flags.isPublic && 'public'
+                        ]
+                            .filter(flag => flag)
+                            .at(0) as string;
+
+                        setSignature += [
+                            declaration.flags.isAbstract && 'abstract',
+                            declaration.flags.isStatic && 'static'
+                        ]
+                            .filter(flag => flag)
+                            .join(' ');
+                        setSignature += ' set ';
+                        setSignature += declaration.name;
+                        setSignature += '(';
+                        if (declaration.setSignature.parameters)
+                            setSignature += declaration
+                                .setSignature
+                                .parameters
+                                .map(parameter => `${parameter.name}: ${getTypeReferenceDeclaration(parameter.type!)}`);
+                        else
+                            throw new Error(`Accessor '${declaration.name}' on '${declaration.parent?.name}' has no set type.`);
+
+                        setSignature += ')';
+
+                        signatures.push(setSignature);
+                    }
+
+                    return signatures.join('\n');
 
                 case ReflectionKind.CallSignature:
                     let functionDeclaration = 'function ' + declaration.name;
@@ -899,7 +1136,6 @@ ${getReferences(functionSignature)}
                             throw new Error(`Could not determine URL for React reference '${typeReference.name}'.`);
                     }
 
-
                 default:
                     throw new Error(`Could not determine URL for '${typeReference}' in package '${typeReference.package}'.`);
             }
@@ -913,7 +1149,11 @@ ${getReferences(functionSignature)}
                         declaration = foundDeclaration;
                     },
                     reference() {
-                        declaration = findDeclaration((typeReferenceOrDeclaration as ReferenceType).reflection)
+                        //throw new Error(`Unhandled '${typeReferenceOrDeclaration}' reference.`);
+                        if (!(typeReferenceOrDeclaration as ReferenceType).reflection)
+                            declaration = findDeclaration((typeReferenceOrDeclaration as ReferenceType).symbolId);
+                        else
+                            declaration = findDeclaration((typeReferenceOrDeclaration as ReferenceType).reflection);
                     }
                 });
                 if (declaration !== null)
@@ -930,6 +1170,16 @@ ${getReferences(functionSignature)}
             try {
                 switch (typeReference.type) {
                     case 'reference':
+                        if (!typeReference.package) {
+                            if (typeReference.reflection)
+                                return `[${getSimpleName(typeReference.reflection as DeclarationReflection)}](${getProjectReferenceUrl(typeReference.reflection as DeclarationReflection)})`;
+
+                            switch (typeReference.name) {
+                                case 'ArrayLike.length':
+                                    return '[ArrayLike.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function/length) ([ArrayLike](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Indexed_collections#working_with_array-like_objects))';
+                            }
+                        }
+
                         let typeReferenceLink = typeReference.refersToTypeParameter
                             ? `_${typeReference.name}_`
                             : `[${typeReference.name}](${getReferenceUrl(typeReference)})`;
@@ -982,11 +1232,20 @@ ${getReferences(functionSignature)}
 
                     case 'intrinsic':
                         switch (typeReference.name) {
+                            case 'this':
+                                return '[`this`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/this)';
+
                             case 'undefined':
                                 return '[`undefined`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined)';
 
                             case 'string':
                                 return '[`string`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)';
+
+                            case 'boolean':
+                                return '[`boolean`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)';
+
+                            case 'number':
+                                return '[`number`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)';
 
                             case 'unknown':
                                 return '[`unknown`](https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown)';
@@ -1120,12 +1379,16 @@ ${getReferences(functionSignature)}
                             if (genericParameterDescription.length > 0)
                                 genericParameter += ' - ' + genericParameterDescription;
 
-                            genericParameter += '\n'
-                            if (typeParameter.type)
-                                genericParameter += `  \n  Type constraints: ${getReferenceLink(typeParameter.type)}.`;
+                            genericParameter = genericParameter.replace(/(\r?\n\r?)*$/, '');
 
-                            if (typeParameter.default)
-                                genericParameter += `  \n  Default value: ${getReferenceLink(typeParameter.default)}.`;
+                            const genericParameterConstraints = [
+                                typeParameter.type && `  Type constraints: ${getReferenceLink(typeParameter.type)}.`,
+                                typeParameter.default && `  Default value: ${getReferenceLink(typeParameter.default)}.`
+                            ]
+                                .filter(description => description)
+                                .join('  \n');
+                            if (genericParameterConstraints.length > 0)
+                                genericParameter += '\n\n' + genericParameterConstraints;
 
                             return genericParameter;
                         },
@@ -1192,7 +1455,7 @@ ${getReferences(functionSignature)}
         function getPropertiesList(declaration: DeclarationReflection): string {
             const properties = declaration
                 .children
-                ?.filter(childDeclaration => childDeclaration.kind === ReflectionKind.Property && !childDeclaration.flags.isInherited && !childDeclaration.flags.isPrivate)
+                ?.filter(childDeclaration => (childDeclaration.kind === ReflectionKind.Property || childDeclaration.kind === ReflectionKind.Accessor) && !childDeclaration.flags.isPrivate)
                 .sort(sortCompareDeclarations);
 
             if (properties !== null && properties !== undefined && properties.length > 0) {
@@ -1227,6 +1490,8 @@ ${getReferences(functionSignature)}
 
         function getFlagSummary(declaration: DeclarationReflection): string {
             return [
+                declaration.kind !== ReflectionKind.Constructor && declaration.parent?.kind !== ReflectionKind.Interface && declaration.overwrites && '`override`',
+                declaration.flags.isInherited && '`inherited`',
                 declaration.flags.isStatic && '`static`',
                 declaration.flags.isAbstract && '`abstract`',
                 declaration.flags.isPrivate && '`private`',
@@ -1240,10 +1505,18 @@ ${getReferences(functionSignature)}
 
         function sortCompareDeclarations(left: DeclarationReflection, right: DeclarationReflection): number {
             return (
-                getStaticSortOrder(left) - getStaticSortOrder(right)
+                getInheritedSortOrder(left) - getInheritedSortOrder(right)
+                || getStaticSortOrder(left) - getStaticSortOrder(right)
                 || getAccessModifierSortOrder(left) - getAccessModifierSortOrder(right)
                 || left.name.localeCompare(right.name, 'en-US')
             );
+        }
+
+        function getInheritedSortOrder(declaration: DeclarationReflection): number {
+            if (declaration.flags.isInherited)
+                return 1;
+
+            return 0;
         }
 
         function getStaticSortOrder(declaration: DeclarationReflection): number {
@@ -1265,7 +1538,10 @@ ${getReferences(functionSignature)}
         function getReferences(declaration: DeclarationReflection | SignatureReflection): string {
             const references = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@see') || [];
             if (references.length > 0)
-                return '### See also\n\n' + references.map(reference => getBlock(reference.content).replace(/^[ \t]-/gm, '*')).join('\n');
+                return '### See also\n\n' +
+                    references
+                        .map(reference => '* ' + getBlock(reference.content).replace(/^[ \t]-/gm, ''))
+                        .join('\n');
             else
                 return '';
         }
@@ -1340,12 +1616,19 @@ ${getReferences(functionSignature)}
             }
         }
 
-        function getSourceCodeLink(declaration: DeclarationReflection | SignatureReflection): string {
-            if (declaration.sources && declaration.sources.length > 0) {
-                const [{ fileName, line }] = declaration.sources;
+        function getSourceReference(declaration: DeclarationReflection | SignatureReflection): string {
+            if (declaration.sources && declaration.sources.length > 0)
+                if (declaration.sources.length === 1) {
+                    const [{ fileName, line }] = declaration.sources;
 
-                return `Source reference: [\`src/${fileName}:${line}\`](${packageInfo.repository.url.split('+').at(-1).split('.git')[0]}/tree/${packageInfo.version}/src/${fileName}#L${line}).`;
-            }
+                    return `Source reference: [\`src/${fileName}:${line}\`](${packageInfo.repository.url.split('+').at(-1).split('.git')[0]}/tree/${packageInfo.version}/src/${fileName}#L${line}).`;
+                }
+                else {
+                    return 'Source references:\n' + declaration
+                        .sources
+                        .map(({ fileName, line }) => `* [\`src/${fileName}:${line}\`](${packageInfo.repository.url.split('+').at(-1).split('.git')[0]}/tree/${packageInfo.version}/src/${fileName}#L${line})`)
+                        .join('\n')
+                }
             else
                 return '';
         }

@@ -9,7 +9,7 @@ import type { IConfigurableFormCollection } from './IConfigurableFormCollection'
  * form itself.
  *
  * @template TForm The concrete type of the form section.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IReadOnlyFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IReadOnlyObservableCollection<TForm>, IConfigurableFormCollection<TForm, TValidationError> {
     /**

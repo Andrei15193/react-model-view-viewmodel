@@ -3,7 +3,7 @@ import { ViewModel } from '../viewModels';
 
 /**
  * Represents a base implementation for a validatable
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export class Validatable<TValidationError = string> extends ViewModel implements IValidatable<TValidationError> {
     private _error: TValidationError | null;

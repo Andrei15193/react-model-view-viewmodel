@@ -1,4 +1,5 @@
 export { type WellKnownValidationTrigger, ValidationTrigger } from './ValidationTrigger';
+export type { ValidationTriggerSelector } from './ValidationTriggerSelector';
 
 export { type IViewModelChangedValidationTriggerConfig, ViewModelChangedValidationTrigger } from './ViewModelChangedValidationTrigger';
 export { type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger } from './CollectionChangedValidationTrigger';

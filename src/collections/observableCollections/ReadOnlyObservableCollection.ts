@@ -61,6 +61,7 @@ export class ReadOnlyObservableCollection<TItem> extends ViewModel implements IR
 
     /**
      * Gets or sets the number of items in the collection.
+     * @protected
      * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
      */
     protected set length(value: number) {

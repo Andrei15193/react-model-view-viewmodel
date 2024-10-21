@@ -78,9 +78,9 @@ export {
     type IReadOnlyValidatable, type IValidatable, Validatable,
 
     type IValidator, type ValidatorCallback,
-    type IReadOnlyObjectValidator, type IObjectValidator, ObjectValidator,
+    type IReadOnlyObjectValidator, type IObjectValidator, type IValidationTriggersSet, ObjectValidator,
 
-    type WellKnownValidationTrigger, ValidationTrigger,
+    type WellKnownValidationTrigger, type ValidationTriggerSelector, ValidationTrigger,
 
     type IViewModelChangedValidationTriggerConfig, ViewModelChangedValidationTrigger,
     type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger,

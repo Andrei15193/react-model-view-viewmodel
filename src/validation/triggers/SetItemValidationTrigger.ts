@@ -15,7 +15,7 @@ interface IItemValidationTriggers {
  */
 export interface ISetItemValidationTriggerConfig<TItem> {
     /**
-     * Gets the set containing the items that may trigger validaiton.
+     * Gets the set containing the items that may trigger validation.
      */
     readonly set: INotifySetChanged<TItem> & Iterable<TItem>;
     /**
@@ -24,15 +24,15 @@ export interface ISetItemValidationTriggerConfig<TItem> {
     readonly validationTriggerSelector: ValidationTriggerSelector<TItem>;
 
     /**
-     * Optional, a guard method which controls when a validaiton should be triggered.
+     * Optional, a guard method which controls when a validation should be triggered.
      * @param item The item that changed which may trigger a validation.
      */
     shouldTriggerValidation?(item: TItem): boolean;
 }
 
 /**
- * Represents a set item validation trigger. Instead of triggering a validaiton only when the set changes,
- * a validaiton may be triggered by any of the contained items when they themselves change.
+ * Represents a set item validation trigger. Instead of triggering a validation only when the set changes,
+ * a validation may be triggered by any of the contained items when they themselves change.
  *
  * This is useful when within the collection there is a field that needs to be unique,
  * such as a unique name for each item in the collection.

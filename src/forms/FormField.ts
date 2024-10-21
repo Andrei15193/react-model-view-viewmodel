@@ -3,7 +3,7 @@ import { Validatable, type IValidator, type ValidatorCallback, type IObjectValid
 /**
  * Represents the configuration of a field, this can be extended for custom fields to easily add more features.
  * @template TValue The value of the field.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
 export interface IFormFieldConfig<TValue, TValidationError = string> {
     /**
@@ -33,7 +33,7 @@ export interface IFormFieldConfig<TValue, TValidationError = string> {
 /**
  * Represents a form field containing the minimum set of information required to describe a field in a form.
  * @template TValue The value of the field.
- * @template TValidationError The concrete type for representing validaiton errors (strings, enums, numbers etc.).
+ * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  *
  * ----
  *

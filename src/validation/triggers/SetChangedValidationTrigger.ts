@@ -8,12 +8,12 @@ import { ValidationTrigger } from './ValidationTrigger';
  */
 export interface ISetChangedValidationTriggerConfig<TItem = unknown, TSet extends INotifySetChanged<TItem> = INotifySetChanged<TItem>> {
     /**
-     * Gets the set that may trigger a validaiton.
+     * Gets the set that may trigger a validation.
      */
     readonly set: TSet;
 
     /**
-     * Optional, a guard method which controls when a validaiton should be triggered.
+     * Optional, a guard method which controls when a validation should be triggered.
      * @param set The set that changed.
      * @param setChange The set change.
      */
