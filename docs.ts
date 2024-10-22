@@ -1609,7 +1609,7 @@ ${getReferences(functionSignature)}
         }
 
         function getFlagSummary(declaration: DeclarationReflection): string {
-            return [
+            let flagsSummary = [
                 declaration.kind !== ReflectionKind.Constructor && declaration.parent?.kind !== ReflectionKind.Interface && declaration.overwrites && '`override`',
                 declaration.flags.isInherited && '`inherited`',
                 declaration.flags.isStatic && '`static`',
@@ -1620,7 +1620,12 @@ ${getReferences(functionSignature)}
                 declaration.flags.isOptional && '`optional`'
             ]
                 .filter(value => !!value)
-                .join(' ') + ' ';
+                .join(' ');
+
+            if (flagsSummary.length > 0)
+                flagsSummary += ' ';
+
+            return flagsSummary;
         }
 
         function sortCompareDeclarations(left: DeclarationReflection, right: DeclarationReflection): number {
@@ -1660,8 +1665,14 @@ ${getReferences(functionSignature)}
             if (references.length > 0)
                 return '### See also\n\n' +
                     references
-                        .map(reference => '* ' + getBlock(reference.content).replace(/^[ \t]-/gm, ''))
-                        .join('\n');
+                        .map(
+                            reference => getBlock(reference.content)
+                                .split(/^[ \t]*-[ \t]*/gm)
+                                .filter(reference => reference)
+                                .map(reference => '* ' + reference)
+                                .join('')
+                        )
+                        .join('');
             else
                 return '';
         }
