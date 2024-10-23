@@ -2,9 +2,16 @@ name: Build
 
 on:
   push:
-    branches: [ dev ]
+    branches:
+    - dev
+
   pull_request:
-    branches: [ dev ]
+    branches:
+    - dev
+
+  release:
+    types:
+    - published
 
 jobs:
   build:
@@ -20,3 +27,6 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm test
+
+    - uses: Andrew-Chen-Wang/github-wiki-action@v4
+      # if: github.event_name == 'release'
