@@ -119,7 +119,7 @@ class GenerateDocumentationPlugin {
 
             await Promise.all(Array.from(this._declarationsById.values()).map(async declaration => {
                 try {
-                    const subDirectory1 = declaration.sources?.at(0)?.fileName.split('/').at(0);
+                    const subDirectory1 = path.join(...declaration.sources!.at(0)!.fileName.split('/').slice(0, -1));
                     let subDirectory2: string;
                     let documentation: string | null = null;
                     switch (declaration.kind) {
@@ -136,6 +136,13 @@ class GenerateDocumentationPlugin {
                         case ReflectionKind.Class:
                             subDirectory2 = 'classes';
                             documentation = this._getClassDocumentation(declaration);
+                            break;
+
+                        case ReflectionKind.Constructor:
+                            if (!declaration.flags.isInherited) {
+                                subDirectory2 = 'constructors';
+                                documentation = this._getConstructorDocumentation(declaration);
+                            }
                             break;
 
                         case ReflectionKind.Property:
@@ -208,7 +215,7 @@ class GenerateDocumentationPlugin {
                     return `* **${namespace.name}**\n` + namespace
                         .declarations
                         .filter(declaration => declaration.promoted)
-                        .map(declaration => `  * [${this._getSimpleName(declaration)}](${this._getIdentifier(declaration)})`)
+                        .map(declaration => `  * [${this._getSimpleName(declaration)}](${this._getProjectReferenceUrl(declaration)})`)
                         .join('\n');
                 })
                 .join('\n')
@@ -283,7 +290,7 @@ ${this._getSummary(aliasDeclaration)}
 ${this._getDeclaration(aliasDeclaration)}
 \`\`\`
 
-${this.getSourceReference(aliasDeclaration)}
+${this._getSourceReference(aliasDeclaration)}
 
 ${this._getGenericParameters(aliasDeclaration)}
 
@@ -311,7 +318,7 @@ ${this._getInheritaceAndImplementations(interfaceDeclaration)}
 ${this._getDeclaration(interfaceDeclaration)}
 \`\`\`
 
-${this.getSourceReference(interfaceDeclaration)}
+${this._getSourceReference(interfaceDeclaration)}
 
 ${this._getGenericParameters(interfaceDeclaration)}
 
@@ -347,7 +354,7 @@ ${classDeclaration.flags.isAbstract ? 'This is an abstract class.' : ''}
 ${this._getDeclaration(classDeclaration)}
 \`\`\`
 
-${this.getSourceReference(classDeclaration)}
+${this._getSourceReference(classDeclaration)}
 
 ${this._getGenericParameters(classDeclaration)}
 
@@ -367,13 +374,49 @@ ${this._getReferences(classDeclaration)}
 `.replace(/\n{3,}/g, '\n\n').trim();
     }
 
+    private _getConstructorDocumentation(constructorDeclaration: DeclarationReflection): string {
+        return `
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / [${this._getFullName(constructorDeclaration.parent as DeclarationReflection)}](${this._getProjectReferenceUrl(constructorDeclaration.parent as DeclarationReflection)}) / constructor
+
+${constructorDeclaration.signatures && constructorDeclaration.signatures.length > 1 ? `This constructor has multiple overloads.\n\n----\n\n` : ''}
+
+${(constructorDeclaration.signatures || []).map(this._getConstructorSignatureDocumentation, this).join('\n\n----\n\n')}
+`.replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    private _getConstructorSignatureDocumentation(constructorSignature: SignatureReflection): string {
+        return `
+${this._getDeprecationNotice(constructorSignature)}
+
+${this._getSummary(constructorSignature)}
+
+\`\`\`ts
+${this._getDeclaration(constructorSignature)}
+\`\`\`
+
+${this._getSourceReference(constructorSignature)}
+
+${this._getParameters(constructorSignature)}
+
+${this._getDescription(constructorSignature)}
+
+${this._getRemarks(constructorSignature)}
+
+${this._getGuidance(constructorSignature)}
+
+${this._getReferences(constructorSignature)}
+`.replace(/\n{3,}/g, '\n\n').trim();
+    }
+
     private _getPropertyDocumentation(propertyDeclaration: DeclarationReflection): string {
         return `
-###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / [${this._getFullName(propertyDeclaration.parent as DeclarationReflection)}](${this._getProjectReferenceUrl(propertyDeclaration.parent as DeclarationReflection)}) / ${this._getFullName(propertyDeclaration)} property
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / [${this._getFullName(propertyDeclaration.parent as DeclarationReflection)}](${this._getProjectReferenceUrl(propertyDeclaration.parent as DeclarationReflection)}) / ${this._getSimpleName(propertyDeclaration)} property
 
 ${this._getDeprecationNotice(propertyDeclaration)}
 
 ${this._getSummary(propertyDeclaration)}
+
+${propertyDeclaration.flags.isAbstract ? 'This is an abstract property.' : ''}
 
 ${this._getOverride(propertyDeclaration)}
 
@@ -385,7 +428,7 @@ ${propertyDeclaration.flags.isAbstract ? 'This is an abstract property.' : ''}
 ${this._getDeclaration(propertyDeclaration)}
 \`\`\`
 
-${this.getSourceReference(propertyDeclaration)}
+${this._getSourceReference(propertyDeclaration)}
 
 ${this._getDescription(propertyDeclaration)}
 
@@ -399,7 +442,7 @@ ${this._getReferences(propertyDeclaration)}
 
     private _getMethodDocumentation(methodDeclaration: DeclarationReflection): string {
         return `
-###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / [${this._getFullName(methodDeclaration.parent as DeclarationReflection)}](${this._getProjectReferenceUrl(methodDeclaration.parent as DeclarationReflection)}) / ${this._getFullName(methodDeclaration)} method
+###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / [${this._getFullName(methodDeclaration.parent as DeclarationReflection)}](${this._getProjectReferenceUrl(methodDeclaration.parent as DeclarationReflection)}) / ${this._getSimpleName(methodDeclaration)} method
 
 ${this._getOverride(methodDeclaration)}
 
@@ -419,7 +462,7 @@ ${this._getSummary(methodSignature)}
 ${this._getDeclaration(methodSignature)}
 \`\`\`
 
-${this.getSourceReference(methodSignature)}
+${this._getSourceReference(methodSignature)}
 
 ${this._getGenericParameters(methodSignature)}
 
@@ -457,7 +500,7 @@ ${this._getSummary(functionSignature)}
 ${this._getDeclaration(functionSignature)}
 \`\`\`
 
-${this.getSourceReference(functionSignature)}
+${this._getSourceReference(functionSignature)}
 
 ${this._getGenericParameters(functionSignature)}
 
@@ -670,6 +713,38 @@ ${this._getReferences(functionSignature)}
                     classDeclaration += `\n    implements ${declaration.implementedTypes.map(this._getTypeReferenceDeclaration, this).join(', ')}`;
 
                 return classDeclaration;
+
+            case ReflectionKind.ConstructorSignature:
+                let constructorDeclaration = '';
+
+                if (declaration.parent && declaration.parent.parent && declaration.parent.parent.kind !== ReflectionKind.Project) {
+                    constructorDeclaration += [
+                        declaration.parent.flags.isPrivate && 'private',
+                        declaration.parent.flags.isProtected && 'protected',
+                        declaration.parent.flags.isPublic && 'public',
+
+                        declaration.parent.flags.isAbstract && 'abstract'
+                    ]
+                        .filter(flag => flag)
+                        .join(' ');
+
+                    if (constructorDeclaration.length > 0)
+                        constructorDeclaration += ' ';
+                }
+                constructorDeclaration += 'constructor';
+
+                const constructorParamters = (declaration as SignatureReflection)?.parameters || [];
+                if (constructorParamters.length > 0) {
+                    constructorDeclaration += '(\n  ';
+                    constructorDeclaration += ((declaration as SignatureReflection)?.parameters || [])
+                        .map(this._getParameterDeclaration, this)
+                        .join(',\n  ');
+                    constructorDeclaration += '\n)';
+                }
+                else
+                    constructorDeclaration += '()';
+
+                return constructorDeclaration;
 
             case ReflectionKind.Property:
                 let propertyDeclaration: string = [
@@ -1019,17 +1094,21 @@ ${this._getReferences(functionSignature)}
     private _getProjectReferenceUrl(typeReferenceOrDeclaration: ReferenceType | DeclarationReflection) {
         try {
             let declaration: DeclarationReflection | null = null;
-            typeReferenceOrDeclaration.visit({
-                declaration(foundDeclaration) {
-                    declaration = foundDeclaration;
-                },
-                reference: () => {
-                    if (!(typeReferenceOrDeclaration as ReferenceType).reflection)
-                        declaration = this._findDeclaration((typeReferenceOrDeclaration as ReferenceType).symbolId);
-                    else
-                        declaration = this._findDeclaration((typeReferenceOrDeclaration as ReferenceType).reflection);
-                }
-            });
+            if (typeReferenceOrDeclaration.visit)
+                typeReferenceOrDeclaration.visit({
+                    declaration(foundDeclaration) {
+                        declaration = foundDeclaration;
+                    },
+                    reference: () => {
+                        if (!(typeReferenceOrDeclaration as ReferenceType).reflection)
+                            declaration = this._findDeclaration((typeReferenceOrDeclaration as ReferenceType).symbolId);
+                        else
+                            declaration = this._findDeclaration((typeReferenceOrDeclaration as ReferenceType).reflection);
+                    }
+                });
+            else
+                declaration = typeReferenceOrDeclaration as DeclarationReflection;
+
             if (declaration !== null)
                 return `${this._packageInfo.homepage}/${this._getIdentifier(declaration)}`;
         }
@@ -1207,7 +1286,7 @@ ${this._getReferences(functionSignature)}
             let deprecationNotice = '\n----\n\n';
             deprecationNotice += `**This ${declarationName} has been deprecated.**`;
 
-            const deprecationDescription = this.getBlock(declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@deprecated')?.content);
+            const deprecationDescription = this._getBlock(declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@deprecated')?.content);
             if (deprecationDescription.length > 0)
                 deprecationNotice += '  \n' + deprecationDescription;
 
@@ -1227,9 +1306,9 @@ ${this._getReferences(functionSignature)}
                 && declaration.signatures.length > 0
                 && declaration.signatures.at(0)!.comment
                 && declaration.signatures.at(0)!.comment!.summary)
-                return this.getBlock(declaration.signatures.at(0)!.comment!.summary);
+                return this._getBlock(declaration.signatures.at(0)!.comment!.summary);
             else if (declaration.comment && declaration.comment.summary)
-                return this.getBlock(declaration.comment.summary);
+                return this._getBlock(declaration.comment.summary);
             else
                 return '';
         }
@@ -1242,7 +1321,7 @@ ${this._getReferences(functionSignature)}
         try {
             const description = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@description');
             if (description !== null && description !== undefined && description.content.length > 0)
-                return '### Description\n\n' + this.getBlock(description.content);
+                return '### Description\n\n' + this._getBlock(description.content);
             else
                 return '';
         }
@@ -1255,7 +1334,7 @@ ${this._getReferences(functionSignature)}
         try {
             const remarks = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@remarks');
             if (remarks !== null && remarks !== undefined && remarks.content.length > 0)
-                return '### Remarks\n\n' + this.getBlock(remarks.content);
+                return '### Remarks\n\n' + this._getBlock(remarks.content);
             else
                 return '';
         }
@@ -1269,7 +1348,7 @@ ${this._getReferences(functionSignature)}
 
         return examples
             .map(example => {
-                const [title, ...content] = this.getBlock(example.content).split('\n');
+                const [title, ...content] = this._getBlock(example.content).split('\n');
                 return `### Guidance: ${title.trim()}\n\n${content.join('\n').trim()}`;
             })
             .join('\n');
@@ -1282,7 +1361,7 @@ ${this._getReferences(functionSignature)}
                 .map(
                     typeParameter => {
                         let genericParameter = `* **${typeParameter.name}**`;
-                        let genericParameterDescription = this.getBlock(typeParameter.comment?.summary);
+                        let genericParameterDescription = this._getBlock(typeParameter.comment?.summary);
 
                         if (genericParameterDescription.length > 0)
                             genericParameter += ' - ' + genericParameterDescription;
@@ -1313,7 +1392,7 @@ ${this._getReferences(functionSignature)}
                 .map(
                     parameterDeclaration => {
                         let parameter = `* **${parameterDeclaration.name}**${parameterDeclaration.flags.isRest ? ' ([rest](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Functions/rest_parameters))' : ''}: ${this._getReferenceLink(parameterDeclaration.type!)}`;
-                        let parameterDescription = this.getBlock(parameterDeclaration.comment?.summary);
+                        let parameterDescription = this._getBlock(parameterDeclaration.comment?.summary);
 
                         if (parameterDescription.length > 0)
                             parameter += '  \n' + parameterDescription;
@@ -1332,7 +1411,7 @@ ${this._getReferences(functionSignature)}
     private _getReturn(declaration: SignatureReflection): string {
         if (declaration.type) {
             let returnDocumentation = `### Returns: ${this._getReferenceLink(declaration.type)}`;
-            const returnDescription = this.getBlock(declaration.comment?.blockTags.find(blocKTag => blocKTag.tag === '@returns')?.content);
+            const returnDescription = this._getBlock(declaration.comment?.blockTags.find(blocKTag => blocKTag.tag === '@returns')?.content);
             if (returnDescription.length > 0)
                 returnDocumentation += '\n\n' + returnDescription;
             else if (declaration.type.type === 'intrinsic' && declaration.type.name === 'void')
@@ -1456,7 +1535,7 @@ ${this._getReferences(functionSignature)}
             return '### See also\n\n' +
                 references
                     .map(
-                        reference => this.getBlock(reference.content)
+                        reference => this._getBlock(reference.content)
                             .split(/^[ \t]*-[ \t]*/gm)
                             .filter(reference => reference)
                             .map(reference => '* ' + reference)
@@ -1467,7 +1546,7 @@ ${this._getReferences(functionSignature)}
             return '';
     }
 
-    private getBlock(comments: readonly CommentDisplayPart[] | null | undefined): string {
+    private _getBlock(comments: readonly CommentDisplayPart[] | null | undefined): string {
         if (comments === null || comments === undefined || comments.length === 0)
             return '';
 
@@ -1537,7 +1616,7 @@ ${this._getReferences(functionSignature)}
         }
     }
 
-    private getSourceReference(declaration: DeclarationReflection | SignatureReflection): string {
+    private _getSourceReference(declaration: DeclarationReflection | SignatureReflection): string {
         if (declaration.sources && declaration.sources.length > 0) {
             const repositoryUrlPath = `${this._packageInfo.repository.url.split('+').at(-1)!.split('.git')[0]}/tree/${this._packageInfo.version}/src`;
 

@@ -9,6 +9,13 @@ export class Validatable<TValidationError = string> extends ViewModel implements
     private _error: TValidationError | null;
 
     /**
+     * Initializes a new instance of the {@linkcode Validatable} class.
+     */
+    public constructor() {
+        super();
+    }
+
+    /**
      * A flag indicating whether the object is valid.
      */
     public get isValid(): boolean {

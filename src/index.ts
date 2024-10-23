@@ -79,7 +79,7 @@ export {
     type IReadOnlyValidatable, type IValidatable, Validatable,
 
     type IValidator, type ValidatorCallback,
-    type IReadOnlyObjectValidator, type IObjectValidator, type IValidationTriggersSet, ObjectValidator,
+    type IReadOnlyObjectValidator, type IObjectValidator, type IValidationTriggersSet, IObjectValidatorConfig, ObjectValidator,
 
     type WellKnownValidationTrigger, type ValidationTriggerSelector, ValidationTrigger,
 

@@ -8,6 +8,7 @@ export {
     type IReadOnlyObjectValidator,
     type IObjectValidator,
     type IValidationTriggersSet,
+    type IObjectValidatorConfig,
     ObjectValidator,
 } from './objectValidator';
 
