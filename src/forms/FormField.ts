@@ -32,7 +32,7 @@ export interface IFormFieldConfig<TValue, TValidationError = string> {
 
 /**
  * Represents a form field containing the minimum set of information required to describe a field in a form.
- * @template TValue The value of the field.
+ * @template TValue The type of values the field contains.
  * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  *
  * ----
@@ -41,80 +41,68 @@ export interface IFormFieldConfig<TValue, TValidationError = string> {
  * The form fields are designed to have the absolute minimum a form would require and at the same time be easily
  * extensible. It is highly encouraged that applications define their own forms and fields even if there are no
  * extra features, just to make it easy to add them later on.
- * 
+ *
  * The initialization follows a config-style approach where an object that contains all the values is provided to
  * the field constructor. This allows for a simple syntax where properties are initialized in a similar way to
  * object initializers.
- * 
+ *
  * On top of this, extending the field with this approach is easy. Extend the base config interface with extra
  * properties that are need, pass the same object to the base constructor and extract the newly added ones
  * afterwards.
- * 
+ *
  * ----
  *
- * @guidance
+ * @guidance Adding Features to a Field
  *
  * One of the common features that a field may use is to track whether it was touched, i.e. if the input it is
- * bound to ever came into focus.
- * 
- * This is not something provided implicity by the base implementation, however we can provide our own.
- * 
- * First, we will extend the config interface and provide the `isTouched` flag, in case we want to initialize
- * fields as already touched, the default will be `false`.
+ * bound to ever came into focus. This is not something provided implicity by the base implementation, however
+ * adding this is easy.
  *
  * ```ts
- * interface IMyFieldConfig<TValue> extends IFormFieldConfig<TValue> {
- *   readonly isTouched?: boolean;
- * }
- * ```
- * 
- * Next, we will define our field.
- * 
- * ```ts
- * class MyFormField<TValue> extends FormField<TValue> {
- *   // Define a backing field as we will be using getters and setters
- *   private _isTouched: boolean;
- * 
- *   public constructor(config: IMyFieldConfig<TValue>) {
- *     super(config);
- *     
- *     const { isTouched = false } = config;
- * 
- *     this._isTouched = isTouched;
- *   }
- * 
+ * class ExtendedFormField<TValue> extends FormField<TValue> {
+ *   private _isTouched: boolean = false;
+ *
  *   public get isTouched(): boolean {
  *     return this._isTouched;
  *   }
- * 
+ *
  *   public set isTouched(value: boolean) {
- *     // If the value indeed changes, we will update and notify about this
  *     if (this._isTouched !== value) {
- *       this._isTouched = value;
- *       this.notifyPropertiesChanged('isTouched');
+ *         this._isTouched = value;
+ *         this.notifyPropertiesChanged('isTouched');
  *     }
- *   }
- *   
- *   // This gets called whenever the current instance changes and determines whether a validation
- *   // should occur. In our case, the `isTouched` flag does not impact validation thus we can
- *   // skip validation whenever this flag changes.
- *   // The `error`, `isValid` and `isInvalid` fields come from the base implementation.
- *   protected onShouldTriggerValidation(changedProperties: readonly (keyof MyFormField<TValue>)[]): boolean {
- *     return changedProperties.some(changedProperty => (
- *       changedProperty !== 'error'
- *       && changedProperty !== 'isValid'
- *       && changedProperty !== 'isInvalid'
- *       && changedProperty !== 'isTouched'
- *     ));
  *   }
  * }
  * ```
- * 
- * With that, we have added `isTouched` feature to our fields, we can extend this further and add more
- * features, however this is application specific and only what is needed should be implemented.
- * 
- * The library provides the basic form model that can easily be extended allowing for users to define
- * the missing parts with ease while still benefiting from the full form model structure.
+ *
+ * Form fields follow a config-style approach when being initialized, this allows to pass property values
+ * through the constructor instead of having to set each after the instance is created. Additionally,
+ * required and optional properties can be clearly specified.
+ *
+ * Following on the example, an `isTouched` initial value can be provided by extending the base config
+ * and requesting it in the constructor.
+ *
+ * ```ts
+ * interface IExtendedFieldConfig<TValue> extends IFormFieldConfig<TValue> {
+ *   readonly isTouched?: boolean;
+ * }
+ *
+ * class ExtendedFormField<TValue> extends FormField<TValue> {
+ *   public constructor({ isTouched = false, ...baseConfig }: IExtendedFieldConfig<TValue>) {
+ *     super(baseConfig);
+ *
+ *     this._isTouched = isTouched;
+ *   }
+ *
+ *   // ...
+ * }
+ * ```
+ *
+ * Changes to the field may trigger validation, by default only changes to the {@linkcode value} does this,
+ * to change the behavior see {@linkcode onShouldTriggerValidation}.
+ *
+ * @see {@linkcode Form}
+ * @see {@linkcode IFormFieldConfig}
  */
 export class FormField<TValue, TValidationError = string> extends Validatable<TValidationError> {
     private _name: string;
@@ -208,18 +196,23 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
     public readonly validation: IObjectValidator<this, TValidationError>;
 
     /**
-     * Resets the field. Only the validation configuration is reset,
-     * the field retains its current value.
+     * Resets the field. Only the validation configuration is reset, the field retains its current value.
      */
     public reset(): void {
         this.validation.reset();
     }
 
     /**
-     * Invoked when the current instance's properties change, this is a plugin method to help reduce validations when changes do not
-     * have an effect on validation.
+     * Invoked when the current instance's properties change, this is a plugin method to help reduce
+     * validations when changes do not have an effect on validation.
+     *
+     * @remarks
+     *
+     * By default, only changes to {@linkcode value} triggers validation. Changes to any other properties,
+     * such as {@linkcode error}, {@linkcode isValid} and {@linkcode isInvalid} as well as any other
+     * properties that get added to a field do not trigger validation.
      */
     protected onShouldTriggerValidation(changedProperties: readonly (keyof this)[]): boolean {
-        return changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');
+        return changedProperties.some(changedProperty => changedProperty === 'value');
     }
 }

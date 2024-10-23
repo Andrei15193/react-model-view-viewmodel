@@ -8,6 +8,8 @@ import { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
  *
  * @template TForm The concrete type of the form.
  * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
+ * 
+ * @see {@linkcode Form}
  */
 export class FormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormCollection<TForm, TValidationError> implements IFormCollection<TForm, TValidationError> {
     /**

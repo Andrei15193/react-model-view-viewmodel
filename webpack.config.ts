@@ -332,6 +332,8 @@ ${this._getPropertiesList(interfaceDeclaration)}
 
 ${this._getMethodsList(interfaceDeclaration)}
 
+${this._getImplementations(interfaceDeclaration)}
+
 ${this._getGuidance(interfaceDeclaration)}
 
 ${this._getReferences(interfaceDeclaration)}
@@ -367,6 +369,8 @@ ${this._getConstructorsList(classDeclaration)}
 ${this._getPropertiesList(classDeclaration)}
 
 ${this._getMethodsList(classDeclaration)}
+
+${this._getClassHierarchy(classDeclaration)}
 
 ${this._getGuidance(classDeclaration)}
 
@@ -590,6 +594,81 @@ ${this._getReferences(functionSignature)}
         }
         catch (error) {
             throw new Error(`Could not generate inheritance and implementation information for ${declaration}.\n${error}`);
+        }
+    }
+
+    private _getImplementations(declaration: DeclarationReflection): string {
+        try {
+            const implementations: ReferenceType[] = [];
+            const toVisit = [declaration];
+            do {
+                const current = toVisit.shift()!;
+                if (current.implementedBy && current.implementedBy.length > 0)
+                    implementations.push(...current.implementedBy);
+
+                if (current.extendedBy && current.extendedBy.length > 0)
+                    toVisit.unshift(...current.extendedBy.map(extension => this._findDeclaration(extension.reflection)));
+            } while (toVisit.length > 0);
+
+            if (implementations.length > 0)
+                return '### Implementations\n\n' +
+                    implementations
+                        .sort((left, right) => left.name.localeCompare(right.name, 'en-US'))
+                        .map(implementation => `* ${this._getReferenceLink(implementation)}`)
+                        .join('\n');
+            else
+                return '';
+        }
+        catch (error) {
+            throw new Error(`Could not generate class hierarchy information for ${declaration}.\n${error}`);
+        }
+    }
+
+    private _getClassHierarchy(declaration: DeclarationReflection): string {
+        try {
+            let root = declaration;
+            while (root.extendedTypes && root.extendedTypes.length > 0)
+                root = this._findDeclaration((root.extendedTypes[0]! as ReferenceType).reflection);
+
+            let hirerachy = '### Inheritance Hierarchy\n\n';
+            let level = 0;
+
+            const toVisit: (DeclarationReflection | 'increment' | 'decrement')[] = [root];
+            do {
+                const current = toVisit.shift()!;
+
+                switch (current) {
+                    case 'increment':
+                        level++;
+                        break;
+
+                    case 'decrement':
+                        level--;
+                        break;
+
+                    default:
+                        const prefix = '  '.repeat(level);
+                        if (current === declaration)
+                            hirerachy += `${prefix}* **${this._getSimpleName(current)}**\n`;
+                        else
+                            hirerachy += `${prefix}* [${this._getSimpleName(current)}](${this._getProjectReferenceUrl(current)})\n`;
+                        if (current.extendedBy && current.extendedBy.length > 0) {
+                            toVisit.unshift(
+                                'increment',
+                                ...current
+                                    .extendedBy
+                                    .map(derivative => this._findDeclaration(derivative.reflection)),
+                                'decrement'
+                            );
+                        }
+                        break;
+                }
+            } while (toVisit.length > 0)
+
+            return hirerachy;
+        }
+        catch (error) {
+            throw new Error(`Could not generate class hierarchy information for ${declaration}.\n${error}`);
         }
     }
 
