@@ -238,7 +238,7 @@ class GenerateDocumentationPlugin {
                             if (declarationIndex > 0 && declarations[declarationIndex - 1].promoted !== declarations[declarationIndex].promoted)
                                 listMarker = '-';
 
-                            return `${listMarker} [${this._getSimpleName(declaration)}](${this._getIdentifier(declaration)})`;
+                            return `${listMarker} [${this._getSimpleName(declaration)}](${this._getProjectReferenceUrl(declaration)})`;
                         })
                         .join('\n');
                 })
@@ -261,7 +261,7 @@ class GenerateDocumentationPlugin {
                     return `**${namespace.name}**  \n` + namespace
                         .declarations
                         .filter(declaration => declaration.promoted)
-                        .map(declaration => `[${this._getSimpleName(declaration)}](${this._getIdentifier(declaration)})`)
+                        .map(declaration => `[${declaration.name}](${this._getProjectReferenceUrl(declaration)})`)
                         .join('  \n');
                 })
                 .join('\n\n')
