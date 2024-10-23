@@ -225,13 +225,13 @@ class GenerateDocumentationPlugin {
                 .map(namespace => {
                     let listMarker = '*';
 
-                    return `* **${namespace.name}**\n` + namespace
+                    return `#### **${namespace.name}**\n` + namespace
                         .declarations
                         .map((declaration, declarationIndex, declarations) => {
                             if (declarationIndex > 0 && declarations[declarationIndex - 1].promoted !== declarations[declarationIndex].promoted)
                                 listMarker = '-';
 
-                            return `  ${listMarker} [${this._getSimpleName(declaration)}](${this._getIdentifier(declaration)})`;
+                            return `${listMarker} [${this._getSimpleName(declaration)}](${this._getIdentifier(declaration)})`;
                         })
                         .join('\n');
                 })
