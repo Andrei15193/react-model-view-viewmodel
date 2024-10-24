@@ -1066,6 +1066,9 @@ ${this._getReferences(functionSignature)}
             case 'intrinsic':
                 return typeReference.name;
 
+            case 'unknown':
+                return 'unknown';
+
             case 'literal':
                 if (typeReference.value === null)
                     return 'null';
@@ -1296,6 +1299,9 @@ ${this._getReferences(functionSignature)}
                         default:
                             throw new Error(`'Unhandled '${typeReference.name}' intrinsic type reference.'`);
                     }
+
+                case 'unknown':
+                    return '[`unknown`](https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown)';
 
                 case 'literal':
                     switch (typeReference.value) {

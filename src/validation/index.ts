@@ -13,7 +13,8 @@ export {
 } from './objectValidator';
 
 export {
-    type WellKnownValidationTrigger, ValidationTriggerSelector, ValidationTrigger,
+    type WellKnownValidationTrigger, type ValidationTriggerSelector, type ValidationTriggerSet,
+    ValidationTrigger,
 
     type IViewModelChangedValidationTriggerConfig, ViewModelChangedValidationTrigger,
     type ICollectionChangedValidationTriggerConfig, CollectionChangedValidationTrigger,

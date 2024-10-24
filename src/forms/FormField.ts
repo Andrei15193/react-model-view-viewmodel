@@ -1,4 +1,5 @@
-import { Validatable, type IValidator, type ValidatorCallback, type IObjectValidator, ObjectValidator, type WellKnownValidationTrigger, type ValidationTrigger, resolveAllValidationTriggers } from '../validation';
+import type { Form } from './Form';
+import { type IValidator, type ValidatorCallback, type IObjectValidator, type WellKnownValidationTrigger, type ValidationTrigger, Validatable, ObjectValidator, resolveAllValidationTriggers } from '../validation';
 
 /**
  * Represents the configuration of a field, this can be extended for custom fields to easily add more features.
@@ -192,6 +193,8 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
 
     /**
      * Gets the validation configuration for the current field.
+     *
+     * @see {@linkcode Form.validation}
      */
     public readonly validation: IObjectValidator<this, TValidationError>;
 

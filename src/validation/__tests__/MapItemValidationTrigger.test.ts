@@ -10,7 +10,7 @@ describe('MapItemValidationTrigger', (): void => {
         const validationTrigger = new MapItemValidationTrigger({
             map,
             validationTriggerSelector({ viewModel }) {
-                return [viewModel];
+                return viewModel;
             }
         });
         validationTrigger.validationTriggered.subscribe({

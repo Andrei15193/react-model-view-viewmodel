@@ -60,6 +60,8 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
 
     /**
      * Gets the validation configuration for the form. Fields have their own individual validation config as well.
+     * 
+     * @see {@linkcode Form.validation}
      */
     readonly validation: IObjectValidator<this, TValidationError>;
 

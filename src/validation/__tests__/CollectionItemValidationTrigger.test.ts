@@ -10,7 +10,7 @@ describe('CollectionItemValidationTrigger', (): void => {
         const validationTrigger = new CollectionItemValidationTrigger({
             collection,
             validationTriggerSelector({ viewModel }) {
-                return [viewModel];
+                return viewModel;
             }
         });
         validationTrigger.validationTriggered.subscribe({

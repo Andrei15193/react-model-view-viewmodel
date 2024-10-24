@@ -1,5 +1,8 @@
 import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from '../../collections';
+import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
+import type { IObjectValidator } from '../objectValidator';
+import { Form } from '../../forms';
 import { type IEvent, EventDispatcher } from '../../events';
 
 /**
@@ -9,6 +12,10 @@ import { type IEvent, EventDispatcher } from '../../events';
  *
  * @template TKey The type of keys the map contains.
  * @template TItem The type of items the collection, set, or map contains.
+ * 
+ * @see {@link Form.validation}
+ * @see {@link IObjectValidator}
+ * @see {@link ValidationTrigger}
  */
 export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
     = INotifyPropertiesChanged
@@ -18,11 +25,11 @@ export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
     | INotifyMapChanged<unknown, unknown>
     | [
         INotifyMapChanged<TKey, TItem> & Iterable<[TKey, TItem]>,
-        (item: TItem) => readonly (WellKnownValidationTrigger | ValidationTrigger)[]
+        ValidationTriggerSelector<TItem>
     ]
     | [
         (INotifyCollectionChanged<TItem> | INotifySetChanged<TItem>) & Iterable<TItem>,
-        (item: TItem) => readonly (WellKnownValidationTrigger | ValidationTrigger)[]
+        ValidationTriggerSelector<TItem>
     ]
 
 /**

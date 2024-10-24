@@ -2,8 +2,8 @@ import type { IPropertiesChangedEventHandler } from '../viewModels';
 import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 import type { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
 import { type IReadOnlyObservableCollection, type IObservableCollection, type ICollectionChangedEventHandler, type ICollectionReorderedEventHandler, ObservableCollection, ReadOnlyObservableCollection } from '../collections';
-import { type IValidatable, type IObjectValidator, Validatable, ObjectValidator } from '../validation';
-import { FormField } from './FormField';
+import { type IValidatable, type IObjectValidator, type WellKnownValidationTrigger, type ValidationTrigger, Validatable, ObjectValidator } from '../validation';
+import { type IFormFieldConfig, FormField } from './FormField';
 import { FormCollection } from './FormCollection';
 
 /**
@@ -415,6 +415,200 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
 
     /**
      * Gets the validation configuration for the form. Fields have their own individual validation config as well.
+     *
+     * @guidance Inline Configuration
+     *
+     * In most cases, validation rules do not change across the life-cycle of an entity thus it can be done in the
+     * constructor to ensure it always configured and always the same. The library does make a distinction between
+     * form structure and configuration, see the remarks on {@linkcode Form} for more information about this.
+     *
+     * The following sample uses the classic start/end date pair example as it includes both individual field
+     * validation as well as a dependency between two fields.
+     *
+     * ```ts
+     * class DatePairForm extends Form {
+     *   public constructor() {
+     *     super();
+     *
+     *     this.withFields(
+     *       this.startDate = new FormField<Date | null>({
+     *         name: 'startDate',
+     *         initialValue: null,
+     *         validators: [required]
+     *       }),
+     *       this.endDate = new FormField<Date | null>({
+     *         name: 'endDate',
+     *         initialValue: null,
+     *         validators: [
+     *           required,
+     *           () => (
+     *             // This validator only gets called if required passes
+     *             this.startDate.value && this.startDate.value < this.endDate.value!
+     *               ? 'End date must be after the start date'
+     *               : undefined
+     *           )
+     *         ],
+     *         // If the start date changes, the end date may become invalid
+     *         validationTriggers: [
+     *           this.startDate
+     *         ]
+     *       })
+     *     )
+     *   }
+     *
+     *   public readonly startDate: FormField<Date | null>;
+     *   public readonly endDate: FormField<Date | null>;
+     * }
+     *
+     * function required(formField: FormField<any>): string | undefined {
+     *   if (
+     *     formField.value === null
+     *     || formField.value === undefined
+     *     || formField.value === ''
+     *   )
+     *     return 'Required';
+     *   else
+     *     return;
+     * }
+     * ```
+     * 
+     * This covers most cases, however there are scenarios where fields have interdependencies. For this,
+     * validation can only be configured after both have been initialized. For instance, if start date
+     * should show a validation error when it is past the end date, this can only be done by configuring
+     * validation after both fields have been initialized.
+     *
+     * @guidance Configuring Validation
+     *
+     * All for components have expose a `validation` property allowing for validation to be configured at that level,
+     * for more info check {@linkcode ReadOnlyFormCollection.validation} and {@linkcode FormField.validation}.
+     *
+     * Consider a form having three amount fields, two representing the price of two individual items and the third
+     * representing the total as a way to check the inputs.
+     *
+     * Validation can be configured in two ways, one is by providing the validators and validation triggers to the
+     * field when being initialized. The other is to configure the validation after form initialization.
+     *
+     * The end result is the same, both approaches configure the {@link IObjectValidator} for the form component
+     * which can later be changed, more validators can be added or even removed.
+     *
+     * ```ts
+     * class PriceForm extends Form {
+     *   public constructor() {
+     *     super();
+     *
+     *     this.withFields(
+     *       this.item1Price = new FormField<number | null>({
+     *         name: 'item1Price',
+     *         initialValue: null
+     *       }),
+     *       this.item2Price = new FormField<number | null>({
+     *         name: 'item2Price',
+     *         initialValue: null
+     *       }),
+     *       this.total = new FormField<number | null>({
+     *         name: 'total',
+     *         initialValue: null
+     *       })
+     *     );
+     *   }
+     *
+     *   public readonly item1Price: FormField<number | null>;
+     *   public readonly item2Price: FormField<number | null>;
+     *   public readonly total: FormField<number | null>;
+     * }
+     *
+     * const form = new PriceForm();
+     *
+     * form.total
+     *   .validation
+     *   .add(total => (
+     *      total.value !== (form.item1Price.value || 0) + (form.item2Price.value || 0)
+     *        ? 'It does not add up'
+     *        : null
+     *   )
+     *   .triggers
+     *   .add(form.item1Price)
+     *   .add(form.item2Price);
+     * ```
+     *
+     * The validity of the `total` field is based on the individual prices of each item, whenever one of them
+     * changes we need to recheck the validity of the `total` thus they act as triggers.
+     *
+     * A rule of thumb is to treat validation triggers the same as a ReactJS hook dependency, if they are part
+     * of the validator then they should also be triggers.
+     *
+     * @guidance Collection Item Triggers
+     *
+     * While the example above showcases how to configure validation, the scenario does not cover for having any
+     * number of items whose total must add up. For cases such as these a collection would be needed.
+     *
+     * Any changes to the collection where items are added or removed, or when part of the individual items
+     * change a validation should be triggered. Other examples for this use case are checking uniqueness of fields,
+     * such as a code, in a list of items.
+     *
+     * The following snippet shows the form using a collection of items that have individual amounts that need
+     * to add up to the specified total. For simplicity, {@linkcode FormCollection} is used directly for the items
+     * instead of defining a custom collection, for more information see {@linkcode withSectionsCollection}.
+     *
+     * ```ts
+     * class OrderCheckingForm extends Form {
+     *   public constructor() {
+     *     super();
+     *
+     *     this.withFields(
+     *       this.total = new FormField<number | null>({
+     *         name: 'total',
+     *         initialValue: null
+     *       })
+     *     );
+     *     this.withSectionsCollection(
+     *       this.items = new FormCollection<OrderItem>()
+     *     );
+     *   }
+     *
+     *   public readonly total: FormField<number | null>;
+     *
+     *   public readonly items: FormCollection<OrderItem>;
+     * }
+     *
+     * class OrderItem extends Form {
+     *   public constructor() {
+     *     super();
+     *
+     *     this.withFields(
+     *       this.amount = new FormField<number | null>({
+     *         name: 'amount',
+     *         initialValue: null
+     *       })
+     *     );
+     *   }
+     *
+     *   public readonly amount: FormField<number | null, string>;
+     * }
+     *
+     * const form = new OrderCheckingForm();
+     *
+     * form.total
+     *   .validation
+     *   .add(total => {
+     *     const calcualted = form.items.reduce(
+     *       (total, item) => total + (item.amount.value || 0),
+     *       0
+     *     );
+     *
+     *     if (total.value !== calcualted)
+     *       return 'It does not add up';
+     *     else
+     *       return;
+     *   })
+     *   .triggers
+     *   .add([form.items, item => item.amount]);
+     * ```
+     *
+     * The {@linkcode WellKnownValidationTrigger} covers most, if not all, validation trigger scenarios,
+     * each gets mapped to a concrete {@linkcode ValidationTrigger} and it should be a rare case where
+     * a custom one should be implemented. Check the source code for samples on how to write your own
+     * custom validation trigger.
      */
     public readonly validation: IObjectValidator<this, TValidationError>;
 
