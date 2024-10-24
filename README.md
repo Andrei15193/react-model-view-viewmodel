@@ -1,54 +1,59 @@
-A library for developing React applications using Model-View-ViewModel inspired by .NET.
+A library for developing ReactJS applications using Model-View-ViewModel, inspired by .NET.
 
-[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki) | [Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)
+[Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki) | [Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7) | [Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions) | [Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases) | [CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv)
 
 **API**
 
 * **Events**
-  * [IEvent\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IEvent)
-  * [IEventHandler\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IEventHandler)
+  * [IEvent\<TSubject, TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IEvent)
+  * [IEventHandler\<TSubject, TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IEventHandler)
+  * [EventDispatcher\<TSubject, TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/EventDispatcher)
+* **ViewModels**
   * [INotifyPropertiesChanged](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/INotifyPropertiesChanged)
-  * [INotifyCollectionChanged\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/INotifyCollectionChanged)
-  * [IItemAddedEventArgs\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IItemAddedEventArgs)
-  * [IItemRemovedEventArgs\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IItemRemovedEventArgs)
-  * [ICollectionChange\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ICollectionChange)
-  * [ItemRemovedCallback\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ItemRemovedCallback)
-  * [EventDispatcher](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/EventDispatcher)
-* **Observable Collections**
-  * [IReadOnlyObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IReadOnlyObservableCollection)
-  * [IObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IObservableCollection)
+  * [ViewModel](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModel)
+* **Forms**
+  * [Form\<TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/Form)
+  * [IFormFieldConfig\<TValue, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldConfig)
+  * [FormField\<TValue, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormField)
+  * [ReadOnlyFormCollection\<TForm, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ReadOnlyFormCollection)
+  * [FormCollection\<TForm, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormCollection)
+  * [IConfigurableFormCollection\<TSection, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IConfigurableFormCollection)
+  * [FormSetupCallback\<TSection, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormSetupCallback)
+* **Validation**
+  * [IValidator\<TValidatable, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IValidator)
+  * [ValidatorCallback\<TValidatable, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ValidatorCallback)
+  * [IObjectValidator\<TValidatable, TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IObjectValidator)
+  * [IValidatable\<TValidationError\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IValidatable)
+* **Validation / Triggers**
+  * [WellKnownValidationTrigger\<TKey, TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/WellKnownValidationTrigger)
+  * [ValidationTrigger\<TTrigger\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ValidationTrigger)
+* **Observable Collection**
   * [ReadOnlyObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ReadOnlyObservableCollection)
   * [ObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ObservableCollection)
-* **ViewModels**
-  * [ViewModel](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModel)
-  * [isViewModel\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/isViewModel)
-* **Forms**
-  * [IFormFieldViewModel\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModel)
-  * [IFormFieldViewModelConfig\<TValue, TFormField\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IFormFieldViewModelConfig)
-  * [FormFieldViewModel\<TValue\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldViewModel)
-  * [FormFieldCollectionViewModel\<TFormFieldViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldCollectionViewModel)
-  * [FormFieldSet\<TFormFieldViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/FormFieldSet)
-  * [DynamicFormFieldCollectionViewModel\<TFormFieldViewModel, TFormFields\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/DynamicFormFieldCollectionViewModel)
-* **Validation**
-  * [IReadOnlyValidatable](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IReadOnlyValidatable)
-  * [IValidatable](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IValidatable)
-  * [IValidationConfig\<TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IValidationConfig)
-  * [ValidatorCallback\<TValidatable\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ValidatorCallback)
-  * [CollectionItemValidatorCallback\<TValidatable, TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/CollectionItemValidatorCallback)
-  * [ValidatableSelectorCallback\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ValidatableSelectorCallback)
-  * [ValidationConfigSelectorCallback\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ValidationConfigSelectorCallback)
-  * [UnsubscribeCallback](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/UnsubscribeCallback)
-  * [registerValidators\<TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/registerValidators)
-  * [registerCollectionValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/registerCollectionValidators)
-  * [registerCollectionItemValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/registerCollectionItemValidators)
+  * [INotifyCollectionChanged\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/INotifyCollectionChanged)
+  * [CollectionChangeOperation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/CollectionChangeOperation)
+  * [INotifyCollectionReordered\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/INotifyCollectionReordered)
+  * [CollectionReorderOperation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/CollectionReorderOperation)
+* **Observable Map**
+  * [ReadOnlyObservableMap\<TKey, TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ReadOnlyObservableMap)
+  * [ObservableMap\<TKey, TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ObservableMap)
+  * [INotifyMapChanged\<TKey, TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/INotifyMapChanged)
+  * [MapChangeOperation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/MapChangeOperation)
+* **Observable Set**
+  * [ReadOnlyObservableSet\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ReadOnlyObservableSet)
+  * [ObservableSet\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ObservableSet)
+  * [INotifySetChanged\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/INotifySetChanged)
+  * [SetChangeOperation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/SetChangeOperation)
+* **Dependency Handling**
+  * [IDependencyResolver](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IDependencyResolver)
+  * [IDependencyContainer](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/IDependencyContainer)
+  * [DependencyContainer](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/DependencyContainer)
+  * [useDependency](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useDependency)
+  * [useViewModelDependency](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModelDependency)
+  * [useDependencyResolver](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useDependencyResolver)
 * **React Hooks**
-  * [EventHandler\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/EventHandler)
-  * [useEvent\<TEventArgs\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useEvent)
-  * [ViewModelType\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModelType)
-  * [ViewModelFactory\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/ViewModelFactory)
-  * [useViewModel\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModel)
-  * [useViewModelMemo\<TViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModelMemo)
-  * [useObservableCollection\<TItem\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useObservableCollection)
-  * [useValidators\<TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useValidators)
-  * [useCollectionValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useCollectionValidators)
-  * [useCollectionItemValidators\<TItem, TValidatableViewModel\>](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useCollectionItemValidators)
+  * [useViewModel](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModel)
+  * [useViewModelMemo](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useViewModelMemo)
+  * [useObservableCollection](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useObservableCollection)
+  * [useObservableMap](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useObservableMap)
+  * [useObservableSet](https://github.com/Andrei15193/react-model-view-viewmodel/wiki/useObservableSet)
