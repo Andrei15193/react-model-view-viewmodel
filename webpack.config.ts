@@ -200,10 +200,11 @@ class GenerateDocumentationPlugin {
             `${this._packageInfo.description}\n` +
             '\n' +
             [
+                '[Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)',
                 '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
                 '[Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions)',
-                '[Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)',
-                '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)'
+                '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)',
+                '[CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv)'
             ].join(' | ') + '\n' +
             '\n' +
             '**API**\n' +
@@ -226,6 +227,14 @@ class GenerateDocumentationPlugin {
         return (
             `${this._packageInfo.description}\n` +
             '\n' +
+            overview.trim() +
+            '\n' +
+            landingPageNavigation +
+            '\n' +
+            motivation.trim() +
+            '\n' +
+            landingPageNavigation +
+            '\n' +
             '### API\n\n' + this
                 ._documentationIndex
                 .namespaces
@@ -242,16 +251,19 @@ class GenerateDocumentationPlugin {
                         })
                         .join('\n');
                 })
-                .join('\n')
+                .join('\n') + '\n' +
+            '\n' +
+            landingPageNavigation
         );
     }
 
     private _getSidebar(): string {
         return (
-            '**[Motivation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#motivation)**  \n'
-            + '**[Overview](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#overview)**  \n'
+            '**[Overview](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#overview)**  \n'
+            + '**[Motivation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#motivation)**  \n'
             + '**[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)**  \n'
-            + '**[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)**\n'
+            + '**[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)**  \n'
+            + '**[CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv)**\n'
             + '\n'
             + '**[API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)**  \n'
             + this
@@ -270,11 +282,12 @@ class GenerateDocumentationPlugin {
 
     private _getFooter(): string {
         return [
-            '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
-            '[Motivation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#motivation)',
             '[Overview](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#overview)',
-            '[API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)',
-            '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)'
+            '[Motivation](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#motivation)',
+            '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
+            '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)',
+            '[CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv)',
+            '[API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api)'
         ].join(' | ');
     }
 
@@ -2055,3 +2068,102 @@ interface IModuleDeclarationIndex {
     readonly id: string;
     readonly declarations: DeclarationReflection[];
 }
+
+const overview = `
+### Overview
+
+Model-View-ViewModel, or MVVM for short, is a User Interface architectural
+pattern first introduced by Microsoft when they published Windows Presentation
+Foundation. It is one of the best patterns I have worked with when it comes
+to forms, as well as detail and list pages.
+
+This is an object-oriented approach to managing state on the front-end, this
+brings more than a heap of knowledge, experience and design patterns from
+years of software development using this paradigm.
+
+The library provides a few core features essential to any front-end application.
+
+* Base implementations for **events** and **view models** making them available
+  for all types of pages.
+
+* A **form model** covering from basic to the most complex cases. Understanding
+  the model can be done incrementally making it easy to get started.
+
+* A **validation model** that can be configured for any form component along side
+  validation triggers including more complex scenarios.
+
+* A **dependency resolution** mechanism to simplify creation of different objects
+  that are used in different components.
+
+To check the library out and test things see [React MVVM on CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv).
+`;
+
+const motivation = `
+### Motivation
+
+I have worked with both Model-View-ViewModel and Flux-based architectures,
+mostly Redux, and I was a bit surprised that there is not much interest for
+MVVM in ReactJS although it is generally aknowledged that it is a very good
+pattern when it comes to forms.
+
+I wanted to try MVVM out in a ReactJS application, the opportunity for this
+came on the project where we were using ReduxForm and one of our edit pages
+is quite large and had to work around ReduxForm's limitations, the UI was
+stuttering, we have some specific features on our edit pages that were a bit
+more difficult to add into the ReduxForm state so we have everything together.
+
+One of our forms was very slow, visibly slow, the users had a bad time with it
+and we tried a number of approaches to fix it using ReduxForm. It got better,
+but not by much. After these results I wanted to try an MVVM approach and see
+if that will perform better, and it it. It was stellar compared to what we had
+previously. One of slowest form has become the fastest, and I do mean the fastest
+in the entire application, somewhere around a 4x performance improvement. No more
+stutters, instant validation, it worked great.
+
+I've done most of the implementation for MVVM on my spare time, after testing it
+and seeing it work that well I've made it into a library which became React MVVM
+version 1 and after using it on the project I've come to realize its limitations
+and places where I would like it to be better and here we are with version 3.
+
+The main frustrations I had with ReduxForm, but this applies to other libraries
+as well as most take the same approach, is the lack of a clear form structure
+which leads to really poor type safety. The structure of our forms was defined
+by the components that were mounted, I do not fully understand why as the form
+itself exists outside the components, like state is outside the components.
+
+The type of values each field had was ambiguous as well, several fields contained
+strings, others contained numbers and some of them (e.g. people pickers) had
+objects detailing the selected value.
+
+Validation was another big issue, this is where I took a different approach with
+React MVVM, instead of validating the entire form each time a single field
+changes, I added validation triggers. When you configure validation and the
+validity of one field is determined by the value of another (e.g.: start/end
+date pair), then you need to specify the dependency as a trigger. If either
+field changes, then the validation is triggered, if any other field changes then
+there is no need to revalidate.
+
+The general idea is to minimize code that runs when editing a single field and
+for the most part I think I managed to do that. There is more to talk about when
+it comes to validation and form structure, check the API documentation, I've
+added plenty along side code snippets.
+
+Forms are the most challenging aspect of a front-end application, any library, architectural pattern or approach that allows for good performance, enables type
+safety and is easy to extend will work for display pages and list views just as
+good. In my humble opinion, that's where the decider is, your application needs
+to handle forms well, whatever library or pattern is used there will perform well
+for any other page in the application as they are less complex.
+
+React MVVM provides all of the above, when you define your form you have a clear
+structure, it enables type safety as much as possible, extending fields and forms
+with features is easily done without compromising what was already stated. On top
+of everything, it is fast. It performs very well from small to large forms.
+`;
+
+const landingPageNavigation = '###### Go to: ' + [
+    '[Overview](#overview)',
+    '[Motivation](#motivation)',
+    '[API](#api)',
+    '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
+    '[CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv)'
+].join(' | ');
