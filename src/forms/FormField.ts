@@ -178,7 +178,7 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
      * Gets the initial value of the field.
      */
     public get initialValue(): TValue {
-        return this._value;
+        return this._initialValue;
     }
 
     /**
