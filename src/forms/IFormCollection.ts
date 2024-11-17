@@ -17,11 +17,4 @@ export interface IFormCollection<TForm extends Form<TValidationError>, TValidati
      * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
      */
     length: number;
-
-    /**
-     * Resets the sections collection and all contained items.
-     *
-     * Validation and other flags are reset, fields retain their current values.
-     */
-    reset(): void;
 }
