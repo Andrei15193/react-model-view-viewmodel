@@ -1,8 +1,8 @@
-import { DependencyToken } from "../IDependencyResolver";
-import { DependencyContainer } from "../DependencyContainer";
+import { DependencyToken } from '../IDependencyResolver';
+import { DependencyContainer } from '../DependencyContainer';
 
 describe('DependencyContainer.singleton', (): void => {
-  test("Resolving singleton type dependency returns instance", () => {
+  test('Resolving singleton type dependency returns instance', () => {
     class MyClass {
     }
 
@@ -14,7 +14,7 @@ describe('DependencyContainer.singleton', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving singleton type dependency returns same instance", () => {
+  test('Resolving singleton type dependency returns same instance', () => {
     class MyClass {
     }
 
@@ -27,7 +27,7 @@ describe('DependencyContainer.singleton', (): void => {
     expect(firstInstance).toBe(secondInstance);
   });
 
-  test("Resolving singleton type dependency calls factory once", () => {
+  test('Resolving singleton type dependency calls factory once', () => {
     class MyClass { }
     let callCount = 0;
 
@@ -43,7 +43,7 @@ describe('DependencyContainer.singleton', (): void => {
     expect(callCount).toStrictEqual(1);
   });
 
-  test("Resolving singleton type dependency returns same instance", () => {
+  test('Resolving singleton type dependency returns same instance', () => {
     class MyClass { }
     const instance = {};
 
@@ -57,8 +57,8 @@ describe('DependencyContainer.singleton', (): void => {
     expect(secondInstance).toBe(instance);
   });
 
-  test("Resolving singleton type token dependency returns instance", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving singleton type token dependency returns instance', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();
@@ -69,8 +69,8 @@ describe('DependencyContainer.singleton', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving singleton type token dependency returns same instance", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving singleton type token dependency returns same instance', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -83,8 +83,8 @@ describe('DependencyContainer.singleton', (): void => {
     expect(firstInstance).toBe(secondInstance);
   });
 
-  test("Resolving instance token dependency returns same instance", () => {
-    const token = new DependencyToken<unknown>("test-dependency-token");
+  test('Resolving instance token dependency returns same instance', () => {
+    const token = new DependencyToken<unknown>('test-dependency-token');
     const instance = {};
 
     const dependencyContainer = new DependencyContainer();
@@ -95,8 +95,8 @@ describe('DependencyContainer.singleton', (): void => {
     expect(resolvedInstance).toBe(instance);
   });
 
-  test("Resolving singleton factory token dependency returns instance", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving singleton factory token dependency returns instance', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();
@@ -107,8 +107,8 @@ describe('DependencyContainer.singleton', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving singleton factory token dependency returns same instance", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving singleton factory token dependency returns same instance', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -121,9 +121,9 @@ describe('DependencyContainer.singleton', (): void => {
     expect(firstInstance).toBe(secondInstance);
   });
 
-  test("Resolving singleton factory token dependency calls factory once", () => {
+  test('Resolving singleton factory token dependency calls factory once', () => {
     let callCount = 0;
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();

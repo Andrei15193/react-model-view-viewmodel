@@ -1,8 +1,8 @@
-import { DependencyToken } from "../IDependencyResolver";
-import { DependencyContainer } from "../DependencyContainer";
+import { DependencyToken } from '../IDependencyResolver';
+import { DependencyContainer } from '../DependencyContainer';
 
 describe('DependencyContainer.config', (): void => {
-  test("Configuring a type as singleton then as scoped updates the configuration", () => {
+  test('Configuring a type as singleton then as scoped updates the configuration', () => {
     class MyClass {
     }
 
@@ -20,7 +20,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a type as scoped then as singleton updates the configuration", () => {
+  test('Configuring a type as scoped then as singleton updates the configuration', () => {
     class MyClass {
     }
 
@@ -38,7 +38,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).toBe(thirdInstance);
   });
 
-  test("Configuring a type as singleton then as transient updates the configuration", () => {
+  test('Configuring a type as singleton then as transient updates the configuration', () => {
     class MyClass {
     }
 
@@ -56,7 +56,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a type as transient then as singleton updates the configuration", () => {
+  test('Configuring a type as transient then as singleton updates the configuration', () => {
     class MyClass {
     }
 
@@ -74,7 +74,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).toBe(thirdInstance);
   });
 
-  test("Configuring a type as scoped then as transient updates the configuration", () => {
+  test('Configuring a type as scoped then as transient updates the configuration', () => {
     class MyClass {
     }
 
@@ -92,7 +92,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a type as transient then as scoped updates the configuration", () => {
+  test('Configuring a type as transient then as scoped updates the configuration', () => {
     class MyClass {
     }
 
@@ -110,8 +110,8 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a token as singleton then as scoped updates the configuration", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Configuring a token as singleton then as scoped updates the configuration', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -129,8 +129,8 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a token as scoped then as singleton updates the configuration", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Configuring a token as scoped then as singleton updates the configuration', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -148,8 +148,8 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).toBe(thirdInstance);
   });
 
-  test("Configuring a token as singleton then as transient updates the configuration", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Configuring a token as singleton then as transient updates the configuration', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -167,8 +167,8 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a token as transient then as singleton updates the configuration", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Configuring a token as transient then as singleton updates the configuration', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -186,8 +186,8 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).toBe(thirdInstance);
   });
 
-  test("Configuring a token as scoped then as transient updates the configuration", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Configuring a token as scoped then as transient updates the configuration', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -205,8 +205,8 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Configuring a token as transient then as scoped updates the configuration", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Configuring a token as transient then as scoped updates the configuration', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -224,7 +224,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondInstance).not.toBe(thirdInstance);
   });
 
-  test("Child dependency container overrides parent singleton configuraiton without affecting it", () => {
+  test('Child dependency container overrides parent singleton configuraiton without affecting it', () => {
     class MyClass {
     }
 
@@ -249,7 +249,7 @@ describe('DependencyContainer.config', (): void => {
     expect(firstInstanceFromChild).not.toBe(secondInstanceFromChild);
   });
 
-  test("Child dependency container overrides parent transient configuraiton without affecting it", () => {
+  test('Child dependency container overrides parent transient configuraiton without affecting it', () => {
     class MyClass {
     }
 
@@ -274,7 +274,7 @@ describe('DependencyContainer.config', (): void => {
     expect(firstInstanceFromChild).toBe(secondInstanceFromChild);
   });
 
-  test("Child dependency container uses parent configuraiton as fallback", () => {
+  test('Child dependency container uses parent configuraiton as fallback', () => {
     class MyFirstClass {
     }
     class MySecondClass {
@@ -295,7 +295,7 @@ describe('DependencyContainer.config', (): void => {
     expect(secondChildInstance.instance).toBe(parentInstance);
   });
 
-  test("Child dependency container uses own configuraiton when overridden", () => {
+  test('Child dependency container uses own configuraiton when overridden', () => {
     class MyFirstClass {
     }
     class MySecondClass {

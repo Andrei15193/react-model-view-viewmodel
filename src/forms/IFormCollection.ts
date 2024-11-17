@@ -2,6 +2,7 @@ import type { IObservableCollection } from '../collections';
 import type { IValidatable } from '../validation';
 import type { Form } from './Form';
 import type { IConfigurableFormCollection } from './IConfigurableFormCollection';
+import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 
 /** 
  * Represents a configurable observable collection of forms. Callbacks can be configured for setting up individual
@@ -10,7 +11,13 @@ import type { IConfigurableFormCollection } from './IConfigurableFormCollection'
  * @template TForm The concrete type of the form section.
  * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
  */
-export interface IFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IObservableCollection<TForm>, IConfigurableFormCollection<TForm, TValidationError> {
+export interface IFormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends IValidatable<TValidationError>, IObservableCollection<TForm>, IConfigurableFormCollection<TForm, TValidationError>, IReadOnlyFormCollection<TForm, TValidationError> {
+    /**
+     * Gets or sets the number of items in the collection.
+     * @see [Array.length](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/length)
+     */
+    length: number;
+
     /**
      * Resets the sections collection and all contained items.
      *

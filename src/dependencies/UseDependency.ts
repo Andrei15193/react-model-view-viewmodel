@@ -1,8 +1,8 @@
-import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from "./IDependencyResolver";
+import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from './IDependencyResolver';
 import type { IDependencyContainer } from './IDependencyContainer';
 import type { useViewModelDependency } from './UseViewModelDependency';
-import { useMemo, useRef } from "react";
-import { useDependencyResolver, type DependencyResolverProvider, type DependencyResolverScope } from "./DependencyResolverContext";
+import { useMemo, useRef } from 'react';
+import { useDependencyResolver, type DependencyResolverProvider, type DependencyResolverScope } from './DependencyResolverContext';
 
 const emptyAdditionalDependencies: readonly unknown[] = [];
 

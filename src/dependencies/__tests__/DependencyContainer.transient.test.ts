@@ -1,8 +1,8 @@
-import { DependencyToken } from "../IDependencyResolver";
-import { DependencyContainer } from "../DependencyContainer";
+import { DependencyToken } from '../IDependencyResolver';
+import { DependencyContainer } from '../DependencyContainer';
 
 describe('DependencyContainer.transient', (): void => {
-  test("Resolving transient type dependency returns instance", () => {
+  test('Resolving transient type dependency returns instance', () => {
     class MyClass {
     }
 
@@ -14,7 +14,7 @@ describe('DependencyContainer.transient', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving transient type dependency returns different instances", () => {
+  test('Resolving transient type dependency returns different instances', () => {
     class MyClass {
     }
 
@@ -27,7 +27,7 @@ describe('DependencyContainer.transient', (): void => {
     expect(firstInstance).not.toBe(secondInstance);
   });
 
-  test("Resolving transient type dependency calls factory each time", () => {
+  test('Resolving transient type dependency calls factory each time', () => {
     class MyClass { }
     let callCount = 0;
 
@@ -43,8 +43,8 @@ describe('DependencyContainer.transient', (): void => {
     expect(callCount).toStrictEqual(2);
   });
 
-  test("Resolving transient type token dependency returns instance", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving transient type token dependency returns instance', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();
@@ -55,8 +55,8 @@ describe('DependencyContainer.transient', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving transient type token dependency returns different instances", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving transient type token dependency returns different instances', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -69,8 +69,8 @@ describe('DependencyContainer.transient', (): void => {
     expect(firstInstance).not.toBe(secondInstance);
   });
 
-  test("Resolving transient factory token dependency returns instance", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving transient factory token dependency returns instance', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();
@@ -81,8 +81,8 @@ describe('DependencyContainer.transient', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving transient factory token dependency returns different instances", () => {
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+  test('Resolving transient factory token dependency returns different instances', () => {
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass {
     }
 
@@ -95,9 +95,9 @@ describe('DependencyContainer.transient', (): void => {
     expect(firstInstance).not.toBe(secondInstance);
   });
 
-  test("Resolving transient factory token dependency calls factory each time", () => {
+  test('Resolving transient factory token dependency calls factory each time', () => {
     let callCount = 0;
-    const token = new DependencyToken<MyClass>("test-dependency-token");
+    const token = new DependencyToken<MyClass>('test-dependency-token');
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();

@@ -1,4 +1,4 @@
-import type { IDependencyResolver, BasicDependency, SimpleDependency, ComplexDependency, DependencyToken, ResolvableSimpleDependency } from "./IDependencyResolver";
+import type { IDependencyResolver, BasicDependency, SimpleDependency, ComplexDependency, DependencyToken, ResolvableSimpleDependency } from './IDependencyResolver';
 import type { useDependency } from './UseDependency';
 
 /**

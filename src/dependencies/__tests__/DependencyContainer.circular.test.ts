@@ -1,8 +1,8 @@
-import { DependencyToken, type IDependencyResolver } from "../IDependencyResolver";
-import { DependencyContainer } from "../DependencyContainer";
+import { DependencyToken, type IDependencyResolver } from '../IDependencyResolver';
+import { DependencyContainer } from '../DependencyContainer';
 
 describe('DependencyContainer.circular', (): void => {
-  test("Attempting to resolve self referencing dependency throws exception", () => {
+  test('Attempting to resolve self referencing dependency throws exception', () => {
     class A {
       private static _resolveCount = 0;
 
@@ -21,7 +21,7 @@ describe('DependencyContainer.circular', (): void => {
     expect(() => resolve(A)).toThrow(new Error('Circular dependency detected while trying to resolve \'A -> A\'.'));
   });
 
-  test("Attempting to resolve circular dependency throws exception", () => {
+  test('Attempting to resolve circular dependency throws exception', () => {
     class A {
       private static _resolveCount = 0;
 
@@ -52,7 +52,7 @@ describe('DependencyContainer.circular', (): void => {
   });
 
 
-  test("Attempting to resolve circular dependency with tokens throws exception", () => {
+  test('Attempting to resolve circular dependency with tokens throws exception', () => {
     const dependencyTokenA = new DependencyToken('token A');
     const dependencyTokenB = new DependencyToken('token B');
 

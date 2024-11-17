@@ -1,8 +1,8 @@
-import type { INotifyPropertiesChanged } from "../viewModels";
-import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from "./IDependencyResolver";
+import type { INotifyPropertiesChanged } from '../viewModels';
+import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from './IDependencyResolver';
 import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer'
-import { useViewModel } from "../hooks";
-import { useDependency } from "./UseDependency";
+import { useViewModel } from '../hooks';
+import { useDependency } from './UseDependency';
 
 /**
  * Resolves the requested view model dependency and subscribes to it for changes.

@@ -1,8 +1,8 @@
-import type { IDependencyResolver, ResolvableSimpleDependency } from "./IDependencyResolver";
-import type { IDependencyContainer, ConfigurableDependency } from "./IDependencyContainer";
+import type { IDependencyResolver, ResolvableSimpleDependency } from './IDependencyResolver';
+import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer';
 import type { useDependency } from './UseDependency';
-import { DependencyContainer } from "./DependencyContainer";
-import { type PropsWithChildren, createContext, createElement, useContext, useMemo, useRef } from "react";
+import { DependencyContainer } from './DependencyContainer';
+import { type PropsWithChildren, createContext, createElement, useContext, useMemo, useRef } from 'react';
 
 const DependencyResolverContext = createContext<IDependencyResolver>(new DependencyContainer());
 

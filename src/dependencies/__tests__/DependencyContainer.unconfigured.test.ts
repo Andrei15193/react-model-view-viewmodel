@@ -1,8 +1,8 @@
-import { type IDependencyResolver, DependencyToken } from "../IDependencyResolver";
-import { DependencyContainer } from "../DependencyContainer";
+import { type IDependencyResolver, DependencyToken } from '../IDependencyResolver';
+import { DependencyContainer } from '../DependencyContainer';
 
 describe('DependencyContainer.unconfigured', (): void => {
-  test("Resolve works without context", () => {
+  test('Resolve works without context', () => {
     const { resolve } = new DependencyContainer();
 
     const instance = resolve(class { });
@@ -10,7 +10,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(instance).not.toBeNull();
   });
 
-  test("Resolving null dependency returns null", () => {
+  test('Resolving null dependency returns null', () => {
     const dependencyContainer = new DependencyContainer();
 
     const resolvedDependency = dependencyContainer.resolve(null);
@@ -18,7 +18,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(resolvedDependency).toBeNull();
   });
 
-  test("Resolving undefined dependency returns undefined", () => {
+  test('Resolving undefined dependency returns undefined', () => {
     const dependencyContainer = new DependencyContainer();
 
     const resolvedDependency = dependencyContainer.resolve(undefined);
@@ -26,7 +26,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(resolvedDependency).toBeUndefined();
   });
 
-  test("Resolving object dependency returns object", () => {
+  test('Resolving object dependency returns object', () => {
     const instnace = {};
     const dependencyContainer = new DependencyContainer();
 
@@ -35,7 +35,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(resolvedDependency).toStrictEqual(instnace);
   });
 
-  test("Resolving a basic dependency returns instance", () => {
+  test('Resolving a basic dependency returns instance', () => {
     class MyClass { }
 
     const dependencyContainer = new DependencyContainer();
@@ -45,7 +45,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving a simple dependency returns instance", () => {
+  test('Resolving a simple dependency returns instance', () => {
     class MyClass {
       constructor(dependencyResolver: IDependencyResolver) {
       }
@@ -58,7 +58,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving a simple dependency receives dependecy container as first constructor parameter", () => {
+  test('Resolving a simple dependency receives dependecy container as first constructor parameter', () => {
     let receivedDependencyResolver: IDependencyResolver | null = null;
 
     class MyClass {
@@ -74,7 +74,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(receivedDependencyResolver).toBe(dependencyContainer);
   });
 
-  test("Resolving a complex dependency returns instance", () => {
+  test('Resolving a complex dependency returns instance', () => {
     class MyClass {
       constructor(dependencyResolver: IDependencyResolver, id: number) {
       }
@@ -87,7 +87,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving a complex dependency receives dependecy container as first constructor parameter", () => {
+  test('Resolving a complex dependency receives dependecy container as first constructor parameter', () => {
     let receivedDependencyResolver: IDependencyResolver | null = null;
 
     class MyClass {
@@ -103,7 +103,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(receivedDependencyResolver).toBe(dependencyContainer);
   });
 
-  test("Resolving a complex dependency receives additional dependency as second constructor parameter", () => {
+  test('Resolving a complex dependency receives additional dependency as second constructor parameter', () => {
     let receivedAdditionalDependency: object | null = null;
     const additionalDependency = {};
 
@@ -120,7 +120,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(receivedAdditionalDependency).toBe(additionalDependency);
   });
 
-  test("Resolving a complex dependency receives additional dependency as third constructor parameter", () => {
+  test('Resolving a complex dependency receives additional dependency as third constructor parameter', () => {
     let receivedAdditionalDependency: object | null = null;
     const additionalDependency = {};
 
@@ -137,7 +137,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(receivedAdditionalDependency).toBe(additionalDependency);
   });
 
-  test("Resolving type dependency returns instance", () => {
+  test('Resolving type dependency returns instance', () => {
     class MyClass {
     }
 
@@ -148,7 +148,7 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(instance).toBeInstanceOf(MyClass);
   });
 
-  test("Resolving type dependency returns different instance each time", () => {
+  test('Resolving type dependency returns different instance each time', () => {
     class MyClass {
     }
 
@@ -160,11 +160,11 @@ describe('DependencyContainer.unconfigured', (): void => {
     expect(firstInstance).not.toBe(secondInstance);
   });
 
-  test("Resolving unconfigured token dependency throws exception", () => {
-    const token = new DependencyToken<unknown>("test-dependency-token");
+  test('Resolving unconfigured token dependency throws exception', () => {
+    const token = new DependencyToken<unknown>('test-dependency-token');
 
     const dependencyContainer = new DependencyContainer();
 
-    expect(() => dependencyContainer.resolve(token)).toThrow(new Error("There is no configured dependency for token 'test-dependency-token'."));
+    expect(() => dependencyContainer.resolve(token)).toThrow(new Error('There is no configured dependency for token \'test-dependency-token\'.'));
   });
 });

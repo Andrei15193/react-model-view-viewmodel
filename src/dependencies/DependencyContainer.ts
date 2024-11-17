@@ -1,5 +1,5 @@
-import type { IDependencyContainer, ConfigurableDependency, DependencyFactoryCallback } from "./IDependencyContainer";
-import { type IDependencyResolver, type ResolvableSimpleDependency, type BasicDependency, type SimpleDependency, type ComplexDependency, DependencyToken } from "./IDependencyResolver";
+import type { IDependencyContainer, ConfigurableDependency, DependencyFactoryCallback } from './IDependencyContainer';
+import { type IDependencyResolver, type ResolvableSimpleDependency, type BasicDependency, type SimpleDependency, type ComplexDependency, DependencyToken } from './IDependencyResolver';
 
 type DependencyFactoryKey<T> = DependencyToken<T> | BasicDependency<T> | SimpleDependency<T>;
 

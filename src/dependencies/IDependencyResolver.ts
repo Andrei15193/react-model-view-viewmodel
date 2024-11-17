@@ -1,4 +1,4 @@
-import type { IDependencyContainer, ConfigurableDependency } from "./IDependencyContainer";
+import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer';
 import type { useDependency } from './UseDependency';
 
 /**
