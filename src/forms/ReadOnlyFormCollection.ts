@@ -166,6 +166,8 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
     /**
      * Invoked when the current instance's properties change, this is a plugin method to help reduce validations when changes do not
      * have an effect on validation.
+     *
+     * @returns Returns `true` if a validation should be triggered for the given changed properties; otherwise `false`.
      */
     protected onShouldTriggerValidation(changedProperties: readonly (keyof this)[]): boolean {
         return changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');

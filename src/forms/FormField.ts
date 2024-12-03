@@ -102,6 +102,67 @@ export interface IFormFieldConfig<TValue, TValidationError = string> {
  * Changes to the field may trigger validation, by default only changes to the {@linkcode value} does this,
  * to change the behavior see {@linkcode onShouldTriggerValidation}.
  *
+ * ----
+ *
+ * @guidance Data Binding
+ *
+ * Generally, binding in MVVM comes along with binding expressions, however this is not really necessary.
+ *
+ * Binding, or data binding, refers to linking a view and a view model so one updates based on how the
+ * other changes. Usually, the view is the destination and the view model is the source, this gives us
+ * a few types of binding.
+ *
+ * - **One-time**: read the value when the component renders.
+ * - **One-way**: same as one-time, but whenever the value changes the component re-renders.
+ * - **Two-way**: applies mostly to inputs, when the field value changes the input reflects this,
+ * and when the input value changes, the field value is also updated. The two are permanently in sync.
+ * - **One-way to source**: whenever the value on the view changes, the view model is updated, but
+ * the view does not update when the view model changes.
+ *
+ * Binding expressions are nice, but not really required. They may add additional complexity to the UI and
+ * can be limiting. While it is great to be descriptive about this, being able to do this more or less
+ * manually through event handling can provide more options. One should not exclude the other.
+ *
+ * The most common types of binding are the one-way and two-way ones. On pages where we only
+ * show data, we usually use one-way binding because there's no interaction with it, we simply display it
+ * when it is ready. We can do this using the {@linkcode useViewModel} hook alone.
+ *
+ * Forms, on the other hand, use two-way binding. We want to keep our inputs in sync with whatever is
+ * going on with the fields. If changing one field clears another, we want to see this on the UI.
+ *
+ * Unavoidably, we end up creating components for specific types of inputs to avoid repetitive code
+ * as well as ensure they all behave in the same way. Binding is generally handled inside these components
+ * using DOM event handlers/callbacks.
+ * 
+ * This is the most basic form of two-way binding, there's full control over it. The value coming from
+ * the field can be transformed in the component. Similarly, when the input changes its value can be
+ * converted back to something the form field may understand. There is full control over how the two
+ * link to one another as well as having the ability to create reusable components for specific types
+ * of inputs.
+ *
+ * ```tsx
+ * interface ITextInputProps {
+ *   readonly field: FormField<string>;
+ * }
+ *
+ * function TextInput({ field }: ITextInputProps): JSX.Element {
+ *   useViewModel(field);
+ *
+ *   const onInputChangedCallback = useCallback(
+ *     (event: ChangeEvent<HTMLInputElement>) => {
+ *       field.value = event.target.value;
+ *     },
+ *     [field]
+ *   );
+ *
+ *   return (
+ *     <input
+ *       value={field.value}
+ *       onChange={onInputChangedCallback} />
+ *   );
+ * }
+ * ```
+ *
  * @see {@linkcode Form}
  * @see {@linkcode IFormFieldConfig}
  */
