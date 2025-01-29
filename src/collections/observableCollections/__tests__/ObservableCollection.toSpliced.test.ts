@@ -7,12 +7,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(0, 2);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(0, 2)
+                applyCollectionOperation: (collection) => collection.toSpliced(0, 2)
             },
 
             expectedResult: []
@@ -24,12 +25,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2)
+                applyCollectionOperation: (collection) => collection.toSpliced(2)
             },
 
             expectedResult: [1, 2]
@@ -41,12 +43,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(-2);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(-2)
+                applyCollectionOperation: (collection) => collection.toSpliced(-2)
             },
 
             expectedResult: [1, 2, 3]
@@ -58,12 +61,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(-10);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(-10)
+                applyCollectionOperation: (collection) => collection.toSpliced(-10)
             },
 
             expectedResult: []
@@ -75,12 +79,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(10);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(10)
+                applyCollectionOperation: (collection) => collection.toSpliced(10)
             },
 
             expectedResult: [1, 2, 3, 4, 5]
@@ -92,12 +97,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2, 3);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, 3)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, 3)
             },
 
             expectedResult: [1, 2, 6, 7, 8, 9]
@@ -109,12 +115,13 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2, 10);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, 10)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, 10)
             },
 
             expectedResult: [1, 2]
@@ -126,15 +133,16 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2, -2);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, -2)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, -2)
             },
 
-            expectedResult: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            expectedResult: [1, 2, 3, 4, 5, 6, 7, 8, 9]
         });
     });
 
@@ -143,15 +151,16 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2, 3, 10, 20, 30);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, 3, 10, 20, 30)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, 3, 10, 20, 30)
             },
 
-            expectedResult: [1, 2, 10, 20, 30, 6, 7, 8, 9],
+            expectedResult: [1, 2, 10, 20, 30, 6, 7, 8, 9]
         });
     });
 
@@ -160,15 +169,16 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2, 3, 10);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, 3, 10)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, 3, 10)
             },
 
-            expectedResult: [1, 2, 10, 6, 7, 8, 9],
+            expectedResult: [1, 2, 10, 6, 7, 8, 9]
         });
     });
 
@@ -177,15 +187,16 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(2, 3, 10, 20, 30, 40, 50);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, 3, 10, 20, 30, 40, 50)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, 3, 10, 20, 30, 40, 50)
             },
 
-            expectedResult: [1, 2, 10, 20, 30, 40, 50, 6, 7, 8, 9],
+            expectedResult: [1, 2, 10, 20, 30, 40, 50, 6, 7, 8, 9]
         });
     });
 
@@ -194,15 +205,16 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
-                    copy.splice(2, 10, 100, 200, 300, 400, 500)
+                    copy.splice(2, 10, 100, 200, 300, 400, 500);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(2, 10, 100, 200, 300, 400, 500)
+                applyCollectionOperation: (collection) => collection.toSpliced(2, 10, 100, 200, 300, 400, 500)
             },
 
-            expectedResult: [1, 2, 100, 200, 300, 400, 500],
+            expectedResult: [1, 2, 100, 200, 300, 400, 500]
         });
     });
 
@@ -211,15 +223,16 @@ describe('ObservableCollection.toSpliced', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy.splice(20, 2, 100, 200, 300, 400, 500);
+
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.toSpliced(20, 2, 100, 200, 300, 400, 500)
+                applyCollectionOperation: (collection) => collection.toSpliced(20, 2, 100, 200, 300, 400, 500)
             },
 
-            expectedResult: [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300, 400, 500],
+            expectedResult: [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300, 400, 500]
         });
     });
 
@@ -230,7 +243,8 @@ describe('ObservableCollection.toSpliced', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.toSpliced(1);
-            })
+            }
+        )
             .not
             .toThrow();
     });

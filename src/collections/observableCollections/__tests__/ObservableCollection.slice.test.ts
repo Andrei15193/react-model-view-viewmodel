@@ -6,7 +6,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.slice(),
+            applyOperation: (collection) => collection.slice(),
 
             expectedResult: []
         });
@@ -16,7 +16,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: collection => collection.slice(),
+            applyOperation: (collection) => collection.slice(),
 
             expectedResult: [1, 2, 3]
         });
@@ -26,7 +26,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(2),
+            applyOperation: (collection) => collection.slice(2),
 
             expectedResult: [3, 4, 5]
         });
@@ -36,7 +36,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(-3),
+            applyOperation: (collection) => collection.slice(-3),
 
             expectedResult: [3, 4, 5]
         });
@@ -46,7 +46,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(-10),
+            applyOperation: (collection) => collection.slice(-10),
 
             expectedResult: [1, 2, 3, 4, 5]
         });
@@ -56,7 +56,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(1, 3),
+            applyOperation: (collection) => collection.slice(1, 3),
 
             expectedResult: [2, 3]
         });
@@ -66,7 +66,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(2, -1),
+            applyOperation: (collection) => collection.slice(2, -1),
 
             expectedResult: [3, 4]
         });
@@ -76,7 +76,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(2, 10),
+            applyOperation: (collection) => collection.slice(2, 10),
 
             expectedResult: [3, 4, 5]
         });
@@ -86,7 +86,7 @@ describe('ObservableCollection.slice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.slice(3, 2),
+            applyOperation: (collection) => collection.slice(3, 2),
 
             expectedResult: []
         });
@@ -99,7 +99,8 @@ describe('ObservableCollection.slice', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.slice();
-            })
+            }
+        )
             .not
             .toThrow();
     });

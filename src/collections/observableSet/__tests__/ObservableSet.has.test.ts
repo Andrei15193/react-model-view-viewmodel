@@ -6,7 +6,7 @@ describe('ObservableSet.has', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: set => set.has(1),
+            applyOperation: (set) => set.has(1),
 
             expectedResult: false
         });
@@ -16,7 +16,7 @@ describe('ObservableSet.has', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: set => set.has(2),
+            applyOperation: (set) => set.has(2),
 
             expectedResult: true
         });
@@ -26,7 +26,7 @@ describe('ObservableSet.has', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: set => set.has(4),
+            applyOperation: (set) => set.has(4),
 
             expectedResult: false
         });
@@ -42,8 +42,9 @@ describe('ObservableSet.has', (): void => {
                     observableSet.has(valueToCheck);
                     valueToCheck++;
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

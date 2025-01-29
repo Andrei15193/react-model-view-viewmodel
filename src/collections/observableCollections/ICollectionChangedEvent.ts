@@ -1,5 +1,5 @@
-import type { IEvent } from '../../events';
 import type { ICollectionChange } from './ICollectionChange';
+import type { IEvent } from '../../events';
 
 /**
  * A specialized event for subscribing and unsubscribing from collection changed events.

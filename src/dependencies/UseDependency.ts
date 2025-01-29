@@ -1,5 +1,5 @@
-import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from './IDependencyResolver';
 import type { IDependencyContainer } from './IDependencyContainer';
+import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from './IDependencyResolver';
 import type { useViewModelDependency } from './UseViewModelDependency';
 import { useMemo, useRef } from 'react';
 import { useDependencyResolver, type DependencyResolverProvider, type DependencyResolverScope } from './DependencyResolverContext';
@@ -47,21 +47,21 @@ export function useDependency<T>(dependency: ResolvableSimpleDependency<T>): T;
 export function useDependency<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
 
 export function useDependency<T, TAdditional extends readonly any[]>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies?: TAdditional): T {
-  const normalizedAdditionalDependencies = additionalDependencies === null || additionalDependencies == undefined || !Array.isArray(additionalDependencies) || additionalDependencies.length === 0
-    ? emptyAdditionalDependencies as TAdditional
-    : additionalDependencies;
+    const normalizedAdditionalDependencies = additionalDependencies === null || additionalDependencies === undefined || !Array.isArray(additionalDependencies) || additionalDependencies.length === 0
+        ? emptyAdditionalDependencies as TAdditional
+        : additionalDependencies;
 
-  const dependecyResolver = useDependencyResolver();
+    const dependecyResolver = useDependencyResolver();
 
-  const cachedAdditionalDependenciesRef = useRef(normalizedAdditionalDependencies);
-  if (cachedAdditionalDependenciesRef.current.length !== normalizedAdditionalDependencies.length || cachedAdditionalDependenciesRef.current.some((cachedAdditionalDependency, additionalDependencyIndex) => !Object.is(cachedAdditionalDependency, normalizedAdditionalDependencies[additionalDependencyIndex])))
-    cachedAdditionalDependenciesRef.current = normalizedAdditionalDependencies.slice() as any as TAdditional;
-  const { current: cachedAdditionalDependencies } = cachedAdditionalDependenciesRef;
+    const cachedAdditionalDependenciesRef = useRef(normalizedAdditionalDependencies);
+    if (cachedAdditionalDependenciesRef.current.length !== normalizedAdditionalDependencies.length || cachedAdditionalDependenciesRef.current.some((cachedAdditionalDependency, additionalDependencyIndex) => !Object.is(cachedAdditionalDependency, normalizedAdditionalDependencies[additionalDependencyIndex])))
+        cachedAdditionalDependenciesRef.current = normalizedAdditionalDependencies.slice() as any as TAdditional;
+    const { current: cachedAdditionalDependencies } = cachedAdditionalDependenciesRef;
 
-  const instance = useMemo(
-    () => dependecyResolver.resolve<T, TAdditional>(dependency as ComplexDependency<T, TAdditional>, cachedAdditionalDependencies),
-    [dependecyResolver, dependency, cachedAdditionalDependencies]
-  );
+    const instance = useMemo(
+        () => dependecyResolver.resolve<T, TAdditional>(dependency as ComplexDependency<T, TAdditional>, cachedAdditionalDependencies),
+        [dependecyResolver, dependency, cachedAdditionalDependencies]
+    );
 
-  return instance;
+    return instance;
 }

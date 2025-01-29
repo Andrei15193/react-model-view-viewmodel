@@ -1,5 +1,5 @@
-import type { IEvent } from '../../events';
 import type { ICollectionReorder } from './ICollectionReorder';
+import type { IEvent } from '../../events';
 
 /**
  * A specialized event for subscribing and unsubscribing from collection reordering events.

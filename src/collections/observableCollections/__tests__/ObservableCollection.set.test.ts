@@ -11,9 +11,10 @@ describe('ObservableCollection.set', (): void => {
             applyOperation: {
                 applyArrayOperation(array) {
                     array[1] = 10;
+
                     return array.length;
                 },
-                applyCollectionOperation: collection => collection.set(1, 10)
+                applyCollectionOperation: (collection) => collection.set(1, 10)
             },
 
             expectedCollection: [1, 10, 3],
@@ -30,9 +31,10 @@ describe('ObservableCollection.set', (): void => {
             applyOperation: {
                 applyArrayOperation(array) {
                     array[2] = 10;
+
                     return array.length;
                 },
-                applyCollectionOperation: collection => collection.set(-1, 10)
+                applyCollectionOperation: (collection) => collection.set(-1, 10)
             },
 
             expectedCollection: [1, 2, 10],
@@ -49,9 +51,10 @@ describe('ObservableCollection.set', (): void => {
             applyOperation: {
                 applyArrayOperation(array) {
                     array[0] = 10;
+
                     return array.length;
                 },
-                applyCollectionOperation: collection => collection.set(-10, 10)
+                applyCollectionOperation: (collection) => collection.set(-10, 10)
             },
 
             expectedCollection: [10, 2, 3],
@@ -68,9 +71,10 @@ describe('ObservableCollection.set', (): void => {
             applyOperation: {
                 applyArrayOperation(array) {
                     array[10] = 100;
+
                     return array.length;
                 },
-                applyCollectionOperation: collection => collection.set(10, 100)
+                applyCollectionOperation: (collection) => collection.set(10, 100)
             },
 
             expectedCollection: [1, 2, 3, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 100],
@@ -85,7 +89,8 @@ describe('ObservableCollection.set', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.set(1, 10);
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 });

@@ -2,8 +2,8 @@ import type { IPropertiesChangedEventHandler } from '../viewModels';
 import type { Form } from './Form';
 import type { FormSetupCallback } from './IConfigurableFormCollection';
 import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
-import { ObjectValidator, type IObjectValidator, type IValidatable } from '../validation';
 import { ReadOnlyObservableCollection } from '../collections';
+import { ObjectValidator, type IObjectValidator, type IValidatable } from '../validation';
 
 /**
  * Represents a configurable read-only observable collection of form sections. Callbacks can be configured for setting
@@ -35,19 +35,19 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
         const sectionChangedEventHandler: IPropertiesChangedEventHandler<Form<TValidationError>> = {
             handle: this.onSectionChanged.bind(this)
         };
-        this.forEach(section => {
+        this.forEach((section) => {
             section.propertiesChanged.subscribe(sectionChangedEventHandler);
         });
         this.collectionChanged.subscribe({
             handle: (_, { addedItems: addedSections, removedItems: removedSections }) => {
-                removedSections.forEach(removedSection => {
+                removedSections.forEach((removedSection) => {
                     removedSection.propertiesChanged.unsubscribe(sectionChangedEventHandler);
                     removedSection.reset();
                 });
 
-                addedSections.forEach(addedSection => {
+                addedSections.forEach((addedSection) => {
                     addedSection.propertiesChanged.subscribe(sectionChangedEventHandler);
-                    this._setupCallbacks.forEach(setupCallback => {
+                    this._setupCallbacks.forEach((setupCallback) => {
                         setupCallback(addedSection);
                     });
                 });
@@ -60,7 +60,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
 
     /**
      * Gets the validation configuration for the form. Fields have their own individual validation config as well.
-     * 
+     *
      * @see {@linkcode Form.validation}
      */
     readonly validation: IObjectValidator<this, TValidationError>;
@@ -71,7 +71,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
      * A section collection is valid only when itself is valid and all contained sections are valid.
      */
     public get isValid(): boolean {
-        return this._error === null && this.every(section => section.isValid);
+        return this._error === null && this.every((section) => section.isValid);
     }
 
     /**
@@ -80,7 +80,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
      * A section collection is invalid when itself is invalid or any contained sections is invalid.
      */
     public get isInvalid(): boolean {
-        return this._error !== null || this.some(section => section.isInvalid);
+        return this._error !== null || this.some((section) => section.isInvalid);
     }
 
     /**
@@ -110,7 +110,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
     public withItemSetup(setupCallback: FormSetupCallback<TForm, TValidationError>): this {
         if (typeof setupCallback === 'function') {
             this._setupCallbacks.push(setupCallback);
-            this.forEach(section => {
+            this.forEach((section) => {
                 setupCallback(section);
             });
         }
@@ -128,7 +128,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
             const setupCallbackIndex = this._setupCallbacks.indexOf(setupCallback);
             if (setupCallbackIndex > 0) {
                 this._setupCallbacks.splice(setupCallbackIndex, 1);
-                this.forEach(section => section.reset());
+                this.forEach((section) => section.reset());
                 this._setupSections();
             }
         }
@@ -141,7 +141,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
      */
     public clearItemSetups(): void {
         this._setupCallbacks.splice(0, Number.POSITIVE_INFINITY);
-        this.forEach(section => section.reset());
+        this.forEach((section) => section.reset());
     }
 
     /**
@@ -151,7 +151,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
      */
     public reset(): void {
         this._setupCallbacks.splice(0, Number.POSITIVE_INFINITY);
-        this.forEach(section => section.reset());
+        this.forEach((section) => section.reset());
         this.validation.reset();
     }
 
@@ -159,7 +159,7 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
      * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
     protected onSectionChanged(section: Form<TValidationError>, changedProperties: readonly (keyof Form<TValidationError>)[]) {
-        if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
+        if (changedProperties.some((changedProperty) => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
 
@@ -170,12 +170,12 @@ export class ReadOnlyFormCollection<TForm extends Form<TValidationError>, TValid
      * @returns Returns `true` if a validation should be triggered for the given changed properties; otherwise `false`.
      */
     protected onShouldTriggerValidation(changedProperties: readonly (keyof this)[]): boolean {
-        return changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');
+        return changedProperties.some((changedProperty) => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');
     }
 
     private _setupSections(): void {
-        this.forEach(section => {
-            this._setupCallbacks.forEach(setupCallback => setupCallback(section));
+        this.forEach((section) => {
+            this._setupCallbacks.forEach((setupCallback) => setupCallback(section));
         });
     }
 }

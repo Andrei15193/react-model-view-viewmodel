@@ -7,8 +7,8 @@ describe('ObservableCollection.findLastIndex', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.findLastIndex(item => item === 3),
-                applyCollectionOperation: collection => collection.findLastIndex(item => item === 3)
+                applyArrayOperation: (array) => array.findLastIndex((item) => item === 3),
+                applyCollectionOperation: (collection) => collection.findLastIndex((item) => item === 3)
             },
 
             expectedResult: -1
@@ -20,8 +20,8 @@ describe('ObservableCollection.findLastIndex', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.findLastIndex(item => item === 10),
-                applyCollectionOperation: collection => collection.findLastIndex(item => item === 10)
+                applyArrayOperation: (array) => array.findLastIndex((item) => item === 10),
+                applyCollectionOperation: (collection) => collection.findLastIndex((item) => item === 10)
             },
 
             expectedResult: -1
@@ -33,8 +33,8 @@ describe('ObservableCollection.findLastIndex', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.findLastIndex(item => item % 2 === 0),
-                applyCollectionOperation: collection => collection.findLastIndex(item => item % 2 === 0)
+                applyArrayOperation: (array) => array.findLastIndex((item) => item % 2 === 0),
+                applyCollectionOperation: (collection) => collection.findLastIndex((item) => item % 2 === 0)
             },
 
             expectedResult: 5
@@ -47,14 +47,18 @@ describe('ObservableCollection.findLastIndex', (): void => {
         observableCollection.findLastIndex((item, index, collection) => {
             invocationCount++;
 
-            expect(item).toBe(1);
-            expect(index).toBe(0);
-            expect(collection).toStrictEqual(observableCollection);
+            expect(item)
+                .toBe(1);
+            expect(index)
+                .toBe(0);
+            expect(collection)
+                .toStrictEqual(observableCollection);
 
             return true;
         });
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('calling findLastIndex with context passes it to the callback', (): void => {
@@ -65,28 +69,35 @@ describe('ObservableCollection.findLastIndex', (): void => {
             function (item, index, collection) {
                 invocationCount++;
 
-                expect(this).toStrictEqual(context);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(this)
+                    .toStrictEqual(context);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return true;
             },
             context
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing findLastIndex throws exception', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
-                observableCollection.findLastIndex(_ => {
+                observableCollection.findLastIndex((_) => {
                     observableCollection.pop();
+
                     return true;
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
@@ -96,8 +107,9 @@ describe('ObservableCollection.findLastIndex', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
-                    observableCollection.findLastIndex(item => item % 2 === 0);
-            })
+                    observableCollection.findLastIndex((item) => item % 2 === 0);
+            }
+        )
             .not
             .toThrow();
     });

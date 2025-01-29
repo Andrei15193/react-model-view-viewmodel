@@ -107,7 +107,7 @@ export class ObservableCollection<TItem> extends ReadOnlyObservableCollection<TI
      * @returns The observable collection on which the operation is performed.
      * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
      */
-    public sort(compareCallback?: (left: Exclude<TItem, undefined>, right: Exclude<TItem, undefined>) => number): this {
+    public sort(compareCallback?: (left: Exclude<TItem, undefined>, right: Exclude<TItem, undefined>)=> number): this {
         return super.sort.apply(this, arguments);
     }
 

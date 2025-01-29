@@ -1,7 +1,7 @@
-import type { ISetLike } from './ISetLike';
 import type { IReadOnlyObservableSet } from './IReadOnlyObservableSet';
 import type { ISetChange } from './ISetChange';
 import type { ISetChangedEvent } from './ISetChangedEvent';
+import type { ISetLike } from './ISetLike';
 import { EventDispatcher } from '../../events';
 import { ViewModel } from '../../viewModels';
 import { isSetLike } from './isSetLike';
@@ -55,7 +55,8 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/entries)
      */
     public entries(): IterableIterator<[TItem, TItem]> {
-        var changeTokenCopy = this._changeToken;
+        let changeTokenCopy = this._changeToken;
+
         return new ObservableSetIterator<[TItem, TItem]>(this._set.entries(), () => changeTokenCopy !== this._changeToken);
     }
 
@@ -74,7 +75,8 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @see [Set.values](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/values)
      */
     public values(): IterableIterator<TItem> {
-        var changeTokenCopy = this._changeToken;
+        let changeTokenCopy = this._changeToken;
+
         return new ObservableSetIterator<TItem>(this._set[Symbol.iterator](), () => changeTokenCopy !== this._changeToken);
     }
 
@@ -232,7 +234,7 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
      * @param thisArg A value to use as context when processing items.
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
-    public forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this) => void, thisArg?: TContext): void {
+    public forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this)=> void, thisArg?: TContext): void {
         const changeTokenCopy = this._changeToken;
 
         for (const item of this) {
@@ -320,9 +322,9 @@ export class ReadOnlyObservableSet<TItem> extends ViewModel implements IReadOnly
 class ObservableSetIterator<TItem, TValue = TItem> implements Iterator<TValue, TValue, void> {
     private _completed: boolean;
     private readonly _iterator: Iterator<TValue, TValue, void>;
-    private readonly _setChanged: () => boolean;
+    private readonly _setChanged: ()=> boolean;
 
-    public constructor(iterator: Iterator<TValue, TValue, void>, setChanged: () => boolean) {
+    public constructor(iterator: Iterator<TValue, TValue, void>, setChanged: ()=> boolean) {
         this._iterator = iterator;
         this._setChanged = setChanged;
     }
@@ -344,6 +346,7 @@ class ObservableSetIterator<TItem, TValue = TItem> implements Iterator<TValue, T
 
             if (done) {
                 this._completed = true;
+
                 return {
                     done: true,
                     value: undefined!

@@ -8,7 +8,7 @@ describe('ObservableSet.add', (): void => {
             initialState: [],
             changedProperties: ['size'],
 
-            applyOperation: set => set.add(1),
+            applyOperation: (set) => set.add(1),
 
             expectedSet: [1],
             expectedResult: selfResult
@@ -21,7 +21,7 @@ describe('ObservableSet.add', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['size'],
 
-            applyOperation: set => set.add(4),
+            applyOperation: (set) => set.add(4),
 
             expectedSet: [1, 2, 3, 4],
             expectedResult: selfResult
@@ -32,7 +32,7 @@ describe('ObservableSet.add', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: set => set.add(2),
+            applyOperation: (set) => set.add(2),
 
             expectedResult: selfResult
         });
@@ -45,8 +45,9 @@ describe('ObservableSet.add', (): void => {
 
                 for (const _ of observableSet)
                     observableSet.add(4);
-            })
-            .toThrow(new Error('Set has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Set has changed while being iterated.'));
     });
 
     it('adding existing item while iterating does not break iterators', (): void => {
@@ -56,8 +57,9 @@ describe('ObservableSet.add', (): void => {
 
                 for (const _ of observableSet)
                     observableSet.add(1);
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

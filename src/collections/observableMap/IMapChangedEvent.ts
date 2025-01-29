@@ -1,5 +1,5 @@
-import type { IEvent } from '../../events';
 import type { IMapChange } from './IMapChange';
+import type { IEvent } from '../../events';
 
 /**
  * A specialized event for subscribing and unsubscribing from map changed events.

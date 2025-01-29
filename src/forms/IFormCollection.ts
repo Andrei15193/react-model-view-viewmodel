@@ -2,7 +2,7 @@ import type { IObservableCollection } from '../collections';
 import type { Form } from './Form';
 import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 
-/** 
+/**
  * Represents a configurable observable collection of forms. Callbacks can be configured for setting up individual
  * form sections for cases where validation and other aspects are based on the state of an entity or the form itself.
  *

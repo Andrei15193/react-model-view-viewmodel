@@ -8,7 +8,7 @@ describe('ObservableCollection.push', (): void => {
             initialState: [],
             changedProperties: ['length', 0],
 
-            applyOperation: collection => collection.push(1),
+            applyOperation: (collection) => collection.push(1),
 
             expectedCollection: [1],
             expectedResult: 1
@@ -21,7 +21,7 @@ describe('ObservableCollection.push', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 3],
 
-            applyOperation: collection => collection.push(4),
+            applyOperation: (collection) => collection.push(4),
 
             expectedCollection: [1, 2, 3, 4],
             expectedResult: 4
@@ -34,7 +34,7 @@ describe('ObservableCollection.push', (): void => {
             initialState: [],
             changedProperties: ['length', 0, 1, 2],
 
-            applyOperation: collection => collection.push(1, 2, 3),
+            applyOperation: (collection) => collection.push(1, 2, 3),
 
             expectedCollection: [1, 2, 3],
             expectedResult: 3
@@ -47,7 +47,7 @@ describe('ObservableCollection.push', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 3, 4, 5],
 
-            applyOperation: collection => collection.push(4, 5, 6),
+            applyOperation: (collection) => collection.push(4, 5, 6),
 
             expectedCollection: [1, 2, 3, 4, 5, 6],
             expectedResult: 6
@@ -58,7 +58,7 @@ describe('ObservableCollection.push', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: collection => collection.push(),
+            applyOperation: (collection) => collection.push(),
 
             expectedResult: 3
         });
@@ -68,7 +68,7 @@ describe('ObservableCollection.push', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.push(),
+            applyOperation: (collection) => collection.push(),
 
             expectedResult: 0
         });
@@ -81,8 +81,9 @@ describe('ObservableCollection.push', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.push(1);
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('not pushing items while iterating does not break iterators', (): void => {
@@ -92,8 +93,9 @@ describe('ObservableCollection.push', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.push();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

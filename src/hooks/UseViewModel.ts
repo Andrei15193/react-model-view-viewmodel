@@ -1,6 +1,5 @@
-import type { INotifyPropertiesChanged, IPropertiesChangedEventHandler } from '../viewModels';
 import { useState, useEffect, useRef } from 'react';
-import { isViewModel } from '../viewModels';
+import { type INotifyPropertiesChanged, type IPropertiesChangedEventHandler, isViewModel } from '../viewModels';
 
 const emptyConstructorArgs: readonly unknown[] = [];
 
@@ -73,7 +72,7 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged | null 
             const viewModelPropertiesChangedEventHandler: IPropertiesChangedEventHandler<Exclude<TViewModel, null | undefined>> = {
                 handle(viewModel, changedProperties: readonly (keyof TViewModel)[]) {
                     let hasChanges = false;
-                    changedProperties.forEach(changedProperty => {
+                    changedProperties.forEach((changedProperty) => {
                         const viewModelPropertyValue = viewModel[changedProperty];
                         hasChanges = hasChanges || cachedViewModelPropertyValues.get(changedProperty) !== viewModelPropertyValue;
 
@@ -87,14 +86,15 @@ export function useViewModel<TViewModel extends INotifyPropertiesChanged | null 
 
             if (viewModel !== null && viewModel !== undefined)
                 viewModel.propertiesChanged.subscribe(viewModelPropertiesChangedEventHandler);
+
             return () => {
                 if (viewModel !== null && viewModel !== undefined)
                     viewModel.propertiesChanged.unsubscribe(viewModelPropertiesChangedEventHandler);
                 cachedViewModelPropertyValues.clear();
-            }
+            };
         },
         [viewModel, cachedViewModelPropertyValues, setState]
-    )
+    );
 
     return viewModel!;
 }

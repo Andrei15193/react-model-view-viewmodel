@@ -9,8 +9,8 @@ describe('ObservableSet.isSupersetOf', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSupersetOf(other),
-                applySetOperation: set => isSupersetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSupersetOf(other),
+                applySetOperation: (set) => isSupersetOf(set, other)
             },
 
             expectedResult: true
@@ -24,8 +24,8 @@ describe('ObservableSet.isSupersetOf', (): void => {
             initialState: [1, 2],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSupersetOf(other),
-                applySetOperation: set => isSupersetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSupersetOf(other),
+                applySetOperation: (set) => isSupersetOf(set, other)
             },
 
             expectedResult: false
@@ -39,8 +39,8 @@ describe('ObservableSet.isSupersetOf', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSupersetOf(other),
-                applySetOperation: set => isSupersetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSupersetOf(other),
+                applySetOperation: (set) => isSupersetOf(set, other)
             },
 
             expectedResult: false
@@ -54,8 +54,8 @@ describe('ObservableSet.isSupersetOf', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSupersetOf(other),
-                applySetOperation: set => isSupersetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSupersetOf(other),
+                applySetOperation: (set) => isSupersetOf(set, other)
             },
 
             expectedResult: true
@@ -69,8 +69,8 @@ describe('ObservableSet.isSupersetOf', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSupersetOf(other),
-                applySetOperation: set => isSupersetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSupersetOf(other),
+                applySetOperation: (set) => isSupersetOf(set, other)
             },
 
             expectedResult: false
@@ -94,14 +94,16 @@ describe('ObservableSet.isSupersetOf', (): void => {
                         has: other.includes.bind(other)
                     });
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });
 
 function isSupersetOf<TItem>(set: Set<TItem>, other: readonly TItem[]): boolean {
     return (
-        Array.from(other).every(item => set.has(item))
+        Array.from(other)
+            .every((item) => set.has(item))
     );
 }

@@ -6,7 +6,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.lastIndexOf(1),
+            applyOperation: (collection) => collection.lastIndexOf(1),
 
             expectedResult: -1
         });
@@ -16,7 +16,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(4),
+            applyOperation: (collection) => collection.lastIndexOf(4),
 
             expectedResult: -1
         });
@@ -26,7 +26,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(2),
+            applyOperation: (collection) => collection.lastIndexOf(2),
 
             expectedResult: 4
         });
@@ -36,7 +36,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(2, 3),
+            applyOperation: (collection) => collection.lastIndexOf(2, 3),
 
             expectedResult: 1
         });
@@ -46,7 +46,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(2, -5),
+            applyOperation: (collection) => collection.lastIndexOf(2, -5),
 
             expectedResult: 1
         });
@@ -56,7 +56,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(2, -10),
+            applyOperation: (collection) => collection.lastIndexOf(2, -10),
 
             expectedResult: -1
         });
@@ -66,7 +66,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(2, 6),
+            applyOperation: (collection) => collection.lastIndexOf(2, 6),
 
             expectedResult: 4
         });
@@ -76,7 +76,7 @@ describe('ObservableCollection.lastIndexOf', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 1, 2, 3],
 
-            applyOperation: collection => collection.lastIndexOf(2, 10),
+            applyOperation: (collection) => collection.lastIndexOf(2, 10),
 
             expectedResult: 4
         });
@@ -89,7 +89,8 @@ describe('ObservableCollection.lastIndexOf', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.lastIndexOf(2);
-            })
+            }
+        )
             .not
             .toThrow();
     });

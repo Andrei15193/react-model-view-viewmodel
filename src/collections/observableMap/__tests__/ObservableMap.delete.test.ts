@@ -6,7 +6,7 @@ describe('ObservableMap.delete', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [],
 
-            applyOperation: map => map.delete(1),
+            applyOperation: (map) => map.delete(1),
 
             expectedResult: false
         });
@@ -22,7 +22,7 @@ describe('ObservableMap.delete', (): void => {
             ],
             changedProperties: ['size'],
 
-            applyOperation: map => map.delete(2),
+            applyOperation: (map) => map.delete(2),
 
             expectedMap: [
                 [1, 'a'],
@@ -40,7 +40,7 @@ describe('ObservableMap.delete', (): void => {
                 [3, 'c']
             ],
 
-            applyOperation: map => map.delete(4),
+            applyOperation: (map) => map.delete(4),
 
             expectedResult: false
         });
@@ -57,7 +57,8 @@ describe('ObservableMap.delete', (): void => {
 
                 for (const _ of observableMap)
                     observableMap.delete(2);
-            })
+            }
+        )
             .toThrow(new Error('Map has changed while being iterated.'));
     });
 
@@ -72,7 +73,8 @@ describe('ObservableMap.delete', (): void => {
 
                 for (const _ of observableMap)
                     observableMap.delete(4);
-            })
+            }
+        )
             .not
             .toThrow();
     });

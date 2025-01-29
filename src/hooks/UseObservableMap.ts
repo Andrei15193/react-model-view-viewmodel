@@ -18,7 +18,7 @@ export function useObservableMap<TObservableMap extends INotifyMapChanged<TKey, 
                 handle() {
                     setState({});
                 }
-            }
+            };
 
             if (observableMap !== null && observableMap !== undefined)
                 observableMap.mapChanged.subscribe(mapChangedEventHandler);
@@ -26,7 +26,7 @@ export function useObservableMap<TObservableMap extends INotifyMapChanged<TKey, 
             return () => {
                 if (observableMap !== null && observableMap !== undefined)
                     observableMap.mapChanged.unsubscribe(mapChangedEventHandler);
-            }
+            };
         },
         [observableMap]
     );

@@ -1,8 +1,8 @@
+import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
 import type { ICollectionChangedEventHandler, INotifyCollectionChanged } from '../../collections';
 import type { IEventHandler } from '../../events';
-import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
-import { ValidationTrigger } from './ValidationTrigger';
 import { resolveAllValidationTriggers } from './resolveAllValidationTriggers';
+import { ValidationTrigger } from './ValidationTrigger';
 
 interface IItemValidationTriggers {
     itemCount: number;
@@ -34,15 +34,15 @@ export interface ICollectionItemValidationTriggerConfig<TItem> {
 /**
  * Represents a collection item validation trigger. Instead of triggering a validation only when the collection changes,
  * a validation may be triggered by any of the contained items when they themselves change.
- * 
+ *
  * This is useful when within the collection there is a field that needs to be unique,
  * such as a unique name for each item in the collection.
- * 
+ *
  * @template TItem The type of items the collection contains.
  */
 export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<INotifyCollectionChanged<TItem> & Iterable<TItem>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;
-    private readonly _shouldTriggerValidation: (item: TItem) => boolean;
+    private readonly _shouldTriggerValidation: (item: TItem)=> boolean;
     private readonly _itemValidationTriggersByItem: Map<TItem, IItemValidationTriggers>;
     private readonly _collectionChangedEventHandler: ICollectionChangedEventHandler<INotifyCollectionChanged<TItem>, TItem>;
 
@@ -66,13 +66,13 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
             handle: (_, { addedItems, removedItems }) => {
                 addedItems.forEach(this._ensureItemValidationTriggers, this);
 
-                removedItems.forEach(removedItem => {
+                removedItems.forEach((removedItem) => {
                     const itemEventHandler = this._itemValidationTriggersByItem.get(removedItem);
                     if (itemEventHandler !== null && itemEventHandler !== undefined) {
                         itemEventHandler.itemCount--;
 
                         if (itemEventHandler.itemCount === 0) {
-                            itemEventHandler.validationTriggers.forEach(validationTrigger => {
+                            itemEventHandler.validationTriggers.forEach((validationTrigger) => {
                                 validationTrigger.validationTriggered.unsubscribe(itemEventHandler.validationTriggerEventHandler);
                             });
                             this._itemValidationTriggersByItem.delete(removedItem);
@@ -81,7 +81,7 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
                 });
 
                 this.notifyValidationTriggered();
-            },
+            }
         };
     }
 
@@ -89,7 +89,8 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
      * Subscribes to collection and item changes.
      */
     protected subscribeToTarget(): void {
-        Array.from(this.trigger).forEach(this._ensureItemValidationTriggers, this);
+        Array.from(this.trigger)
+            .forEach(this._ensureItemValidationTriggers, this);
         this.trigger.collectionChanged.subscribe(this._collectionChangedEventHandler);
     }
 
@@ -100,7 +101,7 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
         this.trigger.collectionChanged.unsubscribe(this._collectionChangedEventHandler);
 
         this._itemValidationTriggersByItem.forEach(({ validationTriggers, validationTriggerEventHandler }) => {
-            validationTriggers.forEach(validationTrigger => {
+            validationTriggers.forEach((validationTrigger) => {
                 validationTrigger.validationTriggered.unsubscribe(validationTriggerEventHandler);
             });
         });
@@ -114,11 +115,11 @@ export class CollectionItemValidationTrigger<TItem> extends ValidationTrigger<IN
                 handle: () => {
                     if (this._shouldTriggerValidation(item))
                         this.notifyValidationTriggered();
-                },
+                }
             };
 
             const resolvedValidationTriggers = resolveAllValidationTriggers(this._validationTriggerSelector(item));
-            resolvedValidationTriggers.forEach(validationTrigger => {
+            resolvedValidationTriggers.forEach((validationTrigger) => {
                 validationTrigger.validationTriggered.subscribe(validationTriggerEventHandler);
             });
 

@@ -6,7 +6,7 @@ describe('ObservableCollection.join', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.join(),
+            applyOperation: (collection) => collection.join(),
 
             expectedResult: ''
         });
@@ -16,7 +16,7 @@ describe('ObservableCollection.join', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.join('-'),
+            applyOperation: (collection) => collection.join('-'),
 
             expectedResult: ''
         });
@@ -26,9 +26,10 @@ describe('ObservableCollection.join', (): void => {
         testBlankMutatingOperation<unknown>({
             initialState: [null, undefined, 1, 'A', { prop: 'value' }, new Date('2024-05-05'), ObservableCollection],
 
-            applyOperation: collection => collection.join(),
+            applyOperation: (collection) => collection.join(),
 
-            expectedResult: `,,1,A,[object Object],${new Date('2024-05-05').toString()},${ObservableCollection.toString()}`
+            expectedResult: `,,1,A,[object Object],${new Date('2024-05-05')
+                .toString()},${ObservableCollection.toString()}`
         });
     });
 
@@ -36,9 +37,10 @@ describe('ObservableCollection.join', (): void => {
         testBlankMutatingOperation<unknown>({
             initialState: [null, undefined, 1, 'A', { prop: 'value' }, new Date('2024-05-05'), ObservableCollection],
 
-            applyOperation: collection => collection.join('-'),
+            applyOperation: (collection) => collection.join('-'),
 
-            expectedResult: `--1-A-[object Object]-${new Date('2024-05-05').toString()}-${ObservableCollection.toString()}`
+            expectedResult: `--1-A-[object Object]-${new Date('2024-05-05')
+                .toString()}-${ObservableCollection.toString()}`
         });
     });
 
@@ -46,9 +48,10 @@ describe('ObservableCollection.join', (): void => {
         testBlankMutatingOperation<unknown>({
             initialState: [null, undefined, 1, 'A', { prop: 'value' }, new Date('2024-05-05'), ObservableCollection],
 
-            applyOperation: collection => collection.join(undefined),
+            applyOperation: (collection) => collection.join(undefined),
 
-            expectedResult: `,,1,A,[object Object],${new Date('2024-05-05').toString()},${ObservableCollection.toString()}`
+            expectedResult: `,,1,A,[object Object],${new Date('2024-05-05')
+                .toString()},${ObservableCollection.toString()}`
         });
     });
 
@@ -57,11 +60,12 @@ describe('ObservableCollection.join', (): void => {
             initialState: [null, undefined, 1, 'A', { prop: 'value' }, new Date('2024-05-05'), ObservableCollection],
 
             applyOperation: {
-                applyArrayOperation: collection => collection.join(null!),
-                applyCollectionOperation: collection => collection.join(null),
+                applyArrayOperation: (collection) => collection.join(null!),
+                applyCollectionOperation: (collection) => collection.join(null)
             },
 
-            expectedResult: `nullnull1nullAnull[object Object]null${new Date('2024-05-05').toString()}null${ObservableCollection.toString()}`
+            expectedResult: `nullnull1nullAnull[object Object]null${new Date('2024-05-05')
+                .toString()}null${ObservableCollection.toString()}`
         });
     });
 
@@ -72,7 +76,8 @@ describe('ObservableCollection.join', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.join();
-            })
+            }
+        )
             .not
             .toThrow();
     });

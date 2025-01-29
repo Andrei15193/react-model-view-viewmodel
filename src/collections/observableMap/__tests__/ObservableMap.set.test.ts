@@ -8,7 +8,7 @@ describe('ObservableMap.set', (): void => {
             initialState: [],
             changedProperties: ['size'],
 
-            applyOperation: map => map.set(1, 'a'),
+            applyOperation: (map) => map.set(1, 'a'),
 
             expectedMap: [[1, 'a']],
             expectedResult: selfResult
@@ -25,7 +25,7 @@ describe('ObservableMap.set', (): void => {
             ],
             changedProperties: ['size'],
 
-            applyOperation: map => map.set(4, 'd'),
+            applyOperation: (map) => map.set(4, 'd'),
 
             expectedMap: [
                 [1, 'a'],
@@ -47,7 +47,7 @@ describe('ObservableMap.set', (): void => {
             ],
             changedProperties: [],
 
-            applyOperation: map => map.set(2, 'd'),
+            applyOperation: (map) => map.set(2, 'd'),
 
             expectedMap: [
                 [1, 'a'],
@@ -66,7 +66,7 @@ describe('ObservableMap.set', (): void => {
                 [3, 'c']
             ],
 
-            applyOperation: map => map.set(2, 'b'),
+            applyOperation: (map) => map.set(2, 'b'),
             expectedResult: selfResult
         });
     });
@@ -82,7 +82,8 @@ describe('ObservableMap.set', (): void => {
 
                 for (const _ of observableMap)
                     observableMap.set(2, 'b');
-            })
+            }
+        )
             .not
             .toThrow();
     });
@@ -98,7 +99,8 @@ describe('ObservableMap.set', (): void => {
 
                 for (const _ of observableMap)
                     observableMap.set(4, 'd');
-            })
+            }
+        )
             .toThrow(new Error('Map has changed while being iterated.'));
     });
 
@@ -113,7 +115,8 @@ describe('ObservableMap.set', (): void => {
 
                 for (const _ of observableMap)
                     observableMap.set(2, 'd');
-            })
+            }
+        )
             .toThrow(new Error('Map has changed while being iterated.'));
     });
 });

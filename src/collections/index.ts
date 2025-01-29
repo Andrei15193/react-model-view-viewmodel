@@ -17,7 +17,7 @@ export {
 
     ObservableCollection,
     ReadOnlyObservableCollection
-} from './observableCollections'
+} from './observableCollections';
 
 export {
     type INotifySetChanged,

@@ -1,5 +1,5 @@
-import type { IEventHandler } from '../../events';
 import type { ICollectionChange } from './ICollectionChange';
+import type { IEventHandler } from '../../events';
 
 /**
  * A specialized interface for handling collection changed events.

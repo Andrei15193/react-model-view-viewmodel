@@ -9,8 +9,8 @@ describe('ObservableSet.isSubsetOf', (): void => {
             initialState: [1, 2],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSubsetOf(other),
-                applySetOperation: set => isSubsetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSubsetOf(other),
+                applySetOperation: (set) => isSubsetOf(set, other)
             },
 
             expectedResult: true
@@ -24,8 +24,8 @@ describe('ObservableSet.isSubsetOf', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSubsetOf(other),
-                applySetOperation: set => isSubsetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSubsetOf(other),
+                applySetOperation: (set) => isSubsetOf(set, other)
             },
 
             expectedResult: false
@@ -39,8 +39,8 @@ describe('ObservableSet.isSubsetOf', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSubsetOf(other),
-                applySetOperation: set => isSubsetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSubsetOf(other),
+                applySetOperation: (set) => isSubsetOf(set, other)
             },
 
             expectedResult: false
@@ -54,8 +54,8 @@ describe('ObservableSet.isSubsetOf', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSubsetOf(other),
-                applySetOperation: set => isSubsetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSubsetOf(other),
+                applySetOperation: (set) => isSubsetOf(set, other)
             },
 
             expectedResult: false
@@ -69,8 +69,8 @@ describe('ObservableSet.isSubsetOf', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isSubsetOf(other),
-                applySetOperation: set => isSubsetOf(set, other)
+                applyObservableSetOperation: (set) => set.isSubsetOf(other),
+                applySetOperation: (set) => isSubsetOf(set, other)
             },
 
             expectedResult: true
@@ -94,14 +94,16 @@ describe('ObservableSet.isSubsetOf', (): void => {
                         has: other.includes.bind(other)
                     });
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });
 
 function isSubsetOf<TItem>(set: Set<TItem>, other: readonly TItem[]): boolean {
     return (
-        Array.from(set).every(item => other.includes(item))
+        Array.from(set)
+            .every((item) => other.includes(item))
     );
 }

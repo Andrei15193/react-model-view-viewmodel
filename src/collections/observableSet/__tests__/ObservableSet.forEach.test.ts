@@ -10,15 +10,17 @@ describe('ObservableSet.forEach', (): void => {
             initialState: [],
 
             applyOperation: {
-                applySetOperation: set => set.forEach(_ => setInvocationCount++),
-                applyObservableSetOperation: observableSet => observableSet.forEach(_ => observableSetInvocationCount++)
+                applySetOperation: (set) => set.forEach((_) => setInvocationCount++),
+                applyObservableSetOperation: (observableSet) => observableSet.forEach((_) => observableSetInvocationCount++)
             },
 
             expectedResult: undefined
         });
 
-        expect(setInvocationCount).toBe(0);
-        expect(observableSetInvocationCount).toBe(0);
+        expect(setInvocationCount)
+            .toBe(0);
+        expect(observableSetInvocationCount)
+            .toBe(0);
     });
 
     it('iterating over a set invokes the callback for each item', (): void => {
@@ -29,14 +31,15 @@ describe('ObservableSet.forEach', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applySetOperation: set => set.forEach(item => setItems.push(item)),
-                applyObservableSetOperation: observableSet => observableSet.forEach(item => observableSetItems.push(item))
+                applySetOperation: (set) => set.forEach((item) => setItems.push(item)),
+                applyObservableSetOperation: (observableSet) => observableSet.forEach((item) => observableSetItems.push(item))
             },
 
             expectedResult: undefined
         });
 
-        expect(observableSetItems).toEqual(setItems);
+        expect(observableSetItems)
+            .toEqual(setItems);
     });
 
     it('calling forEach passes arguments to each parameter accordingly', (): void => {
@@ -45,14 +48,18 @@ describe('ObservableSet.forEach', (): void => {
         observableSet.forEach((item, key, set) => {
             invocationCount++;
 
-            expect(item).toBe(1);
-            expect(key).toBe(item);
-            expect(set).toStrictEqual(observableSet);
+            expect(item)
+                .toBe(1);
+            expect(key)
+                .toBe(item);
+            expect(set)
+                .toStrictEqual(observableSet);
 
             return true;
         });
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('calling forEach with context passes it to the callback', (): void => {
@@ -63,27 +70,33 @@ describe('ObservableSet.forEach', (): void => {
             function (item, key, set) {
                 invocationCount++;
 
-                expect(this).toStrictEqual(context);
-                expect(item).toBe(1);
-                expect(key).toBe(item);
-                expect(set).toStrictEqual(observableSet);
+                expect(this)
+                    .toStrictEqual(context);
+                expect(item)
+                    .toBe(1);
+                expect(key)
+                    .toBe(item);
+                expect(set)
+                    .toStrictEqual(observableSet);
 
                 return true;
             },
             context
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the set while executing forEach throws exception', (): void => {
         expect(
             () => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);
-                observableSet.forEach(_ => {
+                observableSet.forEach((_) => {
                     observableSet.clear();
                 });
-            })
+            }
+        )
             .toThrow(new Error('Set has changed while being iterated.'));
     });
 
@@ -93,8 +106,10 @@ describe('ObservableSet.forEach', (): void => {
                 const observableSet = new ObservableSet<number>([1, 2, 3]);
 
                 for (const _ of observableSet)
-                    observableSet.forEach(_ => {});
-            })
+                    observableSet.forEach((_) => {
+                    });
+            }
+        )
             .not
             .toThrow();
     });

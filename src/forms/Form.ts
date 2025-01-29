@@ -1,9 +1,9 @@
 import type { IPropertiesChangedEventHandler } from '../viewModels';
+import type { IFormFieldConfig, FormField } from './FormField';
 import type { IReadOnlyFormCollection } from './IReadOnlyFormCollection';
 import type { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
 import { type IReadOnlyObservableCollection, type IObservableCollection, type ICollectionChangedEventHandler, type ICollectionReorderedEventHandler, ObservableCollection, ReadOnlyObservableCollection } from '../collections';
 import { type IValidatable, type IObjectValidator, type WellKnownValidationTrigger, type ValidationTrigger, Validatable, ObjectValidator } from '../validation';
-import { type IFormFieldConfig, FormField } from './FormField';
 import { FormCollection } from './FormCollection';
 
 /**
@@ -373,11 +373,11 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
         };
         this.fields.collectionChanged.subscribe({
             handle(_, { addedItems: addedFields, removedItems: removedFields }) {
-                removedFields.forEach(removedField => {
+                removedFields.forEach((removedField) => {
                     removedField.propertiesChanged.unsubscribe(fieldChangedEventHandler);
                     removedField.reset();
                 });
-                addedFields.forEach(addedField => {
+                addedFields.forEach((addedField) => {
                     addedField.propertiesChanged.subscribe(fieldChangedEventHandler);
                 });
             }
@@ -388,10 +388,10 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
         };
         this.sections.collectionChanged.subscribe({
             handle(_, { addedItems: addedSections, removedItems: removedSections }) {
-                removedSections.forEach(removedSection => {
+                removedSections.forEach((removedSection) => {
                     removedSection.propertiesChanged.unsubscribe(sectionChangedEventHandler);
                 });
-                addedSections.forEach(addedSection => {
+                addedSections.forEach((addedSection) => {
                     addedSection.propertiesChanged.subscribe(sectionChangedEventHandler);
                 });
             }
@@ -402,11 +402,11 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
         };
         this._sections.aggregatedCollections.collectionChanged.subscribe({
             handle(_, { addedItems: addedSectionsConllections, removedItems: removedSectionsCollections }) {
-                removedSectionsCollections.forEach(removedSectionsCollection => {
+                removedSectionsCollections.forEach((removedSectionsCollection) => {
                     removedSectionsCollection.propertiesChanged.unsubscribe(sectionsCollectionsChangedEventHandler);
                     removedSectionsCollection.reset();
                 });
-                addedSectionsConllections.forEach(addedSectionsCollection => {
+                addedSectionsConllections.forEach((addedSectionsCollection) => {
                     addedSectionsCollection.propertiesChanged.subscribe(sectionsCollectionsChangedEventHandler);
                 });
             }
@@ -471,7 +471,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      *     return;
      * }
      * ```
-     * 
+     *
      * This covers most cases, however there are scenarios where fields have interdependencies. For this,
      * validation can only be configured after both have been initialized. For instance, if start date
      * should show a validation error when it is past the end date, this can only be done by configuring
@@ -611,17 +611,14 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * custom validation trigger.
      */
     public readonly validation: IObjectValidator<this, TValidationError>;
-
     /**
      * Gets the fields defined within the form instance.
      */
     public readonly fields: IReadOnlyObservableCollection<FormField<unknown, TValidationError>>;
-
     /**
      * Gets the sections defined within the form instance.
      */
     public readonly sections: IReadOnlyObservableCollection<Form<TValidationError>>;
-
     /**
      * Gets the sections collections defined within the form instance.
      */
@@ -635,8 +632,8 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
     public get isValid(): boolean {
         return (
             super.isValid
-            && this.fields.every(field => field.isValid)
-            && this.sectionsCollections.every(sectionsCollection => sectionsCollection.isValid)
+                && this.fields.every((field) => field.isValid)
+                && this.sectionsCollections.every((sectionsCollection) => sectionsCollection.isValid)
         );
     }
 
@@ -648,8 +645,8 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
     public get isInvalid(): boolean {
         return (
             super.isInvalid
-            || this.fields.some(field => field.isInvalid)
-            || this.sectionsCollections.some(sectionsCollection => sectionsCollection.isInvalid)
+                || this.fields.some((field) => field.isInvalid)
+                || this.sectionsCollections.some((sectionsCollection) => sectionsCollection.isInvalid)
         );
     }
 
@@ -659,10 +656,10 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * Validation and other flags are reset, fields retain their current values.
      */
     public reset(): void {
-        this.sectionsCollections.forEach(sectionsCollection => {
+        this.sectionsCollections.forEach((sectionsCollection) => {
             sectionsCollection.reset();
         });
-        this.fields.forEach(field => field.reset());
+        this.fields.forEach((field) => field.reset());
         this.validation.reset();
     }
 
@@ -852,7 +849,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * Invoked when a field's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
     protected onFieldChanged(field: FormField<unknown, TValidationError>, changedProperties: readonly (keyof FormField<unknown, TValidationError>)[]) {
-        if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
+        if (changedProperties.some((changedProperty) => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
 
@@ -866,7 +863,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * Invoked when a section's properies change, this is a plugin method through which notification propagation can be made with ease.
      */
     protected onSectionsCollectionChanged(sectionsCollection: IReadOnlyFormCollection<Form<TValidationError>, TValidationError>, changedProperties: readonly (keyof IReadOnlyFormCollection<Form<TValidationError>, TValidationError>)[]) {
-        if (changedProperties.some(changedProperty => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
+        if (changedProperties.some((changedProperty) => changedProperty === 'isValid' || changedProperty === 'isInvalid'))
             this.notifyPropertiesChanged('isValid', 'isInvalid');
     }
 
@@ -877,7 +874,7 @@ export class Form<TValidationError = string> extends Validatable<TValidationErro
      * @returns Returns `true` if a validation should be triggered for the given changed properties; otherwise `false`.
      */
     protected onShouldTriggerValidation(changedProperties: readonly (keyof this)[]): boolean {
-        return changedProperties.some(changedProperty => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');
+        return changedProperties.some((changedProperty) => changedProperty !== 'error' && changedProperty !== 'isValid' && changedProperty !== 'isInvalid');
     }
 }
 
@@ -909,17 +906,18 @@ class AggregateObservableCollection<TItem, TAggregateCollection extends IReadOnl
 
         this.aggregatedCollections.collectionChanged.subscribe({
             handle: (_, { startIndex, addedItems: addedCollections, removedItems: removedCollections }) => {
-                removedCollections.forEach(removedCollection => {
+                removedCollections.forEach((removedCollection) => {
                     removedCollection.collectionReordered.unsubscribe(collectionReorderedEventHandler);
                     removedCollection.collectionChanged.unsubscribe(collectionChangedEventHandler);
                 });
 
-                addedCollections.forEach(addedCollection => {
+                addedCollections.forEach((addedCollection) => {
                     addedCollection.collectionChanged.subscribe(collectionChangedEventHandler);
                     addedCollection.collectionReordered.subscribe(collectionReorderedEventHandler);
                 });
 
-                let offset = 0, index = 0;
+                let offset = 0,
+                    index = 0;
                 while (index < startIndex && index < this.aggregatedCollections.length) {
                     offset += this.aggregatedCollections[index].length;
                     index++;
@@ -931,6 +929,7 @@ class AggregateObservableCollection<TItem, TAggregateCollection extends IReadOnl
                     ...addedCollections.reduce(
                         (addedItems, addedCollection) => {
                             addedItems.push(...addedCollection);
+
                             return addedItems;
                         },
                         new Array<TItem>()

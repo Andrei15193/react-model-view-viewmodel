@@ -7,13 +7,13 @@ describe('ObservableCollection.with', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy[2] = 10;
 
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.with(2, 10)
+                applyCollectionOperation: (collection) => collection.with(2, 10)
             },
 
             expectedResult: [1, 2, 10]
@@ -25,13 +25,13 @@ describe('ObservableCollection.with', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => {
+                applyArrayOperation: (array) => {
                     const copy = array.slice();
                     copy[1] = 10;
 
                     return copy;
                 },
-                applyCollectionOperation: collection => collection.with(-2, 10)
+                applyCollectionOperation: (collection) => collection.with(-2, 10)
             },
 
             expectedResult: [1, 10, 3]
@@ -43,7 +43,8 @@ describe('ObservableCollection.with', (): void => {
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.with(3, 10);
-            })
+            }
+        )
             .toThrow(new RangeError('The provided index \'3\' is outside the bounds of the collection.'));
     });
 
@@ -52,7 +53,8 @@ describe('ObservableCollection.with', (): void => {
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.with(-4, 10);
-            })
+            }
+        )
             .toThrow(new RangeError('The provided index \'-4\' is outside the bounds of the collection.'));
     });
 
@@ -66,7 +68,8 @@ describe('ObservableCollection.with', (): void => {
                     observableCollection.with(index, 10);
                     index++;
                 }
-            })
+            }
+        )
             .not
             .toThrow();
     });

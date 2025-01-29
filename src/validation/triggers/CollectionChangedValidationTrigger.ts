@@ -45,7 +45,7 @@ export class CollectionChangedValidationTrigger<TItem = unknown, TCollection ext
                 if (!shouldTriggerValidation || shouldTriggerValidation(collection, collectionChange))
                     this._notifyValidationTriggered();
             }
-        }
+        };
     }
 
     /**

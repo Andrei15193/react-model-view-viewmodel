@@ -11,13 +11,15 @@ describe('SetChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         set.add(1);
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('validation is not triggered when set changes but check returns false', (): void => {
@@ -32,13 +34,15 @@ describe('SetChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         set.add(1);
 
-        expect(invocationCount).toBe(0);
+        expect(invocationCount)
+            .toBe(0);
     });
 
     it('validation is triggered when set changes and check returns true', (): void => {
@@ -53,12 +57,14 @@ describe('SetChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         set.add(1);
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 });

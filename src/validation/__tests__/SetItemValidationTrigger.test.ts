@@ -16,13 +16,15 @@ describe('SetItemValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         item.viewModel.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('validation is triggered when an item is added to the set', (): void => {
@@ -37,14 +39,16 @@ describe('SetItemValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         const item = new TestItem();
         set.add(item);
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('validation is triggered each time a unique item is added to the set and triggered once when it changes ', (): void => {
@@ -59,22 +63,27 @@ describe('SetItemValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         const item = new TestItem();
         set.add(item);
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
 
         set.add(item);
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
 
         set.add(item);
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
 
         item.viewModel.notifyPropertiesChanged();
-        expect(invocationCount).toBe(2);
+        expect(invocationCount)
+            .toBe(2);
     });
 
     it('validation is no longer triggered when a removed item changes', () => {
@@ -91,18 +100,22 @@ describe('SetItemValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         set.delete(item1);
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
 
         item1.viewModel.notifyPropertiesChanged();
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
 
         item2.viewModel.notifyPropertiesChanged();
-        expect(invocationCount).toBe(2);
+        expect(invocationCount)
+            .toBe(2);
     });
 
     it('validation is not triggered when check returns false', () => {
@@ -117,21 +130,26 @@ describe('SetItemValidationTrigger', (): void => {
             },
             shouldTriggerValidation(actualItem) {
                 checkInvocationCount++;
-                expect(actualItem).toStrictEqual(item);
+                expect(actualItem)
+                    .toStrictEqual(item);
+
                 return false;
             }
         });
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         item.viewModel.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(0);
-        expect(checkInvocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(0);
+        expect(checkInvocationCount)
+            .toBe(1);
     });
 });
 

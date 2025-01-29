@@ -9,7 +9,7 @@ import { selfResult } from './selfResult';
 export interface ITestBlankMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
 
-    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>)=> unknown) | {
         applyArrayOperation(array: TItem[]): unknown;
         applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
     };
@@ -61,14 +61,22 @@ export function testBlankMutatingOperation<TItem>({ initialState, applyOperation
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollectionAfterOperation) : applyOperation.applyCollectionOperation(observableCollectionAfterOperation);
 
     expectCollectionsToBeEqual(observableCollectionAfterOperation, initialState);
-    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : expectedResult);
+    expect(observableCollectionResult)
+        .toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : expectedResult);
 
-    expect(collectionChangedRaiseCount).toBe(0);
-    expect(propertiesChangedRaiseCount).toBe(0);
+    expect(collectionChangedRaiseCount)
+        .toBe(0);
+    expect(collectionReorderedRaiseCount)
+        .toBe(0);
+    expect(propertiesChangedRaiseCount)
+        .toBe(0);
 
     expectCollectionsToBeEqual(observableCollectionAfterOperation, arrayAfterOperation);
-    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : arrayResult);
+    expect(observableCollectionResult)
+        .toEqual(expectedResult === selfResult ? observableCollectionAfterOperation : arrayResult);
 
-    expect(arrayAfterOperation).toEqual(arrayBeforeOperation);
-    expect(observableCollectionAfterOperation).toEqual(observableCollectionBeforeOperation);
+    expect(arrayAfterOperation)
+        .toEqual(arrayBeforeOperation);
+    expect(observableCollectionAfterOperation)
+        .toEqual(observableCollectionBeforeOperation);
 }

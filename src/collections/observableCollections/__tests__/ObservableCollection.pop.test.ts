@@ -6,7 +6,7 @@ describe('ObservableCollection.pop', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.pop(),
+            applyOperation: (collection) => collection.pop(),
 
             expectedResult: undefined
         });
@@ -18,7 +18,7 @@ describe('ObservableCollection.pop', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 2],
 
-            applyOperation: collection => collection.pop(),
+            applyOperation: (collection) => collection.pop(),
 
             expectedCollection: [1, 2],
             expectedResult: 3
@@ -32,8 +32,9 @@ describe('ObservableCollection.pop', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.pop();
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('popping items from empty collection while iterating does not break iterators', (): void => {
@@ -45,8 +46,9 @@ describe('ObservableCollection.pop', (): void => {
                 observableCollection.pop();
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

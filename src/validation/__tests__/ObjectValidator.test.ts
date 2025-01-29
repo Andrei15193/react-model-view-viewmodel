@@ -1,6 +1,6 @@
 import type { IValidatable } from '../IValidatable';
-import { ViewModel } from '../../viewModels';
 import { ObservableCollection, ObservableSet, ObservableMap } from '../../collections';
+import { ViewModel } from '../../viewModels';
 import { ObjectValidator } from '../objectValidator/ObjectValidator';
 
 describe('ObjectValidator', () => {
@@ -11,11 +11,14 @@ describe('ObjectValidator', () => {
         const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(() => {
             invocationCount++;
+
             return 'test error';
         });
 
-        expect(invocationCount).toBe(1);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(1);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('changing the target triggers a validation', () => {
@@ -25,12 +28,15 @@ describe('ObjectValidator', () => {
         const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add(() => {
             invocationCount++;
+
             return 'test error';
         });
         validatable.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('changing the target triggers the validation one more time when changed target properties are ignored', () => {
@@ -45,12 +51,15 @@ describe('ObjectValidator', () => {
         });
         objectValidator.add(() => {
             invocationCount++;
+
             return 'test error';
         });
         validatable.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(3);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(3);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('using multiple validators executes them until first invalid one', () => {
@@ -62,30 +71,35 @@ describe('ObjectValidator', () => {
             {
                 validate() {
                     validatorCalls.push('validator 1');
+
                     return null;
                 }
             },
             {
                 validate() {
                     validatorCalls.push('validator 2');
+
                     return undefined;
                 }
             },
             {
                 validate() {
                     validatorCalls.push('validator 3');
+
                     return '';
                 }
             },
             {
                 validate() {
                     validatorCalls.push('validator 4');
+
                     return null;
                 }
             }
         );
 
-        expect(validatorCalls).toEqual(['validator 1', 'validator 2', 'validator 3']);
+        expect(validatorCalls)
+            .toEqual(['validator 1', 'validator 2', 'validator 3']);
     });
 
     it('adding a view model trigger validates target when it changes', () => {
@@ -97,14 +111,17 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
             .add(viewModelValidationTrigger);
         viewModelValidationTrigger.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding an observable collection trigger validates target when it changes', () => {
@@ -116,14 +133,17 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
             .add(observableCollectionValidationTrigger);
         observableCollectionValidationTrigger.push(1);
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding an observable collection trigger validates target when it reorders', () => {
@@ -135,14 +155,17 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
             .add(observableCollectionValidationTrigger);
         observableCollectionValidationTrigger.reverse();
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding an observable set trigger validates target when it changes', () => {
@@ -154,14 +177,17 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
             .add(observableSetValidationTrigger);
         observableSetValidationTrigger.add(1);
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding an observable map trigger validates target when it changes', () => {
@@ -173,14 +199,17 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
             .add(observableMapValidationTrigger);
         observableMapValidationTrigger.set(1, 'a');
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding an item trigger validates target when an item changes', () => {
@@ -193,15 +222,18 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
-            .add([observableCollection, item => [item]]);
+            .add([observableCollection, (item) => [item]]);
 
         item.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding a set item trigger validates target when an item changes', () => {
@@ -214,15 +246,18 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
-            .add([observableSet, item => [item]]);
+            .add([observableSet, (item) => [item]]);
 
         item.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding a map item trigger validates target when an item changes', () => {
@@ -235,15 +270,18 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error';
             })
             .triggers
-            .add([observableMap, item => [item]]);
+            .add([observableMap, (item) => [item]]);
 
         item.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(2);
-        expect(validatable.error).toBe('test error');
+        expect(invocationCount)
+            .toBe(2);
+        expect(validatable.error)
+            .toBe('test error');
     });
 
     it('adding validation triggers multiple times only registers them once', () => {
@@ -257,7 +295,7 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(
                 () => 'test error 1',
-                () => 'test error 2',
+                () => 'test error 2'
             )
             .triggers
             .add(viewModelValidationTrigger)
@@ -269,11 +307,16 @@ describe('ObjectValidator', () => {
             .add(observableSetValidationTrigger)
             .add(observableMapValidationTrigger);
 
-        expect(objectValidator.triggers.size).toBe(4);
-        expect(objectValidator.triggers).toContain(viewModelValidationTrigger);
-        expect(objectValidator.triggers).toContain(observableCollectionValidationTrigger);
-        expect(objectValidator.triggers).toContain(observableSetValidationTrigger);
-        expect(objectValidator.triggers).toContain(observableMapValidationTrigger);
+        expect(objectValidator.triggers.size)
+            .toBe(4);
+        expect(objectValidator.triggers)
+            .toContain(viewModelValidationTrigger);
+        expect(objectValidator.triggers)
+            .toContain(observableCollectionValidationTrigger);
+        expect(objectValidator.triggers)
+            .toContain(observableSetValidationTrigger);
+        expect(objectValidator.triggers)
+            .toContain(observableMapValidationTrigger);
     });
 
     it('removing validation triggers no longer trigger validation', () => {
@@ -285,6 +328,7 @@ describe('ObjectValidator', () => {
         objectValidator
             .add(() => {
                 invocationCount++;
+
                 return 'test error 1';
             })
             .triggers
@@ -293,7 +337,8 @@ describe('ObjectValidator', () => {
         objectValidator.triggers.clear();
         viewModelValidationTrigger.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('adding a validator calls its onAdd hook', () => {
@@ -303,7 +348,8 @@ describe('ObjectValidator', () => {
         const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add({
             onAdd(target) {
-                expect(target).toBe(validatable);
+                expect(target)
+                    .toBe(validatable);
                 hookInvocationCount++;
             },
             validate() {
@@ -311,7 +357,8 @@ describe('ObjectValidator', () => {
             }
         });
 
-        expect(hookInvocationCount).toBe(1);
+        expect(hookInvocationCount)
+            .toBe(1);
     });
 
     it('removing a validator calls its onRemove hook', () => {
@@ -321,7 +368,8 @@ describe('ObjectValidator', () => {
         const objectValidator = new ObjectValidator({ target: validatable });
         objectValidator.add({
             onRemove(target) {
-                expect(target).toBe(validatable);
+                expect(target)
+                    .toBe(validatable);
                 hookInvocationCount++;
             },
             validate() {
@@ -330,7 +378,8 @@ describe('ObjectValidator', () => {
         });
         objectValidator.reset();
 
-        expect(hookInvocationCount).toBe(1);
+        expect(hookInvocationCount)
+            .toBe(1);
     });
 });
 

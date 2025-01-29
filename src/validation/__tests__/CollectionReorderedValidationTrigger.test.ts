@@ -11,13 +11,15 @@ describe('CollectionReorderedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         collection.reverse();
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('validation is not triggered when collection changes but check returns false', (): void => {
@@ -32,13 +34,15 @@ describe('CollectionReorderedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         collection.reverse();
 
-        expect(invocationCount).toBe(0);
+        expect(invocationCount)
+            .toBe(0);
     });
 
     it('validation is triggered when collection changes and check returns true', (): void => {
@@ -53,12 +57,14 @@ describe('CollectionReorderedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         collection.reverse();
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 });

@@ -1,5 +1,5 @@
-import type { IEventHandler } from '../../events';
 import type { ICollectionReorder } from './ICollectionReorder';
+import type { IEventHandler } from '../../events';
 
 /**
  * A specialized interface for handling collection reorder events.

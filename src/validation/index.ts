@@ -9,7 +9,7 @@ export {
     type IObjectValidator,
     type IValidationTriggersSet,
     type IObjectValidatorConfig,
-    ObjectValidator,
+    ObjectValidator
 } from './objectValidator';
 
 export {
@@ -27,4 +27,4 @@ export {
     type IMapItemValidationTriggerConfig, MapItemValidationTrigger,
 
     resolveValidationTriggers, resolveAllValidationTriggers
-} from './triggers'
+} from './triggers';

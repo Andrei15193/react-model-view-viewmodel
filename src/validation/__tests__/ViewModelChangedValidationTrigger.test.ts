@@ -11,13 +11,15 @@ describe('ViewModelChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         viewModel.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('validation is not triggered when view model changes but check returns false', (): void => {
@@ -32,13 +34,15 @@ describe('ViewModelChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         viewModel.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(0);
+        expect(invocationCount)
+            .toBe(0);
     });
 
     it('validation is triggered when view model changes and check returns true', (): void => {
@@ -53,13 +57,15 @@ describe('ViewModelChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         viewModel.notifyPropertiesChanged();
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 });
 

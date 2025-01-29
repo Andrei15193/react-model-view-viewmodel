@@ -8,7 +8,8 @@ describe('ObservableCollection.reduceRight', (): void => {
         expect(
             () => {
                 observableCollection.reduceRight((previous, current) => previous + current);
-            })
+            }
+        )
             .toThrow(new Error('Cannot reduce an empty collection without providing an initial value.'));
     });
 
@@ -17,8 +18,8 @@ describe('ObservableCollection.reduceRight', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.reduceRight((previous, current) => previous * 10 + current),
-                applyCollectionOperation: collection => collection.reduceRight((previous, current) => previous * 10 + current)
+                applyArrayOperation: (array) => array.reduceRight((previous, current) => (previous * 10) + current),
+                applyCollectionOperation: (collection) => collection.reduceRight((previous, current) => (previous * 10) + current)
             },
 
             expectedResult: 321
@@ -32,8 +33,8 @@ describe('ObservableCollection.reduceRight', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.reduceRight(result => result, initialValue),
-                applyCollectionOperation: collection => collection.reduceRight(result => result, initialValue)
+                applyArrayOperation: (array) => array.reduceRight((result) => result, initialValue),
+                applyCollectionOperation: (collection) => collection.reduceRight((result) => result, initialValue)
             },
 
             expectedResult: initialValue
@@ -45,8 +46,8 @@ describe('ObservableCollection.reduceRight', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.reduceRight((result, current) => result + '0' + current.toString(), '0'),
-                applyCollectionOperation: collection => collection.reduceRight((result, current) => result + '0' + current.toString(), '0')
+                applyArrayOperation: (array) => array.reduceRight((result, current) => result + '0' + current.toString(), '0'),
+                applyCollectionOperation: (collection) => collection.reduceRight((result, current) => result + '0' + current.toString(), '0')
             },
 
             expectedResult: '0030201'
@@ -61,17 +62,22 @@ describe('ObservableCollection.reduceRight', (): void => {
             (result, item, index, collection) => {
                 invocationCount++;
 
-                expect(result).toBe(initialValue);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(result)
+                    .toBe(initialValue);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return item;
             },
             initialValue
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing reduceRight throws exception', (): void => {
@@ -80,20 +86,23 @@ describe('ObservableCollection.reduceRight', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.reduceRight((previous, current) => {
                     observableCollection.pop();
+
                     return previous + current;
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('calling reduceRight while iterating does not break iterators', (): void => {
         expect(
             () => {
-                    const observableCollection = new ObservableCollection<number>([1, 2, 3]);
+                const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
                     observableCollection.reduceRight((previous, current) => previous + current);
-            })
+            }
+        )
             .not
             .toThrow();
     });

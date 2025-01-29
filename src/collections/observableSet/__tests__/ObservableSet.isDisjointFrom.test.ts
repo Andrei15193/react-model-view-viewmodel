@@ -9,8 +9,8 @@ describe('ObservableSet.isDisjointFrom', (): void => {
             initialState: [3, 4, 5],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isDisjointFrom(other),
-                applySetOperation: set => isDisjointFrom(set, other)
+                applyObservableSetOperation: (set) => set.isDisjointFrom(other),
+                applySetOperation: (set) => isDisjointFrom(set, other)
             },
 
             expectedResult: false
@@ -24,8 +24,8 @@ describe('ObservableSet.isDisjointFrom', (): void => {
             initialState: [4, 5, 6],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isDisjointFrom(other),
-                applySetOperation: set => isDisjointFrom(set, other)
+                applyObservableSetOperation: (set) => set.isDisjointFrom(other),
+                applySetOperation: (set) => isDisjointFrom(set, other)
             },
 
             expectedResult: true
@@ -39,8 +39,8 @@ describe('ObservableSet.isDisjointFrom', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isDisjointFrom(other),
-                applySetOperation: set => isDisjointFrom(set, other)
+                applyObservableSetOperation: (set) => set.isDisjointFrom(other),
+                applySetOperation: (set) => isDisjointFrom(set, other)
             },
 
             expectedResult: true
@@ -54,8 +54,8 @@ describe('ObservableSet.isDisjointFrom', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.isDisjointFrom(other),
-                applySetOperation: set => isDisjointFrom(set, other)
+                applyObservableSetOperation: (set) => set.isDisjointFrom(other),
+                applySetOperation: (set) => isDisjointFrom(set, other)
             },
 
             expectedResult: true
@@ -79,15 +79,17 @@ describe('ObservableSet.isDisjointFrom', (): void => {
                         has: other.includes.bind(other)
                     });
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });
 
 function isDisjointFrom<TItem>(set: Set<TItem>, other: readonly TItem[]): boolean {
     return (
-        Array.from(set).every(item => !other.includes(item))
-        && other.every(item => !set.has(item))
+        Array.from(set)
+            .every((item) => !other.includes(item))
+            && other.every((item) => !set.has(item))
     );
 }

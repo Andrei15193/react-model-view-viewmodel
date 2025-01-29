@@ -1,14 +1,15 @@
+/* eslint-disable no-console */
 import type { Compiler, Configuration } from 'webpack';
-import path from 'path';
-import { Application, CommentDisplayPart, DeclarationReflection, ParameterReflection, ReferenceType, Reflection, ReflectionKind, ReflectionSymbolId, SignatureReflection, SomeType, TypeParameterReflection } from 'typedoc';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
+import path from 'path';
+import { Application, type CommentDisplayPart, type DeclarationReflection, type ParameterReflection, type ReferenceType, type Reflection, ReflectionKind, type ReflectionSymbolId, type SignatureReflection, type SomeType, type TypeParameterReflection } from 'typedoc';
 
 export default function (): Configuration {
     return {
         entry: './src/index.ts',
         mode: 'development',
         resolve: {
-            extensions: ['.tsx', '.ts', '.js'],
+            extensions: ['.tsx', '.ts', '.js']
         },
         output: {
             filename: 'index.js',
@@ -37,9 +38,7 @@ export default function (): Configuration {
                 amd: 'react'
             }
         },
-        plugins: [
-            new GenerateDocumentationPlugin()
-        ]
+        plugins: [new GenerateDocumentationPlugin()]
     };
 }
 
@@ -52,25 +51,26 @@ class GenerateDocumentationPlugin {
 
         readonly repository: {
             readonly url: string;
-        }
+        };
     };
     private readonly _declarationsById: Map<number, DeclarationReflection>;
     private _documentationIndex: IDocumentationIndex = null!;
 
     public constructor() {
-        this._packageInfo = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json')).toString());
+        this._packageInfo = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'))
+            .toString());
         this._declarationsById = new Map<number, DeclarationReflection>();
     }
 
     public apply(compiler: Compiler): void {
-        compiler.hooks.done.tapAsync('generate-documentation', async stats => {
+        compiler.hooks.done.tapAsync('generate-documentation', async (stats) => {
             if (stats.hasErrors())
                 console.error('Compilation has errors, did not generate documentation.');
             else {
                 await this._initializeAsync();
                 await this._generateDocumentationAsync();
             }
-        })
+        });
     }
 
     private async _initializeAsync(): Promise<void> {
@@ -88,12 +88,19 @@ class GenerateDocumentationPlugin {
             if (declaration.variant === 'declaration')
                 switch (declaration.kind) {
                     case ReflectionKind.TypeAlias:
+
                     case ReflectionKind.Interface:
+
                     case ReflectionKind.Class:
+
                     case ReflectionKind.Constructor:
+
                     case ReflectionKind.Property:
+
                     case ReflectionKind.Accessor:
+
                     case ReflectionKind.Method:
+
                     case ReflectionKind.Function:
                         this._declarationsById.set(declaration.id, declaration);
                         if (declaration.children && declaration.children.length > 0)
@@ -117,66 +124,69 @@ class GenerateDocumentationPlugin {
             await this._writeFileAsync(path.join(outputDirectory, '_Sidebar.md'), this._getSidebar());
             await this._writeFileAsync(path.join(outputDirectory, '_Footer.md'), this._getFooter());
 
-            await Promise.all(Array.from(this._declarationsById.values()).map(async declaration => {
-                try {
-                    const subDirectory1 = path.join(...declaration.sources!.at(0)!.fileName.split('/').slice(0, -1));
-                    let subDirectory2: string;
-                    let documentation: string | null = null;
-                    switch (declaration.kind) {
-                        case ReflectionKind.TypeAlias:
-                            subDirectory2 = 'aliases';
-                            documentation = this._getAliasDocumentation(declaration);
-                            break;
+            await Promise.all(Array.from(this._declarationsById.values())
+                .map(async (declaration) => {
+                    try {
+                        const subDirectory1 = path.join(...declaration.sources!.at(0)!.fileName.split('/')
+                            .slice(0, -1));
+                        let subDirectory2: string;
+                        let documentation: string | null = null;
+                        switch (declaration.kind) {
+                            case ReflectionKind.TypeAlias:
+                                subDirectory2 = 'aliases';
+                                documentation = this._getAliasDocumentation(declaration);
+                                break;
 
-                        case ReflectionKind.Interface:
-                            subDirectory2 = 'interfaces';
-                            documentation = this._getInterfaceDocumentation(declaration);
-                            break;
+                            case ReflectionKind.Interface:
+                                subDirectory2 = 'interfaces';
+                                documentation = this._getInterfaceDocumentation(declaration);
+                                break;
 
-                        case ReflectionKind.Class:
-                            subDirectory2 = 'classes';
-                            documentation = this._getClassDocumentation(declaration);
-                            break;
+                            case ReflectionKind.Class:
+                                subDirectory2 = 'classes';
+                                documentation = this._getClassDocumentation(declaration);
+                                break;
 
-                        case ReflectionKind.Constructor:
-                            if (!declaration.flags.isInherited) {
-                                subDirectory2 = 'constructors';
-                                documentation = this._getConstructorDocumentation(declaration);
-                            }
-                            break;
+                            case ReflectionKind.Constructor:
+                                if (!declaration.flags.isInherited) {
+                                    subDirectory2 = 'constructors';
+                                    documentation = this._getConstructorDocumentation(declaration);
+                                }
+                                break;
 
-                        case ReflectionKind.Property:
-                        case ReflectionKind.Accessor:
-                            if (!declaration.flags.isInherited) {
-                                subDirectory2 = 'properties';
-                                documentation = this._getPropertyDocumentation(declaration);
-                            }
-                            break;
+                            case ReflectionKind.Property:
 
-                        case ReflectionKind.Method:
-                            if (!declaration.flags.isInherited) {
-                                subDirectory2 = 'methods';
-                                documentation = this._getMethodDocumentation(declaration);
-                            }
-                            break;
+                            case ReflectionKind.Accessor:
+                                if (!declaration.flags.isInherited) {
+                                    subDirectory2 = 'properties';
+                                    documentation = this._getPropertyDocumentation(declaration);
+                                }
+                                break;
 
-                        case ReflectionKind.Function:
-                            subDirectory2 = 'functions';
-                            documentation = this._getFunctionDocumentation(declaration);
-                            break;
+                            case ReflectionKind.Method:
+                                if (!declaration.flags.isInherited) {
+                                    subDirectory2 = 'methods';
+                                    documentation = this._getMethodDocumentation(declaration);
+                                }
+                                break;
+
+                            case ReflectionKind.Function:
+                                subDirectory2 = 'functions';
+                                documentation = this._getFunctionDocumentation(declaration);
+                                break;
+                        }
+
+                        if (documentation !== null) {
+                            const directoryPath = path.join(outputDirectory, subDirectory1!, subDirectory2!);
+
+                            await this._createDirectoryAsync(directoryPath, { recursive: true });
+                            await this._writeFileAsync(path.join(directoryPath, `${this._getIdentifier(declaration)}.md`), documentation);
+                        }
                     }
-
-                    if (documentation !== null) {
-                        const directoryPath = path.join(outputDirectory, subDirectory1!, subDirectory2!);
-
-                        await this._createDirectoryAsync(directoryPath, { recursive: true });
-                        await this._writeFileAsync(path.join(directoryPath, `${this._getIdentifier(declaration)}.md`), documentation);
+                    catch (error) {
+                        throw new Error(`Could not generate documentation for '${declaration}' on '${declaration.parent}'.\n${error}.`);
                     }
-                }
-                catch (error) {
-                    throw new Error(`Could not generate documentation for '${declaration}' on '${declaration.parent}'.\n${error}.`);
-                }
-            }));
+                }));
         }
         catch (error) {
             console.error(error);
@@ -197,26 +207,26 @@ class GenerateDocumentationPlugin {
 
     private _getReadMe(): string {
         return (
-            `${this._packageInfo.description}\n` +
-            '\n' +
-            [
+            `${this._packageInfo.description}\n`
+            + '\n'
+            + [
                 '[Project Wiki](https://github.com/Andrei15193/react-model-view-viewmodel/wiki)',
                 '[Guides and Tutorials - Getting Started](https://github.com/Andrei15193/react-model-view-viewmodel/discussions/7)',
                 '[Project Discussions](https://github.com/Andrei15193/react-model-view-viewmodel/discussions)',
                 '[Releases](https://github.com/Andrei15193/react-model-view-viewmodel/releases)',
                 '[CodeSandbox](https://codesandbox.io/p/sandbox/react-mvvm-vwsqlv)'
-            ].join(' | ') + '\n' +
-            '\n' +
-            '**API**\n' +
-            '\n' +
-            this
+            ].join(' | ') + '\n'
+            + '\n'
+            + '**API**\n'
+            + '\n'
+            + this
                 ._documentationIndex
                 .namespaces
-                .map(namespace => {
+                .map((namespace) => {
                     return `* **${namespace.name}**\n` + namespace
                         .declarations
-                        .filter(declaration => declaration.promoted)
-                        .map(declaration => `  * [${this._getSimpleName(declaration)}](${this._getProjectReferenceUrl(declaration)})`)
+                        .filter((declaration) => declaration.promoted)
+                        .map((declaration) => `  * [${this._getSimpleName(declaration)}](${this._getProjectReferenceUrl(declaration)})`)
                         .join('\n');
                 })
                 .join('\n')
@@ -225,20 +235,20 @@ class GenerateDocumentationPlugin {
 
     private _getLandingPage(): string {
         return (
-            `${this._packageInfo.description}\n` +
-            '\n' +
-            overview.trim() +
-            '\n' +
-            landingPageNavigation +
-            '\n' +
-            motivation.trim() +
-            '\n' +
-            landingPageNavigation +
-            '\n' +
-            '### API\n\n' + this
+            `${this._packageInfo.description}\n`
+            + '\n'
+            + overview.trim()
+            + '\n'
+            + landingPageNavigation
+            + '\n'
+            + motivation.trim()
+            + '\n'
+            + landingPageNavigation
+            + '\n'
+            + '### API\n\n' + this
                 ._documentationIndex
                 .namespaces
-                .map(namespace => {
+                .map((namespace) => {
                     let listMarker = '*';
 
                     return `#### **${namespace.name}**\n` + namespace
@@ -251,9 +261,9 @@ class GenerateDocumentationPlugin {
                         })
                         .join('\n');
                 })
-                .join('\n') + '\n' +
-            '\n' +
-            landingPageNavigation
+                .join('\n') + '\n'
+                + '\n'
+                + landingPageNavigation
         );
     }
 
@@ -269,11 +279,11 @@ class GenerateDocumentationPlugin {
             + this
                 ._documentationIndex
                 .namespaces
-                .map(namespace => {
+                .map((namespace) => {
                     return `**${namespace.name}**  \n` + namespace
                         .declarations
-                        .filter(declaration => declaration.promoted)
-                        .map(declaration => `[${declaration.name}](${this._getProjectReferenceUrl(declaration)})`)
+                        .filter((declaration) => declaration.promoted)
+                        .map((declaration) => `[${declaration.name}](${this._getProjectReferenceUrl(declaration)})`)
                         .join('  \n');
                 })
                 .join('\n\n')
@@ -314,7 +324,8 @@ ${this._getRemarks(aliasDeclaration)}
 ${this._getGuidance(aliasDeclaration)}
 
 ${this._getReferences(aliasDeclaration)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getInterfaceDocumentation(interfaceDeclaration: DeclarationReflection): string {
@@ -350,7 +361,8 @@ ${this._getImplementations(interfaceDeclaration)}
 ${this._getGuidance(interfaceDeclaration)}
 
 ${this._getReferences(interfaceDeclaration)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getClassDocumentation(classDeclaration: DeclarationReflection): string {
@@ -388,17 +400,20 @@ ${this._getClassHierarchy(classDeclaration)}
 ${this._getGuidance(classDeclaration)}
 
 ${this._getReferences(classDeclaration)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getConstructorDocumentation(constructorDeclaration: DeclarationReflection): string {
         return `
 ###### [API](https://github.com/Andrei15193/react-model-view-viewmodel/wiki#api) / [${this._getFullName(constructorDeclaration.parent as DeclarationReflection)}](${this._getProjectReferenceUrl(constructorDeclaration.parent as DeclarationReflection)}) / constructor
 
-${constructorDeclaration.signatures && constructorDeclaration.signatures.length > 1 ? `This constructor has multiple overloads.\n\n----\n\n` : ''}
+${constructorDeclaration.signatures && constructorDeclaration.signatures.length > 1 ? 'This constructor has multiple overloads.\n\n----\n\n' : ''}
 
-${(constructorDeclaration.signatures || []).map(this._getConstructorSignatureDocumentation, this).join('\n\n----\n\n')}
-`.replace(/\n{3,}/g, '\n\n').trim();
+${(constructorDeclaration.signatures || []).map(this._getConstructorSignatureDocumentation, this)
+    .join('\n\n----\n\n')}
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getConstructorSignatureDocumentation(constructorSignature: SignatureReflection): string {
@@ -422,7 +437,8 @@ ${this._getRemarks(constructorSignature)}
 ${this._getGuidance(constructorSignature)}
 
 ${this._getReferences(constructorSignature)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getPropertyDocumentation(propertyDeclaration: DeclarationReflection): string {
@@ -454,7 +470,8 @@ ${this._getRemarks(propertyDeclaration)}
 ${this._getGuidance(propertyDeclaration)}
 
 ${this._getReferences(propertyDeclaration)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getMethodDocumentation(methodDeclaration: DeclarationReflection): string {
@@ -463,10 +480,12 @@ ${this._getReferences(propertyDeclaration)}
 
 ${this._getOverride(methodDeclaration)}
 
-${methodDeclaration.signatures && methodDeclaration.signatures.length > 1 ? `This method has multiple overloads.\n\n----\n\n` : ''}
+${methodDeclaration.signatures && methodDeclaration.signatures.length > 1 ? 'This method has multiple overloads.\n\n----\n\n' : ''}
 
-${(methodDeclaration.signatures || []).map(this._getMethodSignatureDocumentation, this).join('\n\n----\n\n')}
-`.replace(/\n{3,}/g, '\n\n').trim();
+${(methodDeclaration.signatures || []).map(this._getMethodSignatureDocumentation, this)
+    .join('\n\n----\n\n')}
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getMethodSignatureDocumentation(methodSignature: SignatureReflection): string {
@@ -494,7 +513,8 @@ ${this._getRemarks(methodSignature)}
 ${this._getGuidance(methodSignature)}
 
 ${this._getReferences(methodSignature)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getFunctionDocumentation(functionDeclaration: DeclarationReflection): string {
@@ -503,8 +523,10 @@ ${this._getReferences(methodSignature)}
 
 ${functionDeclaration.signatures && functionDeclaration.signatures.length > 1 ? `This ${functionDeclaration.name.startsWith('use') ? 'hook' : 'function'} has multiple overloads.\n\n----\n\n` : ''}
 
-${(functionDeclaration.signatures || []).map(this._getFunctionSignatureDocumentation, this).join('\n\n----\n\n')}
-`.replace(/\n{3,}/g, '\n\n').trim();
+${(functionDeclaration.signatures || []).map(this._getFunctionSignatureDocumentation, this)
+    .join('\n\n----\n\n')}
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getFunctionSignatureDocumentation(functionSignature: SignatureReflection): string {
@@ -532,27 +554,34 @@ ${this._getRemarks(functionSignature)}
 ${this._getGuidance(functionSignature)}
 
 ${this._getReferences(functionSignature)}
-`.replace(/\n{3,}/g, '\n\n').trim();
+`.replace(/\n{3,}/g, '\n\n')
+            .trim();
     }
 
     private _getIdentifier(declaration: DeclarationReflection): string {
         switch (declaration.kind) {
             case ReflectionKind.Constructor:
+
             case ReflectionKind.Property:
+
             case ReflectionKind.Accessor:
+
             case ReflectionKind.Method:
                 if (declaration.flags.isInherited)
                     return declaration.inheritedFrom!.reflection!.parent!.name + '.' + declaration.name;
-                else
-                    return declaration.parent!.name + '.' + declaration.name;
+
+                return declaration.parent!.name + '.' + declaration.name;
 
             case ReflectionKind.Class:
+
             case ReflectionKind.Interface:
+
             case ReflectionKind.TypeParameter:
+
             case ReflectionKind.Function:
+
             case ReflectionKind.TypeAlias:
                 return declaration.name;
-
 
             default:
                 throw new Error(`Unhandled '${declaration}' declaration when trying to determine identifier.`);
@@ -562,14 +591,20 @@ ${this._getReferences(functionSignature)}
     private _getFullName(declaration: DeclarationReflection): string {
         switch (declaration.kind) {
             case ReflectionKind.Constructor:
+
             case ReflectionKind.Property:
+
             case ReflectionKind.Accessor:
+
             case ReflectionKind.Method:
                 return declaration.parent!.name + '.' + this._getSimpleName(declaration);
 
             case ReflectionKind.TypeAlias:
+
             case ReflectionKind.Class:
+
             case ReflectionKind.Interface:
+
             case ReflectionKind.Function:
                 return this._getSimpleName(declaration);
 
@@ -580,18 +615,20 @@ ${this._getReferences(functionSignature)}
 
     private _getSimpleName(declaration: DeclarationReflection): string {
         if (declaration.typeParameters && declaration.typeParameters.length > 0)
-            return `${declaration.name}\\<${declaration.typeParameters.map(typeParameter => typeParameter.name).join(', ')}\\>`;
-        else
-            return declaration.name;
+            return `${declaration.name}\\<${declaration.typeParameters.map((typeParameter) => typeParameter.name)
+                .join(', ')}\\>`;
+
+        return declaration.name;
     }
 
     private _getInheritaceAndImplementations(declaration: DeclarationReflection): string {
         try {
-            let extensions = "";
+            let extensions = '';
 
             if (declaration.extendedTypes && declaration.extendedTypes.length > 0) {
                 extensions += 'Extends ';
-                extensions += declaration.extendedTypes.map(this._getReferenceLink, this).join(', ');
+                extensions += declaration.extendedTypes.map(this._getReferenceLink, this)
+                    .join(', ');
                 extensions += '.';
             }
 
@@ -599,7 +636,8 @@ ${this._getReferences(functionSignature)}
                 if (extensions.length > 0)
                     extensions += '  \n';
                 extensions += 'Implements ';
-                extensions += declaration.implementedTypes.map(this._getReferenceLink, this).join(', ');
+                extensions += declaration.implementedTypes.map(this._getReferenceLink, this)
+                    .join(', ');
                 extensions += '.';
             }
 
@@ -620,17 +658,17 @@ ${this._getReferences(functionSignature)}
                     implementations.push(...current.implementedBy);
 
                 if (current.extendedBy && current.extendedBy.length > 0)
-                    toVisit.unshift(...current.extendedBy.map(extension => this._findDeclaration(extension.reflection)));
+                    toVisit.unshift(...current.extendedBy.map((extension) => this._findDeclaration(extension.reflection)));
             } while (toVisit.length > 0);
 
             if (implementations.length > 0)
-                return '### Implementations\n\n' +
-                    implementations
+                return '### Implementations\n\n'
+                    + implementations
                         .sort((left, right) => left.name.localeCompare(right.name, 'en-US'))
-                        .map(implementation => `* ${this._getReferenceLink(implementation)}`)
+                        .map((implementation) => `* ${this._getReferenceLink(implementation)}`)
                         .join('\n');
-            else
-                return '';
+
+            return '';
         }
         catch (error) {
             throw new Error(`Could not generate class hierarchy information for ${declaration}.\n${error}`);
@@ -670,13 +708,13 @@ ${this._getReferences(functionSignature)}
                                 'increment',
                                 ...current
                                     .extendedBy
-                                    .map(derivative => this._findDeclaration(derivative.reflection)),
+                                    .map((derivative) => this._findDeclaration(derivative.reflection)),
                                 'decrement'
                             );
                         }
                         break;
                 }
-            } while (toVisit.length > 0)
+            } while (toVisit.length > 0);
 
             return hirerachy;
         }
@@ -693,6 +731,7 @@ ${this._getReferences(functionSignature)}
                 let declarationName: string;
                 switch (declaration.kind) {
                     case ReflectionKind.Property:
+
                     case ReflectionKind.Accessor:
                         declarationName = 'property';
                         break;
@@ -721,14 +760,12 @@ ${this._getReferences(functionSignature)}
                 case ReflectionKind.Property:
                     if (declaration.type)
                         return `Property type: ${this._getReferenceLink(declaration.type)}.`;
-                    else
-                        throw new Error(`Property '${declaration.name}' on ${declaration.parent?.name} has no type.`);
+                    throw new Error(`Property '${declaration.name}' on ${declaration.parent?.name} has no type.`);
 
                 case ReflectionKind.Accessor:
                     if (declaration.getSignature && declaration.getSignature.type)
                         return `Property type: ${this._getReferenceLink(declaration.getSignature.type)}.`;
-                    else
-                        throw new Error(`Property (accessor) '${declaration.name}' on ${declaration.parent?.name} has no type.`);
+                    throw new Error(`Property (accessor) '${declaration.name}' on ${declaration.parent?.name} has no type.`);
 
                 default:
                     throw new Error(`Unhandled '${declaration.kind}' property type.`);
@@ -745,7 +782,8 @@ ${this._getReferences(functionSignature)}
                 let aliasDeclaration = `type ${declaration.name}`;
 
                 if (declaration.typeParameters && declaration.typeParameters.length > 0)
-                    aliasDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this).join(', ')}>`;
+                    aliasDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this)
+                        .join(', ')}>`;
 
                 switch (declaration.type?.type) {
                     case 'union':
@@ -754,14 +792,15 @@ ${this._getReferences(functionSignature)}
                             + declaration
                                 .type
                                 .types
-                                .map(type => {
+                                .map((type) => {
                                     if (type.type === 'tuple')
-                                        return `[\n    ${type.elements.map(this._getTypeReferenceDeclaration, this).join(',\n    ')}\n  ]`;
-                                    else
-                                        return this._getTypeReferenceDeclaration(type);
+                                        return `[\n    ${type.elements.map(this._getTypeReferenceDeclaration, this)
+                                            .join(',\n    ')}\n  ]`;
+
+                                    return this._getTypeReferenceDeclaration(type);
                                 })
                                 .join('\n| ')
-                            + ';';
+                                + ';';
 
                     case 'reflection':
                         if (
@@ -771,8 +810,8 @@ ${this._getReferences(functionSignature)}
                             && declaration.type.declaration.signatures.at(0)!.name === declaration.type.declaration.name
                         )
                             return aliasDeclaration + '\n  = ' + this._getTypeReferenceDeclaration(declaration.type!) + ';';
-                        else
-                            return aliasDeclaration + ' = ' + this._getTypeReferenceDeclaration(declaration.type!) + ';';
+
+                        return aliasDeclaration + ' = ' + this._getTypeReferenceDeclaration(declaration.type!) + ';';
 
                     case 'indexedAccess':
                         return aliasDeclaration + '\n  = ' + this._getTypeReferenceDeclaration(declaration.type!) + ';';
@@ -785,9 +824,11 @@ ${this._getReferences(functionSignature)}
                 let interfaceDeclaration = `interface ${declaration.name}`;
 
                 if (declaration.typeParameters && declaration.typeParameters.length > 0)
-                    interfaceDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this).join(', ')}>`;
+                    interfaceDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this)
+                        .join(', ')}>`;
                 if (declaration.extendedTypes && declaration.extendedTypes.length > 0)
-                    interfaceDeclaration += `\n    extends ${declaration.extendedTypes.map(this._getTypeReferenceDeclaration, this).join(', ')}`;
+                    interfaceDeclaration += `\n    extends ${declaration.extendedTypes.map(this._getTypeReferenceDeclaration, this)
+                        .join(', ')}`;
 
                 return interfaceDeclaration;
 
@@ -798,11 +839,14 @@ ${this._getReferences(functionSignature)}
                     classDeclaration = 'abstract ' + classDeclaration;
 
                 if (declaration.typeParameters && declaration.typeParameters.length > 0)
-                    classDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this).join(', ')}>`;
+                    classDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this)
+                        .join(', ')}>`;
                 if (declaration.extendedTypes && declaration.extendedTypes.length > 0)
-                    classDeclaration += `\n    extends ${declaration.extendedTypes.map(this._getTypeReferenceDeclaration, this).join(', ')}`;
+                    classDeclaration += `\n    extends ${declaration.extendedTypes.map(this._getTypeReferenceDeclaration, this)
+                        .join(', ')}`;
                 if (declaration.implementedTypes && declaration.implementedTypes.length > 0)
-                    classDeclaration += `\n    implements ${declaration.implementedTypes.map(this._getTypeReferenceDeclaration, this).join(', ')}`;
+                    classDeclaration += `\n    implements ${declaration.implementedTypes.map(this._getTypeReferenceDeclaration, this)
+                        .join(', ')}`;
 
                 return classDeclaration;
 
@@ -817,7 +861,7 @@ ${this._getReferences(functionSignature)}
 
                         declaration.parent.flags.isAbstract && 'abstract'
                     ]
-                        .filter(flag => flag)
+                        .filter((flag) => flag)
                         .join(' ');
 
                     if (constructorDeclaration.length > 0)
@@ -850,7 +894,7 @@ ${this._getReferences(functionSignature)}
                     declaration.flags.isReadonly && 'readonly',
                     declaration.flags.isConst && 'const'
                 ]
-                    .filter(flag => flag)
+                    .filter((flag) => flag)
                     .join(' ');
 
                 propertyDeclaration += ` ${declaration.name}`;
@@ -878,14 +922,14 @@ ${this._getReferences(functionSignature)}
                         declaration.flags.isProtected && 'protected',
                         declaration.flags.isPublic && 'public'
                     ]
-                        .filter(flag => flag)
+                        .filter((flag) => flag)
                         .at(0) as string;
 
                     getSignature += [
                         declaration.flags.isAbstract && 'abstract',
                         declaration.flags.isStatic && 'static'
                     ]
-                        .filter(flag => flag)
+                        .filter((flag) => flag)
                         .join(' ');
                     getSignature += ' get ';
                     getSignature += declaration.name;
@@ -908,14 +952,14 @@ ${this._getReferences(functionSignature)}
                         declaration.flags.isProtected && 'protected',
                         declaration.flags.isPublic && 'public'
                     ]
-                        .filter(flag => flag)
+                        .filter((flag) => flag)
                         .at(0) as string;
 
                     setSignature += [
                         declaration.flags.isAbstract && 'abstract',
                         declaration.flags.isStatic && 'static'
                     ]
-                        .filter(flag => flag)
+                        .filter((flag) => flag)
                         .join(' ');
                     setSignature += ' set ';
                     setSignature += declaration.name;
@@ -924,7 +968,7 @@ ${this._getReferences(functionSignature)}
                         setSignature += declaration
                             .setSignature
                             .parameters
-                            .map(parameter => `${parameter.name}: ${this._getTypeReferenceDeclaration(parameter.type!)}`);
+                            .map((parameter) => `${parameter.name}: ${this._getTypeReferenceDeclaration(parameter.type!)}`);
                     else
                         throw new Error(`Accessor '${declaration.name}' on '${declaration.parent?.name}' has no set type.`);
 
@@ -946,7 +990,7 @@ ${this._getReferences(functionSignature)}
 
                         declaration.parent.flags.isAbstract && 'abstract'
                     ]
-                        .filter(flag => flag)
+                        .filter((flag) => flag)
                         .join(' ');
 
                     if (functionDeclaration.length > 0)
@@ -958,7 +1002,8 @@ ${this._getReferences(functionSignature)}
                 functionDeclaration += declaration.name;
 
                 if (declaration.typeParameters && declaration.typeParameters.length > 0)
-                    functionDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this).join(', ')}>`;
+                    functionDeclaration += `<${declaration.typeParameters.map(this._getTypeParameterDeclaration, this)
+                        .join(', ')}>`;
 
                 const paramters = (declaration as SignatureReflection)?.parameters || [];
                 if (paramters.length > 0) {
@@ -1013,12 +1058,17 @@ ${this._getReferences(functionSignature)}
     private _getTypeReferenceDeclaration(typeReference: SomeType): string {
         switch (typeReference.type) {
             case 'reference':
-                return `${typeReference.name}${typeReference.typeArguments && typeReference.typeArguments.length > 0 ? `<${typeReference.typeArguments.map(this._getTypeReferenceDeclaration, this).join(', ')}>` : ''}`;
+                return `${typeReference.name}${typeReference.typeArguments && typeReference.typeArguments.length > 0
+                    ? `<${typeReference.typeArguments.map(this._getTypeReferenceDeclaration, this)
+                        .join(', ')}>`
+                    : ''}`;
 
             case 'reflection':
                 switch (typeReference.declaration.kind) {
                     case ReflectionKind.TypeAlias:
+
                     case ReflectionKind.Class:
+
                     case ReflectionKind.Interface:
                         let typeReferenceDeclaration = typeReference.declaration.name;
                         if (typeReference.declaration.typeParameters && typeReference.declaration.typeParameters.length > 0) {
@@ -1026,7 +1076,7 @@ ${this._getReferences(functionSignature)}
                             typeReferenceDeclaration += typeReference
                                 .declaration
                                 .typeParameters
-                                .map(genericParameter => this._getTypeReferenceDeclaration(genericParameter.type!))
+                                .map((genericParameter) => this._getTypeReferenceDeclaration(genericParameter.type!))
                                 .join(', ');
                             typeReferenceDeclaration += '>';
                         }
@@ -1038,30 +1088,33 @@ ${this._getReferences(functionSignature)}
                             return this._getTypeReferenceDeclaration(typeReference.declaration.type);
                         else if (typeReference.declaration.signatures) {
                             if (typeReference.declaration.signatures.length === 1 && typeReference.declaration.signatures.at(0)!.name === typeReference.declaration.name) {
-                                const signature = typeReference.declaration.signatures.at(0)!
-                                return `(${(signature.parameters || []).map(this._getParameterDeclaration, this).join(', ')}) => ${this._getTypeReferenceDeclaration(signature.type!)}`;
-                            }
-                            else {
-                                let signaturesDeclarations = '{\n  ';
-                                signaturesDeclarations += typeReference
-                                    .declaration
-                                    .signatures
-                                    .map(signature => {
-                                        if (signature.kind === ReflectionKind.ConstructorSignature)
-                                            return `new (${(signature.parameters || []).map(this._getParameterDeclaration, this).join(', ')}): ${this._getTypeReferenceDeclaration(signature.type!)};`;
-                                        else {
-                                            const genericTypeDeclaration = signature.typeParameters?.map(this._getTypeParameterDeclaration, this).join(', ') || '';
-                                            return `${signature.name}${genericTypeDeclaration.length > 0 ? '<' + genericTypeDeclaration + '>' : ''}(${(signature.parameters || []).map(this._getParameterDeclaration, this).join(', ')}): ${this._getTypeReferenceDeclaration(signature.type!)};`;
-                                        }
-                                    })
-                                    .join('\n  ');
-                                signaturesDeclarations += '\n}';
+                                const signature = typeReference.declaration.signatures.at(0)!;
 
-                                return signaturesDeclarations;
+                                return `(${(signature.parameters || []).map(this._getParameterDeclaration, this)
+                                    .join(', ')}) => ${this._getTypeReferenceDeclaration(signature.type!)}`;
                             }
+
+                            let signaturesDeclarations = '{\n  ';
+                            signaturesDeclarations += typeReference
+                                .declaration
+                                .signatures
+                                .map((signature) => {
+                                    if (signature.kind === ReflectionKind.ConstructorSignature)
+                                        return `new (${(signature.parameters || []).map(this._getParameterDeclaration, this)
+                                            .join(', ')}): ${this._getTypeReferenceDeclaration(signature.type!)};`;
+
+                                    const genericTypeDeclaration = signature.typeParameters?.map(this._getTypeParameterDeclaration, this)
+                                        .join(', ') || '';
+
+                                    return `${signature.name}${genericTypeDeclaration.length > 0 ? '<' + genericTypeDeclaration + '>' : ''}(${(signature.parameters || []).map(this._getParameterDeclaration, this)
+                                        .join(', ')}): ${this._getTypeReferenceDeclaration(signature.type!)};`;
+                                })
+                                .join('\n  ');
+                            signaturesDeclarations += '\n}';
+
+                            return signaturesDeclarations;
                         }
-                        else
-                            throw new Error(`Unhandled '${typeReference.declaration}' type literal reflection reference declaration.`);
+                        throw new Error(`Unhandled '${typeReference.declaration}' type literal reflection reference declaration.`);
 
                     case ReflectionKind.IndexSignature:
                         return typeReference.declaration.name;
@@ -1071,10 +1124,12 @@ ${this._getReferences(functionSignature)}
                 }
 
             case 'intersection':
-                return typeReference.types.map(this._getTypeReferenceDeclaration, this).join(' | ');
+                return typeReference.types.map(this._getTypeReferenceDeclaration, this)
+                    .join(' | ');
 
             case 'union':
-                return typeReference.types.map(this._getTypeReferenceDeclaration, this).join(' | ');
+                return typeReference.types.map(this._getTypeReferenceDeclaration, this)
+                    .join(' | ');
 
             case 'intrinsic':
                 return typeReference.name;
@@ -1087,12 +1142,14 @@ ${this._getReferences(functionSignature)}
                     return 'null';
                 else if (typeReference.value === 'propertiesChanged')
                     return 'keyof this';
-                else switch (typeof typeReference.value) {
+                switch (typeof typeReference.value) {
                     case 'string':
                         return `"${typeReference.value}"`;
 
                     case 'number':
+
                     case 'bigint':
+
                     case 'boolean':
                         return typeReference.value.toString();
 
@@ -1101,7 +1158,8 @@ ${this._getReferences(functionSignature)}
                 }
 
             case 'tuple':
-                return `[${typeReference.elements.map(this._getTypeReferenceDeclaration, this).join(', ')}]`;
+                return `[${typeReference.elements.map(this._getTypeReferenceDeclaration, this)
+                    .join(', ')}]`;
 
             case 'typeOperator':
                 return `${typeReference.operator} ${this._getTypeReferenceDeclaration(typeReference.target)}`;
@@ -1109,15 +1167,17 @@ ${this._getReferences(functionSignature)}
             case 'array':
                 switch (typeReference.elementType.type) {
                     case 'reference':
+
                     case 'reflection':
+
                     case 'intrinsic':
                         return `${this._getTypeReferenceDeclaration(typeReference.elementType)}[]`;
 
                     case 'literal':
                         if (typeReference.elementType.value === 'propertiesChanged')
                             return '(keyof this)[]';
-                        else
-                            return `${this._getTypeReferenceDeclaration(typeReference.elementType)}[]`;
+
+                        return `${this._getTypeReferenceDeclaration(typeReference.elementType)}[]`;
 
                     default:
                         return `(${this._getTypeReferenceDeclaration(typeReference.elementType)})[]`;
@@ -1126,8 +1186,7 @@ ${this._getReferences(functionSignature)}
             case 'predicate':
                 if (typeReference.targetType)
                     return `${typeReference.name} is ${this._getTypeReferenceDeclaration(typeReference.targetType)}`;
-                else
-                    throw new Error('Unhandled predicate type declaration.');
+                throw new Error('Unhandled predicate type declaration.');
 
             case 'indexedAccess':
                 return this._getTypeReferenceDeclaration(typeReference.objectType) + `[${this._getTypeReferenceDeclaration(typeReference.indexType)}]`;
@@ -1234,20 +1293,24 @@ ${this._getReferences(functionSignature)}
 
                     if (typeReference.typeArguments && typeReference.typeArguments.length > 0) {
                         typeReferenceLink += '\\<';
-                        typeReferenceLink += typeReference.typeArguments.map(this._getReferenceLink, this).join(', ');
+                        typeReferenceLink += typeReference.typeArguments.map(this._getReferenceLink, this)
+                            .join(', ');
                         typeReferenceLink += '\\>';
                     }
 
                     return typeReferenceLink;
 
                 case 'tuple':
-                    return `\\[${typeReference.elements.map(this._getReferenceLink, this).join(', ')}\\]`;
+                    return `\\[${typeReference.elements.map(this._getReferenceLink, this)
+                        .join(', ')}\\]`;
 
                 case 'intersection':
-                    return typeReference.types.map(this._getReferenceLink, this).join(' & ');
+                    return typeReference.types.map(this._getReferenceLink, this)
+                        .join(' & ');
 
                 case 'union':
-                    return typeReference.types.map(this._getReferenceLink, this).join(' | ');
+                    return typeReference.types.map(this._getReferenceLink, this)
+                        .join(' | ');
 
                 case 'typeOperator':
                     let operatorLink: string;
@@ -1269,15 +1332,17 @@ ${this._getReferences(functionSignature)}
                 case 'array':
                     switch (typeReference.elementType.type) {
                         case 'reference':
+
                         case 'reflection':
+
                         case 'intrinsic':
                             return `${this._getReferenceLink(typeReference.elementType)}[]`;
 
                         case 'literal':
                             if (typeReference.elementType.value === 'propertiesChanged')
                                 return `(${this._getReferenceLink(typeReference.elementType)})[]`;
-                            else
-                                return `${this._getReferenceLink(typeReference.elementType)}[]`;
+
+                            return `${this._getReferenceLink(typeReference.elementType)}[]`;
 
                         default:
                             return `(${this._getReferenceLink(typeReference.elementType)})[]`;
@@ -1331,8 +1396,7 @@ ${this._getReferences(functionSignature)}
                 case 'predicate':
                     if (typeReference.targetType)
                         return `\`${typeReference.name}\` is ${this._getReferenceLink(typeReference.targetType)}`;
-                    else
-                        throw new Error('Unhandled predicate type reference.');
+                    throw new Error('Unhandled predicate type reference.');
 
                 case 'reflection':
                     const declaration = typeReference.declaration;
@@ -1341,20 +1405,18 @@ ${this._getReferences(functionSignature)}
                             if (declaration.signatures)
                                 return declaration
                                     .signatures
-                                    .map(signature => {
-                                        return '(' +
-                                            (signature.parameters || [])
-                                                .map(parameter => parameter.name +
-                                                    (parameter.flags.isOptional ? '?: ' : ':') +
-                                                    this._getReferenceLink(parameter.type!)
-                                                )
-                                                .join(', ') +
-                                            ') => ' +
-                                            this._getReferenceLink(signature.type!)
+                                    .map((signature) => {
+                                        return '('
+                                            + (signature.parameters || [])
+                                                .map((parameter) => parameter.name
+                                                    + (parameter.flags.isOptional ? '?: ' : ':')
+                                                    + this._getReferenceLink(parameter.type!))
+                                                .join(', ')
+                                                + ') => '
+                                                + this._getReferenceLink(signature.type!);
                                     })
                                     .join(' | ');
-                            else
-                                throw new Error(`Unhandled '${declaration}' type literal reflection reference.`)
+                            throw new Error(`Unhandled '${declaration}' type literal reflection reference.`);
 
                         default:
                             throw new Error(`Unhandled '${typeReference.declaration.kind}' reflection type reference.`);
@@ -1365,7 +1427,7 @@ ${this._getReferences(functionSignature)}
             }
         }
         catch (error) {
-            throw new Error(`Could not get a reference link for '${typeReference}'.\n${error}`)
+            throw new Error(`Could not get a reference link for '${typeReference}'.\n${error}`);
         }
     }
 
@@ -1384,7 +1446,7 @@ ${this._getReferences(functionSignature)}
             let deprecationNotice = '\n----\n\n';
             deprecationNotice += `**This ${declarationName} has been deprecated.**`;
 
-            const deprecationDescription = this._getBlock(declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@deprecated')?.content);
+            const deprecationDescription = this._getBlock(declaration.comment?.blockTags.find((blockTag) => blockTag.tag === '@deprecated')?.content);
             if (deprecationDescription.length > 0)
                 deprecationNotice += '  \n' + deprecationDescription;
 
@@ -1392,8 +1454,8 @@ ${this._getReferences(functionSignature)}
 
             return deprecationNotice;
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getSummary(declaration: DeclarationReflection | SignatureReflection): string {
@@ -1407,8 +1469,8 @@ ${this._getReferences(functionSignature)}
                 return this._getBlock(declaration.signatures.at(0)!.comment!.summary);
             else if (declaration.comment && declaration.comment.summary)
                 return this._getBlock(declaration.comment.summary);
-            else
-                return '';
+
+            return '';
         }
         catch (error) {
             throw new Error(`Could not process '${declaration}' declaration summary.\n${error}`);
@@ -1417,11 +1479,11 @@ ${this._getReferences(functionSignature)}
 
     private _getDescription(declaration: DeclarationReflection | SignatureReflection): string {
         try {
-            const description = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@description');
+            const description = declaration.comment?.blockTags.find((blockTag) => blockTag.tag === '@description');
             if (description !== null && description !== undefined && description.content.length > 0)
                 return '### Description\n\n' + this._getBlock(description.content);
-            else
-                return '';
+
+            return '';
         }
         catch (error) {
             throw new Error(`Could not process '${declaration}' declaration description.\n${error}`);
@@ -1430,11 +1492,11 @@ ${this._getReferences(functionSignature)}
 
     private _getRemarks(declaration: DeclarationReflection | SignatureReflection): string {
         try {
-            const remarks = declaration.comment?.blockTags.find(blockTag => blockTag.tag === '@remarks');
+            const remarks = declaration.comment?.blockTags.find((blockTag) => blockTag.tag === '@remarks');
             if (remarks !== null && remarks !== undefined && remarks.content.length > 0)
                 return '### Remarks\n\n' + this._getBlock(remarks.content);
-            else
-                return '';
+
+            return '';
         }
         catch (error) {
             throw new Error(`Could not process '${declaration}' declaration description.\n${error}`);
@@ -1442,12 +1504,15 @@ ${this._getReferences(functionSignature)}
     }
 
     private _getGuidance(declaration: DeclarationReflection | SignatureReflection): string {
-        const examples = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@guidance') || [];
+        const examples = declaration.comment?.blockTags.filter((blockTag) => blockTag.tag === '@guidance') || [];
 
         return examples
-            .map(example => {
-                const [title, ...content] = this._getBlock(example.content).split('\n');
-                return `### Guidance: ${title.trim()}\n\n${content.join('\n').trim()}`;
+            .map((example) => {
+                const [title, ...content] = this._getBlock(example.content)
+                    .split('\n');
+
+                return `### Guidance: ${title.trim()}\n\n${content.join('\n')
+                    .trim()}`;
             })
             .join('\n');
     }
@@ -1457,7 +1522,7 @@ ${this._getReferences(functionSignature)}
             return '### Generic Parameters\n\n' + declaration
                 .typeParameters
                 .map(
-                    typeParameter => {
+                    (typeParameter) => {
                         let genericParameter = `* **${typeParameter.name}**`;
                         let genericParameterDescription = this._getBlock(typeParameter.comment?.summary);
 
@@ -1470,17 +1535,18 @@ ${this._getReferences(functionSignature)}
                             typeParameter.type && `  Type constraints: ${this._getReferenceLink(typeParameter.type)}.`,
                             typeParameter.default && `  Default value: ${this._getReferenceLink(typeParameter.default)}.`
                         ]
-                            .filter(description => description)
+                            .filter((description) => description)
                             .join('  \n');
                         if (genericParameterConstraints.length > 0)
                             genericParameter += '\n\n' + genericParameterConstraints;
 
                         return genericParameter;
-                    },
-                ).join('\n\n');
+                    }
+                )
+                .join('\n\n');
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getParameters(declaration: SignatureReflection): string {
@@ -1488,7 +1554,7 @@ ${this._getReferences(functionSignature)}
             return '### Parameters\n\n' + declaration
                 .parameters
                 .map(
-                    parameterDeclaration => {
+                    (parameterDeclaration) => {
                         let parameter = `* **${parameterDeclaration.name}**${parameterDeclaration.flags.isRest ? ' ([rest](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Functions/rest_parameters))' : ''}: ${this._getReferenceLink(parameterDeclaration.type!)}`;
                         let parameterDescription = this._getBlock(parameterDeclaration.comment?.summary);
 
@@ -1499,17 +1565,18 @@ ${this._getReferences(functionSignature)}
                             parameter += `\n\n  Default value: \`${parameterDeclaration.defaultValue}\`.`;
 
                         return parameter;
-                    },
-                ).join('\n\n');
+                    }
+                )
+                .join('\n\n');
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getReturn(declaration: SignatureReflection): string {
         if (declaration.type) {
             let returnDocumentation = `### Returns: ${this._getReferenceLink(declaration.type)}`;
-            const returnDescription = this._getBlock(declaration.comment?.blockTags.find(blocKTag => blocKTag.tag === '@returns')?.content);
+            const returnDescription = this._getBlock(declaration.comment?.blockTags.find((blocKTag) => blocKTag.tag === '@returns')?.content);
             if (returnDescription.length > 0)
                 returnDocumentation += '\n\n' + returnDescription;
             else if (declaration.type.type === 'intrinsic' && declaration.type.name === 'void')
@@ -1517,62 +1584,68 @@ ${this._getReferences(functionSignature)}
 
             return returnDocumentation;
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getConstructorsList(declaration: DeclarationReflection): string {
         const constructors = declaration
             .children
-            ?.filter(childDeclaration => childDeclaration.kind === ReflectionKind.Constructor && !childDeclaration.flags.isInherited && !childDeclaration.flags.isPrivate)
+            ?.filter((childDeclaration) => childDeclaration.kind === ReflectionKind.Constructor && !childDeclaration.flags.isInherited && !childDeclaration.flags.isPrivate)
             .sort(this._sortCompareDeclarations.bind(this));
 
         if (constructors !== null && constructors !== undefined && constructors.length > 0) {
             return '### Constructors\n\n' + constructors
-                .map(constructorDeclaration => {
-                    const summary = this._getSummary(constructorDeclaration).split('\n')[0].trim();
+                .map((constructorDeclaration) => {
+                    const summary = this._getSummary(constructorDeclaration)
+                        .split('\n')[0].trim();
+
                     return `* ${this._getFlagSummary(constructorDeclaration)}**[${constructorDeclaration.name}](${this._getProjectReferenceUrl(constructorDeclaration)})**${summary.length > 0 ? ' - ' + summary : ''}`;
                 })
-                .join('\n')
+                .join('\n');
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getPropertiesList(declaration: DeclarationReflection): string {
         const properties = declaration
             .children
-            ?.filter(childDeclaration => (childDeclaration.kind === ReflectionKind.Property || childDeclaration.kind === ReflectionKind.Accessor) && !childDeclaration.flags.isPrivate)
+            ?.filter((childDeclaration) => (childDeclaration.kind === ReflectionKind.Property || childDeclaration.kind === ReflectionKind.Accessor) && !childDeclaration.flags.isPrivate)
             .sort(this._sortCompareDeclarations.bind(this));
 
         if (properties !== null && properties !== undefined && properties.length > 0) {
             return '### Properties\n\n' + properties
-                .map(propertyDeclaration => {
-                    const summary = this._getSummary(propertyDeclaration).split('\n')[0].trim();
+                .map((propertyDeclaration) => {
+                    const summary = this._getSummary(propertyDeclaration)
+                        .split('\n')[0].trim();
+
                     return `* ${this._getFlagSummary(propertyDeclaration)}**[${propertyDeclaration.name}](${this._getProjectReferenceUrl(propertyDeclaration)})**${summary.length > 0 ? ' - ' + summary : ''}`;
                 })
-                .join('\n')
+                .join('\n');
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getMethodsList(declaration: DeclarationReflection): string {
         const methods = declaration
             .children
-            ?.filter(childDeclaration => childDeclaration.kind === ReflectionKind.Method && !childDeclaration.flags.isInherited && !childDeclaration.flags.isPrivate)
+            ?.filter((childDeclaration) => childDeclaration.kind === ReflectionKind.Method && !childDeclaration.flags.isInherited && !childDeclaration.flags.isPrivate)
             .sort(this._sortCompareDeclarations.bind(this));
 
         if (methods !== null && methods !== undefined && methods.length > 0) {
             return '### Methods\n\n' + methods
-                .map(methodDeclaration => {
-                    const summary = this._getSummary(methodDeclaration).split('\n')[0].trim();
+                .map((methodDeclaration) => {
+                    const summary = this._getSummary(methodDeclaration)
+                        .split('\n')[0].trim();
+
                     return `* ${this._getFlagSummary(methodDeclaration)}**[${methodDeclaration.name}](${this._getProjectReferenceUrl(methodDeclaration)})**${summary.length > 0 ? ' - ' + summary : ''}`;
                 })
-                .join('\n')
+                .join('\n');
         }
-        else
-            return '';
+
+        return '';
     }
 
     private _getFlagSummary(declaration: DeclarationReflection): string {
@@ -1586,7 +1659,7 @@ ${this._getReferences(functionSignature)}
             declaration.flags.isReadonly && '`readonly`',
             declaration.flags.isOptional && '`optional`'
         ]
-            .filter(value => !!value)
+            .filter((value) => !!value)
             .join(' ');
 
         if (flagsSummary.length > 0)
@@ -1628,20 +1701,20 @@ ${this._getReferences(functionSignature)}
     }
 
     private _getReferences(declaration: DeclarationReflection | SignatureReflection): string {
-        const references = declaration.comment?.blockTags.filter(blockTag => blockTag.tag === '@see') || [];
+        const references = declaration.comment?.blockTags.filter((blockTag) => blockTag.tag === '@see') || [];
         if (references.length > 0)
-            return '### See also\n\n' +
-                references
+            return '### See also\n\n'
+                + references
                     .map(
-                        reference => this._getBlock(reference.content)
+                        (reference) => this._getBlock(reference.content)
                             .split(/^[ \t]*-[ \t]*/gm)
-                            .filter(reference => reference)
-                            .map(reference => '* ' + reference)
+                            .filter((reference) => reference)
+                            .map((reference) => '* ' + reference)
                             .join('')
                     )
                     .join('');
-        else
-            return '';
+
+        return '';
     }
 
     private _getBlock(comments: readonly CommentDisplayPart[] | null | undefined): string {
@@ -1665,6 +1738,7 @@ ${this._getReferences(functionSignature)}
                 case 'inline-tag':
                     switch (comment.tag) {
                         case '@link':
+
                         case '@linkcode':
                             const getDisplayText = (text: string): string => (
                                 comment.tag === '@linkcode'
@@ -1677,7 +1751,8 @@ ${this._getReferences(functionSignature)}
                                 if (declarationReference.resolutionStart === 'global')
                                     switch (declarationReference.moduleSource) {
                                         case 'typescript':
-                                            const typeScriptReference = declarationReference.symbolReference?.path?.map(componentPath => componentPath.path).join('.') || '';
+                                            const typeScriptReference = declarationReference.symbolReference?.path?.map((componentPath) => componentPath.path)
+                                                .join('.') || '';
                                             switch (typeScriptReference) {
                                                 case 'String':
                                                     return `[${getDisplayText('String')}](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)`;
@@ -1699,6 +1774,7 @@ ${this._getReferences(functionSignature)}
                                 return getDisplayText(reflectionTarget.name);
 
                             const targetDeclaration = this._findDeclaration(comment.target);
+
                             return `[${getDisplayText(this._getFullName(targetDeclaration))}](${this._getProjectReferenceUrl(targetDeclaration)})`;
 
                         default:
@@ -1716,25 +1792,26 @@ ${this._getReferences(functionSignature)}
 
     private _getSourceReference(declaration: DeclarationReflection | SignatureReflection): string {
         if (declaration.sources && declaration.sources.length > 0) {
-            const repositoryUrlPath = `${this._packageInfo.repository.url.split('+').at(-1)!.split('.git')[0]}/tree/${this._packageInfo.version}/src`;
+            const repositoryUrlPath = `${this._packageInfo.repository.url.split('+')
+                .at(-1)!.split('.git')[0]}/tree/${this._packageInfo.version}/src`;
 
             if (declaration.sources.length === 1) {
                 const [{ fileName, line }] = declaration.sources;
+
                 return `Source reference: [\`src/${fileName}:${line}\`](${repositoryUrlPath}/${fileName}#L${line}).`;
             }
-            else {
-                return 'Source references:\n' + declaration
-                    .sources
-                    .map(({ fileName, line }) => `* [\`src/${fileName}:${line}\`](${repositoryUrlPath}/${fileName}#L${line})`)
-                    .join('\n')
-            }
+
+            return 'Source references:\n' + declaration
+                .sources
+                .map(({ fileName, line }) => `* [\`src/${fileName}:${line}\`](${repositoryUrlPath}/${fileName}#L${line})`)
+                .join('\n');
         }
-        else
-            return '';
+
+        return '';
     }
 
-    private _createDirectoryAsync(path: string, options?: MakeDirectoryOptions & { recursive: true; }): Promise<string> {
-        return new Promise<string>((resolve, reject) => fs.mkdir(path, options, error => {
+    private _createDirectoryAsync(path: string, options?: MakeDirectoryOptions & { recursive: true }): Promise<string> {
+        return new Promise<string>((resolve, reject) => fs.mkdir(path, options, (error) => {
             if (error)
                 reject(error);
             else
@@ -1742,13 +1819,13 @@ ${this._getReferences(functionSignature)}
         }));
     }
 
-    private _writeFileAsync(path: string, contents: string, options: WriteFileOptions = "utf-8"): Promise<void> {
-        return new Promise<void>((resolve, reject) => fs.writeFile(path, contents, options, error => {
+    private _writeFileAsync(path: string, contents: string, options: WriteFileOptions = 'utf-8'): Promise<void> {
+        return new Promise<void>((resolve, reject) => fs.writeFile(path, contents, options, (error) => {
             if (error)
                 reject(error);
             else
                 resolve();
-        }))
+        }));
     }
 }
 
@@ -1758,7 +1835,7 @@ class DocumentationIndex implements IDocumentationIndex {
 
         this.namespaces = documentationIndex
             .namespaces
-            .map(namespace => ({
+            .map((namespace) => ({
                 name: DocumentationIndex.getNamespaceDisplayName(namespace.id),
                 declarations: namespace
                     .modules
@@ -1766,7 +1843,7 @@ class DocumentationIndex implements IDocumentationIndex {
                         (declarations, module) => declarations.concat(module.declarations),
                         new Array<DeclarationReflection>()
                     )
-                    .map(declaration => Object.assign({}, declaration, { promoted: DocumentationIndex.getDeclarationPromotionSortOrder(declaration) !== null }))
+                    .map((declaration) => Object.assign({}, declaration, { promoted: DocumentationIndex.getDeclarationPromotionSortOrder(declaration) !== null }))
                     .sort((left, right) => {
                         const leftSortOrder = DocumentationIndex.getDeclarationPromotionSortOrder(left);
                         const rightSortOrder = DocumentationIndex.getDeclarationPromotionSortOrder(right);
@@ -1775,8 +1852,8 @@ class DocumentationIndex implements IDocumentationIndex {
                             return rightSortOrder === null ? 0 : 1;
                         else if (rightSortOrder === null)
                             return -1;
-                        else
-                            return leftSortOrder - rightSortOrder;
+
+                        return leftSortOrder - rightSortOrder;
                     })
             }));
     }
@@ -1787,11 +1864,14 @@ class DocumentationIndex implements IDocumentationIndex {
         return {
             namespaces: Array
                 .from(declarations)
-                .filter(declaration => {
+                .filter((declaration) => {
                     switch (declaration.kind) {
                         case ReflectionKind.TypeAlias:
+
                         case ReflectionKind.Interface:
+
                         case ReflectionKind.Class:
+
                         case ReflectionKind.Function:
                             return true;
 
@@ -1801,12 +1881,14 @@ class DocumentationIndex implements IDocumentationIndex {
                 })
                 .reduce(
                     (namespaces, declaration) => {
-                        let namespaceId = declaration.sources?.at(0)?.fileName.split('/').slice(0, -1).join('/')!;
+                        let namespaceId = declaration.sources?.at(0)?.fileName.split('/')
+                            .slice(0, -1)
+                            .join('/')!;
                         if (namespaceId === 'validation/objectValidator')
                             namespaceId = 'validation';
 
                         const moduleId = declaration.sources?.at(0)?.fileName!;
-                        let namespace = namespaces.find(namespace => namespace.id === namespaceId);
+                        let namespace = namespaces.find((namespace) => namespace.id === namespaceId);
                         if (!namespace) {
                             namespace = {
                                 id: namespaceId,
@@ -1815,7 +1897,7 @@ class DocumentationIndex implements IDocumentationIndex {
                             namespaces.push(namespace);
                         }
 
-                        let module = namespace.modules.find(module => module.id === moduleId);
+                        let module = namespace.modules.find((module) => module.id === moduleId);
                         if (!module) {
                             module = {
                                 id: moduleId,
@@ -1824,19 +1906,19 @@ class DocumentationIndex implements IDocumentationIndex {
                             namespace.modules.push(module);
                         }
 
-                        module.declarations.push(declaration)
+                        module.declarations.push(declaration);
 
                         return namespaces;
                     },
                     new Array<INamespaceDeclarationIndex>()
                 )
                 .sort((left, right) => DocumentationIndex.getNamespaceSortOrder(left.id) - DocumentationIndex.getNamespaceSortOrder(right.id))
-                .map(namespace => {
+                .map((namespace) => {
                     namespace
                         .modules
                         .sort((left, right) => DocumentationIndex.getModuleSortOrder(left) - DocumentationIndex.getModuleSortOrder(right))
-                        .forEach(module => {
-                            module.declarations.sort((left, right) => DocumentationIndex.getDeclarationSortOrder(left) - DocumentationIndex.getDeclarationSortOrder(right))
+                        .forEach((module) => {
+                            module.declarations.sort((left, right) => DocumentationIndex.getDeclarationSortOrder(left) - DocumentationIndex.getDeclarationSortOrder(right));
                         });
 
                     return namespace;
@@ -1857,13 +1939,16 @@ class DocumentationIndex implements IDocumentationIndex {
 
             case 'validation':
                 return 4;
+
             case 'validation/triggers':
                 return 6;
 
             case 'collections/observableCollections':
                 return 7;
+
             case 'collections/observableMap':
                 return 8;
+
             case 'collections/observableSet':
                 return 9;
 
@@ -1891,13 +1976,16 @@ class DocumentationIndex implements IDocumentationIndex {
 
             case 'validation':
                 return 'Validation';
+
             case 'validation/triggers':
                 return 'Validation / Triggers';
 
             case 'collections/observableCollections':
                 return 'Observable Collection';
+
             case 'collections/observableMap':
                 return 'Observable Map';
+
             case 'collections/observableSet':
                 return 'Observable Set';
 
@@ -1913,11 +2001,11 @@ class DocumentationIndex implements IDocumentationIndex {
     }
 
     private static getModuleSortOrder(module: IModuleDeclarationIndex): number {
-        if (module.declarations.every(declaration => declaration.kind === ReflectionKind.TypeAlias))
+        if (module.declarations.every((declaration) => declaration.kind === ReflectionKind.TypeAlias))
             return 1;
-        if (module.declarations.every(declaration => declaration.kind === ReflectionKind.Interface))
+        if (module.declarations.every((declaration) => declaration.kind === ReflectionKind.Interface))
             return 2;
-        if (module.declarations.every(declaration => declaration.kind === ReflectionKind.TypeAlias || declaration.kind === ReflectionKind.Interface))
+        if (module.declarations.every((declaration) => declaration.kind === ReflectionKind.TypeAlias || declaration.kind === ReflectionKind.Interface))
             return 3;
 
         return 1000;
@@ -1946,97 +2034,130 @@ class DocumentationIndex implements IDocumentationIndex {
         switch (declaration.name) {
             case 'IEvent':
                 return 1;
+
             case 'IEventHandler':
                 return 2;
+
             case 'EventDispatcher':
                 return 3;
 
             case 'INotifyPropertiesChanged':
                 return 1;
+
             case 'ViewModel':
                 return 2;
 
             case 'Form':
                 return 1;
+
             case 'IFormFieldConfig':
                 return 2;
+
             case 'FormField':
                 return 3;
+
             case 'ReadOnlyFormCollection':
                 return 4;
+
             case 'FormCollection':
                 return 5;
+
             case 'IConfigurableFormCollection':
                 return 6;
+
             case 'FormSetupCallback':
                 return 7;
 
             case 'IValidator':
                 return 1;
+
             case 'ValidatorCallback':
                 return 2;
+
             case 'IObjectValidator':
                 return 3;
+
             case 'IValidatable':
                 return 4;
 
             case 'WellKnownValidationTrigger':
                 return 1;
+
             case 'ValidationTrigger':
                 return 2;
 
             case 'ReadOnlyObservableCollection':
                 return 1;
+
             case 'ObservableCollection':
                 return 2;
+
             case 'INotifyCollectionChanged':
                 return 3;
+
             case 'CollectionChangeOperation':
                 return 4;
+
             case 'INotifyCollectionReordered':
                 return 5;
+
             case 'CollectionReorderOperation':
                 return 6;
 
             case 'ReadOnlyObservableMap':
                 return 1;
+
             case 'ObservableMap':
                 return 2;
+
             case 'INotifyMapChanged':
                 return 3;
+
             case 'MapChangeOperation':
                 return 4;
 
             case 'ReadOnlyObservableSet':
                 return 1;
+
             case 'ObservableSet':
                 return 2;
+
             case 'INotifySetChanged':
                 return 3;
+
             case 'SetChangeOperation':
                 return 4;
 
             case 'IDependencyResolver':
                 return 1;
+
             case 'IDependencyContainer':
                 return 2;
+
             case 'DependencyContainer':
                 return 3;
+
             case 'useDependency':
                 return 4;
+
             case 'useViewModelDependency':
                 return 5;
+
             case 'useDependencyResolver':
                 return 6;
 
             case 'useViewModel':
                 return 1;
+
             case 'useViewModelMemo':
                 return 2;
+
             case 'useObservableCollection':
                 return 3;
+
             case 'useObservableMap':
                 return 4;
+
             case 'useObservableSet':
                 return 5;
 

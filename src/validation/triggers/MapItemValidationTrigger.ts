@@ -1,8 +1,8 @@
+import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
 import type { IMapChangedEventHandler, INotifyMapChanged } from '../../collections';
 import type { IEventHandler } from '../../events';
-import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
-import { ValidationTrigger } from './ValidationTrigger';
 import { resolveAllValidationTriggers } from './resolveAllValidationTriggers';
+import { ValidationTrigger } from './ValidationTrigger';
 
 interface IItemValidationTriggers {
     itemCount: number;
@@ -44,7 +44,7 @@ export interface IMapItemValidationTriggerConfig<TKey, TItem> {
  */
 export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INotifyMapChanged<TKey, TItem> & Iterable<[TKey, TItem]>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;
-    private readonly _shouldTriggerValidation: (item: TItem) => boolean;
+    private readonly _shouldTriggerValidation: (item: TItem)=> boolean;
     private readonly _itemValidationTriggersByItem: Map<TItem, IItemValidationTriggers>;
     private readonly _maChangedEventHandler: IMapChangedEventHandler<INotifyMapChanged<TKey, TItem>, TKey, TItem>;
 
@@ -74,7 +74,7 @@ export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INo
                         itemEventHandler.itemCount--;
 
                         if (itemEventHandler.itemCount === 0) {
-                            itemEventHandler.validationTriggers.forEach(validationTrigger => {
+                            itemEventHandler.validationTriggers.forEach((validationTrigger) => {
                                 validationTrigger.validationTriggered.unsubscribe(itemEventHandler.validationTriggerEventHandler);
                             });
                             this._itemValidationTriggersByItem.delete(removedItem);
@@ -83,7 +83,7 @@ export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INo
                 });
 
                 this.notifyValidationTriggered();
-            },
+            }
         };
     }
 
@@ -91,7 +91,8 @@ export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INo
      * Subscribes to map and item changes.
      */
     protected subscribeToTarget(): void {
-        Array.from(this.trigger).forEach(([, item]) => this._ensureItemValidationTriggers(item));
+        Array.from(this.trigger)
+            .forEach(([, item]) => this._ensureItemValidationTriggers(item));
         this.trigger.mapChanged.subscribe(this._maChangedEventHandler);
     }
 
@@ -102,7 +103,7 @@ export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INo
         this.trigger.mapChanged.unsubscribe(this._maChangedEventHandler);
 
         this._itemValidationTriggersByItem.forEach(({ validationTriggers, validationTriggerEventHandler }) => {
-            validationTriggers.forEach(validationTrigger => {
+            validationTriggers.forEach((validationTrigger) => {
                 validationTrigger.validationTriggered.unsubscribe(validationTriggerEventHandler);
             });
         });
@@ -116,11 +117,11 @@ export class MapItemValidationTrigger<TKey, TItem> extends ValidationTrigger<INo
                 handle: () => {
                     if (this._shouldTriggerValidation(item))
                         this.notifyValidationTriggered();
-                },
+                }
             };
 
             const resolvedValidationTriggers = resolveAllValidationTriggers(this._validationTriggerSelector(item));
-            resolvedValidationTriggers.forEach(validationTrigger => {
+            resolvedValidationTriggers.forEach((validationTrigger) => {
                 validationTrigger.validationTriggered.subscribe(validationTriggerEventHandler);
             });
 

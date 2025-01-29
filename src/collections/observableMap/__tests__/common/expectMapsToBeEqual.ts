@@ -1,8 +1,10 @@
 import type { IReadOnlyObservableMap } from '../../IReadOnlyObservableMap';
 
 export function expectMapsToBeEqual<TKey, TItem>(observableMap: IReadOnlyObservableMap<TKey, TItem>, map: Map<TKey, TItem>): void {
-    expect(observableMap.size).toBe(map.size);
-    expect(observableMap.toMap()).toEqual(map);
+    expect(observableMap.size)
+        .toBe(map.size);
+    expect(observableMap.toMap())
+        .toEqual(map);
 
     expectLookupsToBeEqual(observableMap, map);
     expectIterationsToBeEqual(observableMap, map);
@@ -11,9 +13,11 @@ export function expectMapsToBeEqual<TKey, TItem>(observableMap: IReadOnlyObserva
 
 function expectLookupsToBeEqual<TKey, TItem>(observableMap: IReadOnlyObservableMap<TKey, TItem>, map: Map<TKey, TItem>): void {
     for (const key of observableMap.keys())
-        expect(observableMap.get(key)).toBe(map.get(key));
+        expect(observableMap.get(key))
+            .toBe(map.get(key));
     for (const key of map.keys())
-        expect(map.get(key)).toBe(observableMap.get(key));
+        expect(map.get(key))
+            .toBe(observableMap.get(key));
 }
 
 function expectIterationsToBeEqual<TKey, TItem>(observableMap: IReadOnlyObservableMap<TKey, TItem>, map: Map<TKey, TItem>): void {
@@ -25,11 +29,21 @@ function expectIterationsToBeEqual<TKey, TItem>(observableMap: IReadOnlyObservab
     for (const item of map)
         mapIterationResult.push(item);
 
-    expect(observableMapIterationResult.sort()).toEqual(mapIterationResult.sort());
+    expect(observableMapIterationResult.sort())
+        .toEqual(mapIterationResult.sort());
 }
 
 function expectRelatedIteratorsToBeEqual<TKey, TItem>(observableMap: IReadOnlyObservableMap<TKey, TItem>, map: Map<TKey, TItem>): void {
-    expect(Array.from(observableMap.keys()).sort()).toEqual(Array.from(map.keys()).sort());
-    expect(Array.from(observableMap.entries()).sort()).toEqual(Array.from(map.entries()).sort());
-    expect(Array.from(observableMap.values()).sort()).toEqual(Array.from(map.values()).sort());
+    expect(Array.from(observableMap.keys())
+        .sort())
+        .toEqual(Array.from(map.keys())
+            .sort());
+    expect(Array.from(observableMap.entries())
+        .sort())
+        .toEqual(Array.from(map.entries())
+            .sort());
+    expect(Array.from(observableMap.values())
+        .sort())
+        .toEqual(Array.from(map.values())
+            .sort());
 }

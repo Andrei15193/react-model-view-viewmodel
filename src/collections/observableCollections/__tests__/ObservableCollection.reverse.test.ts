@@ -6,7 +6,7 @@ describe('ObservableCollection.reverse', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.reverse(),
+            applyOperation: (collection) => collection.reverse(),
 
             expectedResult: selfResult
         });
@@ -16,7 +16,7 @@ describe('ObservableCollection.reverse', (): void => {
         testBlankReorderingOperation<number>({
             initialState: [1],
 
-            applyOperation: collection => collection.reverse(),
+            applyOperation: (collection) => collection.reverse(),
 
             expectedResult: selfResult
         });
@@ -28,7 +28,7 @@ describe('ObservableCollection.reverse', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8],
             changedProperties: [0, 1, 2, 3, 4, 5, 6, 7],
 
-            applyOperation: collection => collection.reverse(),
+            applyOperation: (collection) => collection.reverse(),
 
             expectedResult: selfResult,
             expectedCollection: [8, 7, 6, 5, 4, 3, 2, 1]
@@ -41,7 +41,7 @@ describe('ObservableCollection.reverse', (): void => {
             initialState: [1, 2, 3, 4, 5],
             changedProperties: [0, 1, 3, 4],
 
-            applyOperation: collection => collection.reverse(),
+            applyOperation: (collection) => collection.reverse(),
 
             expectedResult: selfResult,
             expectedCollection: [5, 4, 3, 2, 1]
@@ -55,8 +55,9 @@ describe('ObservableCollection.reverse', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.reverse();
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('reversing an empty collection while iterating does not break iterators', (): void => {
@@ -68,9 +69,10 @@ describe('ObservableCollection.reverse', (): void => {
                 observableCollection.reverse();
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 
     it('reversing a collection with one item while iterating does not break iterators', (): void => {
@@ -82,8 +84,9 @@ describe('ObservableCollection.reverse', (): void => {
                 observableCollection.reverse();
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

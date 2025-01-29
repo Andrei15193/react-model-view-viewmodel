@@ -6,7 +6,7 @@ describe('ObservableMap.clear', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [],
 
-            applyOperation: map => map.clear(),
+            applyOperation: (map) => map.clear(),
 
             expectedResult: undefined
         });
@@ -22,7 +22,7 @@ describe('ObservableMap.clear', (): void => {
             ],
             changedProperties: ['size'],
 
-            applyOperation: map => map.clear(),
+            applyOperation: (map) => map.clear(),
 
             expectedMap: [],
             expectedResult: undefined
@@ -40,7 +40,8 @@ describe('ObservableMap.clear', (): void => {
 
                 for (const _ of observableMap)
                     observableMap.clear();
-            })
+            }
+        )
             .toThrow(new Error('Map has changed while being iterated.'));
     });
 });

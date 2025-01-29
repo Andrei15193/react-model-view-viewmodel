@@ -45,7 +45,7 @@ export class SetChangedValidationTrigger<TItem = unknown, TSet extends INotifySe
                 if (!shouldTriggerValidation || shouldTriggerValidation(set, setChange))
                     this._notifyValidationTriggered();
             }
-        }
+        };
     }
 
     /**

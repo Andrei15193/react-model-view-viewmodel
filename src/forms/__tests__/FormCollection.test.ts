@@ -1,5 +1,5 @@
-import { FormCollection } from '../FormCollection';
 import { Form } from '../Form';
+import { FormCollection } from '../FormCollection';
 
 describe('FormCollection', (): void => {
     it('adding sections when initializing collections adds them to the collection', (): void => {
@@ -8,8 +8,10 @@ describe('FormCollection', (): void => {
 
         const formCollection = new FormCollection([section1, section2]);
 
-        expect(formCollection.length).toBe(2);
-        expect(formCollection.toArray()).toEqual([section1, section2]);
+        expect(formCollection.length)
+            .toBe(2);
+        expect(formCollection.toArray())
+            .toEqual([section1, section2]);
     });
 
     it('adding sections to section collections adds them to the collection', (): void => {
@@ -19,8 +21,10 @@ describe('FormCollection', (): void => {
         const formCollection = new FormCollection();
         formCollection.push(section1, section2);
 
-        expect(formCollection.length).toBe(2);
-        expect(formCollection.toArray()).toEqual([section1, section2]);
+        expect(formCollection.length)
+            .toBe(2);
+        expect(formCollection.toArray())
+            .toEqual([section1, section2]);
     });
 
     it('initializing two section collections adds all to the collection', (): void => {
@@ -31,8 +35,10 @@ describe('FormCollection', (): void => {
         formCollection.push(section1);
         formCollection.push(section2);
 
-        expect(formCollection.length).toBe(2);
-        expect(formCollection.toArray()).toEqual([section1, section2]);
+        expect(formCollection.length)
+            .toBe(2);
+        expect(formCollection.toArray())
+            .toEqual([section1, section2]);
     });
 
     it('removing a form section resets it', () => {
@@ -43,10 +49,12 @@ describe('FormCollection', (): void => {
             resetInvocationCount++;
         };
 
-        expect(resetInvocationCount).toBe(0);
+        expect(resetInvocationCount)
+            .toBe(0);
 
         formCollection.splice(0);
-        expect(resetInvocationCount).toBe(1);
+        expect(resetInvocationCount)
+            .toBe(1);
     });
 
     it('invalidating a section makes the entire form invalid', (): void => {
@@ -55,8 +63,10 @@ describe('FormCollection', (): void => {
 
         section.error = 'invalid';
 
-        expect(formCollection.isValid).toBeFalsy();
-        expect(formCollection.isInvalid).toBeTruthy();
+        expect(formCollection.isValid)
+            .toBeFalsy();
+        expect(formCollection.isInvalid)
+            .toBeTruthy();
     });
 
     it('invalidating a section propagates property change notifications', (): void => {
@@ -66,15 +76,19 @@ describe('FormCollection', (): void => {
         formCollection.propertiesChanged.subscribe({
             handle(_, changedProperties) {
                 invocationCount++;
-                expect(changedProperties.length).toBe(2);
-                expect(changedProperties).toContain('isValid');
-                expect(changedProperties).toContain('isInvalid');
+                expect(changedProperties.length)
+                    .toBe(2);
+                expect(changedProperties)
+                    .toContain('isValid');
+                expect(changedProperties)
+                    .toContain('isInvalid');
             }
-        })
+        });
 
         section.error = 'invalid';
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('configuring a form section collection initializes each added section', () => {
@@ -82,15 +96,17 @@ describe('FormCollection', (): void => {
         const formCollection = new FormCollection();
         const formSection = new Form();
         formCollection.withItemSetup(
-            section => {
+            (section) => {
                 invocationCount++;
-                expect(section).toStrictEqual(formSection);
+                expect(section)
+                    .toStrictEqual(formSection);
             }
         );
 
         formCollection.push(formSection);
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('removing a configuration callback reconfigures the section', () => {
@@ -101,15 +117,17 @@ describe('FormCollection', (): void => {
         const formSection = new Form();
         formSection.reset = () => {
             resetInvocationCount++;
-        }
+        };
 
         const setup1 = (section: Form) => {
             setup1InvocationCount++;
-            expect(section).toStrictEqual(formSection);
+            expect(section)
+                .toStrictEqual(formSection);
         };
         const setup2 = (section: Form) => {
             setup2InvocationCount++;
-            expect(section).toStrictEqual(formSection);
+            expect(section)
+                .toStrictEqual(formSection);
         };
         formCollection.withItemSetup(setup1);
         formCollection.withItemSetup(setup2);
@@ -118,9 +136,12 @@ describe('FormCollection', (): void => {
 
         formCollection.withoutItemSetup(setup2);
 
-        expect(setup1InvocationCount).toBe(2);
-        expect(resetInvocationCount).toBe(1);
-        expect(setup2InvocationCount).toBe(1);
+        expect(setup1InvocationCount)
+            .toBe(2);
+        expect(resetInvocationCount)
+            .toBe(1);
+        expect(setup2InvocationCount)
+            .toBe(1);
     });
 
     it('clearing configuration callbacks resets the section', () => {
@@ -129,13 +150,16 @@ describe('FormCollection', (): void => {
         const formSection = new Form();
         formSection.reset = () => {
             resetInvocationCount++;
-        }
-        formCollection.withItemSetup(() => { });
+        };
+        formCollection.withItemSetup(() => {
+
+        });
 
         formCollection.push(formSection);
         formCollection.clearItemSetups();
 
-        expect(resetInvocationCount).toBe(1);
+        expect(resetInvocationCount)
+            .toBe(1);
     });
 
     it('resetting a collection resets all contained sections configurations', () => {
@@ -145,19 +169,25 @@ describe('FormCollection', (): void => {
         const section = new Form();
         section.reset = () => {
             sectionResetInvocationCount++;
-        }
+        };
         const formCollection = new FormCollection([section]);
         formCollection.withItemSetup(
-            () => { sectionSetupInvocationCount++; }
+            () => {
+                sectionSetupInvocationCount++;
+            }
         );
 
-        expect(sectionResetInvocationCount).toBe(0);
-        expect(sectionSetupInvocationCount).toBe(1);
+        expect(sectionResetInvocationCount)
+            .toBe(0);
+        expect(sectionSetupInvocationCount)
+            .toBe(1);
 
         formCollection.reset();
         formCollection.push(new Form());
 
-        expect(sectionResetInvocationCount).toBe(1);
-        expect(sectionSetupInvocationCount).toBe(1);
+        expect(sectionResetInvocationCount)
+            .toBe(1);
+        expect(sectionSetupInvocationCount)
+            .toBe(1);
     });
 });

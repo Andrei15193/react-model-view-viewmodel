@@ -6,7 +6,7 @@ describe('ObservableCollection.shift', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.shift(),
+            applyOperation: (collection) => collection.shift(),
 
             expectedResult: undefined
         });
@@ -18,7 +18,7 @@ describe('ObservableCollection.shift', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 0, 1, 2],
 
-            applyOperation: collection => collection.shift(),
+            applyOperation: (collection) => collection.shift(),
 
             expectedCollection: [2, 3],
             expectedResult: 1
@@ -32,8 +32,9 @@ describe('ObservableCollection.shift', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.shift();
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('shifting items from empty collection while iterating does not break iterators', (): void => {
@@ -45,8 +46,9 @@ describe('ObservableCollection.shift', (): void => {
                 observableCollection.shift();
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

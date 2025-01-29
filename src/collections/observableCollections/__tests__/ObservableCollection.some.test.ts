@@ -7,8 +7,8 @@ describe('ObservableCollection.some', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.some(_ => true),
-                applyCollectionOperation: collection => collection.some(_ => true)
+                applyArrayOperation: (array) => array.some((_) => true),
+                applyCollectionOperation: (collection) => collection.some((_) => true)
             },
 
             expectedResult: true
@@ -20,8 +20,8 @@ describe('ObservableCollection.some', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.some(item => item === 3),
-                applyCollectionOperation: collection => collection.some(item => item === 3)
+                applyArrayOperation: (array) => array.some((item) => item === 3),
+                applyCollectionOperation: (collection) => collection.some((item) => item === 3)
             },
 
             expectedResult: true
@@ -33,8 +33,8 @@ describe('ObservableCollection.some', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.some(item => item < 0),
-                applyCollectionOperation: collection => collection.some(item => item < 0)
+                applyArrayOperation: (array) => array.some((item) => item < 0),
+                applyCollectionOperation: (collection) => collection.some((item) => item < 0)
             },
 
             expectedResult: false
@@ -47,14 +47,18 @@ describe('ObservableCollection.some', (): void => {
         observableCollection.some((item, index, collection) => {
             invocationCount++;
 
-            expect(item).toBe(1);
-            expect(index).toBe(0);
-            expect(collection).toStrictEqual(observableCollection);
+            expect(item)
+                .toBe(1);
+            expect(index)
+                .toBe(0);
+            expect(collection)
+                .toStrictEqual(observableCollection);
 
             return true;
         });
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('calling some with context passes it to the callback', (): void => {
@@ -65,28 +69,35 @@ describe('ObservableCollection.some', (): void => {
             function (item, index, collection) {
                 invocationCount++;
 
-                expect(this).toStrictEqual(context);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(this)
+                    .toStrictEqual(context);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return true;
             },
             context
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing some throws exception', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
-                observableCollection.some(_ => {
+                observableCollection.some((_) => {
                     observableCollection.pop();
+
                     return true;
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
@@ -96,8 +107,9 @@ describe('ObservableCollection.some', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
-                    observableCollection.some(_ => true);
-            })
+                    observableCollection.some((_) => true);
+            }
+        )
             .not
             .toThrow();
     });

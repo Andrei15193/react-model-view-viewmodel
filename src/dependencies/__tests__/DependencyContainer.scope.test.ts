@@ -1,259 +1,326 @@
-import { DependencyToken } from '../IDependencyResolver';
 import { DependencyContainer } from '../DependencyContainer';
+import { DependencyToken } from '../IDependencyResolver';
 
 describe('DependencyContainer.scope', (): void => {
-  test('Resolving scoped type dependency returns instance', () => {
-    class MyClass {
-    }
+    test('Resolving scoped type dependency returns instance', () => {
+        class MyClass {
+        }
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedType(MyClass)
-      .createScope();
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedType(MyClass)
+            .createScope();
 
-    const instance = scopedDependencyResolver.resolve(MyClass);
+        const instance = scopedDependencyResolver.resolve(MyClass);
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
 
-  test('Resolving scoped type dependency returns same instance', () => {
-    class MyClass {
-    }
+    test('Resolving scoped type dependency returns same instance', () => {
+        class MyClass {
+        }
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedType(MyClass)
-      .createScope();
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedType(MyClass)
+            .createScope();
 
-    const firstInstance = scopedDependencyResolver.resolve(MyClass);
-    const secondInstance = scopedDependencyResolver.resolve(MyClass);
+        const firstInstance = scopedDependencyResolver.resolve(MyClass);
+        const secondInstance = scopedDependencyResolver.resolve(MyClass);
 
-    expect(firstInstance).toBe(secondInstance);
-  });
+        expect(firstInstance)
+            .toBe(secondInstance);
+    });
 
-  test('Resolving singleton type dependency returns same instance across scopes', () => {
-    class MyClass {
-    }
+    test('Resolving singleton type dependency returns same instance across scopes', () => {
+        class MyClass {
+        }
 
-    const dependencyResolver = new DependencyContainer()
-      .registerSingletonType(MyClass);
+        const dependencyResolver = new DependencyContainer()
+            .registerSingletonType(MyClass);
 
-    const firstInstance = dependencyResolver.resolve(MyClass);
-    const secondInstance = dependencyResolver.createScope().resolve(MyClass);
-    const thirdInstance = dependencyResolver.createScope().resolve(MyClass);
+        const firstInstance = dependencyResolver.resolve(MyClass);
+        const secondInstance = dependencyResolver.createScope()
+            .resolve(MyClass);
+        const thirdInstance = dependencyResolver.createScope()
+            .resolve(MyClass);
 
-    expect(firstInstance).toBe(secondInstance);
-    expect(secondInstance).toBe(thirdInstance);
-  });
+        expect(firstInstance)
+            .toBe(secondInstance);
+        expect(secondInstance)
+            .toBe(thirdInstance);
+    });
 
-  test('Resolving scoped type dependency returns different instance across scopes', () => {
-    class MyClass {
-    }
+    test('Resolving scoped type dependency returns different instance across scopes', () => {
+        class MyClass {
+        }
 
-    const dependencyContainer = new DependencyContainer().registerScopedType(MyClass);
+        const dependencyContainer = new DependencyContainer()
+            .registerScopedType(MyClass);
 
-    const firstInstance = dependencyContainer.createScope().resolve(MyClass);
-    const secondInstance = dependencyContainer.createScope().resolve(MyClass);
+        const firstInstance = dependencyContainer.createScope()
+            .resolve(MyClass);
+        const secondInstance = dependencyContainer.createScope()
+            .resolve(MyClass);
 
-    expect(firstInstance).not.toBe(secondInstance);
-  });
+        expect(firstInstance).not.toBe(secondInstance);
+    });
 
-  test('Resolving scoped type dependency returns different instance from parent scope', () => {
-    class MyClass {
-    }
+    test('Resolving scoped type dependency returns different instance from parent scope', () => {
+        class MyClass {
+        }
 
-    const dependencyContainer = new DependencyContainer();
-    dependencyContainer.registerScopedType(MyClass);
-    const scopedDependencyResolver = dependencyContainer.createScope();
+        const dependencyContainer = new DependencyContainer();
+        dependencyContainer.registerScopedType(MyClass);
+        const scopedDependencyResolver = dependencyContainer.createScope();
 
-    const firstInstance = dependencyContainer.resolve(MyClass);
-    const secondInstance = scopedDependencyResolver.resolve(MyClass);
+        const firstInstance = dependencyContainer.resolve(MyClass);
+        const secondInstance = scopedDependencyResolver.resolve(MyClass);
 
-    expect(firstInstance).not.toBe(secondInstance);
-  });
+        expect(firstInstance).not.toBe(secondInstance);
+    });
 
-  test('Resolving scoped type dependency calls factory once', () => {
-    class MyClass { }
-    let callCount = 0;
+    test('Resolving scoped type dependency calls factory once', () => {
+        class MyClass {
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedType(MyClass, () => {
-        callCount++;
-        return new MyClass();
-      })
-      .createScope();
+        }
 
-    scopedDependencyResolver.resolve(MyClass);
-    scopedDependencyResolver.resolve(MyClass);
+        let callCount = 0;
 
-    expect(callCount).toStrictEqual(1);
-  });
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedType(MyClass, () => {
+                callCount++;
 
-  test('Resolving scoped type dependency calls factory once per scope', () => {
-    class MyClass { }
-    let callCount = 0;
+                return new MyClass();
+            })
+            .createScope();
 
-    const dependencyContainer = new DependencyContainer()
-      .registerScopedType(MyClass, () => {
-        callCount++;
-        return new MyClass();
-      });
+        scopedDependencyResolver.resolve(MyClass);
+        scopedDependencyResolver.resolve(MyClass);
 
-    dependencyContainer.createScope().resolve(MyClass);
-    dependencyContainer.createScope().resolve(MyClass);
+        expect(callCount)
+            .toStrictEqual(1);
+    });
 
-    expect(callCount).toStrictEqual(2);
-  });
+    test('Resolving scoped type dependency calls factory once per scope', () => {
+        class MyClass {
 
-  test('Resolving scoped type dependency returns cached instance', () => {
-    class MyClass { }
-    const instance = {};
+        }
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedType(MyClass, () => instance)
-      .createScope();
+        let callCount = 0;
 
-    const firstInstance = scopedDependencyResolver.resolve(MyClass);
-    const secondInstance = scopedDependencyResolver.resolve(MyClass);
+        const dependencyContainer = new DependencyContainer()
+            .registerScopedType(MyClass, () => {
+                callCount++;
 
-    expect(firstInstance).toBe(instance);
-    expect(secondInstance).toBe(instance);
-  });
+                return new MyClass();
+            });
 
-  test('Resolving scoped type dependency returns cached instance across scopes', () => {
-    class MyClass { }
-    const instance = {};
+        dependencyContainer.createScope()
+            .resolve(MyClass);
+        dependencyContainer.createScope()
+            .resolve(MyClass);
 
-    const dependnecyContainer = new DependencyContainer()
-      .registerScopedType(MyClass, () => instance);
+        expect(callCount)
+            .toStrictEqual(2);
+    });
 
-    const firstInstance = dependnecyContainer.createScope().resolve(MyClass);
-    const secondInstance = dependnecyContainer.createScope().resolve(MyClass);
+    test('Resolving scoped type dependency returns cached instance', () => {
+        class MyClass {
 
-    expect(firstInstance).toBe(instance);
-    expect(secondInstance).toBe(instance);
-  });
+        }
 
-  test('Resolving scoped unconfigured token dependency throws exception', () => {
-    const token = new DependencyToken<unknown>('test-dependency-token');
+        const instance = {};
 
-    const scopedDependencyResolver = new DependencyContainer().createScope();
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedType(MyClass, () => instance)
+            .createScope();
 
-    expect(() => scopedDependencyResolver.resolve(token)).toThrow(new Error('There is no configured dependency for token \'test-dependency-token\'.'));
-  });
+        const firstInstance = scopedDependencyResolver.resolve(MyClass);
+        const secondInstance = scopedDependencyResolver.resolve(MyClass);
 
-  test('Resolving scoped type token dependency returns instance', () => {
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass { }
+        expect(firstInstance)
+            .toBe(instance);
+        expect(secondInstance)
+            .toBe(instance);
+    });
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedTypeToToken(token, MyClass)
-      .createScope();
+    test('Resolving scoped type dependency returns cached instance across scopes', () => {
+        class MyClass {
 
-    const instance = scopedDependencyResolver.resolve(token);
+        }
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        const instance = {};
 
-  test('Resolving scoped type token dependency returns same instance', () => {
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass {
-    }
+        const dependnecyContainer = new DependencyContainer()
+            .registerScopedType(MyClass, () => instance);
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedTypeToToken(token, MyClass)
-      .createScope();
+        const firstInstance = dependnecyContainer.createScope()
+            .resolve(MyClass);
+        const secondInstance = dependnecyContainer.createScope()
+            .resolve(MyClass);
 
-    const firstInstance = scopedDependencyResolver.resolve(token);
-    const secondInstance = scopedDependencyResolver.resolve(token);
+        expect(firstInstance)
+            .toBe(instance);
+        expect(secondInstance)
+            .toBe(instance);
+    });
 
-    expect(firstInstance).toBe(secondInstance);
-  });
+    test('Resolving scoped unconfigured token dependency throws exception', () => {
+        const token = new DependencyToken<unknown>('test-dependency-token');
 
-  test('Resolving scoped type token dependency returns different instances across scopes', () => {
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass {
-    }
+        const scopedDependencyResolver = new DependencyContainer()
+            .createScope();
 
-    const dependnecyContainer = new DependencyContainer().registerScopedTypeToToken(token, MyClass);
+        expect(() => scopedDependencyResolver.resolve(token))
+            .toThrow(new Error('There is no configured dependency for token \'test-dependency-token\'.'));
+    });
 
-    const firstInstance = dependnecyContainer.createScope().resolve(token);
-    const secondInstance = dependnecyContainer.createScope().resolve(token);
+    test('Resolving scoped type token dependency returns instance', () => {
+        const token = new DependencyToken<MyClass>('test-dependency-token');
 
-    expect(firstInstance).not.toBe(secondInstance);
-  });
+        class MyClass {
 
-  test('Resolving scoped factory token dependency returns instance', () => {
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass { }
+        }
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedFactoryToToken(token, () => new MyClass())
-      .createScope();
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedTypeToToken(token, MyClass)
+            .createScope();
 
-    const instance = scopedDependencyResolver.resolve(token);
+        const instance = scopedDependencyResolver.resolve(token);
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
 
-  test('Resolving scoped factory token dependency returns same instance', () => {
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass {
-    }
+    test('Resolving scoped type token dependency returns same instance', () => {
+        const token = new DependencyToken<MyClass>('test-dependency-token');
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedFactoryToToken(token, () => new MyClass())
-      .createScope();
+        class MyClass {
+        }
 
-    const firstInstance = scopedDependencyResolver.resolve(token);
-    const secondInstance = scopedDependencyResolver.resolve(token);
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedTypeToToken(token, MyClass)
+            .createScope();
 
-    expect(firstInstance).toBe(secondInstance);
-  });
+        const firstInstance = scopedDependencyResolver.resolve(token);
+        const secondInstance = scopedDependencyResolver.resolve(token);
 
-  test('Resolving scoped factory token dependency returns different instances across scopes', () => {
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass {
-    }
+        expect(firstInstance)
+            .toBe(secondInstance);
+    });
 
-    const dependencyContainer = new DependencyContainer().registerScopedFactoryToToken(token, () => new MyClass());
+    test('Resolving scoped type token dependency returns different instances across scopes', () => {
+        const token = new DependencyToken<MyClass>('test-dependency-token');
 
-    const firstInstance = dependencyContainer.createScope().resolve(token);
-    const secondInstance = dependencyContainer.createScope().resolve(token);
+        class MyClass {
+        }
 
-    expect(firstInstance).not.toBe(secondInstance);
-  });
+        const dependnecyContainer = new DependencyContainer()
+            .registerScopedTypeToToken(token, MyClass);
 
-  test('Resolving scoped factory token dependency calls factory once', () => {
-    let callCount = 0;
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass { }
+        const firstInstance = dependnecyContainer.createScope()
+            .resolve(token);
+        const secondInstance = dependnecyContainer.createScope()
+            .resolve(token);
 
-    const scopedDependencyResolver = new DependencyContainer()
-      .registerScopedFactoryToToken(token, () => {
-        callCount++;
-        return new MyClass();
-      })
-      .createScope();
+        expect(firstInstance).not.toBe(secondInstance);
+    });
 
-    scopedDependencyResolver.resolve(token);
-    scopedDependencyResolver.resolve(token);
+    test('Resolving scoped factory token dependency returns instance', () => {
+        const token = new DependencyToken<MyClass>('test-dependency-token');
 
-    expect(callCount).toStrictEqual(1);
-  });
+        class MyClass {
 
-  test('Resolving scoped factory token dependency calls factory once per scope', () => {
-    let callCount = 0;
-    const token = new DependencyToken<MyClass>('test-dependency-token');
-    class MyClass { }
+        }
 
-    const dependencyContainer = new DependencyContainer()
-      .registerScopedFactoryToToken(token, () => {
-        callCount++;
-        return new MyClass();
-      });
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedFactoryToToken(token, () => new MyClass())
+            .createScope();
 
-    dependencyContainer.createScope().resolve(token);
-    dependencyContainer.createScope().resolve(token);
+        const instance = scopedDependencyResolver.resolve(token);
 
-    expect(callCount).toStrictEqual(2);
-  });
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
+
+    test('Resolving scoped factory token dependency returns same instance', () => {
+        const token = new DependencyToken<MyClass>('test-dependency-token');
+
+        class MyClass {
+        }
+
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedFactoryToToken(token, () => new MyClass())
+            .createScope();
+
+        const firstInstance = scopedDependencyResolver.resolve(token);
+        const secondInstance = scopedDependencyResolver.resolve(token);
+
+        expect(firstInstance)
+            .toBe(secondInstance);
+    });
+
+    test('Resolving scoped factory token dependency returns different instances across scopes', () => {
+        const token = new DependencyToken<MyClass>('test-dependency-token');
+
+        class MyClass {
+        }
+
+        const dependencyContainer = new DependencyContainer()
+            .registerScopedFactoryToToken(token, () => new MyClass());
+
+        const firstInstance = dependencyContainer.createScope()
+            .resolve(token);
+        const secondInstance = dependencyContainer.createScope()
+            .resolve(token);
+
+        expect(firstInstance).not.toBe(secondInstance);
+    });
+
+    test('Resolving scoped factory token dependency calls factory once', () => {
+        let callCount = 0;
+        const token = new DependencyToken<MyClass>('test-dependency-token');
+
+        class MyClass {
+
+        }
+
+        const scopedDependencyResolver = new DependencyContainer()
+            .registerScopedFactoryToToken(token, () => {
+                callCount++;
+
+                return new MyClass();
+            })
+            .createScope();
+
+        scopedDependencyResolver.resolve(token);
+        scopedDependencyResolver.resolve(token);
+
+        expect(callCount)
+            .toStrictEqual(1);
+    });
+
+    test('Resolving scoped factory token dependency calls factory once per scope', () => {
+        let callCount = 0;
+        const token = new DependencyToken<MyClass>('test-dependency-token');
+
+        class MyClass {
+
+        }
+
+        const dependencyContainer = new DependencyContainer()
+            .registerScopedFactoryToToken(token, () => {
+                callCount++;
+
+                return new MyClass();
+            });
+
+        dependencyContainer.createScope()
+            .resolve(token);
+        dependencyContainer.createScope()
+            .resolve(token);
+
+        expect(callCount)
+            .toStrictEqual(2);
+    });
 });

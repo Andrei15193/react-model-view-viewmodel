@@ -6,7 +6,7 @@ describe('ObservableMap.get', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [],
 
-            applyOperation: map => map.get(1),
+            applyOperation: (map) => map.get(1),
 
             expectedResult: undefined
         });
@@ -22,7 +22,7 @@ describe('ObservableMap.get', (): void => {
                 [3, {}]
             ],
 
-            applyOperation: map => map.get(2),
+            applyOperation: (map) => map.get(2),
 
             expectedResult: expectedItem
         });
@@ -36,7 +36,7 @@ describe('ObservableMap.get', (): void => {
                 [3, 'c']
             ],
 
-            applyOperation: map => map.get(4),
+            applyOperation: (map) => map.get(4),
 
             expectedResult: undefined
         });
@@ -56,8 +56,9 @@ describe('ObservableMap.get', (): void => {
                     observableMap.get(valueToCheck);
                     valueToCheck++;
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

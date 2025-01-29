@@ -38,7 +38,7 @@ export class EventDispatcher<TSubject, TEventArgs = void> implements IEvent<TSub
      * @param args A set of arguments that provide context for the event.
      */
     public dispatch(subject: TSubject, args: TEventArgs): void {
-        this._eventHandlers.forEach(eventHandler => {
+        this._eventHandlers.forEach((eventHandler) => {
             if (this._eventHandlers.indexOf(eventHandler) >= 0)
                 eventHandler.handle(subject, args);
         });

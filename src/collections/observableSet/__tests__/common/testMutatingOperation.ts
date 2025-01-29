@@ -9,10 +9,10 @@ export interface ITestMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
     readonly changedProperties: readonly ('size')[];
 
-    readonly applyOperation: ((set: Set<TItem> | IObservableSet<TItem>) => unknown) | {
+    readonly applyOperation: ((set: Set<TItem> | IObservableSet<TItem>)=> unknown) | {
         applySetOperation(set: Set<TItem>): unknown;
         applyObservableSetOperation(observableSet: IObservableSet<TItem>): unknown;
-    }
+    };
 
     readonly expectedSet: readonly TItem[];
     readonly expectedResult: unknown;
@@ -36,7 +36,8 @@ export function testMutatingOperation<TItem>({ setOperation, initialState, chang
         handle(subject, changedProperties) {
             propertiesChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableSet);
+            expect(subject)
+                .toStrictEqual(observableSet);
             actualChangedProperties = changedProperties;
         }
     });
@@ -44,11 +45,13 @@ export function testMutatingOperation<TItem>({ setOperation, initialState, chang
         handle(subject, { operation, addedItems, removedItems }) {
             setChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableSet);
-            expect(operation).toEqual(setOperation);
+            expect(subject)
+                .toStrictEqual(observableSet);
+            expect(operation)
+                .toEqual(setOperation);
 
-            addedItems.forEach(addedItem => set.add(addedItem));
-            removedItems.forEach(removedItem => set.delete(removedItem));
+            addedItems.forEach((addedItem) => set.add(addedItem));
+            removedItems.forEach((removedItem) => set.delete(removedItem));
         }
     });
 
@@ -58,12 +61,17 @@ export function testMutatingOperation<TItem>({ setOperation, initialState, chang
     const observableSetResult = typeof applyOperation === 'function' ? applyOperation(observableSet) : applyOperation.applyObservableSetOperation(observableSet);
 
     expectSetsToBeEqual(observableSet, new Set<TItem>(expectedState));
-    expect(observableSetResult).toEqual(expectedResult === selfResult ? observableSet : expectedResult);
+    expect(observableSetResult)
+        .toEqual(expectedResult === selfResult ? observableSet : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(1);
-    expect(setChangedRaiseCount).toBe(1);
-    expect(actualChangedProperties).toEqual(changedProperties);
+    expect(propertiesChangedRaiseCount)
+        .toBe(1);
+    expect(setChangedRaiseCount)
+        .toBe(1);
+    expect(actualChangedProperties)
+        .toEqual(changedProperties);
 
     expectSetsToBeEqual(observableSet, set);
-    expect(observableSetResult).toEqual(expectedResult === selfResult ? observableSet : setResult);
+    expect(observableSetResult)
+        .toEqual(expectedResult === selfResult ? observableSet : setResult);
 }

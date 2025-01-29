@@ -1,5 +1,5 @@
-import type { IEventHandler } from '../../events';
 import type { ISetChange } from './ISetChange';
+import type { IEventHandler } from '../../events';
 
 /**
  * A specialized interface for handling set changed events.

@@ -7,8 +7,8 @@ describe('ObservableCollection.every', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.every(_ => false),
-                applyCollectionOperation: collection => collection.every(_ => false)
+                applyArrayOperation: (array) => array.every((_) => false),
+                applyCollectionOperation: (collection) => collection.every((_) => false)
             },
 
             expectedResult: true
@@ -20,8 +20,8 @@ describe('ObservableCollection.every', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.every(item => item === 3),
-                applyCollectionOperation: collection => collection.every(item => item === 3)
+                applyArrayOperation: (array) => array.every((item) => item === 3),
+                applyCollectionOperation: (collection) => collection.every((item) => item === 3)
             },
 
             expectedResult: false
@@ -33,8 +33,8 @@ describe('ObservableCollection.every', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.every(item => item > 0),
-                applyCollectionOperation: collection => collection.every(item => item > 0)
+                applyArrayOperation: (array) => array.every((item) => item > 0),
+                applyCollectionOperation: (collection) => collection.every((item) => item > 0)
             },
 
             expectedResult: true
@@ -48,14 +48,18 @@ describe('ObservableCollection.every', (): void => {
         observableCollection.every((item, index, collection) => {
             invocationCount++;
 
-            expect(item).toBe(1);
-            expect(index).toBe(0);
-            expect(collection).toStrictEqual(observableCollection);
+            expect(item)
+                .toBe(1);
+            expect(index)
+                .toBe(0);
+            expect(collection)
+                .toStrictEqual(observableCollection);
 
             return true;
         });
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('calling every with context passes it to the callback', (): void => {
@@ -66,28 +70,35 @@ describe('ObservableCollection.every', (): void => {
             function (item, index, collection) {
                 invocationCount++;
 
-                expect(this).toStrictEqual(context);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(this)
+                    .toStrictEqual(context);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return true;
             },
             context
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing every throws exception', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
-                observableCollection.every(_ => {
+                observableCollection.every((_) => {
                     observableCollection.pop();
+
                     return false;
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
@@ -97,8 +108,9 @@ describe('ObservableCollection.every', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
-                    observableCollection.every(_ => true);
-            })
+                    observableCollection.every((_) => true);
+            }
+        )
             .not
             .toThrow();
     });

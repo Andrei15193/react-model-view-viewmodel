@@ -6,7 +6,7 @@ describe('ObservableCollection.copyWithin', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.copyWithin(0, 1),
+            applyOperation: (collection) => collection.copyWithin(0, 1),
 
             expectedResult: selfResult
         });
@@ -16,7 +16,7 @@ describe('ObservableCollection.copyWithin', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.copyWithin(0, 0),
+            applyOperation: (collection) => collection.copyWithin(0, 0),
 
             expectedResult: selfResult
         });
@@ -28,7 +28,7 @@ describe('ObservableCollection.copyWithin', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7],
             changedProperties: [2, 3, 4],
 
-            applyOperation: collection => collection.copyWithin(2, 4),
+            applyOperation: (collection) => collection.copyWithin(2, 4),
 
             expectedResult: selfResult,
             expectedCollection: [1, 2, 5, 6, 7, 6, 7]
@@ -39,7 +39,7 @@ describe('ObservableCollection.copyWithin', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
-            applyOperation: collection => collection.copyWithin(4, 7),
+            applyOperation: (collection) => collection.copyWithin(4, 7),
 
             expectedResult: selfResult
         });
@@ -51,7 +51,7 @@ describe('ObservableCollection.copyWithin', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: [2, 3],
 
-            applyOperation: collection => collection.copyWithin(2, 4, 6),
+            applyOperation: (collection) => collection.copyWithin(2, 4, 6),
 
             expectedResult: selfResult,
             expectedCollection: [1, 2, 5, 6, 5, 6, 7, 8, 9]
@@ -64,7 +64,7 @@ describe('ObservableCollection.copyWithin', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: [2, 3, 4, 5],
 
-            applyOperation: collection => collection.copyWithin(2, 4, -1),
+            applyOperation: (collection) => collection.copyWithin(2, 4, -1),
 
             expectedResult: selfResult,
             expectedCollection: [1, 2, 5, 6, 7, 8, 7, 8, 9]
@@ -75,7 +75,7 @@ describe('ObservableCollection.copyWithin', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.copyWithin(4, 2, 2),
+            applyOperation: (collection) => collection.copyWithin(4, 2, 2),
 
             expectedResult: selfResult
         });
@@ -85,7 +85,7 @@ describe('ObservableCollection.copyWithin', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.copyWithin(4, 3, 2),
+            applyOperation: (collection) => collection.copyWithin(4, 3, 2),
 
             expectedResult: selfResult
         });
@@ -98,8 +98,9 @@ describe('ObservableCollection.copyWithin', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.copyWithin(1, 2);
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('copying within of an empty collection while iterating does not break iterators', (): void => {
@@ -111,9 +112,10 @@ describe('ObservableCollection.copyWithin', (): void => {
                 observableCollection.copyWithin(1, 2);
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 
     it('copying within when target index the same as start index while iterating does not break iterators', (): void => {
@@ -125,9 +127,10 @@ describe('ObservableCollection.copyWithin', (): void => {
                 observableCollection.copyWithin(2, 2);
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 
     it('copying within when end index is less than start index while iterating does not break iterators', (): void => {
@@ -139,8 +142,9 @@ describe('ObservableCollection.copyWithin', (): void => {
                 observableCollection.copyWithin(1, 3, 2);
 
                 iterator.next();
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

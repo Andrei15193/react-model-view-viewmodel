@@ -6,7 +6,7 @@ describe('ObservableMap.has', (): void => {
         testBlankMutatingOperation<number, string>({
             initialState: [],
 
-            applyOperation: map => map.has(1),
+            applyOperation: (map) => map.has(1),
 
             expectedResult: false
         });
@@ -20,7 +20,7 @@ describe('ObservableMap.has', (): void => {
                 [3, 'c']
             ],
 
-            applyOperation: map => map.has(2),
+            applyOperation: (map) => map.has(2),
 
             expectedResult: true
         });
@@ -34,7 +34,7 @@ describe('ObservableMap.has', (): void => {
                 [3, 'c']
             ],
 
-            applyOperation: map => map.has(4),
+            applyOperation: (map) => map.has(4),
 
             expectedResult: false
         });
@@ -54,8 +54,9 @@ describe('ObservableMap.has', (): void => {
                     observableMap.has(valueToCheck);
                     valueToCheck++;
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

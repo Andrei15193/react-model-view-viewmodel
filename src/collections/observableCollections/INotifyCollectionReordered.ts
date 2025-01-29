@@ -1,5 +1,5 @@
-import type { INotifyCollectionChanged } from './INotifyCollectionChanged';
 import type { ICollectionReorderedEvent } from './ICollectionReorderedEvent';
+import type { INotifyCollectionChanged } from './INotifyCollectionChanged';
 
 /**
  * Notifies when a collection has its items reordered. Adding and removing items is handled through the {@linkcode INotifyCollectionChanged} interface.
@@ -7,7 +7,7 @@ import type { ICollectionReorderedEvent } from './ICollectionReorderedEvent';
  *
  * Any collection change can be reduced to [Array.splice](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice),
  * event handlers can splice entire mapped collections to get all items in the same order.
- * 
+ *
  * Additionally, event handlers receive all the necessary information about how each item has moved inside the collection making it easy to
  * add animations when it happens.
  * @template TItem The type of items the collection contains.

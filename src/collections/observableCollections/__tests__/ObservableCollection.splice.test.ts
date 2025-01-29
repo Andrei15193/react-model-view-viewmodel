@@ -6,7 +6,7 @@ describe('ObservableCollection.splice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: collection => collection.splice(0, 2),
+            applyOperation: (collection) => collection.splice(0, 2),
 
             expectedResult: []
         });
@@ -18,7 +18,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5],
             changedProperties: ['length', 2, 3, 4],
 
-            applyOperation: collection => collection.splice(2),
+            applyOperation: (collection) => collection.splice(2),
 
             expectedCollection: [1, 2],
             expectedResult: [3, 4, 5]
@@ -31,7 +31,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5],
             changedProperties: ['length', 3, 4],
 
-            applyOperation: collection => collection.splice(-2),
+            applyOperation: (collection) => collection.splice(-2),
 
             expectedCollection: [1, 2, 3],
             expectedResult: [4, 5]
@@ -44,7 +44,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5],
             changedProperties: ['length', 0, 1, 2, 3, 4],
 
-            applyOperation: collection => collection.splice(-10),
+            applyOperation: (collection) => collection.splice(-10),
 
             expectedCollection: [],
             expectedResult: [1, 2, 3, 4, 5]
@@ -55,7 +55,7 @@ describe('ObservableCollection.splice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5],
 
-            applyOperation: collection => collection.splice(10),
+            applyOperation: (collection) => collection.splice(10),
 
             expectedResult: []
         });
@@ -67,7 +67,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: ['length', 2, 3, 4, 5, 6, 7, 8],
 
-            applyOperation: collection => collection.splice(2, 3),
+            applyOperation: (collection) => collection.splice(2, 3),
 
             expectedCollection: [1, 2, 6, 7, 8, 9],
             expectedResult: [3, 4, 5]
@@ -80,7 +80,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: ['length', 2, 3, 4, 5, 6, 7, 8],
 
-            applyOperation: collection => collection.splice(2, 10),
+            applyOperation: (collection) => collection.splice(2, 10),
 
             expectedCollection: [1, 2],
             expectedResult: [3, 4, 5, 6, 7, 8, 9]
@@ -91,7 +91,7 @@ describe('ObservableCollection.splice', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 
-            applyOperation: collection => collection.splice(2, -2),
+            applyOperation: (collection) => collection.splice(2, -2),
 
             expectedResult: []
         });
@@ -103,7 +103,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: [2, 3, 4],
 
-            applyOperation: collection => collection.splice(2, 3, 10, 20, 30),
+            applyOperation: (collection) => collection.splice(2, 3, 10, 20, 30),
 
             expectedCollection: [1, 2, 10, 20, 30, 6, 7, 8, 9],
             expectedResult: [3, 4, 5]
@@ -119,13 +119,14 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: ['length', 2, 3, 4, 5, 6, 7, 8],
 
-            applyOperation: collection => collection.splice(2, 3, 10),
+            applyOperation: (collection) => collection.splice(2, 3, 10),
 
             expectedCollection: [1, 2, 10, 6, 7, 8, 9],
             expectedResult: [3, 4, 5]
         });
 
-        expect(collectionItems).toEqual(arrayItems);
+        expect(collectionItems)
+            .toEqual(arrayItems);
     });
 
     it('splicing a collection using start, delete count and more replacement items updates the collection', (): void => {
@@ -134,7 +135,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: ['length', 2, 3, 4, 5, 6, 7, 8, 9, 10],
 
-            applyOperation: collection => collection.splice(2, 3, 10, 20, 30, 40, 50),
+            applyOperation: (collection) => collection.splice(2, 3, 10, 20, 30, 40, 50),
 
             expectedCollection: [1, 2, 10, 20, 30, 40, 50, 6, 7, 8, 9],
             expectedResult: [3, 4, 5]
@@ -147,7 +148,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: ['length', 2, 3, 4, 5, 6, 7, 8],
 
-            applyOperation: collection => collection.splice(2, 10, 100, 200, 300, 400, 500),
+            applyOperation: (collection) => collection.splice(2, 10, 100, 200, 300, 400, 500),
 
             expectedCollection: [1, 2, 100, 200, 300, 400, 500],
             expectedResult: [3, 4, 5, 6, 7, 8, 9]
@@ -160,7 +161,7 @@ describe('ObservableCollection.splice', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7, 8, 9],
             changedProperties: ['length', 9, 10, 11, 12, 13],
 
-            applyOperation: collection => collection.splice(20, 2, 100, 200, 300, 400, 500),
+            applyOperation: (collection) => collection.splice(20, 2, 100, 200, 300, 400, 500),
 
             expectedCollection: [1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 200, 300, 400, 500],
             expectedResult: []
@@ -174,7 +175,8 @@ describe('ObservableCollection.splice', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.splice(1);
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 });

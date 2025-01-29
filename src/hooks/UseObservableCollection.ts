@@ -17,7 +17,7 @@ export function useObservableCollection<TObservableCollection extends INotifyCol
                 handle() {
                     setState({});
                 }
-            }
+            };
 
             if (observableCollection !== null && observableCollection !== undefined) {
                 if ('collectionChanged' in observableCollection)
@@ -33,7 +33,7 @@ export function useObservableCollection<TObservableCollection extends INotifyCol
                     if ('collectionChanged' in observableCollection)
                         observableCollection.collectionChanged.unsubscribe(collectionChangedEventHandler);
                 }
-            }
+            };
         },
         [observableCollection]
     );

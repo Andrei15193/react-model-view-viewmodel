@@ -6,7 +6,7 @@ describe('ObservableCollection.length', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: collection => {
+            applyOperation: (collection) => {
                 collection.length = 3;
             },
 
@@ -20,7 +20,7 @@ describe('ObservableCollection.length', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 1, 2],
 
-            applyOperation: collection => {
+            applyOperation: (collection) => {
                 collection.length = 1;
             },
 
@@ -35,7 +35,7 @@ describe('ObservableCollection.length', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['length', 3, 4],
 
-            applyOperation: collection => {
+            applyOperation: (collection) => {
                 collection.length = 5;
             },
 
@@ -51,8 +51,9 @@ describe('ObservableCollection.length', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.length = 10;
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('setting collection length to the same value while iterating does not break iterators', (): void => {
@@ -62,8 +63,9 @@ describe('ObservableCollection.length', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.length = 3;
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

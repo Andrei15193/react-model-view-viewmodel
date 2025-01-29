@@ -8,7 +8,8 @@ describe('ObservableCollection.reduce', (): void => {
         expect(
             () => {
                 observableCollection.reduce((previous, current) => previous + current);
-            })
+            }
+        )
             .toThrow(new Error('Cannot reduce an empty collection without providing an initial value.'));
     });
 
@@ -17,8 +18,8 @@ describe('ObservableCollection.reduce', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.reduce((previous, current) => previous * 10 + current),
-                applyCollectionOperation: collection => collection.reduce((previous, current) => previous * 10 + current)
+                applyArrayOperation: (array) => array.reduce((previous, current) => (previous * 10) + current),
+                applyCollectionOperation: (collection) => collection.reduce((previous, current) => (previous * 10) + current)
             },
 
             expectedResult: 123
@@ -32,8 +33,8 @@ describe('ObservableCollection.reduce', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.reduce(result => result, initialValue),
-                applyCollectionOperation: collection => collection.reduce(result => result, initialValue)
+                applyArrayOperation: (array) => array.reduce((result) => result, initialValue),
+                applyCollectionOperation: (collection) => collection.reduce((result) => result, initialValue)
             },
 
             expectedResult: initialValue
@@ -45,8 +46,8 @@ describe('ObservableCollection.reduce', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.reduce((result, current) => result + '0' + current.toString(), '0'),
-                applyCollectionOperation: collection => collection.reduce((result, current) => result + '0' + current.toString(), '0')
+                applyArrayOperation: (array) => array.reduce((result, current) => result + '0' + current.toString(), '0'),
+                applyCollectionOperation: (collection) => collection.reduce((result, current) => result + '0' + current.toString(), '0')
             },
 
             expectedResult: '0010203'
@@ -61,17 +62,22 @@ describe('ObservableCollection.reduce', (): void => {
             (result, item, index, collection) => {
                 invocationCount++;
 
-                expect(result).toBe(initialValue);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(result)
+                    .toBe(initialValue);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return item;
             },
             initialValue
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing reduce throws exception', (): void => {
@@ -80,9 +86,11 @@ describe('ObservableCollection.reduce', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
                 observableCollection.reduce((previous, current) => {
                     observableCollection.pop();
+
                     return previous + current;
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
@@ -93,7 +101,8 @@ describe('ObservableCollection.reduce', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.reduce((previous, current) => previous + current);
-            })
+            }
+        )
             .not
             .toThrow();
     });

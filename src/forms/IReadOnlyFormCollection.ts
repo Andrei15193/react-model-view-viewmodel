@@ -3,7 +3,7 @@ import type { IObjectValidator, IValidatable } from '../validation';
 import type { Form } from './Form';
 import type { IConfigurableFormCollection } from './IConfigurableFormCollection';
 
-/** 
+/**
  * Represents a read-only configurable observable collection of form sections. Callbacks can be configured for setting
  * up individual form sections for cases where validation and other aspects are based on the state of an entity or the
  * form itself.

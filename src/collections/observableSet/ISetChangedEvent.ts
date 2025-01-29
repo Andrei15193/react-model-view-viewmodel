@@ -1,5 +1,5 @@
-import type { IEvent } from '../../events';
 import type { ISetChange } from './ISetChange';
+import type { IEvent } from '../../events';
 
 /**
  * A specialized event for subscribing and unsubscribing from set changed events.

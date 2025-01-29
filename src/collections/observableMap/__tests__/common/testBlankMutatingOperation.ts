@@ -6,10 +6,10 @@ import { selfResult } from './selfResult';
 export interface ITestBlankMutatingOperationOptions<TKey, TItem> {
     readonly initialState: readonly (readonly [TKey, TItem])[];
 
-    readonly applyOperation: ((map: Map<TKey, TItem> | IObservableMap<TKey, TItem>) => unknown) | {
+    readonly applyOperation: ((map: Map<TKey, TItem> | IObservableMap<TKey, TItem>)=> unknown) | {
         applyMapOperation(map: Map<TKey, TItem>): unknown;
         applyObservableMapOperation(observableMap: IObservableMap<TKey, TItem>): unknown;
-    }
+    };
 
     readonly expectedResult: unknown;
 }
@@ -44,11 +44,15 @@ export function testBlankMutatingOperation<TKey, TItem>({ initialState, expected
     const observableMapResult = typeof applyOperation === 'function' ? applyOperation(observableMap) : applyOperation.applyObservableMapOperation(observableMap);
 
     expectMapsToBeEqual(observableMap, new Map<TKey, TItem>(initialState));
-    expect(observableMapResult).toEqual(expectedResult === selfResult ? observableMap : expectedResult);
+    expect(observableMapResult)
+        .toEqual(expectedResult === selfResult ? observableMap : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(0);
-    expect(mapChangedRaiseCount).toBe(0);
+    expect(propertiesChangedRaiseCount)
+        .toBe(0);
+    expect(mapChangedRaiseCount)
+        .toBe(0);
 
     expectMapsToBeEqual(observableMap, map);
-    expect(observableMapResult).toEqual(expectedResult === selfResult ? observableMap : mapResult);
+    expect(observableMapResult)
+        .toEqual(expectedResult === selfResult ? observableMap : mapResult);
 }

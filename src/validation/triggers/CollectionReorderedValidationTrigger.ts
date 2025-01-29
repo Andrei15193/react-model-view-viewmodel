@@ -45,7 +45,7 @@ export class CollectionReorderedValidationTrigger<TItem = unknown, TCollection e
                 if (!shouldTriggerValidation || shouldTriggerValidation(collection, collectionReorder))
                     this._notifyValidationTriggered();
             }
-        }
+        };
     }
 
     /**

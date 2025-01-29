@@ -47,7 +47,7 @@ export class MapChangedValidationTrigger<TKey = unknown, TItem = unknown, TMap e
                 if (!shouldTriggerValidation || shouldTriggerValidation(map, mapChange))
                     this._notifyValidationTriggered();
             }
-        }
+        };
     }
 
     /**

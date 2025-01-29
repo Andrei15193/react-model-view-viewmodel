@@ -9,8 +9,8 @@ describe('ObservableSet.union', (): void => {
             initialState: [4, 5, 6],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.union(other),
-                applySetOperation: set => union(set, other)
+                applyObservableSetOperation: (set) => set.union(other),
+                applySetOperation: (set) => union(set, other)
             },
 
             expectedResult: new Set([1, 2, 3, 4, 5, 6])
@@ -24,8 +24,8 @@ describe('ObservableSet.union', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.union(other),
-                applySetOperation: set => union(set, other)
+                applyObservableSetOperation: (set) => set.union(other),
+                applySetOperation: (set) => union(set, other)
             },
 
             expectedResult: new Set([1, 2, 3])
@@ -39,8 +39,8 @@ describe('ObservableSet.union', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.union(other),
-                applySetOperation: set => union(set, other)
+                applyObservableSetOperation: (set) => set.union(other),
+                applySetOperation: (set) => union(set, other)
             },
 
             expectedResult: new Set([1, 2, 3, 4, 5])
@@ -54,8 +54,8 @@ describe('ObservableSet.union', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.union(other),
-                applySetOperation: set => union(set, other)
+                applyObservableSetOperation: (set) => set.union(other),
+                applySetOperation: (set) => union(set, other)
             },
 
             expectedResult: new Set([1, 2, 3])
@@ -69,8 +69,8 @@ describe('ObservableSet.union', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.union(other),
-                applySetOperation: set => union(set, other)
+                applyObservableSetOperation: (set) => set.union(other),
+                applySetOperation: (set) => union(set, other)
             },
 
             expectedResult: new Set([1, 2, 3])
@@ -94,12 +94,14 @@ describe('ObservableSet.union', (): void => {
                         has: other.includes.bind(other)
                     });
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });
 
 function union<TItem>(set: Set<TItem>, other: readonly TItem[]): Set<TItem> {
-    return new Set<TItem>(Array.from(set.keys()).concat(other));
+    return new Set<TItem>(Array.from(set.keys())
+        .concat(other));
 }

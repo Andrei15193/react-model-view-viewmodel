@@ -24,7 +24,7 @@ export interface IValidator<TValidatable extends IReadOnlyValidatable<TValidatio
      * @param object The object to validate.
      * @returns Returns a validation error if there are any issues; otherwise `null` or `undefined`.
      */
-    validate(object : TValidatable): TValidationError | null | undefined;
+    validate(object: TValidatable): TValidationError | null | undefined;
 }
 
 /**

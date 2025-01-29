@@ -8,7 +8,7 @@ import { ReadOnlyFormCollection } from './ReadOnlyFormCollection';
  *
  * @template TForm The concrete type of the form.
  * @template TValidationError The concrete type for representing validation errors (strings, enums, numbers etc.).
- * 
+ *
  * @see {@linkcode Form}
  */
 export class FormCollection<TForm extends Form<TValidationError>, TValidationError = string> extends ReadOnlyFormCollection<TForm, TValidationError> implements IFormCollection<TForm, TValidationError> {
@@ -112,7 +112,7 @@ export class FormCollection<TForm extends Form<TValidationError>, TValidationErr
      * @returns The observable collection on which the operation is performed.
      * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
      */
-    public sort(compareCallback?: (left: Exclude<TForm, undefined>, right: Exclude<TForm, undefined>) => number): this {
+    public sort(compareCallback?: (left: Exclude<TForm, undefined>, right: Exclude<TForm, undefined>)=> number): this {
         return super.sort.apply(this, arguments);
     }
 

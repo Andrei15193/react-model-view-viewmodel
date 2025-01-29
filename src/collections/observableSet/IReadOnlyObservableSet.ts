@@ -1,6 +1,6 @@
-import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifySetChanged } from './INotifySetChanged';
 import type { ISetLike } from './ISetLike';
+import type { INotifyPropertiesChanged } from '../../viewModels';
 
 /**
  * Represents a read-only observable set based on the [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) interface.
@@ -112,7 +112,7 @@ export interface IReadOnlyObservableSet<TItem> extends Iterable<TItem>, ISetLike
      * @param thisArg A value to use as context when processing items.
      * @see [Set.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
      */
-    forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this) => void, thisArg?: TContext): void;
+    forEach<TContext>(callback: (this: TContext, item: TItem, key: TItem, set: this)=> void, thisArg?: TContext): void;
 
     /**
      * Converts the observable set to a native JavaScript [Set](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set).

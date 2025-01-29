@@ -1,5 +1,5 @@
-import type { IObservableMap } from '../../IObservableMap';
 import type { MapChangeOperation } from '../../IMapChange';
+import type { IObservableMap } from '../../IObservableMap';
 import { ObservableMap } from '../../ObservableMap';
 import { expectMapsToBeEqual } from './expectMapsToBeEqual';
 import { selfResult } from './selfResult';
@@ -9,10 +9,10 @@ export interface ITestMutatingOperationOptions<TKey, TItem> {
     readonly initialState: readonly (readonly [TKey, TItem])[];
     readonly changedProperties: readonly ('size')[];
 
-    readonly applyOperation: ((map: Map<TKey, TItem> | IObservableMap<TKey, TItem>) => unknown) | {
+    readonly applyOperation: ((map: Map<TKey, TItem> | IObservableMap<TKey, TItem>)=> unknown) | {
         applyMapOperation(map: Map<TKey, TItem>): unknown;
         applyObservableMapOperation(observableMap: IObservableMap<TKey, TItem>): unknown;
-    }
+    };
 
     readonly expectedMap: readonly (readonly [TKey, TItem])[];
     readonly expectedResult: unknown;
@@ -36,7 +36,8 @@ export function testMutatingOperation<TKey, TItem>({ mapOperation, initialState,
         handle(subject, changedProperties) {
             propertiesChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableMap);
+            expect(subject)
+                .toStrictEqual(observableMap);
             actualChangedProperties = changedProperties;
         }
     });
@@ -44,8 +45,10 @@ export function testMutatingOperation<TKey, TItem>({ mapOperation, initialState,
         handle(subject, { operation, addedEntries, removedEntries }) {
             mapChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableMap);
-            expect(operation).toEqual(mapOperation);
+            expect(subject)
+                .toStrictEqual(observableMap);
+            expect(operation)
+                .toEqual(mapOperation);
 
             removedEntries.forEach(([removedKey]) => map.delete(removedKey));
             addedEntries.forEach(([addedKey, addedItem]) => map.set(addedKey, addedItem));
@@ -58,12 +61,17 @@ export function testMutatingOperation<TKey, TItem>({ mapOperation, initialState,
     const observableMapResult = typeof applyOperation === 'function' ? applyOperation(observableMap) : applyOperation.applyObservableMapOperation(observableMap);
 
     expectMapsToBeEqual(observableMap, new Map<TKey, TItem>(expectedState));
-    expect(observableMapResult).toEqual(expectedResult === selfResult ? observableMap : expectedResult);
+    expect(observableMapResult)
+        .toEqual(expectedResult === selfResult ? observableMap : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(changedProperties.length === 0 ? 0 : 1);
-    expect(mapChangedRaiseCount).toBe(1);
-    expect(actualChangedProperties).toEqual(changedProperties);
+    expect(propertiesChangedRaiseCount)
+        .toBe(changedProperties.length === 0 ? 0 : 1);
+    expect(mapChangedRaiseCount)
+        .toBe(1);
+    expect(actualChangedProperties)
+        .toEqual(changedProperties);
 
     expectMapsToBeEqual(observableMap, map);
-    expect(observableMapResult).toEqual(expectedResult === selfResult ? observableMap : mapResult);
+    expect(observableMapResult)
+        .toEqual(expectedResult === selfResult ? observableMap : mapResult);
 }

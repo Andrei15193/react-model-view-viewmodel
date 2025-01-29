@@ -9,8 +9,8 @@ describe('ObservableSet.intersection', (): void => {
             initialState: [4, 5, 6],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.intersection(other),
-                applySetOperation: set => intersection(set, other)
+                applyObservableSetOperation: (set) => set.intersection(other),
+                applySetOperation: (set) => intersection(set, other)
             },
 
             expectedResult: new Set<number>()
@@ -24,8 +24,8 @@ describe('ObservableSet.intersection', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.intersection(other),
-                applySetOperation: set => intersection(set, other)
+                applyObservableSetOperation: (set) => set.intersection(other),
+                applySetOperation: (set) => intersection(set, other)
             },
 
             expectedResult: new Set<number>([1, 2, 3])
@@ -39,8 +39,8 @@ describe('ObservableSet.intersection', (): void => {
             initialState: [1, 2, 3, 4],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.intersection(other),
-                applySetOperation: set => intersection(set, other)
+                applyObservableSetOperation: (set) => set.intersection(other),
+                applySetOperation: (set) => intersection(set, other)
             },
 
             expectedResult: new Set([3, 4])
@@ -54,8 +54,8 @@ describe('ObservableSet.intersection', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.intersection(other),
-                applySetOperation: set => intersection(set, other)
+                applyObservableSetOperation: (set) => set.intersection(other),
+                applySetOperation: (set) => intersection(set, other)
             },
 
             expectedResult: new Set<number>()
@@ -69,8 +69,8 @@ describe('ObservableSet.intersection', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.intersection(other),
-                applySetOperation: set => intersection(set, other)
+                applyObservableSetOperation: (set) => set.intersection(other),
+                applySetOperation: (set) => intersection(set, other)
             },
 
             expectedResult: new Set<number>()
@@ -94,12 +94,14 @@ describe('ObservableSet.intersection', (): void => {
                         has: other.includes.bind(other)
                     });
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });
 
 function intersection<TItem>(set: Set<TItem>, other: readonly TItem[]): Set<TItem> {
-    return new Set<TItem>(Array.from(set.keys()).filter(item => other.includes(item)));
+    return new Set<TItem>(Array.from(set.keys())
+        .filter((item) => other.includes(item)));
 }

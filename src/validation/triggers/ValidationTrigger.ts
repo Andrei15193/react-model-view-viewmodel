@@ -1,9 +1,9 @@
-import type { INotifyPropertiesChanged } from '../../viewModels';
-import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from '../../collections';
 import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
+import type { INotifyCollectionChanged, INotifyCollectionReordered, INotifySetChanged, INotifyMapChanged } from '../../collections';
+import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { IObjectValidator } from '../objectValidator';
-import { Form } from '../../forms';
 import { type IEvent, EventDispatcher } from '../../events';
+import { Form } from '../../forms';
 
 /**
  * Represent a set of well-known validation triggers. These are used to simplify
@@ -12,25 +12,25 @@ import { type IEvent, EventDispatcher } from '../../events';
  *
  * @template TKey The type of keys the map contains.
  * @template TItem The type of items the collection, set, or map contains.
- * 
+ *
  * @see {@link Form.validation}
  * @see {@link IObjectValidator}
  * @see {@link ValidationTrigger}
  */
 export type WellKnownValidationTrigger<TKey = unknown, TItem = unknown>
     = INotifyPropertiesChanged
-    | INotifyCollectionChanged<unknown>
-    | INotifyCollectionReordered<unknown>
-    | INotifySetChanged<unknown>
-    | INotifyMapChanged<unknown, unknown>
-    | [
+        | INotifyCollectionChanged<unknown>
+        | INotifyCollectionReordered<unknown>
+        | INotifySetChanged<unknown>
+        | INotifyMapChanged<unknown, unknown>
+        | [
         INotifyMapChanged<TKey, TItem> & Iterable<[TKey, TItem]>,
         ValidationTriggerSelector<TItem>
-    ]
-    | [
+        ]
+        | [
         (INotifyCollectionChanged<TItem> | INotifySetChanged<TItem>) & Iterable<TItem>,
         ValidationTriggerSelector<TItem>
-    ]
+        ];
 
 /**
  * Represents a validation trigger. Generally, they wrap an observable object and whenever
@@ -51,7 +51,7 @@ export abstract class ValidationTrigger<TTrigger = unknown> {
         let addCount = 0;
         this._validationTriggeredEventDispatcher = new EventDispatcher<this>();
         this.validationTriggered = {
-            subscribe: eventHandler => {
+            subscribe: (eventHandler) => {
                 addCount++;
                 if (addCount === 1)
                     this.subscribeToTarget();
@@ -59,7 +59,7 @@ export abstract class ValidationTrigger<TTrigger = unknown> {
                 this._validationTriggeredEventDispatcher.subscribe(eventHandler);
             },
 
-            unsubscribe: eventHandler => {
+            unsubscribe: (eventHandler) => {
                 this._validationTriggeredEventDispatcher.unsubscribe(eventHandler);
 
                 addCount--;

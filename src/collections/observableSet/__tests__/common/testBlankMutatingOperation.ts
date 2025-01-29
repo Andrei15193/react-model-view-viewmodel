@@ -6,10 +6,10 @@ import { selfResult } from './selfResult';
 export interface ITestBlankMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
 
-    readonly applyOperation: ((set: Set<TItem> | IObservableSet<TItem>) => unknown) | {
+    readonly applyOperation: ((set: Set<TItem> | IObservableSet<TItem>)=> unknown) | {
         applySetOperation(set: Set<TItem>): unknown;
         applyObservableSetOperation(observableSet: IObservableSet<TItem>): unknown;
-    }
+    };
 
     readonly expectedResult: unknown;
 }
@@ -44,11 +44,15 @@ export function testBlankMutatingOperation<TItem>({ initialState, expectedResult
     const observableSetResult = typeof applyOperation === 'function' ? applyOperation(observableSet) : applyOperation.applyObservableSetOperation(observableSet);
 
     expectSetsToBeEqual(observableSet, new Set<TItem>(initialState));
-    expect(observableSetResult).toEqual(expectedResult === selfResult ? observableSet : expectedResult);
+    expect(observableSetResult)
+        .toEqual(expectedResult === selfResult ? observableSet : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(0);
-    expect(setChangedRaiseCount).toBe(0);
+    expect(propertiesChangedRaiseCount)
+        .toBe(0);
+    expect(setChangedRaiseCount)
+        .toBe(0);
 
     expectSetsToBeEqual(observableSet, set);
-    expect(observableSetResult).toEqual(expectedResult === selfResult ? observableSet : setResult);
+    expect(observableSetResult)
+        .toEqual(expectedResult === selfResult ? observableSet : setResult);
 }

@@ -43,7 +43,7 @@ export class ViewModelChangedValidationTrigger<TViewModel extends INotifyPropert
                 if (!shouldTriggerValidation || shouldTriggerValidation(viewModel, changedProperties))
                     this._notifyValidationTriggered();
             }
-        }
+        };
     }
 
     /**

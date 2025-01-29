@@ -22,7 +22,6 @@ export {
     type ICollectionChange,
     type CollectionChangeOperation,
 
-
     type INotifyCollectionReordered,
     type ICollectionReorderedEvent,
     type ICollectionReorderedEventHandler,
@@ -72,7 +71,7 @@ export {
     type IConfigurableFormCollection,
     type FormSetupCallback,
     ReadOnlyFormCollection,
-    FormCollection,
+    FormCollection
 } from './forms';
 
 export {
@@ -119,4 +118,4 @@ export {
     useDependencyResolver,
     useDependency,
     useViewModelDependency
-} from './dependencies'
+} from './dependencies';

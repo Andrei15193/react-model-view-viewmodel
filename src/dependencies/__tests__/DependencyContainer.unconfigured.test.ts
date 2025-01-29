@@ -1,170 +1,186 @@
-import { type IDependencyResolver, DependencyToken } from '../IDependencyResolver';
 import { DependencyContainer } from '../DependencyContainer';
+import { type IDependencyResolver, DependencyToken } from '../IDependencyResolver';
 
 describe('DependencyContainer.unconfigured', (): void => {
-  test('Resolve works without context', () => {
-    const { resolve } = new DependencyContainer();
+    test('Resolve works without context', () => {
+        const { resolve } = new DependencyContainer();
 
-    const instance = resolve(class { });
+        const instance = resolve(class {
 
-    expect(instance).not.toBeNull();
-  });
+        });
 
-  test('Resolving null dependency returns null', () => {
-    const dependencyContainer = new DependencyContainer();
+        expect(instance).not.toBeNull();
+    });
 
-    const resolvedDependency = dependencyContainer.resolve(null);
+    test('Resolving null dependency returns null', () => {
+        const dependencyContainer = new DependencyContainer();
 
-    expect(resolvedDependency).toBeNull();
-  });
+        const resolvedDependency = dependencyContainer.resolve(null);
 
-  test('Resolving undefined dependency returns undefined', () => {
-    const dependencyContainer = new DependencyContainer();
+        expect(resolvedDependency)
+            .toBeNull();
+    });
 
-    const resolvedDependency = dependencyContainer.resolve(undefined);
+    test('Resolving undefined dependency returns undefined', () => {
+        const dependencyContainer = new DependencyContainer();
 
-    expect(resolvedDependency).toBeUndefined();
-  });
+        const resolvedDependency = dependencyContainer.resolve(undefined);
 
-  test('Resolving object dependency returns object', () => {
-    const instnace = {};
-    const dependencyContainer = new DependencyContainer();
+        expect(resolvedDependency)
+            .toBeUndefined();
+    });
 
-    const resolvedDependency = dependencyContainer.resolve(instnace);
+    test('Resolving object dependency returns object', () => {
+        const instnace = {};
+        const dependencyContainer = new DependencyContainer();
 
-    expect(resolvedDependency).toStrictEqual(instnace);
-  });
+        const resolvedDependency = dependencyContainer.resolve(instnace);
 
-  test('Resolving a basic dependency returns instance', () => {
-    class MyClass { }
+        expect(resolvedDependency)
+            .toStrictEqual(instnace);
+    });
 
-    const dependencyContainer = new DependencyContainer();
+    test('Resolving a basic dependency returns instance', () => {
+        class MyClass {
 
-    const instance = dependencyContainer.resolve(MyClass);
+        }
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving a simple dependency returns instance', () => {
-    class MyClass {
-      constructor(dependencyResolver: IDependencyResolver) {
-      }
-    }
+        const instance = dependencyContainer.resolve(MyClass);
 
-    const dependencyContainer = new DependencyContainer();
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
 
-    const instance = dependencyContainer.resolve(MyClass);
+    test('Resolving a simple dependency returns instance', () => {
+        class MyClass {
+            constructor(dependencyResolver: IDependencyResolver) {
+            }
+        }
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving a simple dependency receives dependecy container as first constructor parameter', () => {
-    let receivedDependencyResolver: IDependencyResolver | null = null;
+        const instance = dependencyContainer.resolve(MyClass);
 
-    class MyClass {
-      constructor(dependencyResolver: IDependencyResolver) {
-        receivedDependencyResolver = dependencyResolver;
-      }
-    }
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
 
-    const dependencyContainer = new DependencyContainer();
+    test('Resolving a simple dependency receives dependecy container as first constructor parameter', () => {
+        let receivedDependencyResolver: IDependencyResolver | null = null;
 
-    dependencyContainer.resolve(MyClass);
+        class MyClass {
+            constructor(dependencyResolver: IDependencyResolver) {
+                receivedDependencyResolver = dependencyResolver;
+            }
+        }
 
-    expect(receivedDependencyResolver).toBe(dependencyContainer);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving a complex dependency returns instance', () => {
-    class MyClass {
-      constructor(dependencyResolver: IDependencyResolver, id: number) {
-      }
-    }
+        dependencyContainer.resolve(MyClass);
 
-    const dependencyContainer = new DependencyContainer();
+        expect(receivedDependencyResolver)
+            .toBe(dependencyContainer);
+    });
 
-    const instance = dependencyContainer.resolve(MyClass, [1]);
+    test('Resolving a complex dependency returns instance', () => {
+        class MyClass {
+            constructor(dependencyResolver: IDependencyResolver, id: number) {
+            }
+        }
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving a complex dependency receives dependecy container as first constructor parameter', () => {
-    let receivedDependencyResolver: IDependencyResolver | null = null;
+        const instance = dependencyContainer.resolve(MyClass, [1]);
 
-    class MyClass {
-      constructor(dependencyResolver: IDependencyResolver, id: number) {
-        receivedDependencyResolver = dependencyResolver;
-      }
-    }
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
 
-    const dependencyContainer = new DependencyContainer();
+    test('Resolving a complex dependency receives dependecy container as first constructor parameter', () => {
+        let receivedDependencyResolver: IDependencyResolver | null = null;
 
-    dependencyContainer.resolve(MyClass, [1]);
+        class MyClass {
+            constructor(dependencyResolver: IDependencyResolver, id: number) {
+                receivedDependencyResolver = dependencyResolver;
+            }
+        }
 
-    expect(receivedDependencyResolver).toBe(dependencyContainer);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving a complex dependency receives additional dependency as second constructor parameter', () => {
-    let receivedAdditionalDependency: object | null = null;
-    const additionalDependency = {};
+        dependencyContainer.resolve(MyClass, [1]);
 
-    class MyClass {
-      constructor(dependencyResolver: IDependencyResolver, additionalDependency: object) {
-        receivedAdditionalDependency = additionalDependency;
-      }
-    }
+        expect(receivedDependencyResolver)
+            .toBe(dependencyContainer);
+    });
 
-    const dependencyContainer = new DependencyContainer();
+    test('Resolving a complex dependency receives additional dependency as second constructor parameter', () => {
+        let receivedAdditionalDependency: object | null = null;
+        const additionalDependency = {};
 
-    dependencyContainer.resolve(MyClass, [additionalDependency]);
+        class MyClass {
+            constructor(dependencyResolver: IDependencyResolver, additionalDependency: object) {
+                receivedAdditionalDependency = additionalDependency;
+            }
+        }
 
-    expect(receivedAdditionalDependency).toBe(additionalDependency);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving a complex dependency receives additional dependency as third constructor parameter', () => {
-    let receivedAdditionalDependency: object | null = null;
-    const additionalDependency = {};
+        dependencyContainer.resolve(MyClass, [additionalDependency]);
 
-    class MyClass {
-      constructor(dependencyResolver: IDependencyResolver, id: number, additionalDependency: object) {
-        receivedAdditionalDependency = additionalDependency;
-      }
-    }
+        expect(receivedAdditionalDependency)
+            .toBe(additionalDependency);
+    });
 
-    const dependencyContainer = new DependencyContainer();
+    test('Resolving a complex dependency receives additional dependency as third constructor parameter', () => {
+        let receivedAdditionalDependency: object | null = null;
+        const additionalDependency = {};
 
-    dependencyContainer.resolve(MyClass, [1, additionalDependency]);
+        class MyClass {
+            constructor(dependencyResolver: IDependencyResolver, id: number, additionalDependency: object) {
+                receivedAdditionalDependency = additionalDependency;
+            }
+        }
 
-    expect(receivedAdditionalDependency).toBe(additionalDependency);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving type dependency returns instance', () => {
-    class MyClass {
-    }
+        dependencyContainer.resolve(MyClass, [1, additionalDependency]);
 
-    const dependencyContainer = new DependencyContainer();
+        expect(receivedAdditionalDependency)
+            .toBe(additionalDependency);
+    });
 
-    const instance = dependencyContainer.resolve(MyClass);
+    test('Resolving type dependency returns instance', () => {
+        class MyClass {
+        }
 
-    expect(instance).toBeInstanceOf(MyClass);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving type dependency returns different instance each time', () => {
-    class MyClass {
-    }
+        const instance = dependencyContainer.resolve(MyClass);
 
-    const dependencyContainer = new DependencyContainer();
+        expect(instance)
+            .toBeInstanceOf(MyClass);
+    });
 
-    const firstInstance = dependencyContainer.resolve(MyClass);
-    const secondInstance = dependencyContainer.resolve(MyClass);
+    test('Resolving type dependency returns different instance each time', () => {
+        class MyClass {
+        }
 
-    expect(firstInstance).not.toBe(secondInstance);
-  });
+        const dependencyContainer = new DependencyContainer();
 
-  test('Resolving unconfigured token dependency throws exception', () => {
-    const token = new DependencyToken<unknown>('test-dependency-token');
+        const firstInstance = dependencyContainer.resolve(MyClass);
+        const secondInstance = dependencyContainer.resolve(MyClass);
 
-    const dependencyContainer = new DependencyContainer();
+        expect(firstInstance).not.toBe(secondInstance);
+    });
 
-    expect(() => dependencyContainer.resolve(token)).toThrow(new Error('There is no configured dependency for token \'test-dependency-token\'.'));
-  });
+    test('Resolving unconfigured token dependency throws exception', () => {
+        const token = new DependencyToken<unknown>('test-dependency-token');
+
+        const dependencyContainer = new DependencyContainer();
+
+        expect(() => dependencyContainer.resolve(token))
+            .toThrow(new Error('There is no configured dependency for token \'test-dependency-token\'.'));
+    });
 });

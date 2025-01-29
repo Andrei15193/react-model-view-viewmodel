@@ -24,7 +24,7 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      * Removes the last element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The last element in the collection that was removed.
      * @see [Array.pop](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/pop)
-    */
+     */
     pop(): TItem | undefined;
 
     /**
@@ -39,7 +39,7 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      * Removes the first element from the collection and returns it. If the collection is empty, `undefined` is returned.
      * @returns The first element in the collection that was removed.
      * @see [Array.shift](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/shift)
-    */
+     */
     shift(): TItem | undefined;
 
     /**
@@ -74,7 +74,7 @@ export interface IObservableCollection<TItem> extends IReadOnlyObservableCollect
      * @returns The observable collection on which the operation is performed.
      * @see [Array.sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
      */
-    sort(compareCallback?: (left: Exclude<TItem, undefined>, right: Exclude<TItem, undefined>) => number): this;
+    sort(compareCallback?: (left: Exclude<TItem, undefined>, right: Exclude<TItem, undefined>)=> number): this;
 
     /**
      * Reverses the items in the collections and returns the observable collection.

@@ -11,13 +11,15 @@ describe('MapChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         map.set(1, 'A');
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('validation is not triggered when map changes but check returns false', (): void => {
@@ -32,13 +34,15 @@ describe('MapChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         map.set(1, 'A');
 
-        expect(invocationCount).toBe(0);
+        expect(invocationCount)
+            .toBe(0);
     });
 
     it('validation is triggered when map changes and check returns true', (): void => {
@@ -53,12 +57,14 @@ describe('MapChangedValidationTrigger', (): void => {
         validationTrigger.validationTriggered.subscribe({
             handle(subject) {
                 invocationCount++;
-                expect(subject).toStrictEqual(validationTrigger);
+                expect(subject)
+                    .toStrictEqual(validationTrigger);
             }
         });
 
         map.set(1, 'A');
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 });

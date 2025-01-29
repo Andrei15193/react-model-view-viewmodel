@@ -133,7 +133,7 @@ export interface IFormFieldConfig<TValue, TValidationError = string> {
  * Unavoidably, we end up creating components for specific types of inputs to avoid repetitive code
  * as well as ensure they all behave in the same way. Binding is generally handled inside these components
  * using DOM event handlers/callbacks.
- * 
+ *
  * This is the most basic form of two-way binding, there's full control over it. The value coming from
  * the field can be transformed in the component. Similarly, when the input changes its value can be
  * converted back to something the form field may understand. There is full control over how the two
@@ -195,10 +195,11 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
             shouldTargetTriggerValidation: (_, changedProperties) => {
                 return this.onShouldTriggerValidation(changedProperties);
             }
-        })
+        });
         this.validation.add.apply(this.validation, validators);
 
-        resolveAllValidationTriggers(validationTriggers).forEach(this.validation.triggers.add, this.validation.triggers);
+        resolveAllValidationTriggers(validationTriggers)
+            .forEach(this.validation.triggers.add, this.validation.triggers);
     }
 
     /**
@@ -278,6 +279,6 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
      * properties that get added to a field do not trigger validation.
      */
     protected onShouldTriggerValidation(changedProperties: readonly (keyof this)[]): boolean {
-        return changedProperties.some(changedProperty => changedProperty === 'value');
+        return changedProperties.some((changedProperty) => changedProperty === 'value');
     }
 }

@@ -7,8 +7,8 @@ describe('ObservableCollection.map', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.map(item => item),
-                applyCollectionOperation: collection => collection.map(item => item)
+                applyArrayOperation: (array) => array.map((item) => item),
+                applyCollectionOperation: (collection) => collection.map((item) => item)
             },
 
             expectedResult: []
@@ -20,8 +20,8 @@ describe('ObservableCollection.map', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.map(item => item + 10),
-                applyCollectionOperation: collection => collection.map(item => item + 10)
+                applyArrayOperation: (array) => array.map((item) => item + 10),
+                applyCollectionOperation: (collection) => collection.map((item) => item + 10)
             },
 
             expectedResult: [11, 12, 13]
@@ -34,14 +34,18 @@ describe('ObservableCollection.map', (): void => {
         observableCollection.map((item, index, collection) => {
             invocationCount++;
 
-            expect(item).toBe(1);
-            expect(index).toBe(0);
-            expect(collection).toStrictEqual(observableCollection);
+            expect(item)
+                .toBe(1);
+            expect(index)
+                .toBe(0);
+            expect(collection)
+                .toStrictEqual(observableCollection);
 
             return item;
         });
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('calling map with context passes it to the callback', (): void => {
@@ -52,27 +56,33 @@ describe('ObservableCollection.map', (): void => {
             function (item, index, collection) {
                 invocationCount++;
 
-                expect(this).toStrictEqual(context);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(this)
+                    .toStrictEqual(context);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return item;
             },
             context
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing map throws exception', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
-                observableCollection.map(_ => {
+                observableCollection.map((_) => {
                     observableCollection.pop();
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
@@ -82,8 +92,9 @@ describe('ObservableCollection.map', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
-                    observableCollection.map(item => item);
-            })
+                    observableCollection.map((item) => item);
+            }
+        )
             .not
             .toThrow();
     });

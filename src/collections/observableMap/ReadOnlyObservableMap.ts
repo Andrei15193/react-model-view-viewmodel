@@ -54,7 +54,8 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.entries](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/entries)
      */
     public entries(): IterableIterator<[TKey, TItem]> {
-        var changeTokenCopy = this._changeToken;
+        let changeTokenCopy = this._changeToken;
+
         return new ObservableMapIterator<[TKey, TItem]>(this._map.entries(), () => changeTokenCopy !== this._changeToken);
     }
 
@@ -64,7 +65,8 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.keys](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/keys)
      */
     public keys(): IterableIterator<TKey> {
-        var changeTokenCopy = this._changeToken;
+        let changeTokenCopy = this._changeToken;
+
         return new ObservableMapIterator<TKey>(this._map.keys(), () => changeTokenCopy !== this._changeToken);
     }
 
@@ -74,7 +76,8 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @see [Map.values](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/values)
      */
     public values(): IterableIterator<TItem> {
-        var changeTokenCopy = this._changeToken;
+        let changeTokenCopy = this._changeToken;
+
         return new ObservableMapIterator<TItem>(this._map.values(), () => changeTokenCopy !== this._changeToken);
     }
 
@@ -105,7 +108,7 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
      * @param thisArg A value to use as context when processing entries.
      * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
      */
-    public forEach<TContext = void>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg?: TContext): void {
+    public forEach<TContext = void>(callback: (this: TContext, item: TItem, key: TKey, map: this)=> void, thisArg?: TContext): void {
         const changeTokenCopy = this._changeToken;
 
         for (const [key, item] of this) {
@@ -199,9 +202,9 @@ export class ReadOnlyObservableMap<TKey, TItem> extends ViewModel implements IRe
 class ObservableMapIterator<TItem, TValue = TItem> implements Iterator<TValue, TValue, void> {
     private _completed: boolean;
     private readonly _iterator: Iterator<TValue, TValue, void>;
-    private readonly _mapChanged: () => boolean;
+    private readonly _mapChanged: ()=> boolean;
 
-    public constructor(iterator: Iterator<TValue, TValue, void>, mapChanged: () => boolean) {
+    public constructor(iterator: Iterator<TValue, TValue, void>, mapChanged: ()=> boolean) {
         this._iterator = iterator;
         this._mapChanged = mapChanged;
     }
@@ -223,6 +226,7 @@ class ObservableMapIterator<TItem, TValue = TItem> implements Iterator<TValue, T
 
             if (done) {
                 this._completed = true;
+
                 return {
                     done: true,
                     value: undefined!

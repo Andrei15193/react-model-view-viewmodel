@@ -1,12 +1,12 @@
-import { type WellKnownValidationTrigger, ValidationTrigger } from './ValidationTrigger';
+import type { WellKnownValidationTrigger, ValidationTrigger } from './ValidationTrigger';
 import { CollectionChangedValidationTrigger } from './CollectionChangedValidationTrigger';
-import { CollectionReorderedValidationTrigger } from './CollectionReorderedValidationTrigger';
-import { SetChangedValidationTrigger } from './SetChangedValidationTrigger';
-import { MapChangedValidationTrigger } from './MapChangedValidationTrigger';
-import { ViewModelChangedValidationTrigger } from './ViewModelChangedValidationTrigger';
 import { CollectionItemValidationTrigger } from './CollectionItemValidationTrigger';
-import { SetItemValidationTrigger } from './SetItemValidationTrigger';
+import { CollectionReorderedValidationTrigger } from './CollectionReorderedValidationTrigger';
+import { MapChangedValidationTrigger } from './MapChangedValidationTrigger';
 import { MapItemValidationTrigger } from './MapItemValidationTrigger';
+import { SetChangedValidationTrigger } from './SetChangedValidationTrigger';
+import { SetItemValidationTrigger } from './SetItemValidationTrigger';
+import { ViewModelChangedValidationTrigger } from './ViewModelChangedValidationTrigger';
 
 /**
  * Resolves the given well-known validation trigger to concrete ones.
@@ -22,11 +22,20 @@ export function resolveValidationTriggers(validationTrigger: WellKnownValidation
 
             if (collection !== null && collection !== undefined && validationTrigger !== null && validationTrigger !== undefined) {
                 if ('collectionChanged' in collection)
-                    validationTriggers.push(new CollectionItemValidationTrigger({ collection, validationTriggerSelector }));
+                    validationTriggers.push(new CollectionItemValidationTrigger({
+                        collection,
+                        validationTriggerSelector
+                    }));
                 if ('setChanged' in collection)
-                    validationTriggers.push(new SetItemValidationTrigger({ set: collection, validationTriggerSelector }));
+                    validationTriggers.push(new SetItemValidationTrigger({
+                        set: collection,
+                        validationTriggerSelector
+                    }));
                 if ('mapChanged' in collection)
-                    validationTriggers.push(new MapItemValidationTrigger({ map: collection, validationTriggerSelector }));
+                    validationTriggers.push(new MapItemValidationTrigger({
+                        map: collection,
+                        validationTriggerSelector
+                    }));
             }
         }
         else {

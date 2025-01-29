@@ -8,7 +8,7 @@ describe('ObservableSet.clear', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['size'],
 
-            applyOperation: set => set.clear(),
+            applyOperation: (set) => set.clear(),
 
             expectedSet: [],
             expectedResult: undefined
@@ -19,7 +19,7 @@ describe('ObservableSet.clear', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: set => set.clear(),
+            applyOperation: (set) => set.clear(),
 
             expectedResult: undefined
         });
@@ -32,7 +32,8 @@ describe('ObservableSet.clear', (): void => {
 
                 for (const _ of observableSet)
                     observableSet.clear();
-            })
-            .toThrow(new Error('Set has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Set has changed while being iterated.'));
     });
 });

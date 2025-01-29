@@ -7,8 +7,8 @@ describe('ObservableCollection.findIndex', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.findIndex(item => item === 3),
-                applyCollectionOperation: collection => collection.findIndex(item => item === 3)
+                applyArrayOperation: (array) => array.findIndex((item) => item === 3),
+                applyCollectionOperation: (collection) => collection.findIndex((item) => item === 3)
             },
 
             expectedResult: -1
@@ -20,8 +20,8 @@ describe('ObservableCollection.findIndex', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.findIndex(item => item === 10),
-                applyCollectionOperation: collection => collection.findIndex(item => item === 10)
+                applyArrayOperation: (array) => array.findIndex((item) => item === 10),
+                applyCollectionOperation: (collection) => collection.findIndex((item) => item === 10)
             },
 
             expectedResult: -1
@@ -33,8 +33,8 @@ describe('ObservableCollection.findIndex', (): void => {
             initialState: [1, 2, 3, 4, 5, 6, 7],
 
             applyOperation: {
-                applyArrayOperation: array => array.findIndex(item => item % 2 === 0),
-                applyCollectionOperation: collection => collection.findIndex(item => item % 2 === 0)
+                applyArrayOperation: (array) => array.findIndex((item) => item % 2 === 0),
+                applyCollectionOperation: (collection) => collection.findIndex((item) => item % 2 === 0)
             },
 
             expectedResult: 1
@@ -47,14 +47,18 @@ describe('ObservableCollection.findIndex', (): void => {
         observableCollection.findIndex((item, index, collection) => {
             invocationCount++;
 
-            expect(item).toBe(1);
-            expect(index).toBe(0);
-            expect(collection).toStrictEqual(observableCollection);
+            expect(item)
+                .toBe(1);
+            expect(index)
+                .toBe(0);
+            expect(collection)
+                .toStrictEqual(observableCollection);
 
             return true;
         });
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('calling findIndex with context passes it to the callback', (): void => {
@@ -65,28 +69,35 @@ describe('ObservableCollection.findIndex', (): void => {
             function (item, index, collection) {
                 invocationCount++;
 
-                expect(this).toStrictEqual(context);
-                expect(item).toBe(1);
-                expect(index).toBe(0);
-                expect(collection).toStrictEqual(observableCollection);
+                expect(this)
+                    .toStrictEqual(context);
+                expect(item)
+                    .toBe(1);
+                expect(index)
+                    .toBe(0);
+                expect(collection)
+                    .toStrictEqual(observableCollection);
 
                 return true;
             },
             context
         );
 
-        expect(invocationCount).toBe(1);
+        expect(invocationCount)
+            .toBe(1);
     });
 
     it('modifying the collection while executing findIndex throws exception', (): void => {
         expect(
             () => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
-                observableCollection.findIndex(_ => {
+                observableCollection.findIndex((_) => {
                     observableCollection.pop();
+
                     return true;
                 });
-            })
+            }
+        )
             .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
@@ -96,8 +107,9 @@ describe('ObservableCollection.findIndex', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2, 3]);
 
                 for (const _ of observableCollection)
-                    observableCollection.findIndex(item => item % 2 === 0);
-            })
+                    observableCollection.findIndex((item) => item % 2 === 0);
+            }
+        )
             .not
             .toThrow();
     });

@@ -1,5 +1,5 @@
-import type { INotifyPropertiesChanged } from '../../viewModels';
 import type { INotifyMapChanged } from './INotifyMapChanged';
+import type { INotifyPropertiesChanged } from '../../viewModels';
 
 /**
  * Represents a read-only observable map based on the [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) interface.
@@ -64,7 +64,7 @@ export interface IReadOnlyObservableMap<TKey, TItem> extends Iterable<[TKey, TIt
      * @param thisArg A value to use as context when processing entries.
      * @see [Map.forEach](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
      */
-    forEach<TContext>(callback: (this: TContext, item: TItem, key: TKey, map: this) => void, thisArg?: TContext): void;
+    forEach<TContext>(callback: (this: TContext, item: TItem, key: TKey, map: this)=> void, thisArg?: TContext): void;
 
     /**
      * Converts the observable map to a native JavaScript [Map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map).

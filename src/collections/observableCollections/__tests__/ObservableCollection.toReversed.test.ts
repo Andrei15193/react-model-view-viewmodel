@@ -7,8 +7,9 @@ describe('ObservableCollection.toReversed', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.slice().reverse(),
-                applyCollectionOperation: collection => collection.toReversed()
+                applyArrayOperation: (array) => array.slice()
+                    .reverse(),
+                applyCollectionOperation: (collection) => collection.toReversed()
             },
 
             expectedResult: []
@@ -20,8 +21,9 @@ describe('ObservableCollection.toReversed', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.slice().reverse(),
-                applyCollectionOperation: collection => collection.toReversed()
+                applyArrayOperation: (array) => array.slice()
+                    .reverse(),
+                applyCollectionOperation: (collection) => collection.toReversed()
             },
 
             expectedResult: [3, 2, 1]
@@ -35,7 +37,8 @@ describe('ObservableCollection.toReversed', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.toReversed();
-            })
+            }
+        )
             .not
             .toThrow();
     });

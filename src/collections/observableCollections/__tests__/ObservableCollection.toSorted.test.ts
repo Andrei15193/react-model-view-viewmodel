@@ -7,8 +7,9 @@ describe('ObservableCollection.toSorted', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyArrayOperation: array => array.slice().sort(),
-                applyCollectionOperation: collection => collection.toSorted()
+                applyArrayOperation: (array) => array.slice()
+                    .sort(),
+                applyCollectionOperation: (collection) => collection.toSorted()
             },
 
             expectedResult: []
@@ -20,8 +21,9 @@ describe('ObservableCollection.toSorted', (): void => {
             initialState: [1, undefined, 2, 3, -1, undefined, 3, 100, null, 22, 11, 200, -100],
 
             applyOperation: {
-                applyArrayOperation: array => array.slice().sort(),
-                applyCollectionOperation: collection => collection.toSorted()
+                applyArrayOperation: (array) => array.slice()
+                    .sort(),
+                applyCollectionOperation: (collection) => collection.toSorted()
             },
 
             expectedResult: [-1, -100, 1, 100, 11, 2, 200, 22, 3, 3, null, undefined, undefined]
@@ -33,8 +35,9 @@ describe('ObservableCollection.toSorted', (): void => {
             initialState: [1, undefined, 2, 3],
 
             applyOperation: {
-                applyArrayOperation: array => array.slice().sort((left, right) => left! - right!),
-                applyCollectionOperation: collection => collection.toSorted((left, right) => left - right)
+                applyArrayOperation: (array) => array.slice()
+                    .sort((left, right) => left! - right!),
+                applyCollectionOperation: (collection) => collection.toSorted((left, right) => left - right)
             },
 
             expectedResult: [1, 2, 3, undefined]
@@ -47,10 +50,12 @@ describe('ObservableCollection.toSorted', (): void => {
                 const observableCollection = new ObservableCollection<number>([1, 2]);
                 observableCollection.toSorted(() => {
                     observableCollection.pop();
+
                     return 0;
                 });
-            })
-            .toThrow(new Error('Collection has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Collection has changed while being iterated.'));
     });
 
     it('calling toSorted while iterating does not break iterators', (): void => {
@@ -60,7 +65,8 @@ describe('ObservableCollection.toSorted', (): void => {
 
                 for (const _ of observableCollection)
                     observableCollection.toSorted();
-            })
+            }
+        )
             .not
             .toThrow();
     });

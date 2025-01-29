@@ -9,10 +9,10 @@ export interface ITestMutatingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
     readonly changedProperties: readonly ('length' | number)[];
 
-    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>)=> unknown) | {
         applyArrayOperation(array: TItem[]): unknown;
         applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
-    }
+    };
 
     readonly expectedCollection: readonly TItem[];
     readonly expectedResult: unknown;
@@ -40,7 +40,8 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
         handle(subject, changedProperties) {
             propertiesChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableCollection);
+            expect(subject)
+                .toStrictEqual(observableCollection);
             actualChangedProperties = changedProperties;
         }
     });
@@ -48,14 +49,17 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
         handle(subject, { operation, startIndex, addedItems, removedItems }) {
             collectionChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableCollection);
-            expect(operation).toEqual(collectionOperation);
+            expect(subject)
+                .toStrictEqual(observableCollection);
+            expect(operation)
+                .toEqual(collectionOperation);
 
             const spliceArray = initialState.slice();
             const spliceRemovedItems = spliceArray.splice(startIndex, removedItems.length, ...addedItems);
 
             expectCollectionsToBeEqual(observableCollection, spliceArray);
-            expect(spliceRemovedItems).toEqual(removedItems);
+            expect(spliceRemovedItems)
+                .toEqual(removedItems);
         }
     });
     observableCollection.collectionReordered.subscribe({
@@ -70,13 +74,19 @@ export function testMutatingOperation<TItem>({ collectionOperation, initialState
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollection) : applyOperation.applyCollectionOperation(observableCollection);
 
     expectCollectionsToBeEqual(observableCollection, expectedState);
-    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollection : expectedResult);
+    expect(observableCollectionResult)
+        .toEqual(expectedResult === selfResult ? observableCollection : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(1);
-    expect(collectionChangedRaiseCount).toBe(1);
-    expect(collectionReorderedRaiseCount).toBe(0);
-    expect(actualChangedProperties).toEqual(changedProperties);
+    expect(propertiesChangedRaiseCount)
+        .toBe(1);
+    expect(collectionChangedRaiseCount)
+        .toBe(1);
+    expect(collectionReorderedRaiseCount)
+        .toBe(0);
+    expect(actualChangedProperties)
+        .toEqual(changedProperties);
 
     expectCollectionsToBeEqual(observableCollection, array);
-    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollection : arrayResult);
+    expect(observableCollectionResult)
+        .toEqual(expectedResult === selfResult ? observableCollection : arrayResult);
 }

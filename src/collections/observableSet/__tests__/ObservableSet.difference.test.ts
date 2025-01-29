@@ -9,8 +9,8 @@ describe('ObservableSet.difference', (): void => {
             initialState: [4, 5, 6],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.difference(other),
-                applySetOperation: set => difference(set, other)
+                applyObservableSetOperation: (set) => set.difference(other),
+                applySetOperation: (set) => difference(set, other)
             },
 
             expectedResult: new Set([4, 5, 6])
@@ -24,8 +24,8 @@ describe('ObservableSet.difference', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.difference(other),
-                applySetOperation: set => difference(set, other)
+                applyObservableSetOperation: (set) => set.difference(other),
+                applySetOperation: (set) => difference(set, other)
             },
 
             expectedResult: new Set<number>()
@@ -39,8 +39,8 @@ describe('ObservableSet.difference', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.difference(other),
-                applySetOperation: set => difference(set, other)
+                applyObservableSetOperation: (set) => set.difference(other),
+                applySetOperation: (set) => difference(set, other)
             },
 
             expectedResult: new Set([1, 2])
@@ -54,8 +54,8 @@ describe('ObservableSet.difference', (): void => {
             initialState: [1, 2, 3],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.difference(other),
-                applySetOperation: set => difference(set, other)
+                applyObservableSetOperation: (set) => set.difference(other),
+                applySetOperation: (set) => difference(set, other)
             },
 
             expectedResult: new Set([1, 2, 3])
@@ -69,8 +69,8 @@ describe('ObservableSet.difference', (): void => {
             initialState: [],
 
             applyOperation: {
-                applyObservableSetOperation: set => set.difference(other),
-                applySetOperation: set => difference(set, other)
+                applyObservableSetOperation: (set) => set.difference(other),
+                applySetOperation: (set) => difference(set, other)
             },
 
             expectedResult: new Set<number>()
@@ -94,12 +94,14 @@ describe('ObservableSet.difference', (): void => {
                         has: other.includes.bind(other)
                     });
                 }
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });
 
 function difference<TItem>(set: Set<TItem>, other: readonly TItem[]): Set<TItem> {
-    return new Set<TItem>(Array.from(set.keys()).filter(item => !other.includes(item)));
+    return new Set<TItem>(Array.from(set.keys())
+        .filter((item) => !other.includes(item)));
 }

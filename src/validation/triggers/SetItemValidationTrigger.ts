@@ -1,8 +1,8 @@
+import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
 import type { INotifySetChanged, ISetChangedEventHandler } from '../../collections';
 import type { IEventHandler } from '../../events';
-import type { ValidationTriggerSelector } from './ValidationTriggerSelector';
-import { ValidationTrigger } from './ValidationTrigger';
 import { resolveAllValidationTriggers } from './resolveAllValidationTriggers';
+import { ValidationTrigger } from './ValidationTrigger';
 
 interface IItemValidationTriggers {
     readonly validationTriggerEventHandler: IEventHandler<unknown>;
@@ -41,7 +41,7 @@ export interface ISetItemValidationTriggerConfig<TItem> {
  */
 export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySetChanged<TItem> & Iterable<TItem>> {
     private readonly _validationTriggerSelector: ValidationTriggerSelector<TItem>;
-    private readonly _shouldTriggerValidation: (item: TItem) => boolean;
+    private readonly _shouldTriggerValidation: (item: TItem)=> boolean;
     private readonly _itemValidationTriggersByItem: Map<TItem, IItemValidationTriggers>;
     private readonly _setChangedEventHandler: ISetChangedEventHandler<INotifySetChanged<TItem>, TItem>;
 
@@ -65,10 +65,10 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
             handle: (_, { addedItems, removedItems }) => {
                 addedItems.forEach(this._addItemValidationTriggers, this);
 
-                removedItems.forEach(removedItem => {
+                removedItems.forEach((removedItem) => {
                     const itemEventHandler = this._itemValidationTriggersByItem.get(removedItem);
                     if (itemEventHandler !== null && itemEventHandler !== undefined) {
-                        itemEventHandler.validationTriggers.forEach(validationTrigger => {
+                        itemEventHandler.validationTriggers.forEach((validationTrigger) => {
                             validationTrigger.validationTriggered.unsubscribe(itemEventHandler.validationTriggerEventHandler);
                         });
                         this._itemValidationTriggersByItem.delete(removedItem);
@@ -76,7 +76,7 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
                 });
 
                 this.notifyValidationTriggered();
-            },
+            }
         };
     }
 
@@ -84,7 +84,8 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
      * Subscribes to set and item changes.
      */
     protected subscribeToTarget(): void {
-        Array.from(this.trigger).forEach(this._addItemValidationTriggers, this);
+        Array.from(this.trigger)
+            .forEach(this._addItemValidationTriggers, this);
         this.trigger.setChanged.subscribe(this._setChangedEventHandler);
     }
 
@@ -95,7 +96,7 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
         this.trigger.setChanged.unsubscribe(this._setChangedEventHandler);
 
         this._itemValidationTriggersByItem.forEach(({ validationTriggers, validationTriggerEventHandler }) => {
-            validationTriggers.forEach(validationTrigger => {
+            validationTriggers.forEach((validationTrigger) => {
                 validationTrigger.validationTriggered.unsubscribe(validationTriggerEventHandler);
             });
         });
@@ -107,11 +108,11 @@ export class SetItemValidationTrigger<TItem> extends ValidationTrigger<INotifySe
             handle: () => {
                 if (this._shouldTriggerValidation(item))
                     this.notifyValidationTriggered();
-            },
+            }
         };
 
         const resolvedValidationTriggers = resolveAllValidationTriggers(this._validationTriggerSelector(item));
-        resolvedValidationTriggers.forEach(validationTrigger => {
+        resolvedValidationTriggers.forEach((validationTrigger) => {
             validationTrigger.validationTriggered.subscribe(validationTriggerEventHandler);
         });
 

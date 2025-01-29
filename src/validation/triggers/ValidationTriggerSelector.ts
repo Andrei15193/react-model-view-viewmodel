@@ -9,17 +9,17 @@ import { Form } from '../../forms';
  *
  * @see {@linkcode WellKnownValidationTrigger}
  */
-export type ValidationTriggerSelector<T> = (object: T) => ValidationTriggerSet;
+export type ValidationTriggerSelector<T> = (object: T)=> ValidationTriggerSet;
 
 /**
  * Represents a single validation trigger or a range of validation triggers that should be
  * configured for an individual target.
- * 
+ *
  * @see {@linkcode Form.validation}
  * @see {@linkcode IObjectValidator}
  * @see {@linkcode WellKnownValidationTrigger}
  */
 export type ValidationTriggerSet
     = WellKnownValidationTrigger
-    | ValidationTrigger
-    | readonly (WellKnownValidationTrigger | ValidationTrigger)[];
+        | ValidationTrigger
+        | readonly (WellKnownValidationTrigger | ValidationTrigger)[];

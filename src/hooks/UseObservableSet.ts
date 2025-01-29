@@ -17,7 +17,7 @@ export function useObservableSet<TObservableSet extends INotifySetChanged<TItem>
                 handle() {
                     setState({});
                 }
-            }
+            };
 
             if (observableSet !== null && observableSet !== undefined)
                 observableSet.setChanged.subscribe(setChangedEventHandler);
@@ -25,7 +25,7 @@ export function useObservableSet<TObservableSet extends INotifySetChanged<TItem>
             return () => {
                 if (observableSet !== null && observableSet !== undefined)
                     observableSet.setChanged.unsubscribe(setChangedEventHandler);
-            }
+            };
         },
         [observableSet]
     );

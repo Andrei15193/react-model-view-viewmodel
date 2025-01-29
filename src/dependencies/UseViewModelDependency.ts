@@ -1,6 +1,6 @@
 import type { INotifyPropertiesChanged } from '../viewModels';
+import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer';
 import type { IDependencyResolver, ResolvableSimpleDependency, ComplexDependency } from './IDependencyResolver';
-import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer'
 import { useViewModel } from '../hooks';
 import { useDependency } from './UseDependency';
 
@@ -57,8 +57,8 @@ export function useViewModelDependency<TViewModel extends INotifyPropertiesChang
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ComplexDependency<TViewModel, TAdditional>, additionalDependencies: TAdditional): TViewModel;
 
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | ComplexDependency<TViewModel, TAdditional>, additionalDependencies?: TAdditional): TViewModel {
-  const viewModel = useDependency<TViewModel, TAdditional>(viewModelDependency as ComplexDependency<TViewModel, TAdditional>, additionalDependencies!);
-  useViewModel(viewModel);
+    const viewModel = useDependency<TViewModel, TAdditional>(viewModelDependency as ComplexDependency<TViewModel, TAdditional>, additionalDependencies!);
+    useViewModel(viewModel);
 
-  return viewModel;
+    return viewModel;
 }

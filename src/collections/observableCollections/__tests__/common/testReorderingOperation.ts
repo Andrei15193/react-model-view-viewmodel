@@ -9,10 +9,10 @@ export interface ITestReorderingOperationOptions<TItem> {
     readonly initialState: readonly TItem[];
     readonly changedProperties: readonly ('length' | number)[];
 
-    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>) => unknown) | {
+    readonly applyOperation: ((collection: TItem[] | IObservableCollection<TItem>)=> unknown) | {
         applyArrayOperation(array: TItem[]): unknown;
         applyCollectionOperation(colleciton: IObservableCollection<TItem>): unknown;
-    }
+    };
 
     readonly expectedCollection: readonly TItem[];
     readonly expectedResult: unknown;
@@ -40,7 +40,8 @@ export function testReorderingOperation<TItem>({ collectionOperation, initialSta
         handle(subject, changedProperties) {
             propertiesChangedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableCollection);
+            expect(subject)
+                .toStrictEqual(observableCollection);
             actualChangedProperties = changedProperties;
         }
     });
@@ -53,8 +54,10 @@ export function testReorderingOperation<TItem>({ collectionOperation, initialSta
         handle(subject, { operation, movedItems }) {
             collectionReorderedRaiseCount++;
 
-            expect(subject).toStrictEqual(observableCollection);
-            expect(operation).toEqual(collectionOperation);
+            expect(subject)
+                .toStrictEqual(observableCollection);
+            expect(operation)
+                .toEqual(collectionOperation);
 
             const copyArray = initialState.slice();
             movedItems.forEach(({ currentIndex, currentItem }) => {
@@ -71,13 +74,19 @@ export function testReorderingOperation<TItem>({ collectionOperation, initialSta
     const observableCollectionResult = typeof applyOperation === 'function' ? applyOperation(observableCollection) : applyOperation.applyCollectionOperation(observableCollection);
 
     expectCollectionsToBeEqual(observableCollection, expectedCollection);
-    expect(observableCollectionResult).toEqual(expectedResult === selfResult ? observableCollection : expectedResult);
+    expect(observableCollectionResult)
+        .toEqual(expectedResult === selfResult ? observableCollection : expectedResult);
 
-    expect(propertiesChangedRaiseCount).toBe(1);
-    expect(collectionChangedRaiseCount).toBe(0);
-    expect(collectionReorderedRaiseCount).toBe(1);
-    expect(actualChangedProperties).toEqual(changedProperties);
+    expect(propertiesChangedRaiseCount)
+        .toBe(1);
+    expect(collectionChangedRaiseCount)
+        .toBe(0);
+    expect(collectionReorderedRaiseCount)
+        .toBe(1);
+    expect(actualChangedProperties)
+        .toEqual(changedProperties);
 
     expectCollectionsToBeEqual(observableCollection, array);
-    expect(arrayResult).toEqual(expectedResult === selfResult ? array : expectedResult);
+    expect(arrayResult)
+        .toEqual(expectedResult === selfResult ? array : expectedResult);
 }

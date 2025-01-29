@@ -1,5 +1,5 @@
 import { ObservableSet } from '../ObservableSet';
-import { selfResult, testBlankMutatingOperation, testMutatingOperation } from './common';
+import { testBlankMutatingOperation, testMutatingOperation } from './common';
 
 describe('ObservableSet.delete', (): void => {
     it('deleting an item removes it from the set', (): void => {
@@ -8,7 +8,7 @@ describe('ObservableSet.delete', (): void => {
             initialState: [1, 2, 3],
             changedProperties: ['size'],
 
-            applyOperation: set => set.delete(1),
+            applyOperation: (set) => set.delete(1),
 
             expectedSet: [2, 3],
             expectedResult: true
@@ -19,7 +19,7 @@ describe('ObservableSet.delete', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [],
 
-            applyOperation: set => set.delete(2),
+            applyOperation: (set) => set.delete(2),
 
             expectedResult: false
         });
@@ -29,7 +29,7 @@ describe('ObservableSet.delete', (): void => {
         testBlankMutatingOperation<number>({
             initialState: [1, 2, 3],
 
-            applyOperation: set => set.delete(4),
+            applyOperation: (set) => set.delete(4),
 
             expectedResult: false
         });
@@ -42,8 +42,9 @@ describe('ObservableSet.delete', (): void => {
 
                 for (const _ of observableSet)
                     observableSet.delete(1);
-            })
-            .toThrow(new Error('Set has changed while being iterated.'))
+            }
+        )
+            .toThrow(new Error('Set has changed while being iterated.'));
     });
 
     it('deleting non-existing item while iterating does not break iterators', (): void => {
@@ -53,8 +54,9 @@ describe('ObservableSet.delete', (): void => {
 
                 for (const _ of observableSet)
                     observableSet.delete(4);
-            })
+            }
+        )
             .not
-            .toThrow()
+            .toThrow();
     });
 });

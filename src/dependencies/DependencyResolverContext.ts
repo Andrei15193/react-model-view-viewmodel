@@ -1,8 +1,8 @@
-import type { IDependencyResolver, ResolvableSimpleDependency } from './IDependencyResolver';
 import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer';
+import type { IDependencyResolver, ResolvableSimpleDependency } from './IDependencyResolver';
 import type { useDependency } from './UseDependency';
-import { DependencyContainer } from './DependencyContainer';
 import { type PropsWithChildren, createContext, createElement, useContext, useMemo, useRef } from 'react';
+import { DependencyContainer } from './DependencyContainer';
 
 const DependencyResolverContext = createContext<IDependencyResolver>(new DependencyContainer());
 
@@ -25,7 +25,7 @@ export function useDependencyResolver(): IDependencyResolver {
 
 /**
  * Represents the dependency resolver context provider props.
- * 
+ *
  * @see {@link DependencyResolverProvider}
  */
 export interface IDependencyResolverProviderProps {
@@ -46,6 +46,7 @@ export interface IDependencyResolverProviderProps {
  */
 export function DependencyResolverProvider(props: PropsWithChildren<IDependencyResolverProviderProps>): JSX.Element {
     const { dependencyResolver, children } = props;
+
     return createElement(DependencyResolverContext.Provider, {
         value: dependencyResolver,
         children
@@ -81,18 +82,15 @@ export function DependencyResolverScope({ deps, children }: PropsWithChildren<ID
 
     const parentDependencyResolver = useDependencyResolver();
 
+    const scopedDependencyResolverRef = useRef<IDependencyResolver | null>(null);
     const cachedDepsRef = useRef(normalizedDeps);
-    if (cachedDepsRef.current.length !== normalizedDeps.length || cachedDepsRef.current.some((cachedDep, depIndex) => cachedDep !== normalizedDeps[depIndex]))
+    if (scopedDependencyResolverRef.current === null || cachedDepsRef.current.length !== normalizedDeps.length || cachedDepsRef.current.some((cachedDep, depIndex) => cachedDep !== normalizedDeps[depIndex])) {
+        scopedDependencyResolverRef.current = parentDependencyResolver.createScope();
         cachedDepsRef.current = normalizedDeps.slice();
-    const { current: cachedDeps } = cachedDepsRef;
-
-    const scopedDependencyResolver = useMemo(
-        () => parentDependencyResolver.createScope(),
-        [parentDependencyResolver, cachedDeps]
-    );
+    }
 
     return createElement(DependencyResolverContext.Provider, {
-        value: scopedDependencyResolver,
+        value: scopedDependencyResolverRef.current,
         children: children
     });
 }
