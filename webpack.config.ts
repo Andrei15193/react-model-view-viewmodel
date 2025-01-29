@@ -1233,6 +1233,9 @@ ${this._getReferences(functionSignature)}
                     case 'DependencyList':
                         return 'https://react.dev/learn/removing-effect-dependencies#dependencies-should-match-the-code';
 
+                    case 'ReactElement':
+                        return 'react.dev/reference/react/createElement';
+
                     case 'JSX.Element':
                         return 'https://react.dev/learn/writing-markup-with-jsx';
 

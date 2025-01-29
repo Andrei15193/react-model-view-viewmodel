@@ -1,7 +1,7 @@
 import type { IDependencyContainer, ConfigurableDependency } from './IDependencyContainer';
 import type { IDependencyResolver, ResolvableSimpleDependency } from './IDependencyResolver';
 import type { useDependency } from './UseDependency';
-import { type PropsWithChildren, createContext, createElement, useContext, useMemo, useRef } from 'react';
+import { type ReactElement, type PropsWithChildren, createContext, createElement, useContext, useRef } from 'react';
 import { DependencyContainer } from './DependencyContainer';
 
 const DependencyResolverContext = createContext<IDependencyResolver>(new DependencyContainer());
@@ -44,7 +44,7 @@ export interface IDependencyResolverProviderProps {
  * @see {@link IDependencyContainer}
  * @see {@link useDependency}
  */
-export function DependencyResolverProvider(props: PropsWithChildren<IDependencyResolverProviderProps>): JSX.Element {
+export function DependencyResolverProvider(props: PropsWithChildren<IDependencyResolverProviderProps>): ReactElement {
     const { dependencyResolver, children } = props;
 
     return createElement(DependencyResolverContext.Provider, {
@@ -75,7 +75,7 @@ const emptyDeps: readonly any[] = [];
  * @see {@link IDependencyContainer}
  * @see {@link useDependency}
  */
-export function DependencyResolverScope({ deps, children }: PropsWithChildren<IDependencyResolverScopeProps>): JSX.Element {
+export function DependencyResolverScope({ deps, children }: PropsWithChildren<IDependencyResolverScopeProps>): ReactElement {
     const normalizedDeps = deps === null || deps === undefined || !Array.isArray(deps) || deps.length === 0
         ? emptyDeps
         : deps;
