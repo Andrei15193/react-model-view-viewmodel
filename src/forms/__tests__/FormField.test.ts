@@ -108,6 +108,20 @@ describe('FormField', (): void => {
         expect(field.validation.triggers.size).toBe(0);
     });
 
+    it('resetting a field resets the error message', (): void => {
+        const field = new FormField<unknown>({
+            name: 'name',
+            initialValue: null
+        });
+        field.error = 'error';
+
+        field.reset();
+
+        expect(field.error).toBeNull();
+        expect(field.isValid).toBe(true);
+        expect(field.isInvalid).toBe(false);
+    });
+
     it('resetting a field resets validation', (): void => {
         const field = new FormField<unknown>({
             name: 'name',

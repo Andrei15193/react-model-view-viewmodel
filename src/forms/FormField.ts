@@ -264,6 +264,7 @@ export class FormField<TValue, TValidationError = string> extends Validatable<TV
      */
     public reset(): void {
         this.validation.reset();
+        this.error = null;
     }
 
     /**
