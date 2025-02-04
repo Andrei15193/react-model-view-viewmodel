@@ -192,6 +192,43 @@ export class DependencyContainer implements IDependencyContainer, IDependencyRes
      */
     public resolve<T>(dependency: ResolvableSimpleDependency<T>): T;
     /**
+     * Resolves a dependency based on its configuration, if any. All unconfigured dependencies are transient.
+     *
+     * @template T The dependency type to resolve.
+     *
+     * @param dependency The dependnecy to resolve.
+     *
+     * @returns The resolved dependency.
+     *
+     * @ignore This is overload is not relevant for wiki documentation.
+     */
+    public resolve<T>(dependency: ResolvableSimpleDependency<T> | null): T | null;
+    /**
+     * Resolves a dependency based on its configuration, if any. All unconfigured dependencies are transient.
+     *
+     * @template T The dependency type to resolve.
+     *
+     * @param dependency The dependnecy to resolve.
+     *
+     * @returns The resolved dependency.
+     *
+     * @ignore This is overload is not relevant for wiki documentation.
+     */
+    public resolve<T>(dependency: ResolvableSimpleDependency<T> | undefined): T | undefined;
+    /**
+     * Resolves a dependency based on its configuration, if any. All unconfigured dependencies are transient.
+     *
+     * @template T The dependency type to resolve.
+     *
+     * @param dependency The dependnecy to resolve.
+     *
+     * @returns The resolved dependency.
+     *
+     * @ignore This is overload is not relevant for wiki documentation.
+     */
+    public resolve<T>(dependency: ResolvableSimpleDependency<T> | null | undefined): T | null | undefined;
+
+    /**
      * Resolves a complex dependency. All such dependencies are transient as they require
      * additional dependencies on the constructor.
      *
@@ -201,16 +238,66 @@ export class DependencyContainer implements IDependencyContainer, IDependencyRes
      * @param dependency The complex dependnecy to resolve.
      * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
      *
-     *  @returns The resolved dependency.
+     * @returns The resolved dependency.
      */
     public resolve<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional>, additionalDependencies: TAdditional): T;
+    /**
+     * Resolves a complex dependency. All such dependencies are transient as they require
+     * additional dependencies on the constructor.
+     *
+     * @template T The dependency type to resolve.
+     * @template TAdditional A tuple representing additional parameters required by the constructor.
+     *
+     * @param dependency The complex dependnecy to resolve.
+     * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
+     *
+     * @returns The resolved dependency.
+     *
+     * @ignore This is overload is not relevant for wiki documentation.
+     */
+    public resolve<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional> | null, additionalDependencies: TAdditional): T | null;
+    /**
+     * Resolves a complex dependency. All such dependencies are transient as they require
+     * additional dependencies on the constructor.
+     *
+     * @template T The dependency type to resolve.
+     * @template TAdditional A tuple representing additional parameters required by the constructor.
+     *
+     * @param dependency The complex dependnecy to resolve.
+     * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
+     *
+     * @returns The resolved dependency.
+     *
+     * @ignore This is overload is not relevant for wiki documentation.
+     */
+    public resolve<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional> | undefined, additionalDependencies: TAdditional): T | undefined;
+    /**
+     * Resolves a complex dependency. All such dependencies are transient as they require
+     * additional dependencies on the constructor.
+     *
+     * @template T The dependency type to resolve.
+     * @template TAdditional A tuple representing additional parameters required by the constructor.
+     *
+     * @param dependency The complex dependnecy to resolve.
+     * @param additionalDependencies Additional dependencies requested by the constructor besides the dependency resolver.
+     *
+     * @returns The resolved dependency.
+     *
+     * @ignore This is overload is not relevant for wiki documentation.
+     */
+    public resolve<T, TAdditional extends readonly any[]>(dependency: ComplexDependency<T, TAdditional> | null | undefined, additionalDependencies: TAdditional): T | null | undefined;
 
     public resolve<T, TAdditional extends readonly any[]>(dependency: ResolvableSimpleDependency<T> | ComplexDependency<T, TAdditional>, additionalDependencies?: TAdditional): T {
         try {
             DependencyContainer._dependencyResolutionChain.push(dependency);
             if (DependencyContainer._dependencyResolutionChain.lastIndexOf(dependency, -2) >= 0)
-                throw new Error(`Circular dependency detected while trying to resolve '${DependencyContainer._dependencyResolutionChain.map((dependency) => dependency?.name ?? dependency)
-                    .join(' -> ')}'.`);
+                throw new Error(
+                    `Circular dependency detected while trying to resolve '${
+                        DependencyContainer
+                            ._dependencyResolutionChain.map((dependency) => dependency?.name ?? dependency)
+                            .join(' -> ')
+                    }'.`
+                );
 
             if (!isDependency<T, TAdditional>(dependency))
                 return dependency;

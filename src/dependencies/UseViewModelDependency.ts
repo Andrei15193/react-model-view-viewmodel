@@ -28,6 +28,84 @@ import { useDependency } from './UseDependency';
  * @see {@link useViewModel}
  */
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged>(viewModelDependency: ResolvableSimpleDependency<TViewModel>): TViewModel;
+/**
+ * Resolves the requested view model dependency and subscribes to it for changes.
+ *
+ * This is a utility hook providing the following functionality.
+ *
+ * ```ts
+ * const viewModel = useDependency(viewModelDependency);
+ * useViewModel(viewModel);
+ * ```
+ *
+ * @template TViewModel The view model type to resolve.
+ *
+ * @param viewModelDependency The view model dependency to resolve.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
+ * @see {@link useViewModel}
+ *
+ * @ignore This is overload is not relevant for wiki documentation.
+ */
+export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | null): TViewModel | null;
+/**
+ * Resolves the requested view model dependency and subscribes to it for changes.
+ *
+ * This is a utility hook providing the following functionality.
+ *
+ * ```ts
+ * const viewModel = useDependency(viewModelDependency);
+ * useViewModel(viewModel);
+ * ```
+ *
+ * @template TViewModel The view model type to resolve.
+ *
+ * @param viewModelDependency The view model dependency to resolve.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
+ * @see {@link useViewModel}
+ *
+ * @ignore This is overload is not relevant for wiki documentation.
+ */
+export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | undefined): TViewModel | undefined;
+/**
+ * Resolves the requested view model dependency and subscribes to it for changes.
+ *
+ * This is a utility hook providing the following functionality.
+ *
+ * ```ts
+ * const viewModel = useDependency(viewModelDependency);
+ * useViewModel(viewModel);
+ * ```
+ *
+ * @template TViewModel The view model type to resolve.
+ *
+ * @param viewModelDependency The view model dependency to resolve.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
+ * @see {@link useViewModel}
+ *
+ * @ignore This is overload is not relevant for wiki documentation.
+ */
+export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | null | undefined): TViewModel | null | undefined;
 
 /**
  * Resolves the requested complex view model dependency and subscribes to it for changes.
@@ -55,6 +133,90 @@ export function useViewModelDependency<TViewModel extends INotifyPropertiesChang
  * @see {@link useViewModel}
  */
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ComplexDependency<TViewModel, TAdditional>, additionalDependencies: TAdditional): TViewModel;
+/**
+ * Resolves the requested complex view model dependency and subscribes to it for changes.
+ *
+ * This is a utility hook providing the following functionality.
+ *
+ * ```ts
+ * const viewModel = useDependency(viewModelDependency, additionalDependencies);
+ * useViewModel(viewModel);
+ * ```
+ *
+ * @template TViewModel The view model type to resolve.
+ * @template TAdditional A tuple representing additional parameters required by the constructor.
+ *
+ * @param viewModelDependency The view model dependency to resolve.
+ * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the view model will be reinitialized.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
+ * @see {@link useViewModel}
+ *
+ * @ignore This is overload is not relevant for wiki documentation.
+ */
+export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ComplexDependency<TViewModel, TAdditional> | null, additionalDependencies: TAdditional): TViewModel | null;
+/**
+ * Resolves the requested complex view model dependency and subscribes to it for changes.
+ *
+ * This is a utility hook providing the following functionality.
+ *
+ * ```ts
+ * const viewModel = useDependency(viewModelDependency, additionalDependencies);
+ * useViewModel(viewModel);
+ * ```
+ *
+ * @template TViewModel The view model type to resolve.
+ * @template TAdditional A tuple representing additional parameters required by the constructor.
+ *
+ * @param viewModelDependency The view model dependency to resolve.
+ * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the view model will be reinitialized.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
+ * @see {@link useViewModel}
+ *
+ * @ignore This is overload is not relevant for wiki documentation.
+ */
+export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ComplexDependency<TViewModel, TAdditional> | undefined, additionalDependencies: TAdditional): TViewModel | undefined;
+/**
+ * Resolves the requested complex view model dependency and subscribes to it for changes.
+ *
+ * This is a utility hook providing the following functionality.
+ *
+ * ```ts
+ * const viewModel = useDependency(viewModelDependency, additionalDependencies);
+ * useViewModel(viewModel);
+ * ```
+ *
+ * @template TViewModel The view model type to resolve.
+ * @template TAdditional A tuple representing additional parameters required by the constructor.
+ *
+ * @param viewModelDependency The view model dependency to resolve.
+ * @param additionalDependencies Additional constructor arguments which also act as dependencies, if one of them changes the view model will be reinitialized.
+ *
+ * @returns Returns the resolved view model which is also watched for changes.
+ *
+ * @see {@link IDependencyResolver}
+ * @see {@link IDependencyContainer}
+ * @see {@link ResolvableSimpleDependency}
+ * @see {@link ConfigurableDependency}
+ * @see {@link useDependency}
+ * @see {@link useViewModel}
+ *
+ * @ignore This is overload is not relevant for wiki documentation.
+ */
+export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ComplexDependency<TViewModel, TAdditional> | null | undefined, additionalDependencies: TAdditional): TViewModel | null | undefined;
 
 export function useViewModelDependency<TViewModel extends INotifyPropertiesChanged, TAdditional extends readonly any[]>(viewModelDependency: ResolvableSimpleDependency<TViewModel> | ComplexDependency<TViewModel, TAdditional>, additionalDependencies?: TAdditional): TViewModel {
     const viewModel = useDependency<TViewModel, TAdditional>(viewModelDependency as ComplexDependency<TViewModel, TAdditional>, additionalDependencies!);
