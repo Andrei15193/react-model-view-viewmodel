@@ -2,7 +2,7 @@
 import type { Compiler, Configuration } from 'webpack';
 import fs, { type MakeDirectoryOptions, type WriteFileOptions } from 'fs';
 import path from 'path';
-import { Application, type CommentDisplayPart, type DeclarationReflection, type ParameterReflection, type ReferenceType, type Reflection, ReflectionKind, type ReflectionSymbolId, type SignatureReflection, type SomeType, type TypeParameterReflection } from 'typedoc';
+import { Application, type CommentDisplayPart, type ComponentPath, type DeclarationReflection, type ParameterReflection, type ReferenceType, type Reflection, ReflectionKind, type ReflectionSymbolId, type SignatureReflection, type SomeType, type TypeParameterReflection } from 'typedoc';
 
 export default function (): Configuration {
     return {
@@ -1754,7 +1754,7 @@ ${this._getReferences(functionSignature)}
                                 if (declarationReference.resolutionStart === 'global')
                                     switch (declarationReference.moduleSource) {
                                         case 'typescript':
-                                            const typeScriptReference = declarationReference.symbolReference?.path?.map((componentPath) => componentPath.path)
+                                            const typeScriptReference = declarationReference.symbolReference?.path?.map((componentPath: ComponentPath) => componentPath.path)
                                                 .join('.') || '';
                                             switch (typeScriptReference) {
                                                 case 'String':
